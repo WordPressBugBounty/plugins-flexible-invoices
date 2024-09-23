@@ -1,0 +1,1 @@
+jQuery,jQuery(".confirm").click((function(){let e=jQuery(this).attr("data-confirm"),o=jQuery(".wpdesk-tooltip-shadow"),t=jQuery("#"+e);o.show(),t.show()})),jQuery(".close-modal").click((function(){return jQuery(".wpdesk-tooltip-shadow").hide(),jQuery(this).closest(".wpdesk-tooltip").hide(),!1}));
