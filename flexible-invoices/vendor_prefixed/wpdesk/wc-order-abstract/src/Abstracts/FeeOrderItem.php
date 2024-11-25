@@ -12,7 +12,7 @@ namespace WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts;
  *
  * @package WPDesk\Library\WPDeskOrder\Abstracts
  */
-final class FeeOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\OrderItem
+final class FeeOrderItem extends OrderItem
 {
     /**
      * @var string

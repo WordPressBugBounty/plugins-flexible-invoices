@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference;
@@ -48,7 +48,7 @@ class CrossReference
      * @throws CrossReferenceException
      * @throws PdfTypeException
      */
-    public function __construct(\WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParser $parser, $fileHeaderOffset = 0)
+    public function __construct(PdfParser $parser, $fileHeaderOffset = 0)
     {
         $this->parser = $parser;
         $this->fileHeaderOffset = $fileHeaderOffset;
@@ -59,9 +59,9 @@ class CrossReference
             // By doing an unsafe comparsion we ignore faulty references to byte offset 0
             try {
                 $reader = $this->readXref($offset + $this->fileHeaderOffset);
-            } catch (\WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException $e) {
+            } catch (CrossReferenceException $e) {
                 // sometimes the file header offset is part of the byte offsets, so let's retry by resetting it to zero.
-                if ($e->getCode() === \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::INVALID_DATA && $this->fileHeaderOffset !== 0) {
+                if ($e->getCode() === CrossReferenceException::INVALID_DATA && $this->fileHeaderOffset !== 0) {
                     $this->fileHeaderOffset = 0;
                     $reader = $this->readXref($offset);
                 } else {
@@ -78,14 +78,14 @@ class CrossReference
             }
         }
         // fix faulty sub-section header
-        if ($reader instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\FixedReader) {
+        if ($reader instanceof FixedReader) {
             /**
              * @var FixedReader $reader
              */
             $reader->fixFaultySubSectionShift();
         }
         if ($reader === null) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException('No cross-reference found.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::NO_XREF_FOUND);
+            throw new CrossReferenceException('No cross-reference found.', CrossReferenceException::NO_XREF_FOUND);
         }
     }
     /**
@@ -142,19 +142,19 @@ class CrossReference
     {
         $offset = $this->getOffsetFor($objectNumber);
         if ($offset === \false) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException(\sprintf('Object (id:%s) not found.', $objectNumber), \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::OBJECT_NOT_FOUND);
+            throw new CrossReferenceException(\sprintf('Object (id:%s) not found.', $objectNumber), CrossReferenceException::OBJECT_NOT_FOUND);
         }
         $parser = $this->parser;
         $parser->getTokenizer()->clearStack();
         $parser->getStreamReader()->reset($offset + $this->fileHeaderOffset);
         try {
             /** @var PdfIndirectObject $object */
-            $object = $parser->readValue(null, \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObject::class);
-        } catch (\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException $e) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException(\sprintf('Object (id:%s) not found at location (%s).', $objectNumber, $offset), \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::OBJECT_NOT_FOUND, $e);
+            $object = $parser->readValue(null, PdfIndirectObject::class);
+        } catch (PdfTypeException $e) {
+            throw new CrossReferenceException(\sprintf('Object (id:%s) not found at location (%s).', $objectNumber, $offset), CrossReferenceException::OBJECT_NOT_FOUND, $e);
         }
         if ($object->objectNumber !== $objectNumber) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException(\sprintf('Wrong object found, got %s while %s was expected.', $object->objectNumber, $objectNumber), \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::OBJECT_NOT_FOUND);
+            throw new CrossReferenceException(\sprintf('Wrong object found, got %s while %s was expected.', $object->objectNumber, $objectNumber), CrossReferenceException::OBJECT_NOT_FOUND);
         }
         return $object;
     }
@@ -186,29 +186,29 @@ class CrossReference
     protected function initReaderInstance($initValue)
     {
         $position = $this->parser->getStreamReader()->getPosition() + $this->parser->getStreamReader()->getOffset() + $this->fileHeaderOffset;
-        if ($initValue instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfToken && $initValue->value === 'xref') {
+        if ($initValue instanceof PdfToken && $initValue->value === 'xref') {
             try {
-                return new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\FixedReader($this->parser);
-            } catch (\WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException $e) {
+                return new FixedReader($this->parser);
+            } catch (CrossReferenceException $e) {
                 $this->parser->getStreamReader()->reset($position);
                 $this->parser->getTokenizer()->clearStack();
-                return new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\LineReader($this->parser);
+                return new LineReader($this->parser);
             }
         }
-        if ($initValue instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObject) {
+        if ($initValue instanceof PdfIndirectObject) {
             try {
-                $stream = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfStream::ensure($initValue->value);
-            } catch (\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException $e) {
-                throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException('Invalid object type at xref reference offset.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::INVALID_DATA, $e);
+                $stream = PdfStream::ensure($initValue->value);
+            } catch (PdfTypeException $e) {
+                throw new CrossReferenceException('Invalid object type at xref reference offset.', CrossReferenceException::INVALID_DATA, $e);
             }
-            $type = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($stream->value, 'Type');
+            $type = PdfDictionary::get($stream->value, 'Type');
             if ($type->value !== 'XRef') {
-                throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException('The xref position points to an incorrect object type.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::INVALID_DATA);
+                throw new CrossReferenceException('The xref position points to an incorrect object type.', CrossReferenceException::INVALID_DATA);
             }
             $this->checkForEncryption($stream->value);
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException('This PDF document probably uses a compression technique which is not supported by the ' . 'free parser shipped with FPDI. (See https://www.setasign.com/fpdi-pdf-parser for more details)', \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::COMPRESSED_XREF);
+            throw new CrossReferenceException('This PDF document probably uses a compression technique which is not supported by the ' . 'free parser shipped with FPDI. (See https://www.setasign.com/fpdi-pdf-parser for more details)', CrossReferenceException::COMPRESSED_XREF);
         }
-        throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException('The xref position points to an incorrect object type.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::INVALID_DATA);
+        throw new CrossReferenceException('The xref position points to an incorrect object type.', CrossReferenceException::INVALID_DATA);
     }
     /**
      * Check for encryption.
@@ -216,10 +216,10 @@ class CrossReference
      * @param PdfDictionary $dictionary
      * @throws CrossReferenceException
      */
-    protected function checkForEncryption(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary $dictionary)
+    protected function checkForEncryption(PdfDictionary $dictionary)
     {
         if (isset($dictionary->value['Encrypt'])) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException('This PDF document is encrypted and cannot be processed with FPDI.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::ENCRYPTED);
+            throw new CrossReferenceException('This PDF document is encrypted and cannot be processed with FPDI.', CrossReferenceException::ENCRYPTED);
         }
     }
     /**
@@ -239,15 +239,15 @@ class CrossReference
             // Some corrupted documents uses startref, instead of startxref
             $pos = \strrpos($buffer, 'startref');
             if ($pos === \false) {
-                throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException('Unable to find pointer to xref table', \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::NO_STARTXREF_FOUND);
+                throw new CrossReferenceException('Unable to find pointer to xref table', CrossReferenceException::NO_STARTXREF_FOUND);
             }
             $addOffset = 8;
         }
         $reader->setOffset($pos + $addOffset);
         try {
-            $value = $this->parser->readValue(null, \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::class);
-        } catch (\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException $e) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException('Invalid data after startxref keyword.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::INVALID_DATA, $e);
+            $value = $this->parser->readValue(null, PdfNumeric::class);
+        } catch (PdfTypeException $e) {
+            throw new CrossReferenceException('Invalid data after startxref keyword.', CrossReferenceException::INVALID_DATA, $e);
         }
         return $value->value;
     }

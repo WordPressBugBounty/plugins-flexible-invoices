@@ -75,7 +75,7 @@ class ConfigVariables
             // Based on script and/or language
             // mPDF 6.0 (similar to previously using function SetAutoFont() )
             'autoScriptToLang' => \false,
-            'baseScript' => \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_LATIN,
+            'baseScript' => Ucdn::SCRIPT_LATIN,
             'autoVietnamese' => \true,
             'autoArabic' => \true,
             // mPDF 6.0 (similar to old useLang)
@@ -378,11 +378,11 @@ class ConfigVariables
             // font-family, font-size, font-weight, font-variant, font-style, opacity, text-anchor
             'svgClasses' => \false,
             // Default values if no style sheet offered	(cf. http://www.w3.org/TR/CSS21/sample.html)
-            'defaultCSS' => \WPDeskFIVendor\Mpdf\Css\DefaultCss::$definition,
+            'defaultCSS' => DefaultCss::$definition,
             'defaultCssFile' => __DIR__ . '/../../data/mpdf.css',
             'customProperties' => [],
-            'languageToFont' => new \WPDeskFIVendor\Mpdf\Language\LanguageToFont(),
-            'scriptToLanguage' => new \WPDeskFIVendor\Mpdf\Language\ScriptToLanguage(),
+            'languageToFont' => new LanguageToFont(),
+            'scriptToLanguage' => new ScriptToLanguage(),
             //////////////////////////////////////////////////
             // VALUES ONLY LIKELY TO BE CHANGED BY DEVELOPERS
             //////////////////////////////////////////////////

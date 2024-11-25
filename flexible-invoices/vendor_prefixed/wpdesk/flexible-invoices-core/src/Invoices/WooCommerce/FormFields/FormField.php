@@ -9,7 +9,7 @@ use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields
  */
-class FormField implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+class FormField implements Hookable
 {
     const PRIORITY_FORMATTED_FIELDS = 999999;
     const PRIORITY_BILLING_FIELDS = 20;
@@ -56,13 +56,13 @@ class FormField implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
     public function hooks()
     {
         if (!$this->exclude_from_checkout) {
-            \add_filter('woocommerce_billing_fields', [$this, 'append_field_to_billing_fields']);
-            \add_action('woocommerce_checkout_create_order', [$this, 'add_meta_data_to_order'], 10, 2);
-            \add_filter('woocommerce_order_formatted_billing_address', [$this, 'add_field_to_formatted_billing_address'], static::PRIORITY_FORMATTED_FIELDS, 2);
-            \add_filter('woocommerce_localisation_address_formats', [$this, 'add_field_to_localisation_address_formats'], 11);
-            \add_filter('woocommerce_formatted_address_replacements', [$this, 'add_address_replacements'], 11, 2);
+            add_filter('woocommerce_billing_fields', [$this, 'append_field_to_billing_fields']);
+            add_action('woocommerce_checkout_create_order', [$this, 'add_meta_data_to_order'], 10, 2);
+            add_filter('woocommerce_order_formatted_billing_address', [$this, 'add_field_to_formatted_billing_address'], static::PRIORITY_FORMATTED_FIELDS, 2);
+            add_filter('woocommerce_localisation_address_formats', [$this, 'add_field_to_localisation_address_formats'], 11);
+            add_filter('woocommerce_formatted_address_replacements', [$this, 'add_address_replacements'], 11, 2);
         }
-        \add_filter('woocommerce_admin_billing_fields', [$this, 'add_admin_billing_field']);
+        add_filter('woocommerce_admin_billing_fields', [$this, 'add_admin_billing_field']);
     }
     public function set_required()
     {
@@ -71,7 +71,7 @@ class FormField implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
     /**
      * @return bool
      */
-    public function get_required() : bool
+    public function get_required(): bool
     {
         return $this->required;
     }
@@ -80,7 +80,7 @@ class FormField implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
      *
      * @return mixed
      */
-    public function get_from_order(\WC_Order $order)
+    public function get_from_order(WC_Order $order)
     {
         return $order->get_meta($this->order_meta_field_id);
     }
@@ -91,7 +91,7 @@ class FormField implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
      *
      * @return array
      */
-    public function append_field_to_billing_fields(array $fields) : array
+    public function append_field_to_billing_fields(array $fields): array
     {
         $added = \false;
         $new_fields = [];
@@ -100,18 +100,18 @@ class FormField implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
             if ($field_id === $this->add_field_after) {
                 $added = \true;
                 $field_priority = null;
-                if (isset($field['priority']) && \is_numeric($field['priority'])) {
+                if (isset($field['priority']) && is_numeric($field['priority'])) {
                     $field_priority = (int) $field['priority'];
                 }
                 $checkout_field = $this->prepare_checkout_field($field_priority);
-                if (\is_array($checkout_field)) {
+                if (is_array($checkout_field)) {
                     $new_fields[$this->checkout_field_id] = $checkout_field;
                 }
             }
         }
         if (!$added) {
             $checkout_field = $this->prepare_checkout_field();
-            if (\is_array($checkout_field)) {
+            if (is_array($checkout_field)) {
                 $new_fields[$this->checkout_field_id] = $checkout_field;
             }
         }
@@ -124,7 +124,7 @@ class FormField implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
      *
      * @return array
      */
-    protected function prepare_checkout_field($field_priority = null) : array
+    protected function prepare_checkout_field($field_priority = null): array
     {
         return [];
     }
@@ -134,7 +134,7 @@ class FormField implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
      * @param WC_Order $order Order.
      * @param array    $data  Data.
      */
-    public function add_meta_data_to_order(\WC_Order $order, array $data)
+    public function add_meta_data_to_order(WC_Order $order, array $data)
     {
         if (isset($data[$this->checkout_field_id])) {
             $order->update_meta_data($this->order_meta_field_id, $data[$this->checkout_field_id]);
@@ -147,7 +147,7 @@ class FormField implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
      *
      * @return array
      */
-    public function add_admin_billing_field(array $fields) : array
+    public function add_admin_billing_field(array $fields): array
     {
         $added = \false;
         $new_fields = [];
@@ -169,7 +169,7 @@ class FormField implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
      *
      * @return array
      */
-    public function add_field_to_formatted_billing_address(array $fields, \WC_Order $order) : array
+    public function add_field_to_formatted_billing_address(array $fields, WC_Order $order): array
     {
         $fields[$this->field_id] = $order->get_meta($this->get_order_meta_field_id());
         return $fields;
@@ -181,11 +181,11 @@ class FormField implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
      *
      * @return array
      */
-    public function add_field_to_localisation_address_formats(array $formats) : array
+    public function add_field_to_localisation_address_formats(array $formats): array
     {
         $key_value = '{' . $this->field_id . '}';
         foreach ($formats as $country => $val) {
-            if (\stripos($val, $key_value) === \false) {
+            if (stripos($val, $key_value) === \false) {
                 $formats[$country] = $val . "\n" . $key_value;
             }
         }
@@ -197,7 +197,7 @@ class FormField implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
      *
      * @return array
      */
-    public function add_address_replacements(array $fields, array $args) : array
+    public function add_address_replacements(array $fields, array $args): array
     {
         $fields['{' . $this->field_id . '}'] = $args[$this->field_id];
         return $fields;
@@ -205,7 +205,7 @@ class FormField implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
     /**
      * @return bool
      */
-    public function is_exclude_from_checkout() : bool
+    public function is_exclude_from_checkout(): bool
     {
         return $this->exclude_from_checkout;
     }
@@ -221,42 +221,42 @@ class FormField implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
      *
      * @return array
      */
-    protected function prepare_admin_field() : array
+    protected function prepare_admin_field(): array
     {
         return [];
     }
     /**
      * @return string
      */
-    public function get_field_id() : string
+    public function get_field_id(): string
     {
         return $this->field_id;
     }
     /**
      * @return string
      */
-    public function get_order_meta_field_id() : string
+    public function get_order_meta_field_id(): string
     {
         return $this->order_meta_field_id;
     }
     /**
      * @return string
      */
-    public function get_checkout_field() : string
+    public function get_checkout_field(): string
     {
         return $this->checkout_field_id;
     }
     /**
      * @return string
      */
-    public function get_add_field_after() : string
+    public function get_add_field_after(): string
     {
         return $this->add_field_after;
     }
     /**
      * @return string
      */
-    public function get_add_admin_field_after() : string
+    public function get_add_admin_field_after(): string
     {
         return $this->add_admin_field_after;
     }

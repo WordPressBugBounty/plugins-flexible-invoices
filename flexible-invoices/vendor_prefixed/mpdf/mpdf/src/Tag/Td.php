@@ -5,7 +5,7 @@ namespace WPDeskFIVendor\Mpdf\Tag;
 use WPDeskFIVendor\Mpdf\Css\Border;
 use WPDeskFIVendor\Mpdf\Css\TextVars;
 use WPDeskFIVendor\Mpdf\Utils\UtfString;
-class Td extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class Td extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -112,7 +112,7 @@ class Td extends \WPDeskFIVendor\Mpdf\Tag\Tag
                 $this->mpdf->SetStyle('I', \true);
             }
             if ($this->mpdf->thead_font_smCaps === 'S') {
-                $this->mpdf->textvar |= \WPDeskFIVendor\Mpdf\Css\TextVars::FC_SMALLCAPS;
+                $this->mpdf->textvar |= TextVars::FC_SMALLCAPS;
             }
             // mPDF 5.7.1
         }
@@ -131,7 +131,7 @@ class Td extends \WPDeskFIVendor\Mpdf\Tag\Tag
                 $this->mpdf->SetStyle('I', \true);
             }
             if ($this->mpdf->tfoot_font_style === 'S') {
-                $this->mpdf->textvar |= \WPDeskFIVendor\Mpdf\Css\TextVars::FC_SMALLCAPS;
+                $this->mpdf->textvar |= TextVars::FC_SMALLCAPS;
             }
             // mPDF 5.7.1
         }
@@ -175,18 +175,18 @@ class Td extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $c['va'] = $this->getAlign($attr['VALIGN']);
         }
         if (!empty($properties['TEXT-ALIGN'])) {
-            if (0 === \strpos($properties['TEXT-ALIGN'], 'D')) {
+            if (0 === strpos($properties['TEXT-ALIGN'], 'D')) {
                 $c['a'] = $properties['TEXT-ALIGN'];
             } else {
                 $c['a'] = $this->getAlign($properties['TEXT-ALIGN']);
             }
         }
         if (!empty($attr['ALIGN'])) {
-            if (\strtolower($attr['ALIGN']) === 'char') {
+            if (strtolower($attr['ALIGN']) === 'char') {
                 if (!empty($attr['CHAR'])) {
-                    $char = \html_entity_decode($attr['CHAR']);
-                    $char = \WPDeskFIVendor\Mpdf\Utils\UtfString::strcode2utf($char);
-                    $d = \array_search($char, $this->mpdf->decimal_align);
+                    $char = html_entity_decode($attr['CHAR']);
+                    $char = UtfString::strcode2utf($char);
+                    $d = array_search($char, $this->mpdf->decimal_align);
                     if ($d !== \false) {
                         $c['a'] = $d . 'R';
                     }
@@ -200,10 +200,10 @@ class Td extends \WPDeskFIVendor\Mpdf\Tag\Tag
         // mPDF 6
         $c['direction'] = $table['direction'];
         if (isset($attr['DIR']) && $attr['DIR'] != '') {
-            $c['direction'] = \strtolower($attr['DIR']);
+            $c['direction'] = strtolower($attr['DIR']);
         }
         if (isset($properties['DIRECTION'])) {
-            $c['direction'] = \strtolower($properties['DIRECTION']);
+            $c['direction'] = strtolower($properties['DIRECTION']);
         }
         if (!$c['a']) {
             if (isset($c['direction']) && $c['direction'] === 'rtl') {
@@ -218,11 +218,11 @@ class Td extends \WPDeskFIVendor\Mpdf\Tag\Tag
         }
         $c['cellLineStackingStrategy'] = $table['cellLineStackingStrategy'];
         if (isset($properties['LINE-STACKING-STRATEGY'])) {
-            $c['cellLineStackingStrategy'] = \strtolower($properties['LINE-STACKING-STRATEGY']);
+            $c['cellLineStackingStrategy'] = strtolower($properties['LINE-STACKING-STRATEGY']);
         }
         $c['cellLineStackingShift'] = $table['cellLineStackingShift'];
         if (isset($properties['LINE-STACKING-SHIFT'])) {
-            $c['cellLineStackingShift'] = \strtolower($properties['LINE-STACKING-SHIFT']);
+            $c['cellLineStackingShift'] = strtolower($properties['LINE-STACKING-SHIFT']);
         }
         if (isset($properties['TEXT-ROTATE']) && ($properties['TEXT-ROTATE'] || $properties['TEXT-ROTATE'] === '0')) {
             $c['R'] = $properties['TEXT-ROTATE'];
@@ -231,7 +231,7 @@ class Td extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $bord = $this->mpdf->border_details($properties['BORDER']);
             if ($bord['s']) {
                 if (!$this->mpdf->simpleTables) {
-                    $c['border'] = \WPDeskFIVendor\Mpdf\Css\Border::ALL;
+                    $c['border'] = Border::ALL;
                     $c['border_details']['R'] = $bord;
                     $c['border_details']['L'] = $bord;
                     $c['border_details']['T'] = $bord;
@@ -241,7 +241,7 @@ class Td extends \WPDeskFIVendor\Mpdf\Tag\Tag
                     $c['border_details']['T']['dom'] = $this->mpdf->cell_border_dominance_T;
                     $c['border_details']['B']['dom'] = $this->mpdf->cell_border_dominance_B;
                 } elseif ($this->mpdf->simpleTables && $this->mpdf->row == 0 && $this->mpdf->col == 0) {
-                    $table['simple']['border'] = \WPDeskFIVendor\Mpdf\Css\Border::ALL;
+                    $table['simple']['border'] = Border::ALL;
                     $table['simple']['border_details']['R'] = $bord;
                     $table['simple']['border_details']['L'] = $bord;
                     $table['simple']['border_details']['T'] = $bord;
@@ -252,29 +252,29 @@ class Td extends \WPDeskFIVendor\Mpdf\Tag\Tag
         if (!$this->mpdf->simpleTables) {
             if (!empty($properties['BORDER-RIGHT'])) {
                 $c['border_details']['R'] = $this->mpdf->border_details($properties['BORDER-RIGHT']);
-                $this->mpdf->setBorder($c['border'], \WPDeskFIVendor\Mpdf\Css\Border::RIGHT, $c['border_details']['R']['s']);
+                $this->mpdf->setBorder($c['border'], Border::RIGHT, $c['border_details']['R']['s']);
                 $c['border_details']['R']['dom'] = $this->mpdf->cell_border_dominance_R;
             }
             if (!empty($properties['BORDER-LEFT'])) {
                 $c['border_details']['L'] = $this->mpdf->border_details($properties['BORDER-LEFT']);
-                $this->mpdf->setBorder($c['border'], \WPDeskFIVendor\Mpdf\Css\Border::LEFT, $c['border_details']['L']['s']);
+                $this->mpdf->setBorder($c['border'], Border::LEFT, $c['border_details']['L']['s']);
                 $c['border_details']['L']['dom'] = $this->mpdf->cell_border_dominance_L;
             }
             if (!empty($properties['BORDER-BOTTOM'])) {
                 $c['border_details']['B'] = $this->mpdf->border_details($properties['BORDER-BOTTOM']);
-                $this->mpdf->setBorder($c['border'], \WPDeskFIVendor\Mpdf\Css\Border::BOTTOM, $c['border_details']['B']['s']);
+                $this->mpdf->setBorder($c['border'], Border::BOTTOM, $c['border_details']['B']['s']);
                 $c['border_details']['B']['dom'] = $this->mpdf->cell_border_dominance_B;
             }
             if (!empty($properties['BORDER-TOP'])) {
                 $c['border_details']['T'] = $this->mpdf->border_details($properties['BORDER-TOP']);
-                $this->mpdf->setBorder($c['border'], \WPDeskFIVendor\Mpdf\Css\Border::TOP, $c['border_details']['T']['s']);
+                $this->mpdf->setBorder($c['border'], Border::TOP, $c['border_details']['T']['s']);
                 $c['border_details']['T']['dom'] = $this->mpdf->cell_border_dominance_T;
             }
         } elseif ($this->mpdf->simpleTables && $this->mpdf->row == 0 && $this->mpdf->col == 0) {
             if (!empty($properties['BORDER-LEFT'])) {
                 $bord = $this->mpdf->border_details($properties['BORDER-LEFT']);
                 if ($bord['s']) {
-                    $table['simple']['border'] = \WPDeskFIVendor\Mpdf\Css\Border::ALL;
+                    $table['simple']['border'] = Border::ALL;
                 } else {
                     $table['simple']['border'] = 0;
                 }
@@ -293,12 +293,12 @@ class Td extends \WPDeskFIVendor\Mpdf\Tag\Tag
             if ($this->mpdf->col == 0) {
                 $left = $this->mpdf->border_details($table['trborder-left'][$this->mpdf->row]);
                 $c['border_details']['L'] = $left;
-                $this->mpdf->setBorder($c['border'], \WPDeskFIVendor\Mpdf\Css\Border::LEFT, $c['border_details']['L']['s']);
+                $this->mpdf->setBorder($c['border'], Border::LEFT, $c['border_details']['L']['s']);
             }
             $c['border_details']['B'] = $this->mpdf->border_details($table['trborder-bottom'][$this->mpdf->row]);
-            $this->mpdf->setBorder($c['border'], \WPDeskFIVendor\Mpdf\Css\Border::BOTTOM, $c['border_details']['B']['s']);
+            $this->mpdf->setBorder($c['border'], Border::BOTTOM, $c['border_details']['B']['s']);
             $c['border_details']['T'] = $this->mpdf->border_details($table['trborder-top'][$this->mpdf->row]);
-            $this->mpdf->setBorder($c['border'], \WPDeskFIVendor\Mpdf\Css\Border::TOP, $c['border_details']['T']['s']);
+            $this->mpdf->setBorder($c['border'], Border::TOP, $c['border_details']['T']['s']);
         }
         if ($this->mpdf->packTableData && !$this->mpdf->simpleTables) {
             $c['borderbin'] = $this->mpdf->_packCellBorder($c);
@@ -323,19 +323,19 @@ class Td extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $w = $attr['WIDTH'];
         }
         if ($w) {
-            if (\strpos($w, '%') && !$this->mpdf->ignore_table_percents) {
+            if (strpos($w, '%') && !$this->mpdf->ignore_table_percents) {
                 $c['wpercent'] = (float) $w;
-            } elseif (!\strpos($w, '%') && !$this->mpdf->ignore_table_widths) {
+            } elseif (!strpos($w, '%') && !$this->mpdf->ignore_table_widths) {
                 $c['w'] = $this->sizeConverter->convert($w, $this->mpdf->blk[$this->mpdf->blklvl]['inner_width'], $this->mpdf->FontSize, \false);
             }
         }
-        if (isset($properties['HEIGHT']) && !\strpos($properties['HEIGHT'], '%')) {
+        if (isset($properties['HEIGHT']) && !strpos($properties['HEIGHT'], '%')) {
             $c['h'] = $this->sizeConverter->convert($properties['HEIGHT'], $this->mpdf->blk[$this->mpdf->blklvl]['inner_width'], $this->mpdf->FontSize, \false);
-        } elseif (isset($attr['HEIGHT']) && !\strpos($attr['HEIGHT'], '%')) {
+        } elseif (isset($attr['HEIGHT']) && !strpos($attr['HEIGHT'], '%')) {
             $c['h'] = $this->sizeConverter->convert($attr['HEIGHT'], $this->mpdf->blk[$this->mpdf->blklvl]['inner_width'], $this->mpdf->FontSize, \false);
         }
         if (isset($properties['WHITE-SPACE'])) {
-            if (\strtoupper($properties['WHITE-SPACE']) === 'NOWRAP') {
+            if (strtoupper($properties['WHITE-SPACE']) === 'NOWRAP') {
                 $c['nowrap'] = 1;
             }
         }
@@ -385,7 +385,7 @@ class Td extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $this->mpdf->tdbegin = \false;
             // Added for correct calculation of cell column width - otherwise misses the last line if not end </p> etc.
             if (!isset($this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['maxs'])) {
-                if (!\is_array($this->mpdf->cell[$this->mpdf->row][$this->mpdf->col])) {
+                if (!is_array($this->mpdf->cell[$this->mpdf->row][$this->mpdf->col])) {
                     throw new \WPDeskFIVendor\Mpdf\MpdfException('You may have an error in your HTML code e.g. &lt;/td&gt;&lt;/td&gt;');
                 }
                 $this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['maxs'] = $this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['s'];
@@ -395,7 +395,7 @@ class Td extends \WPDeskFIVendor\Mpdf\Tag\Tag
             // Remove last <br> if at end of cell
             $ntb = 0;
             if (isset($this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['textbuffer'])) {
-                $ntb = \count($this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['textbuffer']);
+                $ntb = count($this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['textbuffer']);
             }
             if ($ntb > 1 && $this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['textbuffer'][$ntb - 1][0] === "\n") {
                 unset($this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['textbuffer'][$ntb - 1]);
@@ -403,13 +403,13 @@ class Td extends \WPDeskFIVendor\Mpdf\Tag\Tag
             if ($this->mpdf->tablethead) {
                 $this->mpdf->table[$this->mpdf->tableLevel][$this->mpdf->tbctr[$this->mpdf->tableLevel]]['is_thead'][$this->mpdf->row] = \true;
                 if ($this->mpdf->tableLevel == 1) {
-                    $this->mpdf->table[$this->mpdf->tableLevel][$this->mpdf->tbctr[$this->mpdf->tableLevel]]['headernrows'] = \max($this->mpdf->table[$this->mpdf->tableLevel][$this->mpdf->tbctr[$this->mpdf->tableLevel]]['headernrows'], $this->mpdf->row + 1);
+                    $this->mpdf->table[$this->mpdf->tableLevel][$this->mpdf->tbctr[$this->mpdf->tableLevel]]['headernrows'] = max($this->mpdf->table[$this->mpdf->tableLevel][$this->mpdf->tbctr[$this->mpdf->tableLevel]]['headernrows'], $this->mpdf->row + 1);
                 }
             }
             if ($this->mpdf->tabletfoot) {
                 $this->mpdf->table[$this->mpdf->tableLevel][$this->mpdf->tbctr[$this->mpdf->tableLevel]]['is_tfoot'][$this->mpdf->row] = \true;
                 if ($this->mpdf->tableLevel == 1) {
-                    $this->mpdf->table[$this->mpdf->tableLevel][$this->mpdf->tbctr[$this->mpdf->tableLevel]]['footernrows'] = \max($this->mpdf->table[$this->mpdf->tableLevel][$this->mpdf->tbctr[$this->mpdf->tableLevel]]['footernrows'], $this->mpdf->row + 1 - $this->mpdf->table[$this->mpdf->tableLevel][$this->mpdf->tbctr[$this->mpdf->tableLevel]]['headernrows']);
+                    $this->mpdf->table[$this->mpdf->tableLevel][$this->mpdf->tbctr[$this->mpdf->tableLevel]]['footernrows'] = max($this->mpdf->table[$this->mpdf->tableLevel][$this->mpdf->tbctr[$this->mpdf->tableLevel]]['footernrows'], $this->mpdf->row + 1 - $this->mpdf->table[$this->mpdf->tableLevel][$this->mpdf->tbctr[$this->mpdf->tableLevel]]['headernrows']);
                 }
             }
             $this->mpdf->Reset();

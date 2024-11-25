@@ -12,7 +12,7 @@ class WooCommerce
     /**
      * @return bool
      */
-    public static function is_active() : bool
+    public static function is_active(): bool
     {
         global $woocommerce;
         return $woocommerce instanceof \WooCommerce;
@@ -24,7 +24,7 @@ class WooCommerce
      *
      * @return string[]
      */
-    public static function get_european_union_countries($type = '') : array
+    public static function get_european_union_countries($type = ''): array
     {
         $countries = ['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'HU', 'HR', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK'];
         if ('eu_vat' === $type) {
@@ -34,7 +34,7 @@ class WooCommerce
         /**
          * @ignore WooCommerce hook.
          */
-        return \apply_filters('woocommerce_european_union_countries', $countries, $type);
+        return apply_filters('woocommerce_european_union_countries', $countries, $type);
     }
     /**
      * @param \WC_Order $order
@@ -63,7 +63,7 @@ class WooCommerce
      */
     public static function update_order_meta($order_id, $meta_key, $meta_value)
     {
-        $order = \wc_get_order($order_id);
+        $order = wc_get_order($order_id);
         $order->update_meta_data($meta_key, $meta_value);
         $order->save();
     }

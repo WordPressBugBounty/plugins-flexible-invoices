@@ -16,14 +16,14 @@ class SizeConverter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
      * @var \Psr\Log\LoggerInterface
      */
     private $logger;
-    public function __construct($dpi, $defaultFontSize, \WPDeskFIVendor\Mpdf\Mpdf $mpdf, \WPDeskFIVendor\Psr\Log\LoggerInterface $logger)
+    public function __construct($dpi, $defaultFontSize, Mpdf $mpdf, LoggerInterface $logger)
     {
         $this->dpi = $dpi;
         $this->defaultFontSize = $defaultFontSize;
         $this->mpdf = $mpdf;
         $this->logger = $logger;
     }
-    public function setLogger(\WPDeskFIVendor\Psr\Log\LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
@@ -41,11 +41,11 @@ class SizeConverter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
      */
     public function convert($size = 5, $maxsize = 0, $fontsize = \false, $usefontsize = \true)
     {
-        $size = \trim(\strtolower($size));
-        $res = \preg_match('/^(?P<size>[-0-9.,]+([eE]\\-?[0-9]+)?)?(?P<unit>[%a-z-]+)?$/', $size, $parts);
+        $size = trim(strtolower($size));
+        $res = preg_match('/^(?P<size>[-0-9.,]+([eE]\-?[0-9]+)?)?(?P<unit>[%a-z-]+)?$/', $size, $parts);
         if (!$res) {
             // ignore definition
-            $this->logger->warning(\sprintf('Invalid size representation "%s"', $size), ['context' => \WPDeskFIVendor\Mpdf\Log\Context::CSS_SIZE_CONVERSION]);
+            $this->logger->warning(sprintf('Invalid size representation "%s"', $size), ['context' => LogContext::CSS_SIZE_CONVERSION]);
         }
         $unit = !empty($parts['unit']) ? $parts['unit'] : null;
         $size = !empty($parts['size']) ? (float) $parts['size'] : 0.0;
@@ -57,10 +57,10 @@ class SizeConverter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 $size *= 10;
                 break;
             case 'pt':
-                $size *= 1 / \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+                $size *= 1 / Mpdf::SCALE;
                 break;
             case 'rem':
-                $size *= $this->mpdf->default_font_size / \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+                $size *= $this->mpdf->default_font_size / Mpdf::SCALE;
                 break;
             case '%':
                 if ($fontsize && $usefontsize) {

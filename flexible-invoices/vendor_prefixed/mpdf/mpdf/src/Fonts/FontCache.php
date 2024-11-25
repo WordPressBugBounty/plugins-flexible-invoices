@@ -7,7 +7,7 @@ class FontCache
 {
     private $memoryCache = [];
     private $cache;
-    public function __construct(\WPDeskFIVendor\Mpdf\Cache $cache)
+    public function __construct(Cache $cache)
     {
         $this->cache = $cache;
     }
@@ -32,7 +32,7 @@ class FontCache
         if (isset($this->memoryCache[$filename])) {
             return $this->memoryCache[$filename];
         }
-        $this->memoryCache[$filename] = \json_decode($this->load($filename), \true);
+        $this->memoryCache[$filename] = json_decode($this->load($filename), \true);
         return $this->memoryCache[$filename];
     }
     public function write($filename, $data)
@@ -45,7 +45,7 @@ class FontCache
     }
     public function jsonWrite($filename, $data)
     {
-        return $this->cache->write($filename, \json_encode($data));
+        return $this->cache->write($filename, json_encode($data));
     }
     public function remove($filename)
     {

@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class Pre extends \WPDeskFIVendor\Mpdf\Tag\BlockTag
+class Pre extends BlockTag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {

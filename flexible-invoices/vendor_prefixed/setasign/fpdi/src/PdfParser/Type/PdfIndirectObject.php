@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\Type;
@@ -15,7 +15,7 @@ use WPDeskFIVendor\setasign\Fpdi\PdfParser\Tokenizer;
 /**
  * Class representing an indirect object
  */
-class PdfIndirectObject extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
+class PdfIndirectObject extends PdfType
 {
     /**
      * Parses an indirect object from a tokenizer, parser and stream-reader.
@@ -28,7 +28,7 @@ class PdfIndirectObject extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\Pdf
      * @return self|false
      * @throws PdfTypeException
      */
-    public static function parse($objectNumber, $objectGenerationNumber, \WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParser $parser, \WPDeskFIVendor\setasign\Fpdi\PdfParser\Tokenizer $tokenizer, \WPDeskFIVendor\setasign\Fpdi\PdfParser\StreamReader $reader)
+    public static function parse($objectNumber, $objectGenerationNumber, PdfParser $parser, Tokenizer $tokenizer, StreamReader $reader)
     {
         $value = $parser->readValue();
         if ($value === \false) {
@@ -36,7 +36,7 @@ class PdfIndirectObject extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\Pdf
         }
         $nextToken = $tokenizer->getNextToken();
         if ($nextToken === 'stream') {
-            $value = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfStream::parse($value, $reader, $parser);
+            $value = PdfStream::parse($value, $reader, $parser);
         } elseif ($nextToken !== \false) {
             $tokenizer->pushStack($nextToken);
         }
@@ -54,7 +54,7 @@ class PdfIndirectObject extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\Pdf
      * @param PdfType $value
      * @return self
      */
-    public static function create($objectNumber, $generationNumber, \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType $value)
+    public static function create($objectNumber, $generationNumber, PdfType $value)
     {
         $v = new self();
         $v->objectNumber = (int) $objectNumber;
@@ -71,7 +71,7 @@ class PdfIndirectObject extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\Pdf
      */
     public static function ensure($indirectObject)
     {
-        return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::ensureType(self::class, $indirectObject, 'Indirect object expected.');
+        return PdfType::ensureType(self::class, $indirectObject, 'Indirect object expected.');
     }
     /**
      * The object number.

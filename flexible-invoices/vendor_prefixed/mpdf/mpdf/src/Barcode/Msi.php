@@ -36,11 +36,11 @@ class Msi extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WPDes
         $checkdigit = '';
         if ($checksum) {
             // add checksum
-            $clen = \strlen($code);
+            $clen = strlen($code);
             $p = 2;
             $check = 0;
             for ($i = $clen - 1; $i >= 0; --$i) {
-                $check += \hexdec($code[$i]) * $p;
+                $check += hexdec($code[$i]) * $p;
                 ++$p;
                 if ($p > 7) {
                     $p = 2;
@@ -55,12 +55,12 @@ class Msi extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WPDes
         }
         $seq = '110';
         // left guard
-        $clen = \strlen($code);
+        $clen = strlen($code);
         for ($i = 0; $i < $clen; ++$i) {
             $digit = $code[$i];
             if (!isset($chr[$digit])) {
                 // invalid character
-                throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid character "%s" in MSI barcode value "%s"', $digit, $code));
+                throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid character "%s" in MSI barcode value "%s"', $digit, $code));
             }
             $seq .= $chr[$digit];
         }

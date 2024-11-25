@@ -35,7 +35,7 @@ class Code11 extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WP
         $chr = ['0' => '111121', '1' => '211121', '2' => '121121', '3' => '221111', '4' => '112121', '5' => '212111', '6' => '122111', '7' => '111221', '8' => '211211', '9' => '211111', '-' => '112111', 'S' => '112211'];
         $bararray = ['code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => []];
         $k = 0;
-        $len = \strlen($code);
+        $len = strlen($code);
         // calculate check digit C
         $p = 1;
         $check = 0;
@@ -84,7 +84,7 @@ class Code11 extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WP
         $len += 3;
         for ($i = 0; $i < $len; ++$i) {
             if (!isset($chr[$code[$i]])) {
-                throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid character "%s" in CODE11 barcode value "%s"', $code[$i], $code));
+                throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid character "%s" in CODE11 barcode value "%s"', $code[$i], $code));
             }
             $seq = $chr[$code[$i]];
             for ($j = 0; $j < 6; ++$j) {

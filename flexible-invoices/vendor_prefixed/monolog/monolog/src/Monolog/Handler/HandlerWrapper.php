@@ -30,89 +30,89 @@ use WPDeskFIVendor\Monolog\Formatter\FormatterInterface;
  *
  * @author Alexey Karapetov <alexey@karapetov.com>
  */
-class HandlerWrapper implements \WPDeskFIVendor\Monolog\Handler\HandlerInterface, \WPDeskFIVendor\Monolog\Handler\ProcessableHandlerInterface, \WPDeskFIVendor\Monolog\Handler\FormattableHandlerInterface, \WPDeskFIVendor\Monolog\ResettableInterface
+class HandlerWrapper implements HandlerInterface, ProcessableHandlerInterface, FormattableHandlerInterface, ResettableInterface
 {
     /**
      * @var HandlerInterface
      */
     protected $handler;
-    public function __construct(\WPDeskFIVendor\Monolog\Handler\HandlerInterface $handler)
+    public function __construct(HandlerInterface $handler)
     {
         $this->handler = $handler;
     }
     /**
      * {@inheritDoc}
      */
-    public function isHandling(array $record) : bool
+    public function isHandling(array $record): bool
     {
         return $this->handler->isHandling($record);
     }
     /**
      * {@inheritDoc}
      */
-    public function handle(array $record) : bool
+    public function handle(array $record): bool
     {
         return $this->handler->handle($record);
     }
     /**
      * {@inheritDoc}
      */
-    public function handleBatch(array $records) : void
+    public function handleBatch(array $records): void
     {
         $this->handler->handleBatch($records);
     }
     /**
      * {@inheritDoc}
      */
-    public function close() : void
+    public function close(): void
     {
         $this->handler->close();
     }
     /**
      * {@inheritDoc}
      */
-    public function pushProcessor(callable $callback) : \WPDeskFIVendor\Monolog\Handler\HandlerInterface
+    public function pushProcessor(callable $callback): HandlerInterface
     {
-        if ($this->handler instanceof \WPDeskFIVendor\Monolog\Handler\ProcessableHandlerInterface) {
+        if ($this->handler instanceof ProcessableHandlerInterface) {
             $this->handler->pushProcessor($callback);
             return $this;
         }
-        throw new \LogicException('The wrapped handler does not implement ' . \WPDeskFIVendor\Monolog\Handler\ProcessableHandlerInterface::class);
+        throw new \LogicException('The wrapped handler does not implement ' . ProcessableHandlerInterface::class);
     }
     /**
      * {@inheritDoc}
      */
-    public function popProcessor() : callable
+    public function popProcessor(): callable
     {
-        if ($this->handler instanceof \WPDeskFIVendor\Monolog\Handler\ProcessableHandlerInterface) {
+        if ($this->handler instanceof ProcessableHandlerInterface) {
             return $this->handler->popProcessor();
         }
-        throw new \LogicException('The wrapped handler does not implement ' . \WPDeskFIVendor\Monolog\Handler\ProcessableHandlerInterface::class);
+        throw new \LogicException('The wrapped handler does not implement ' . ProcessableHandlerInterface::class);
     }
     /**
      * {@inheritDoc}
      */
-    public function setFormatter(\WPDeskFIVendor\Monolog\Formatter\FormatterInterface $formatter) : \WPDeskFIVendor\Monolog\Handler\HandlerInterface
+    public function setFormatter(FormatterInterface $formatter): HandlerInterface
     {
-        if ($this->handler instanceof \WPDeskFIVendor\Monolog\Handler\FormattableHandlerInterface) {
+        if ($this->handler instanceof FormattableHandlerInterface) {
             $this->handler->setFormatter($formatter);
             return $this;
         }
-        throw new \LogicException('The wrapped handler does not implement ' . \WPDeskFIVendor\Monolog\Handler\FormattableHandlerInterface::class);
+        throw new \LogicException('The wrapped handler does not implement ' . FormattableHandlerInterface::class);
     }
     /**
      * {@inheritDoc}
      */
-    public function getFormatter() : \WPDeskFIVendor\Monolog\Formatter\FormatterInterface
+    public function getFormatter(): FormatterInterface
     {
-        if ($this->handler instanceof \WPDeskFIVendor\Monolog\Handler\FormattableHandlerInterface) {
+        if ($this->handler instanceof FormattableHandlerInterface) {
             return $this->handler->getFormatter();
         }
-        throw new \LogicException('The wrapped handler does not implement ' . \WPDeskFIVendor\Monolog\Handler\FormattableHandlerInterface::class);
+        throw new \LogicException('The wrapped handler does not implement ' . FormattableHandlerInterface::class);
     }
     public function reset()
     {
-        if ($this->handler instanceof \WPDeskFIVendor\Monolog\ResettableInterface) {
+        if ($this->handler instanceof ResettableInterface) {
             $this->handler->reset();
         }
     }

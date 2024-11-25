@@ -27,27 +27,25 @@ class DecToHebrew
             return '0';
         }
         // Otherwise, while I is greater than 0 and there are elements left in the glyph list:
-        $additiveNumsCount = \count($additive_nums);
+        $additiveNumsCount = count($additive_nums);
         for ($t = 0; $t < $additiveNumsCount; $t++) {
             // Pop the first additive tuple from the glyph list. This is the current tuple.
             $ct = $additive_nums[$t];
             // Append the current tuple's counter glyph to S x floor( I / current tuple's weight ) times (this may be 0).
-            $n = \floor($i / $ct);
+            $n = floor($i / $ct);
             for ($j = 0; $j < $n; $j++) {
-                if (\is_array($additive_glyphs[$t])) {
+                if (is_array($additive_glyphs[$t])) {
                     foreach ($additive_glyphs[$t] as $ag) {
                         if ($reverse) {
-                            $s = \WPDeskFIVendor\Mpdf\Utils\UtfString::code2utf($ag) . $s;
+                            $s = UtfString::code2utf($ag) . $s;
                         } else {
-                            $s .= \WPDeskFIVendor\Mpdf\Utils\UtfString::code2utf($ag);
+                            $s .= UtfString::code2utf($ag);
                         }
                     }
+                } else if ($reverse) {
+                    $s = UtfString::code2utf($additive_glyphs[$t]) . $s;
                 } else {
-                    if ($reverse) {
-                        $s = \WPDeskFIVendor\Mpdf\Utils\UtfString::code2utf($additive_glyphs[$t]) . $s;
-                    } else {
-                        $s .= \WPDeskFIVendor\Mpdf\Utils\UtfString::code2utf($additive_glyphs[$t]);
-                    }
+                    $s .= UtfString::code2utf($additive_glyphs[$t]);
                 }
                 $i -= $ct * $n;
             }

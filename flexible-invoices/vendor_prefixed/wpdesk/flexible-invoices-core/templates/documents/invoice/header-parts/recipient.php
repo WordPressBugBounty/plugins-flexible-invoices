@@ -57,13 +57,13 @@ if ($show_recipient_type !== 'none') {
             if (!empty($recipient->get_state())) {
                 ?>
 				<tr><td><?php 
-                echo \esc_html(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Countries::get_country_state_label($recipient->get_state(), $recipient->get_country()));
+                echo \esc_html(Countries::get_country_state_label($recipient->get_state(), $recipient->get_country()));
                 ?></td></tr>
 			<?php 
             }
             ?>
             <tr><td><?php 
-            echo \esc_html(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Countries::get_country_label($recipient->get_country()));
+            echo \esc_html(Countries::get_country_label($recipient->get_country()));
             ?></td></tr>
         <?php 
         }

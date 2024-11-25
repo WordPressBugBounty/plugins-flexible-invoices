@@ -8,7 +8,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Containers\MetaConta
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Integration
  */
-class MetaPostContainer implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Containers\MetaContainer
+class MetaPostContainer implements MetaContainer
 {
     /**
      * @var int
@@ -28,7 +28,7 @@ class MetaPostContainer implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoic
      */
     public function get($id)
     {
-        return \get_post_meta($this->post_id, $id, \true);
+        return get_post_meta($this->post_id, $id, \true);
     }
     /**
      * @param string $name
@@ -54,18 +54,18 @@ class MetaPostContainer implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoic
     public function set($id, $value, bool $add = \false)
     {
         if ($add) {
-            \add_post_meta($this->post_id, $id, $value);
+            add_post_meta($this->post_id, $id, $value);
         }
-        \update_post_meta($this->post_id, $id, $value);
+        update_post_meta($this->post_id, $id, $value);
     }
     /**
      * @param string $id Meta key.
      *
      * @return bool
      */
-    public function has($id) : bool
+    public function has($id): bool
     {
-        $value = \get_post_meta($this->post_id, $id, \true);
+        $value = get_post_meta($this->post_id, $id, \true);
         return !empty($value);
     }
     /**
@@ -73,8 +73,8 @@ class MetaPostContainer implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoic
      *
      * @return bool
      */
-    public function delete($id) : bool
+    public function delete($id): bool
     {
-        return \delete_post_meta($this->post_id, $id);
+        return delete_post_meta($this->post_id, $id);
     }
 }

@@ -29,19 +29,19 @@ class ItemFactory
     /**
      * @return DocumentItem
      */
-    public function get_item() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\DocumentItem
+    public function get_item(): DocumentItem
     {
         switch ($this->type) {
             case 'shipping':
-                return new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\ShippingItem();
+                return new ShippingItem();
             case 'fee':
-                return new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\FeeItem();
+                return new FeeItem();
             case 'discount':
-                return new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\DiscountItem();
+                return new DiscountItem();
             case 'line_item':
-                return new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\WooProductItem();
+                return new WooProductItem();
             default:
-                return new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\ProductItem();
+                return new ProductItem();
         }
     }
 }

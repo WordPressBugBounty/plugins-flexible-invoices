@@ -10,14 +10,14 @@ use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\WooCommerce
  */
-class DocumentPostMeta implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+class DocumentPostMeta implements Hookable
 {
     /**
      * Fires hooks
      */
     public function hooks()
     {
-        \add_action('fi/core/document/save', [$this, 'before_save_action'], 80, 2);
+        add_action('fi/core/document/save', [$this, 'before_save_action'], 80, 2);
     }
     /**
      *
@@ -26,7 +26,7 @@ class DocumentPostMeta implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Ho
      *
      * @internal You should not use this directly from another application
      */
-    public function before_save_action(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document $document, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\MetaPostContainer $meta)
+    public function before_save_action(Document $document, MetaPostContainer $meta)
     {
         if (!empty($_POST['add_order_id'])) {
             // phpcs:ignore

@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class Columns extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class Columns extends Tag
 {
     /**
      * @param string $tag
@@ -11,7 +11,7 @@ class Columns extends \WPDeskFIVendor\Mpdf\Tag\Tag
     private function getTagInstance($tag)
     {
         $className = \WPDeskFIVendor\Mpdf\Tag::getTagClassName($tag);
-        if (\class_exists($className)) {
+        if (class_exists($className)) {
             return new $className($this->mpdf, $this->cache, $this->cssManager, $this->form, $this->otl, $this->tableOfContents, $this->sizeConverter, $this->colorConverter, $this->imageProcessor, $this->languageToFont);
         }
         return null;

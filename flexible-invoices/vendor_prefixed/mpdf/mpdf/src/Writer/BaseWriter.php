@@ -16,7 +16,7 @@ final class BaseWriter
      * @var \Mpdf\Pdf\Protection
      */
     private $protection;
-    public function __construct(\WPDeskFIVendor\Mpdf\Mpdf $mpdf, \WPDeskFIVendor\Mpdf\Pdf\Protection $protection)
+    public function __construct(Mpdf $mpdf, Protection $protection)
     {
         $this->mpdf = $mpdf;
         $this->protection = $protection;
@@ -43,7 +43,7 @@ final class BaseWriter
         }
         // Begin a new object
         if (!$onlynewobj) {
-            $this->mpdf->offsets[$obj_id] = \strlen($this->mpdf->buffer);
+            $this->mpdf->offsets[$obj_id] = strlen($this->mpdf->buffer);
             $this->write($obj_id . ' 0 obj');
             $this->mpdf->currentObjectNumber = $obj_id;
             // for later use with encryption
@@ -69,13 +69,13 @@ final class BaseWriter
     // Converts UTF-8 strings to UTF16-BE.
     public function utf8ToUtf16BigEndian($str, $setbom = \true)
     {
-        if ($this->mpdf->checkSIP && \preg_match("/([\\x{20000}-\\x{2FFFF}])/u", $str)) {
-            if (!\in_array($this->mpdf->currentfontfamily, ['gb', 'big5', 'sjis', 'uhc', 'gbB', 'big5B', 'sjisB', 'uhcB', 'gbI', 'big5I', 'sjisI', 'uhcI', 'gbBI', 'big5BI', 'sjisBI', 'uhcBI'])) {
-                $str = \preg_replace("/[\\x{20000}-\\x{2FFFF}]/u", \chr(0), $str);
+        if ($this->mpdf->checkSIP && preg_match("/([\\x{20000}-\\x{2FFFF}])/u", $str)) {
+            if (!in_array($this->mpdf->currentfontfamily, ['gb', 'big5', 'sjis', 'uhc', 'gbB', 'big5B', 'sjisB', 'uhcB', 'gbI', 'big5I', 'sjisI', 'uhcI', 'gbBI', 'big5BI', 'sjisBI', 'uhcBI'])) {
+                $str = preg_replace("/[\\x{20000}-\\x{2FFFF}]/u", chr(0), $str);
             }
         }
-        if ($this->mpdf->checkSMP && \preg_match("/([\\x{10000}-\\x{1FFFF}])/u", $str)) {
-            $str = \preg_replace("/[\\x{10000}-\\x{1FFFF}]/u", \chr(0), $str);
+        if ($this->mpdf->checkSMP && preg_match("/([\\x{10000}-\\x{1FFFF}])/u", $str)) {
+            $str = preg_replace("/[\\x{10000}-\\x{1FFFF}]/u", chr(0), $str);
         }
         $outstr = '';
         // string to be returned
@@ -83,16 +83,16 @@ final class BaseWriter
             $outstr .= "\xfe\xff";
             // Byte Order Mark (BOM)
         }
-        $outstr .= \mb_convert_encoding($str, 'UTF-16BE', 'UTF-8');
+        $outstr .= mb_convert_encoding($str, 'UTF-16BE', 'UTF-8');
         return $outstr;
     }
     public function escape($s)
     {
-        return \strtr($s, [')' => '\\)', '(' => '\\(', '\\' => '\\\\', \chr(13) => '\\r']);
+        return strtr($s, [')' => '\)', '(' => '\(', '\\' => '\\\\', chr(13) => '\r']);
     }
     public function escapeSlashes($s)
     {
-        return \strtr($s, ['/' => '#2F']);
+        return strtr($s, ['/' => '#2F']);
     }
     /**
      * Un-escapes a PDF string
@@ -103,7 +103,7 @@ final class BaseWriter
     public function unescape($s)
     {
         $out = '';
-        for ($count = 0, $n = \strlen($s); $count < $n; $count++) {
+        for ($count = 0, $n = strlen($s); $count < $n; $count++) {
             if ($count === $n - 1 || $s[$count] !== '\\') {
                 $out .= $s[$count];
             } else {
@@ -114,19 +114,19 @@ final class BaseWriter
                         $out .= $s[$count];
                         break;
                     case 'f':
-                        $out .= \chr(0xc);
+                        $out .= chr(0xc);
                         break;
                     case 'b':
-                        $out .= \chr(0x8);
+                        $out .= chr(0x8);
                         break;
                     case 't':
-                        $out .= \chr(0x9);
+                        $out .= chr(0x9);
                         break;
                     case 'r':
-                        $out .= \chr(0xd);
+                        $out .= chr(0xd);
                         break;
                     case 'n':
-                        $out .= \chr(0xa);
+                        $out .= chr(0xa);
                         break;
                     case "\r":
                         if ($count !== $n - 1 && $s[$count + 1] === "\n") {
@@ -137,18 +137,18 @@ final class BaseWriter
                         break;
                     default:
                         // Octal-Values
-                        $ord = \ord($s[$count]);
-                        if ($ord >= \ord('0') && $ord <= \ord('9')) {
+                        $ord = ord($s[$count]);
+                        if ($ord >= ord('0') && $ord <= ord('9')) {
                             $oct = '' . $s[$count];
-                            $ord = \ord($s[$count + 1]);
-                            if ($ord >= \ord('0') && $ord <= \ord('9')) {
+                            $ord = ord($s[$count + 1]);
+                            if ($ord >= ord('0') && $ord <= ord('9')) {
                                 $oct .= $s[++$count];
-                                $ord = \ord($s[$count + 1]);
-                                if ($ord >= \ord('0') && $ord <= \ord('9')) {
+                                $ord = ord($s[$count + 1]);
+                                if ($ord >= ord('0') && $ord <= ord('9')) {
                                     $oct .= $s[++$count];
                                 }
                             }
-                            $out .= \chr(\octdec($oct));
+                            $out .= chr(octdec($oct));
                         } else {
                             $out .= $s[$count];
                         }
@@ -166,16 +166,16 @@ final class BaseWriter
             // Images sent from Image() or
             // later sent as write($textto) in printbuffer
             // Line()
-            if (\preg_match('/q \\d+\\.\\d\\d+ 0 0 (\\d+\\.\\d\\d+) \\d+\\.\\d\\d+ \\d+\\.\\d\\d+ cm \\/(I|FO)\\d+ Do Q/', $s, $m)) {
+            if (preg_match('/q \d+\.\d\d+ 0 0 (\d+\.\d\d+) \d+\.\d\d+ \d+\.\d\d+ cm \/(I|FO)\d+ Do Q/', $s, $m)) {
                 // Image data
-                $h = $m[1] / \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+                $h = $m[1] / Mpdf::SCALE;
                 // Update/overwrite the lowest bottom of printing y value for a column
                 $this->mpdf->ColDetails[$this->mpdf->CurrCol]['bottom_margin'] = $this->mpdf->y + $h;
-            } elseif ($this->mpdf->tableLevel > 0 && \preg_match('/\\d+\\.\\d\\d+ \\d+\\.\\d\\d+ \\d+\\.\\d\\d+ ([\\-]{0,1}\\d+\\.\\d\\d+) re/', $s, $m)) {
+            } elseif ($this->mpdf->tableLevel > 0 && preg_match('/\d+\.\d\d+ \d+\.\d\d+ \d+\.\d\d+ ([\-]{0,1}\d+\.\d\d+) re/', $s, $m)) {
                 // Rect in table
-                $h = $m[1] / \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+                $h = $m[1] / Mpdf::SCALE;
                 // Update/overwrite the lowest bottom of printing y value for a column
-                $this->mpdf->ColDetails[$this->mpdf->CurrCol]['bottom_margin'] = \max($this->mpdf->ColDetails[$this->mpdf->CurrCol]['bottom_margin'], $this->mpdf->y + $h);
+                $this->mpdf->ColDetails[$this->mpdf->CurrCol]['bottom_margin'] = max($this->mpdf->ColDetails[$this->mpdf->CurrCol]['bottom_margin'], $this->mpdf->y + $h);
             } elseif (isset($this->mpdf->ColDetails[$this->mpdf->CurrCol]['bottom_margin'])) {
                 $h = $this->mpdf->ColDetails[$this->mpdf->CurrCol]['bottom_margin'] - $this->mpdf->y;
             } else {

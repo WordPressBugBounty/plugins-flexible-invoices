@@ -17,7 +17,7 @@ class WPMLFieldDecorator
      * @var BasicField
      */
     private $field;
-    public function __construct(\WPDeskFIVendor\WPDesk\Forms\Field\BasicField $field)
+    public function __construct(BasicField $field)
     {
         $this->field = $field;
     }
@@ -28,7 +28,7 @@ class WPMLFieldDecorator
      */
     public function get_field()
     {
-        if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Translator::is_default_language()) {
+        if (Translator::is_default_language()) {
             return $this->field;
         } else {
             $this->field->set_disabled();

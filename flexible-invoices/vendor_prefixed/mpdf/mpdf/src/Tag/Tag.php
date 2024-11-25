@@ -57,7 +57,7 @@ abstract class Tag
      */
     protected $languageToFont;
     const ALIGN = ['left' => 'L', 'center' => 'C', 'right' => 'R', 'top' => 'T', 'text-top' => 'TT', 'middle' => 'M', 'baseline' => 'BS', 'bottom' => 'B', 'text-bottom' => 'TB', 'justify' => 'J'];
-    public function __construct(\WPDeskFIVendor\Mpdf\Mpdf $mpdf, \WPDeskFIVendor\Mpdf\Cache $cache, \WPDeskFIVendor\Mpdf\CssManager $cssManager, \WPDeskFIVendor\Mpdf\Form $form, \WPDeskFIVendor\Mpdf\Otl $otl, \WPDeskFIVendor\Mpdf\TableOfContents $tableOfContents, \WPDeskFIVendor\Mpdf\SizeConverter $sizeConverter, \WPDeskFIVendor\Mpdf\Color\ColorConverter $colorConverter, \WPDeskFIVendor\Mpdf\Image\ImageProcessor $imageProcessor, \WPDeskFIVendor\Mpdf\Language\LanguageToFontInterface $languageToFont)
+    public function __construct(Mpdf $mpdf, Cache $cache, CssManager $cssManager, Form $form, Otl $otl, TableOfContents $tableOfContents, SizeConverter $sizeConverter, ColorConverter $colorConverter, ImageProcessor $imageProcessor, LanguageToFontInterface $languageToFont)
     {
         $this->mpdf = $mpdf;
         $this->cache = $cache;
@@ -72,14 +72,14 @@ abstract class Tag
     }
     public function getTagName()
     {
-        $tag = \get_class($this);
-        return \strtoupper(\str_replace('WPDeskFIVendor\Mpdf\Tag\\', '', $tag));
+        $tag = get_class($this);
+        return strtoupper(str_replace('WPDeskFIVendor\Mpdf\Tag\\', '', $tag));
     }
     protected function getAlign($property)
     {
-        $property = \strtolower($property);
-        return \array_key_exists($property, self::ALIGN) ? self::ALIGN[$property] : '';
+        $property = strtolower($property);
+        return array_key_exists($property, self::ALIGN) ? self::ALIGN[$property] : '';
     }
-    public abstract function open($attr, &$ahtml, &$ihtml);
-    public abstract function close(&$ahtml, &$ihtml);
+    abstract public function open($attr, &$ahtml, &$ihtml);
+    abstract public function close(&$ahtml, &$ihtml);
 }

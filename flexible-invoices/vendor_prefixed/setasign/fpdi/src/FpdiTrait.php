@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi;
@@ -87,7 +87,7 @@ trait FpdiTrait
      */
     public function cleanUp($allReaders = \false)
     {
-        $readers = $allReaders ? \array_keys($this->readers) : $this->createdReaders;
+        $readers = $allReaders ? array_keys($this->readers) : $this->createdReaders;
         foreach ($readers as $id) {
             $this->readers[$id]->getParser()->getStreamReader()->cleanUp();
             unset($this->readers[$id]);
@@ -113,17 +113,17 @@ trait FpdiTrait
      * @param array $parserParams Individual parameters passed to the parser instance.
      * @return PdfParser|FpdiPdfParser
      */
-    protected function getPdfParserInstance(\WPDeskFIVendor\setasign\Fpdi\PdfParser\StreamReader $streamReader, array $parserParams = [])
+    protected function getPdfParserInstance(StreamReader $streamReader, array $parserParams = [])
     {
         // note: if you get an exception here - turn off errors/warnings on not found classes for your autoloader.
         // psr-4 (https://www.php-fig.org/psr/psr-4/) says: Autoloader implementations MUST NOT throw
         // exceptions, MUST NOT raise errors of any level, and SHOULD NOT return a value.
         /** @noinspection PhpUndefinedClassInspection */
-        if (\class_exists(\WPDeskFIVendor\setasign\FpdiPdfParser\PdfParser\PdfParser::class)) {
+        if (\class_exists(FpdiPdfParser::class)) {
             /** @noinspection PhpUndefinedClassInspection */
-            return new \WPDeskFIVendor\setasign\FpdiPdfParser\PdfParser\PdfParser($streamReader, $parserParams);
+            return new FpdiPdfParser($streamReader, $parserParams);
         }
-        return new \WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParser($streamReader);
+        return new PdfParser($streamReader);
     }
     /**
      * Get an unique reader id by the $file parameter.
@@ -152,14 +152,14 @@ trait FpdiTrait
             return $id;
         }
         if (\is_resource($file)) {
-            $streamReader = new \WPDeskFIVendor\setasign\Fpdi\PdfParser\StreamReader($file);
+            $streamReader = new StreamReader($file);
         } elseif (\is_string($file)) {
-            $streamReader = \WPDeskFIVendor\setasign\Fpdi\PdfParser\StreamReader::createByFile($file);
+            $streamReader = StreamReader::createByFile($file);
             $this->createdReaders[] = $id;
         } else {
             $streamReader = $file;
         }
-        $reader = new \WPDeskFIVendor\setasign\Fpdi\PdfReader\PdfReader($this->getPdfParserInstance($streamReader, $parserParams));
+        $reader = new PdfReader($this->getPdfParserInstance($streamReader, $parserParams));
         /** @noinspection OffsetOperationsInspection */
         $this->readers[$id] = $reader;
         return $id;
@@ -223,7 +223,7 @@ trait FpdiTrait
      * @throws PdfReaderException
      * @see PageBoundaries
      */
-    public function importPage($pageNumber, $box = \WPDeskFIVendor\setasign\Fpdi\PdfReader\PageBoundaries::CROP_BOX, $groupXObject = \true, $importExternalLinks = \false)
+    public function importPage($pageNumber, $box = PageBoundaries::CROP_BOX, $groupXObject = \true, $importExternalLinks = \false)
     {
         if ($this->currentReaderId === null) {
             throw new \BadMethodCallException('No reader initiated. Call setSourceFile() first.');
@@ -233,7 +233,7 @@ trait FpdiTrait
         $pageId .= '|' . $pageNumber . '|' . ($groupXObject ? '1' : '0') . '|' . ($importExternalLinks ? '1' : '0');
         // for backwards compatibility with FPDI 1
         $box = \ltrim($box, '/');
-        if (!\WPDeskFIVendor\setasign\Fpdi\PdfReader\PageBoundaries::isValidName($box)) {
+        if (!PageBoundaries::isValidName($box)) {
             throw new \InvalidArgumentException(\sprintf('Box name is invalid: "%s"', $box));
         }
         $pageId .= '|' . $box;
@@ -244,16 +244,16 @@ trait FpdiTrait
         $page = $reader->getPage($pageNumber);
         $bbox = $page->getBoundary($box);
         if ($bbox === \false) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfReader\PdfReaderException(\sprintf("Page doesn't have a boundary box (%s).", $box), \WPDeskFIVendor\setasign\Fpdi\PdfReader\PdfReaderException::MISSING_DATA);
+            throw new PdfReaderException(\sprintf("Page doesn't have a boundary box (%s).", $box), PdfReaderException::MISSING_DATA);
         }
-        $dict = new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary();
-        $dict->value['Type'] = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfName::create('XObject');
-        $dict->value['Subtype'] = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfName::create('Form');
-        $dict->value['FormType'] = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create(1);
+        $dict = new PdfDictionary();
+        $dict->value['Type'] = PdfName::create('XObject');
+        $dict->value['Subtype'] = PdfName::create('Form');
+        $dict->value['FormType'] = PdfNumeric::create(1);
         $dict->value['BBox'] = $bbox->toPdfArray();
         if ($groupXObject) {
             $this->setMinPdfVersion('1.4');
-            $dict->value['Group'] = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::create(['Type' => \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfName::create('Group'), 'S' => \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfName::create('Transparency')]);
+            $dict->value['Group'] = PdfDictionary::create(['Type' => PdfName::create('Group'), 'S' => PdfName::create('Transparency')]);
         }
         $resources = $page->getAttribute('Resources');
         if ($resources !== null) {
@@ -291,43 +291,43 @@ trait FpdiTrait
         }
         // we need to rotate/translate
         if ($a != 1 || $b != 0 || $c != 0 || $d != 1 || $e != 0 || $f != 0) {
-            $dict->value['Matrix'] = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfArray::create([\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create($a), \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create($b), \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create($c), \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create($d), \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create($e), \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create($f)]);
+            $dict->value['Matrix'] = PdfArray::create([PdfNumeric::create($a), PdfNumeric::create($b), PdfNumeric::create($c), PdfNumeric::create($d), PdfNumeric::create($e), PdfNumeric::create($f)]);
         }
         // try to use the existing content stream
         $pageDict = $page->getPageDictionary();
         try {
-            $contentsObject = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($pageDict, 'Contents'), $reader->getParser(), \true);
-            $contents = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve($contentsObject, $reader->getParser());
+            $contentsObject = PdfType::resolve(PdfDictionary::get($pageDict, 'Contents'), $reader->getParser(), \true);
+            $contents = PdfType::resolve($contentsObject, $reader->getParser());
             // just copy the stream reference if it is only a single stream
-            if (($contentsIsStream = $contents instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfStream) || $contents instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfArray && \count($contents->value) === 1) {
+            if (($contentsIsStream = $contents instanceof PdfStream) || $contents instanceof PdfArray && \count($contents->value) === 1) {
                 if ($contentsIsStream) {
                     /**
                      * @var PdfIndirectObject $contentsObject
                      */
                     $stream = $contents;
                 } else {
-                    $stream = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve($contents->value[0], $reader->getParser());
+                    $stream = PdfType::resolve($contents->value[0], $reader->getParser());
                 }
-                $filter = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($stream->value, 'Filter');
-                if (!$filter instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNull) {
+                $filter = PdfDictionary::get($stream->value, 'Filter');
+                if (!$filter instanceof PdfNull) {
                     $dict->value['Filter'] = $filter;
                 }
-                $length = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($stream->value, 'Length'), $reader->getParser());
+                $length = PdfType::resolve(PdfDictionary::get($stream->value, 'Length'), $reader->getParser());
                 $dict->value['Length'] = $length;
                 $stream->value = $dict;
                 // otherwise extract it from the array and re-compress the whole stream
             } else {
                 $streamContent = $this->compress ? \gzcompress($page->getContentStream()) : $page->getContentStream();
-                $dict->value['Length'] = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create(\strlen($streamContent));
+                $dict->value['Length'] = PdfNumeric::create(\strlen($streamContent));
                 if ($this->compress) {
-                    $dict->value['Filter'] = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfName::create('FlateDecode');
+                    $dict->value['Filter'] = PdfName::create('FlateDecode');
                 }
-                $stream = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfStream::create($dict, $streamContent);
+                $stream = PdfStream::create($dict, $streamContent);
             }
             // Catch faulty pages and use an empty content stream
-        } catch (\WPDeskFIVendor\setasign\Fpdi\FpdiException $e) {
-            $dict->value['Length'] = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create(0);
-            $stream = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfStream::create($dict, '');
+        } catch (FpdiException $e) {
+            $dict->value['Length'] = PdfNumeric::create(0);
+            $stream = PdfStream::create($dict, '');
         }
         $externalLinks = [];
         if ($importExternalLinks) {
@@ -381,7 +381,7 @@ trait FpdiTrait
             // reset standard values, translate and scale
             \sprintf('q 0 J 1 w 0 j 0 G 0 g %.4F 0 0 %.4F %.4F %.4F cm /%s Do Q', $scaleX, $scaleY, $xPt, $this->hPt - $yPt - $newHeightPt, $importedPage['id'])
         );
-        if (\count($importedPage['externalLinks']) > 0) {
+        if (count($importedPage['externalLinks']) > 0) {
             foreach ($importedPage['externalLinks'] as $externalLink) {
                 // mPDF uses also 'externalLinks' but doesn't come with a rect-value
                 if (!isset($externalLink['rect'])) {
@@ -413,11 +413,11 @@ trait FpdiTrait
     protected function adjustLastLink($externalLink, $xPt, $scaleX, $yPt, $newHeightPt, $scaleY, $importedPage)
     {
         // let's create a relation of the newly created link to the data of the external link
-        $lastLink = \count($this->PageLinks[$this->page]);
+        $lastLink = count($this->PageLinks[$this->page]);
         $this->PageLinks[$this->page][$lastLink - 1]['importedLink'] = $externalLink;
-        if (\count($externalLink['quadPoints']) > 0) {
+        if (count($externalLink['quadPoints']) > 0) {
             $quadPoints = [];
-            for ($i = 0, $n = \count($externalLink['quadPoints']); $i < $n; $i += 2) {
+            for ($i = 0, $n = count($externalLink['quadPoints']); $i < $n; $i += 2) {
                 $quadPoints[] = $xPt + $externalLink['quadPoints'][$i] * $scaleX;
                 $quadPoints[] = $this->hPt - $yPt - $newHeightPt + $externalLink['quadPoints'][$i + 1] * $scaleY;
             }
@@ -461,45 +461,45 @@ trait FpdiTrait
      * @param PdfType $value
      * @throws PdfTypeException
      */
-    protected function writePdfType(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType $value)
+    protected function writePdfType(PdfType $value)
     {
-        if ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric) {
+        if ($value instanceof PdfNumeric) {
             if (\is_int($value->value)) {
                 $this->_put($value->value . ' ', \false);
             } else {
                 $this->_put(\rtrim(\rtrim(\sprintf('%.5F', $value->value), '0'), '.') . ' ', \false);
             }
-        } elseif ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfName) {
+        } elseif ($value instanceof PdfName) {
             $this->_put('/' . $value->value . ' ', \false);
-        } elseif ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfString) {
+        } elseif ($value instanceof PdfString) {
             $this->_put('(' . $value->value . ')', \false);
-        } elseif ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfHexString) {
+        } elseif ($value instanceof PdfHexString) {
             $this->_put('<' . $value->value . '>', \false);
-        } elseif ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfBoolean) {
+        } elseif ($value instanceof PdfBoolean) {
             $this->_put($value->value ? 'true ' : 'false ', \false);
-        } elseif ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfArray) {
+        } elseif ($value instanceof PdfArray) {
             $this->_put('[', \false);
             foreach ($value->value as $entry) {
                 $this->writePdfType($entry);
             }
             $this->_put(']');
-        } elseif ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary) {
+        } elseif ($value instanceof PdfDictionary) {
             $this->_put('<<', \false);
             foreach ($value->value as $name => $entry) {
                 $this->_put('/' . $name . ' ', \false);
                 $this->writePdfType($entry);
             }
             $this->_put('>>');
-        } elseif ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfToken) {
+        } elseif ($value instanceof PdfToken) {
             $this->_put($value->value);
-        } elseif ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNull) {
+        } elseif ($value instanceof PdfNull) {
             $this->_put('null ', \false);
-        } elseif ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfStream) {
+        } elseif ($value instanceof PdfStream) {
             $this->writePdfType($value->value);
             $this->_put('stream');
             $this->_put($value->getStream());
             $this->_put('endstream');
-        } elseif ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObjectReference) {
+        } elseif ($value instanceof PdfIndirectObjectReference) {
             if (!isset($this->objectMap[$this->currentReaderId])) {
                 $this->objectMap[$this->currentReaderId] = [];
             }
@@ -508,12 +508,12 @@ trait FpdiTrait
                 $this->objectsToCopy[$this->currentReaderId][] = $value->value;
             }
             $this->_put($this->objectMap[$this->currentReaderId][$value->value] . ' 0 R ', \false);
-        } elseif ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObject) {
+        } elseif ($value instanceof PdfIndirectObject) {
             $n = $this->objectMap[$this->currentReaderId][$value->objectNumber];
             $this->_newobj($n);
             $this->writePdfType($value->value);
             // add newline before "endobj" for all objects in view to PDF/A conformance
-            if (!($value->value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfArray || $value->value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary || $value->value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfToken || $value->value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfStream)) {
+            if (!($value->value instanceof PdfArray || $value->value instanceof PdfDictionary || $value->value instanceof PdfToken || $value->value instanceof PdfStream)) {
                 $this->_put("\n", \false);
             }
             $this->_put('endobj');

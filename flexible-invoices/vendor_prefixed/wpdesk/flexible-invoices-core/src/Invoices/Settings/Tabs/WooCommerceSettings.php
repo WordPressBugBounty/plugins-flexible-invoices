@@ -14,7 +14,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\Settings
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs
  */
-final class WooCommerceSettings extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\FieldSettingsTab
+final class WooCommerceSettings extends FieldSettingsTab
 {
     /**
      * @var array
@@ -32,7 +32,7 @@ final class WooCommerceSettings extends \WPDeskFIVendor\WPDesk\Library\FlexibleI
         /**
          * @var WooCommerceFields\SubTabInterface[] $settings
          */
-        $woocommerce_tabs = ['general' => new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\WooCommerceFields\GeneralSettingsFields(), 'checkout' => new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\WooCommerceFields\CheckoutSettingsFields(), 'moss' => new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\WooCommerceFields\MossSettingsFields()];
+        $woocommerce_tabs = ['general' => new WooCommerceFields\GeneralSettingsFields(), 'checkout' => new WooCommerceFields\CheckoutSettingsFields(), 'moss' => new WooCommerceFields\MossSettingsFields()];
         /**
          * Definitions of settings for WooCommerce tab.
          *
@@ -42,19 +42,19 @@ final class WooCommerceSettings extends \WPDeskFIVendor\WPDesk\Library\FlexibleI
          *
          * @since 1.2.0
          */
-        $settings = (array) \apply_filters('fi/core/settings/tabs/woocommerce', $woocommerce_tabs);
+        $settings = (array) apply_filters('fi/core/settings/tabs/woocommerce', $woocommerce_tabs);
         foreach ($settings as $setting) {
-            if ($setting instanceof \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\WooCommerceFields\SubTabInterface) {
+            if ($setting instanceof WooCommerceFields\SubTabInterface) {
                 $this->form_fields[$setting::get_tab_slug()] = $setting->get_fields();
             }
         }
-        $fields = [(new \WPDeskFIVendor\WPDesk\Forms\Field\NoOnceField(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\SettingsForm::NONCE_ACTION))->set_name(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\SettingsForm::NONCE_NAME), (new \WPDeskFIVendor\WPDesk\Forms\Field\SubmitField())->set_name('save')->set_label(\esc_html__('Save changes', 'flexible-invoices'))->add_class('button-primary')];
+        $fields = [(new NoOnceField(SettingsForm::NONCE_ACTION))->set_name(SettingsForm::NONCE_NAME), (new SubmitField())->set_name('save')->set_label(esc_html__('Save changes', 'flexible-invoices'))->add_class('button-primary')];
         $this->form_fields[] = $fields;
     }
     /**
      * @return array|Field[]
      */
-    public function get_fields() : array
+    public function get_fields(): array
     {
         $fields = [];
         foreach ($this->form_fields as $form) {
@@ -67,15 +67,15 @@ final class WooCommerceSettings extends \WPDeskFIVendor\WPDesk\Library\FlexibleI
     /**
      * @return string
      */
-    public static function get_tab_slug() : string
+    public static function get_tab_slug(): string
     {
         return 'woocommerce';
     }
     /**
      * @return string
      */
-    public function get_tab_name() : string
+    public function get_tab_name(): string
     {
-        return \esc_html__('WooCommerce', 'flexible-invoices');
+        return esc_html__('WooCommerce', 'flexible-invoices');
     }
 }

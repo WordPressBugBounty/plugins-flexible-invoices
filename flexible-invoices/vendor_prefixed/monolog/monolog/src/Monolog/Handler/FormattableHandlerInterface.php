@@ -25,11 +25,11 @@ interface FormattableHandlerInterface
      * @param  FormatterInterface $formatter
      * @return HandlerInterface   self
      */
-    public function setFormatter(\WPDeskFIVendor\Monolog\Formatter\FormatterInterface $formatter) : \WPDeskFIVendor\Monolog\Handler\HandlerInterface;
+    public function setFormatter(FormatterInterface $formatter): HandlerInterface;
     /**
      * Gets the formatter.
      *
      * @return FormatterInterface
      */
-    public function getFormatter() : \WPDeskFIVendor\Monolog\Formatter\FormatterInterface;
+    public function getFormatter(): FormatterInterface;
 }

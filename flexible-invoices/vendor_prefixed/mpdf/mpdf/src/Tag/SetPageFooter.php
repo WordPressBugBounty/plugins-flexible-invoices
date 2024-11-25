@@ -2,6 +2,6 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class SetPageFooter extends \WPDeskFIVendor\Mpdf\Tag\SetHtmlPageFooter
+class SetPageFooter extends SetHtmlPageFooter
 {
 }

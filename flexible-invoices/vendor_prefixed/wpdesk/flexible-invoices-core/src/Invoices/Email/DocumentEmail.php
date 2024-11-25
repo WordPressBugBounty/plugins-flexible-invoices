@@ -17,5 +17,5 @@ interface DocumentEmail
      *
      * @return void
      */
-    public function should_send_email(\WC_Order $order, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document $document, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\PDF $pdf);
+    public function should_send_email(WC_Order $order, Document $document, PDF $pdf);
 }

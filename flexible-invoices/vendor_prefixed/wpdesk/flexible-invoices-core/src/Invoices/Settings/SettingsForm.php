@@ -21,7 +21,7 @@ use WPDeskFIVendor\WPDesk\View\Resolver\Resolver;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Settings
  */
-class SettingsForm implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+class SettingsForm implements Hookable
 {
     const NONCE_ACTION = 'save_settings';
     const NONCE_NAME = 'settings_nonce';
@@ -46,7 +46,7 @@ class SettingsForm implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
      * @param string           $template_dir
      * @param string           $assets_url
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy $strategy, string $template_dir, string $assets_url)
+    public function __construct(SettingsStrategy $strategy, string $template_dir, string $assets_url)
     {
         $this->strategy = $strategy;
         $this->template_dir = $template_dir;
@@ -59,11 +59,11 @@ class SettingsForm implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
      *
      * @return string
      */
-    public static function get_url(string $tab_slug = null) : string
+    public static function get_url(string $tab_slug = null): string
     {
-        $url = \admin_url(\add_query_arg(['page' => self::$settings_slug], \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType::POST_TYPE_MENU_URL));
+        $url = admin_url(add_query_arg(['page' => self::$settings_slug], RegisterPostType::POST_TYPE_MENU_URL));
         if ($tab_slug !== null) {
-            $url = \add_query_arg(['tab' => $tab_slug], $url);
+            $url = add_query_arg(['tab' => $tab_slug], $url);
         }
         return $url;
     }
@@ -72,10 +72,10 @@ class SettingsForm implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
      */
     public function hooks()
     {
-        \add_action('admin_menu', function () {
-            \add_submenu_page(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType::POST_TYPE_MENU_URL, \esc_html__('Settings', 'flexible-invoices'), \esc_html__('Settings', 'flexible-invoices'), 'manage_options', self::$settings_slug, [$this, 'render_page_action'], 40);
+        add_action('admin_menu', function () {
+            add_submenu_page(RegisterPostType::POST_TYPE_MENU_URL, esc_html__('Settings', 'flexible-invoices'), esc_html__('Settings', 'flexible-invoices'), 'manage_options', self::$settings_slug, [$this, 'render_page_action'], 40);
         }, 999);
-        \add_action('admin_init', [$this, 'save_settings_action'], 5);
+        add_action('admin_init', [$this, 'save_settings_action'], 5);
     }
     /**
      * Save POST tab data. Before render.
@@ -89,11 +89,11 @@ class SettingsForm implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
         }
         $tab = $this->get_active_tab();
         $data_container = self::get_settings_persistence();
-        $tab_data = isset($_POST[$tab::get_tab_slug()]) ? \wp_unslash($_POST[$tab::get_tab_slug()]) : '';
+        $tab_data = isset($_POST[$tab::get_tab_slug()]) ? wp_unslash($_POST[$tab::get_tab_slug()]) : '';
         //phpcs:ignore
         $nonce_value = $tab_data[self::NONCE_NAME] ?? '';
-        $nonce = \wp_verify_nonce($nonce_value, self::NONCE_ACTION);
-        $can_edit = \current_user_can('edit_flexible_invoices');
+        $nonce = wp_verify_nonce($nonce_value, self::NONCE_ACTION);
+        $can_edit = current_user_can('edit_flexible_invoices');
         if (!empty($tab_data) && $nonce && $can_edit) {
             $tab->handle_request($tab_data);
             $this->save_tab_data($tab_data, $data_container);
@@ -103,15 +103,15 @@ class SettingsForm implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
              * @param string              $tab            Tab ID.
              * @param PersistentContainer $data_container Persistent Container Object.
              */
-            \do_action('fi/core/settings/tabs/saved', $tab, $data_container);
-            new \WPDeskFIVendor\WPDesk\Notice\Notice(\esc_html__('Your settings have been saved.', 'flexible-invoices'), \WPDeskFIVendor\WPDesk\Notice\Notice::NOTICE_TYPE_SUCCESS);
+            do_action('fi/core/settings/tabs/saved', $tab, $data_container);
+            new Notice(esc_html__('Your settings have been saved.', 'flexible-invoices'), Notice::NOTICE_TYPE_SUCCESS);
         } else {
             $tab->set_data($data_container);
         }
         /**
          * Fires after saving the settings.
          */
-        \do_action('fi/core/settings/ready');
+        do_action('fi/core/settings/ready');
     }
     /**
      * Render
@@ -129,31 +129,31 @@ class SettingsForm implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
     /**
      * @return SettingsTab
      */
-    private function get_active_tab() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\SettingsTab
+    private function get_active_tab(): SettingsTab
     {
-        $selected_tab = isset($_GET['tab']) ? \sanitize_key($_GET['tab']) : null;
+        $selected_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : null;
         //phpcs:ignore
         $tabs = $this->get_settings_tabs();
         if (!empty($selected_tab) && isset($tabs[$selected_tab])) {
             return $tabs[$selected_tab];
         }
-        return \reset($tabs);
+        return reset($tabs);
     }
     /**
      * @return SettingsTab[]
      */
-    private function get_settings_tabs() : array
+    private function get_settings_tabs(): array
     {
         static $tabs = [];
         if (empty($tabs)) {
-            $tabs[\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\GeneralSettings::get_tab_slug()] = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\GeneralSettings();
-            $tabs[\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\DocumentsSettings::get_tab_slug()] = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\DocumentsSettings($this->strategy);
-            if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active()) {
-                $tabs[\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\WooCommerceSettings::get_tab_slug()] = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\WooCommerceSettings();
+            $tabs[Tabs\GeneralSettings::get_tab_slug()] = new Tabs\GeneralSettings();
+            $tabs[Tabs\DocumentsSettings::get_tab_slug()] = new Tabs\DocumentsSettings($this->strategy);
+            if (WooCommerce::is_active()) {
+                $tabs[Tabs\WooCommerceSettings::get_tab_slug()] = new Tabs\WooCommerceSettings();
             }
-            $tabs[\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\CurrencySettings::get_tab_slug()] = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\CurrencySettings();
-            $tabs[\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\TaxRatesSettings::get_tab_slug()] = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\TaxRatesSettings();
-            $tabs[\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\InvoiceTemplate::get_tab_slug()] = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\InvoiceTemplate($this->assets_url);
+            $tabs[Tabs\CurrencySettings::get_tab_slug()] = new Tabs\CurrencySettings();
+            $tabs[Tabs\TaxRatesSettings::get_tab_slug()] = new Tabs\TaxRatesSettings();
+            $tabs[Tabs\InvoiceTemplate::get_tab_slug()] = new Tabs\InvoiceTemplate($this->assets_url);
             /**
              * Filters setting tabs.
              *
@@ -163,7 +163,7 @@ class SettingsForm implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
              *
              * @since 3.0.0
              */
-            $tabs = \apply_filters('fi/core/settings/tabs', $tabs);
+            $tabs = apply_filters('fi/core/settings/tabs', $tabs);
         }
         return $tabs;
     }
@@ -174,7 +174,7 @@ class SettingsForm implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
      */
     public static function get_settings_persistence()
     {
-        return new \WPDeskFIVendor\WPDesk\Persistence\Adapter\WordPress\WordpressOptionsContainer('inspire_invoices_');
+        return new WordpressOptionsContainer('inspire_invoices_');
     }
     /**
      * Save data from tab to persistent container.
@@ -182,22 +182,22 @@ class SettingsForm implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
      * @param array               $post_data
      * @param PersistentContainer $container
      */
-    private function save_tab_data(array $post_data, \WPDeskFIVendor\WPDesk\Persistence\PersistentContainer $container)
+    private function save_tab_data(array $post_data, PersistentContainer $container)
     {
         foreach ($post_data as $key => $value) {
             if ($key === '_empty_value' || $key === '') {
                 continue;
                 // Prevent save values for pro field.
             }
-            if (\is_array($value)) {
-                $value = \array_filter($value, static function ($v) {
+            if (is_array($value)) {
+                $value = array_filter($value, static function ($v) {
                     return !empty($v);
                 }, \ARRAY_FILTER_USE_BOTH);
             }
             $container->set($key, $value);
         }
         if (!empty($_SERVER['REQUEST_URI'])) {
-            \wp_safe_redirect(\wp_unslash($_SERVER['REQUEST_URI']), 301);
+            wp_safe_redirect(wp_unslash($_SERVER['REQUEST_URI']), 301);
             exit;
         }
     }
@@ -206,7 +206,7 @@ class SettingsForm implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
      */
     private function get_renderer()
     {
-        $chain = new \WPDeskFIVendor\WPDesk\View\Resolver\ChainResolver();
+        $chain = new ChainResolver();
         /**
          * Filters resolvers for setting templates.
          *
@@ -216,17 +216,17 @@ class SettingsForm implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
          *
          * @since 3.0.0
          */
-        $resolver_list = (array) \apply_filters('fi/core/settings/settings_template_resolvers', [new \WPDeskFIVendor\WPDesk\View\Resolver\DirResolver($this->template_dir . 'settings'), new \WPDeskFIVendor\WPDesk\Forms\Resolver\DefaultFormFieldResolver()]);
-        \array_unshift($resolver_list, new \WPDeskFIVendor\WPDesk\View\Resolver\DirResolver($this->template_dir . 'settings/' . $this->get_active_tab()->get_tab_slug()));
+        $resolver_list = (array) apply_filters('fi/core/settings/settings_template_resolvers', [new DirResolver($this->template_dir . 'settings'), new DefaultFormFieldResolver()]);
+        array_unshift($resolver_list, new DirResolver($this->template_dir . 'settings/' . $this->get_active_tab()->get_tab_slug()));
         foreach ($resolver_list as $resolver) {
             $chain->appendResolver($resolver);
         }
-        return new \WPDeskFIVendor\WPDesk\View\Renderer\SimplePhpRenderer($chain);
+        return new SimplePhpRenderer($chain);
     }
     /**
      * @return string[]
      */
-    private function get_tabs_menu_items() : array
+    private function get_tabs_menu_items(): array
     {
         $menu_items = [];
         foreach ($this->get_settings_tabs() as $tab) {

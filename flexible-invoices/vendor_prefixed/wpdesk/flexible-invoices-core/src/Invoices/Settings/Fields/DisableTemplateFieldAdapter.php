@@ -27,7 +27,7 @@ class DisableTemplateFieldAdapter
     /**
      * @param Field $field
      */
-    public function __construct(string $name, \WPDeskFIVendor\WPDesk\Forms\Field $field, bool $show_pro_link = \false)
+    public function __construct(string $name, Field $field, bool $show_pro_link = \false)
     {
         $this->name = $name;
         $this->show_link = $show_pro_link;
@@ -39,12 +39,12 @@ class DisableTemplateFieldAdapter
         if ($this->field->has_description()) {
             $field_description = $this->field->get_description();
         }
-        if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Plugin::is_template_addon_is_disabled()) {
+        if (Plugin::is_template_addon_is_disabled()) {
             $this->field->set_disabled();
             $upgrade_link = '';
             if ($this->show_link) {
-                $upgrade_pro_url = \get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/faktury-woocommerce/?utm_source=wp-admin-plugins&utm_medium=quick-link&utm_campaign=flexible-invoices-plugins-upgrade-link' : 'https://www.flexibleinvoices.com/products/flexible-invoices-woocommerce/?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-invoices-plugins-upgrade-link';
-                $upgrade_link = '<span class="pro-url"><a href="' . \esc_url($upgrade_pro_url) . '" target="_blank">' . \esc_html__('Upgrade to PRO &rarr;', 'flexible-invoices') . '</a></span>';
+                $upgrade_pro_url = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/faktury-woocommerce/?utm_source=wp-admin-plugins&utm_medium=quick-link&utm_campaign=flexible-invoices-plugins-upgrade-link' : 'https://www.flexibleinvoices.com/products/flexible-invoices-woocommerce/?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-invoices-plugins-upgrade-link';
+                $upgrade_link = '<span class="pro-url"><a href="' . esc_url($upgrade_pro_url) . '" target="_blank">' . esc_html__('Upgrade to PRO &rarr;', 'flexible-invoices') . '</a></span>';
             }
             if ($field_description) {
                 $this->field->set_description($field_description . '<br/>' . $upgrade_link);

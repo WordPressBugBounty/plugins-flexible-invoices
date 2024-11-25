@@ -7,7 +7,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Documents
  */
-class Invoice extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\AbstractDocument
+class Invoice extends AbstractDocument
 {
     const DOCUMENT_TYPE = 'invoice';
     const META_GENERATED = '_invoice_generated';

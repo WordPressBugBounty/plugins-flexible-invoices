@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\Type;
@@ -29,15 +29,15 @@ class PdfType
      * @throws CrossReferenceException
      * @throws PdfParserException
      */
-    public static function resolve(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType $value, \WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParser $parser, $stopAtIndirectObject = \false)
+    public static function resolve(PdfType $value, PdfParser $parser, $stopAtIndirectObject = \false)
     {
-        if ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObject) {
+        if ($value instanceof PdfIndirectObject) {
             if ($stopAtIndirectObject === \true) {
                 return $value;
             }
             return self::resolve($value->value, $parser, $stopAtIndirectObject);
         }
-        if ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObjectReference) {
+        if ($value instanceof PdfIndirectObjectReference) {
             return self::resolve($parser->getIndirectObject($value->value), $parser, $stopAtIndirectObject);
         }
         return $value;
@@ -54,7 +54,7 @@ class PdfType
     protected static function ensureType($type, $value, $errorMessage)
     {
         if (!$value instanceof $type) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException($errorMessage, \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException::INVALID_DATA_TYPE);
+            throw new PdfTypeException($errorMessage, PdfTypeException::INVALID_DATA_TYPE);
         }
         return $value;
     }
@@ -67,18 +67,18 @@ class PdfType
      * @throws CrossReferenceException
      * @throws PdfParserException
      */
-    public static function flatten(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType $value, \WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParser $parser)
+    public static function flatten(PdfType $value, PdfParser $parser)
     {
-        if ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObjectReference) {
+        if ($value instanceof PdfIndirectObjectReference) {
             return self::flatten(self::resolve($value, $parser), $parser);
         }
-        if ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary || $value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfArray) {
+        if ($value instanceof PdfDictionary || $value instanceof PdfArray) {
             foreach ($value->value as $key => $_value) {
                 $value->value[$key] = self::flatten($_value, $parser);
             }
         }
-        if ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfStream) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException('There is a stream object found which cannot be flattened to a direct object.');
+        if ($value instanceof PdfStream) {
+            throw new PdfTypeException('There is a stream object found which cannot be flattened to a direct object.');
         }
         return $value;
     }

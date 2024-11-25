@@ -14,12 +14,12 @@ class CalculateTotals
      *
      * @return float
      */
-    public static function calculate_total_gross(array $items) : float
+    public static function calculate_total_gross(array $items): float
     {
         $total_tax_amount = 0.0;
-        if (\count($items) > 0) {
+        if (count($items) > 0) {
             foreach ($items as $item) {
-                if (\is_array($item) && isset($item['total_price'])) {
+                if (is_array($item) && isset($item['total_price'])) {
                     $total_tax_amount += (float) $item['total_price'];
                 }
             }
@@ -31,12 +31,12 @@ class CalculateTotals
      *
      * @return float
      */
-    public static function calculate_total_vat(array $items) : float
+    public static function calculate_total_vat(array $items): float
     {
         $total_tax_amount = 0.0;
-        if (\count($items) > 0) {
+        if (count($items) > 0) {
             foreach ($items as $item) {
-                if (\is_array($item) && isset($item['vat_sum'])) {
+                if (is_array($item) && isset($item['vat_sum'])) {
                     $total_tax_amount += (float) $item['vat_sum'];
                 }
             }
@@ -48,12 +48,12 @@ class CalculateTotals
      *
      * @return float
      */
-    public static function calculate_total_net(array $items) : float
+    public static function calculate_total_net(array $items): float
     {
         $total_net_price = 0.0;
-        if (\count($items) > 0) {
+        if (count($items) > 0) {
             foreach ($items as $item) {
-                if (\is_array($item) && isset($item['net_price_sum'])) {
+                if (is_array($item) && isset($item['net_price_sum'])) {
                     $total_net_price += (float) $item['net_price_sum'];
                 }
             }
@@ -66,21 +66,21 @@ class CalculateTotals
      *
      * @return float
      */
-    public static function calculate_due_price($total_gross, $total_paid) : float
+    public static function calculate_due_price($total_gross, $total_paid): float
     {
         $total_gross = self::price_to_float($total_gross);
         $total_paid = self::price_to_float($total_paid);
-        return \round($total_gross, 2) - \round($total_paid, 2);
+        return round($total_gross, 2) - round($total_paid, 2);
     }
     /**
      * @param float|string $price
      *
      * @return float
      */
-    public static function price_to_float($price) : float
+    public static function price_to_float($price): float
     {
-        if (\is_string($price)) {
-            $price = \str_replace(',', '.', $price);
+        if (is_string($price)) {
+            $price = str_replace(',', '.', $price);
             return (float) $price;
         }
         return (float) $price;

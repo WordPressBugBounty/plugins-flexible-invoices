@@ -11,7 +11,7 @@ use WPDeskFIVendor\Symfony\Component\Console\Output\OutputInterface;
  *
  * @package WPDesk\Codeception\Command
  */
-class GeneratePluginActivation extends \WPDeskFIVendor\Codeception\Command\GenerateTest implements \WPDeskFIVendor\Codeception\CustomCommandInterface
+class GeneratePluginActivation extends GenerateTest implements CustomCommandInterface
 {
     /**
      * Get codeception command description.
@@ -40,7 +40,7 @@ class GeneratePluginActivation extends \WPDeskFIVendor\Codeception\Command\Gener
      */
     protected function getGenerator($config, $class)
     {
-        return new \WPDeskFIVendor\WPDesk\Codeception\Command\AcceptanceTestGenerator($config, $class);
+        return new AcceptanceTestGenerator($config, $class);
     }
     /**
      * Execute command.
@@ -50,7 +50,7 @@ class GeneratePluginActivation extends \WPDeskFIVendor\Codeception\Command\Gener
      *
      * @return void
      */
-    public function execute(\WPDeskFIVendor\Symfony\Component\Console\Input\InputInterface $input, \WPDeskFIVendor\Symfony\Component\Console\Output\OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output)
     {
         $suite = $input->getArgument('suite');
         $class = $input->getArgument('class');

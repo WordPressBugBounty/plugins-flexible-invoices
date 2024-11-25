@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class Br extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class Br extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -10,7 +10,7 @@ class Br extends \WPDeskFIVendor\Mpdf\Tag\Tag
         if (isset($attr['STYLE'])) {
             $properties = $this->cssManager->readInlineCSS($attr['STYLE']);
             if (isset($properties['CLEAR'])) {
-                $this->mpdf->ClearFloats(\strtoupper($properties['CLEAR']), $this->mpdf->blklvl);
+                $this->mpdf->ClearFloats(strtoupper($properties['CLEAR']), $this->mpdf->blklvl);
             }
             // *CSS-FLOAT*
         }
@@ -30,18 +30,18 @@ class Br extends \WPDeskFIVendor\Mpdf\Tag\Tag
         $inlinepre = '';
         $inlinepost = '';
         $iBDF = [];
-        if (\count($this->mpdf->InlineBDF)) {
+        if (count($this->mpdf->InlineBDF)) {
             foreach ($this->mpdf->InlineBDF as $k => $ib) {
                 foreach ($ib as $ib2) {
                     $iBDF[$ib2[1]] = $ib2[0];
                 }
             }
-            if (\count($iBDF)) {
-                \ksort($iBDF);
-                for ($i = \count($iBDF) - 1; $i >= 0; $i--) {
+            if (count($iBDF)) {
+                ksort($iBDF);
+                for ($i = count($iBDF) - 1; $i >= 0; $i--) {
                     $inlinepre .= $this->mpdf->_setBidiCodes('end', $iBDF[$i]);
                 }
-                for ($i = 0; $i < \count($iBDF); $i++) {
+                for ($i = 0; $i < count($iBDF); $i++) {
                     $inlinepost .= $this->mpdf->_setBidiCodes('start', $iBDF[$i]);
                 }
             }
@@ -61,10 +61,10 @@ class Br extends \WPDeskFIVendor\Mpdf\Tag\Tag
             // reset
         } else {
             /* -- END TABLES -- */
-            if (\count($this->mpdf->textbuffer)) {
-                $this->mpdf->textbuffer[\count($this->mpdf->textbuffer) - 1][0] = \preg_replace('/ $/', '', $this->mpdf->textbuffer[\count($this->mpdf->textbuffer) - 1][0]);
-                if (!empty($this->mpdf->textbuffer[\count($this->mpdf->textbuffer) - 1][18])) {
-                    $this->otl->trimOTLdata($this->mpdf->textbuffer[\count($this->mpdf->textbuffer) - 1][18], \false);
+            if (count($this->mpdf->textbuffer)) {
+                $this->mpdf->textbuffer[count($this->mpdf->textbuffer) - 1][0] = preg_replace('/ $/', '', $this->mpdf->textbuffer[count($this->mpdf->textbuffer) - 1][0]);
+                if (!empty($this->mpdf->textbuffer[count($this->mpdf->textbuffer) - 1][18])) {
+                    $this->otl->trimOTLdata($this->mpdf->textbuffer[count($this->mpdf->textbuffer) - 1][18], \false);
                 }
                 // *OTL*
             }

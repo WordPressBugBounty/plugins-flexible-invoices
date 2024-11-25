@@ -42,9 +42,9 @@ class Postnet extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \W
         }
         $bararray = ['code' => $code, 'maxw' => 0, 'maxh' => 5, 'bcode' => []];
         $k = 0;
-        $code = \str_replace('-', '', $code);
-        $code = \str_replace(' ', '', $code);
-        $len = \strlen($code);
+        $code = str_replace('-', '', $code);
+        $code = str_replace(' ', '', $code);
+        $len = strlen($code);
         // calculate checksum
         $sum = 0;
         for ($i = 0; $i < $len; ++$i) {
@@ -56,7 +56,7 @@ class Postnet extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \W
         }
         $code .= $chkd;
         $checkdigit = $chkd;
-        $len = \strlen($code);
+        $len = strlen($code);
         // start bar
         $bararray['bcode'][$k++] = ['t' => 1, 'w' => 1, 'h' => 5, 'p' => 0];
         $bararray['bcode'][$k++] = ['t' => 0, 'w' => $gapWidth, 'h' => 5, 'p' => 0];

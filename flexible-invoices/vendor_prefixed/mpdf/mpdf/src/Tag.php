@@ -61,7 +61,7 @@ class Tag
      * @param \Mpdf\Image\ImageProcessor $imageProcessor
      * @param \Mpdf\Language\LanguageToFontInterface $languageToFont
      */
-    public function __construct(\WPDeskFIVendor\Mpdf\Mpdf $mpdf, \WPDeskFIVendor\Mpdf\Cache $cache, \WPDeskFIVendor\Mpdf\CssManager $cssManager, \WPDeskFIVendor\Mpdf\Form $form, \WPDeskFIVendor\Mpdf\Otl $otl, \WPDeskFIVendor\Mpdf\TableOfContents $tableOfContents, \WPDeskFIVendor\Mpdf\SizeConverter $sizeConverter, \WPDeskFIVendor\Mpdf\Color\ColorConverter $colorConverter, \WPDeskFIVendor\Mpdf\Image\ImageProcessor $imageProcessor, \WPDeskFIVendor\Mpdf\Language\LanguageToFontInterface $languageToFont)
+    public function __construct(Mpdf $mpdf, Cache $cache, CssManager $cssManager, Form $form, Otl $otl, TableOfContents $tableOfContents, SizeConverter $sizeConverter, ColorConverter $colorConverter, ImageProcessor $imageProcessor, LanguageToFontInterface $languageToFont)
     {
         $this->mpdf = $mpdf;
         $this->cache = $cache;
@@ -81,7 +81,7 @@ class Tag
     private function getTagInstance($tag)
     {
         $className = self::getTagClassName($tag);
-        if (\class_exists($className)) {
+        if (class_exists($className)) {
             return new $className($this->mpdf, $this->cache, $this->cssManager, $this->form, $this->otl, $this->tableOfContents, $this->sizeConverter, $this->colorConverter, $this->imageProcessor, $this->languageToFont);
         }
     }
@@ -95,7 +95,7 @@ class Tag
     {
         static $map = ['BARCODE' => 'BarCode', 'BLOCKQUOTE' => 'BlockQuote', 'COLUMN_BREAK' => 'ColumnBreak', 'COLUMNBREAK' => 'ColumnBreak', 'DOTTAB' => 'DotTab', 'FIELDSET' => 'FieldSet', 'FIGCAPTION' => 'FigCaption', 'FORMFEED' => 'FormFeed', 'HGROUP' => 'HGroup', 'INDEXENTRY' => 'IndexEntry', 'INDEXINSERT' => 'IndexInsert', 'NEWCOLUMN' => 'NewColumn', 'NEWPAGE' => 'NewPage', 'PAGEFOOTER' => 'PageFooter', 'PAGEHEADER' => 'PageHeader', 'PAGE_BREAK' => 'PageBreak', 'PAGEBREAK' => 'PageBreak', 'SETHTMLPAGEFOOTER' => 'SetHtmlPageFooter', 'SETHTMLPAGEHEADER' => 'SetHtmlPageHeader', 'SETPAGEFOOTER' => 'SetPageFooter', 'SETPAGEHEADER' => 'SetPageHeader', 'TBODY' => 'TBody', 'TFOOT' => 'TFoot', 'THEAD' => 'THead', 'TEXTAREA' => 'TextArea', 'TEXTCIRCLE' => 'TextCircle', 'TOCENTRY' => 'TocEntry', 'TOCPAGEBREAK' => 'TocPageBreak', 'VAR' => 'VarTag', 'WATERMARKIMAGE' => 'WatermarkImage', 'WATERMARKTEXT' => 'WatermarkText'];
         $className = 'WPDeskFIVendor\Mpdf\Tag\\';
-        $className .= isset($map[$tag]) ? $map[$tag] : \ucfirst(\strtolower($tag));
+        $className .= isset($map[$tag]) ? $map[$tag] : ucfirst(strtolower($tag));
         return $className;
     }
     public function OpenTag($tag, $attr, &$ahtml, &$ihtml)

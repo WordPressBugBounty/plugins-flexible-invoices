@@ -7,6 +7,6 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentExcept
  *
  * @package WPDesk\Library\FlexibleInvoicesAbstracts\Exceptions
  */
-class InvalidDocumentDataException extends \RuntimeException implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentExceptions\DocumentException
+class InvalidDocumentDataException extends \RuntimeException implements DocumentException
 {
 }

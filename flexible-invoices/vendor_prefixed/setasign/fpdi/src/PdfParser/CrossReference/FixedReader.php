@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference;
@@ -17,7 +17,7 @@ use WPDeskFIVendor\setasign\Fpdi\PdfParser\StreamReader;
  * This reader allows a very less overhead parsing of single entries of the cross-reference, because the main entries
  * are only read when needed and not in a single run.
  */
-class FixedReader extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\AbstractReader implements \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\ReaderInterface
+class FixedReader extends AbstractReader implements ReaderInterface
 {
     /**
      * @var StreamReader
@@ -35,7 +35,7 @@ class FixedReader extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference
      * @param PdfParser $parser
      * @throws CrossReferenceException
      */
-    public function __construct(\WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParser $parser)
+    public function __construct(PdfParser $parser)
     {
         $this->reader = $parser->getStreamReader();
         $this->read();
@@ -103,14 +103,14 @@ class FixedReader extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference
                  * By catching 21 bytes and trimming the length should be still 21.
                  */
                 if (\strlen(\trim($nextLine)) !== 21) {
-                    throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException('Cross-reference entries are larger than 20 bytes.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::ENTRIES_TOO_LARGE);
+                    throw new CrossReferenceException('Cross-reference entries are larger than 20 bytes.', CrossReferenceException::ENTRIES_TOO_LARGE);
                 }
                 /* Check for less than 20 bytes: cut the line to 20 bytes and trim; have to result in exactly 18 bytes.
                  * If it would have less bytes the substring would get the first bytes of the next line which would
                  * evaluate to a 20 bytes long string after trimming.
                  */
                 if (\strlen(\trim(\substr($nextLine, 0, 20))) !== 18) {
-                    throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException('Cross-reference entries are less than 20 bytes.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::ENTRIES_TOO_SHORT);
+                    throw new CrossReferenceException('Cross-reference entries are less than 20 bytes.', CrossReferenceException::ENTRIES_TOO_SHORT);
                 }
                 $validityChecked = \true;
             }
@@ -121,7 +121,7 @@ class FixedReader extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference
         // reset after the last correct parsed line
         $this->reader->reset($lastLineStart);
         if (\count($subSections) === 0) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException('No entries found in cross-reference.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::NO_ENTRIES);
+            throw new CrossReferenceException('No entries found in cross-reference.', CrossReferenceException::NO_ENTRIES);
         }
         $this->subSections = $subSections;
     }

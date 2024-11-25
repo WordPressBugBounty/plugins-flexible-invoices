@@ -11,7 +11,7 @@ use WPDeskFIVendor\Composer\Plugin\PluginInterface;
  *
  * @package WPDesk\Composer\Codeception
  */
-class Plugin implements \WPDeskFIVendor\Composer\Plugin\PluginInterface, \WPDeskFIVendor\Composer\Plugin\Capable
+class Plugin implements PluginInterface, Capable
 {
     /**
      * @var Composer
@@ -21,7 +21,7 @@ class Plugin implements \WPDeskFIVendor\Composer\Plugin\PluginInterface, \WPDesk
      * @var IOInterface
      */
     private $io;
-    public function activate(\WPDeskFIVendor\Composer\Composer $composer, \WPDeskFIVendor\Composer\IO\IOInterface $io)
+    public function activate(Composer $composer, IOInterface $io)
     {
         $this->composer = $composer;
         $this->io = $io;
@@ -29,7 +29,7 @@ class Plugin implements \WPDeskFIVendor\Composer\Plugin\PluginInterface, \WPDesk
     /**
      * @inheritDoc
      */
-    public function deactivate(\WPDeskFIVendor\Composer\Composer $composer, \WPDeskFIVendor\Composer\IO\IOInterface $io)
+    public function deactivate(Composer $composer, IOInterface $io)
     {
         $this->composer = $composer;
         $this->io = $io;
@@ -37,13 +37,13 @@ class Plugin implements \WPDeskFIVendor\Composer\Plugin\PluginInterface, \WPDesk
     /**
      * @inheritDoc
      */
-    public function uninstall(\WPDeskFIVendor\Composer\Composer $composer, \WPDeskFIVendor\Composer\IO\IOInterface $io)
+    public function uninstall(Composer $composer, IOInterface $io)
     {
         $this->composer = $composer;
         $this->io = $io;
     }
     public function getCapabilities()
     {
-        return [\WPDeskFIVendor\Composer\Plugin\Capability\CommandProvider::class => \WPDeskFIVendor\WPDesk\Composer\Codeception\CommandProvider::class];
+        return [\WPDeskFIVendor\Composer\Plugin\Capability\CommandProvider::class => CommandProvider::class];
     }
 }

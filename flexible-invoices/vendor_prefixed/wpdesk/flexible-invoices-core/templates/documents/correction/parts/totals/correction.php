@@ -13,7 +13,7 @@ $total_section = '<table class="totals">
     				<tr>
     					<td style="width:33.3%;">' . \esc_html__('Total', 'flexible-invoices') . ': <strong>' . $helper->string_as_money($correction->get_total_gross()) . '</strong></td>
 						<td style="width:33.3%;text-align: center;">' . \esc_html__('Paid', 'flexible-invoices') . ': <strong>' . $helper->string_as_money($correction->get_total_paid()) . '</strong></td>
-						<td style="width:33.3%;text-align: right;">' . \esc_html__('Due', 'flexible-invoices') . ': <strong>' . $helper->string_as_money(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\CalculateTotals::calculate_due_price($correction->get_total_gross(), $correction->get_total_paid())) . '</strong></td>
+						<td style="width:33.3%;text-align: right;">' . \esc_html__('Due', 'flexible-invoices') . ': <strong>' . $helper->string_as_money(CalculateTotals::calculate_due_price($correction->get_total_gross(), $correction->get_total_paid())) . '</strong></td>
     				</tr>
     			</tbody>
     		</table>';

@@ -8,7 +8,7 @@ use WPDeskFIVendor\WPDesk\Forms\Field\SubmitField;
  *
  * @package WPDesk\FIT\Settings\Fields
  */
-class ResetField extends \WPDeskFIVendor\WPDesk\Forms\Field\SubmitField
+class ResetField extends SubmitField
 {
     /**
      * @return string

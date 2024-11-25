@@ -36,7 +36,7 @@ $document_issuing = 'Manual Issuing Proforma and Invoices';
 \esc_html_e('Net price', 'flexible-invoices');
 ?></th>
 			<?php 
-if ($show_discount && \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\InvoicesIntegration::is_super()) {
+if ($show_discount && InvoicesIntegration::is_super()) {
     ?>
 				<th class="discount-label"><?php 
     \esc_html_e('Discount', 'flexible-invoices');
@@ -162,7 +162,7 @@ if (!empty($items)) {
 						</label>
 					</td>
 					<?php 
-        if ($show_discount && \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\InvoicesIntegration::is_super()) {
+        if ($show_discount && InvoicesIntegration::is_super()) {
             ?>
 						<td class="discount">
 							<label>
@@ -372,7 +372,7 @@ echo \esc_attr_x('item', 'Units Of Measure For Items In Inventory', 'flexible-in
 			</label>
 		</td>
 		<?php 
-if ($show_discount && \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\InvoicesIntegration::is_super()) {
+if ($show_discount && InvoicesIntegration::is_super()) {
     ?>
 			<td class="discount">
 				<label>

@@ -9,7 +9,7 @@ require __DIR__ . '/parts/table.php';
 /**
  * Exchange table
  */
-$exchange_table = \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::template_exchange_vertical_filter($invoice, $products, $client);
+$exchange_table = Hooks::template_exchange_vertical_filter($invoice, $products, $client);
 if (!empty($exchange_table)) {
     ?>
 <table class="table-without-margin" style="margin-top: 10px;">

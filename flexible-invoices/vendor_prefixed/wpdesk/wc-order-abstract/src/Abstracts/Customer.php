@@ -84,7 +84,7 @@ final class Customer
     /**
      * @return int
      */
-    public function get_id() : int
+    public function get_id(): int
     {
         return $this->id;
     }
@@ -98,7 +98,7 @@ final class Customer
     /**
      * @return string
      */
-    public function get_firstname() : string
+    public function get_firstname(): string
     {
         return $this->firstname;
     }
@@ -112,7 +112,7 @@ final class Customer
     /**
      * @return float
      */
-    public function get_lastname() : string
+    public function get_lastname(): string
     {
         return $this->lastname;
     }
@@ -126,7 +126,7 @@ final class Customer
     /**
      * @return string
      */
-    public function get_fullname() : string
+    public function get_fullname(): string
     {
         return $this->full_name;
     }
@@ -140,7 +140,7 @@ final class Customer
     /**
      * @return string
      */
-    public function get_phone() : string
+    public function get_phone(): string
     {
         return $this->phone;
     }
@@ -154,7 +154,7 @@ final class Customer
     /**
      * @return string
      */
-    public function get_company() : string
+    public function get_company(): string
     {
         return $this->company;
     }
@@ -168,7 +168,7 @@ final class Customer
     /**
      * @return string
      */
-    public function get_email() : string
+    public function get_email(): string
     {
         return $this->email;
     }
@@ -182,7 +182,7 @@ final class Customer
     /**
      * @return string
      */
-    public function get_address() : string
+    public function get_address(): string
     {
         return $this->address;
     }
@@ -196,7 +196,7 @@ final class Customer
     /**
      * @return string
      */
-    public function get_city() : string
+    public function get_city(): string
     {
         return $this->city;
     }
@@ -210,7 +210,7 @@ final class Customer
     /**
      * @return string
      */
-    public function get_post_code() : string
+    public function get_post_code(): string
     {
         return $this->post_code;
     }
@@ -224,7 +224,7 @@ final class Customer
     /**
      * @return string
      */
-    public function get_country() : string
+    public function get_country(): string
     {
         return $this->country;
     }
@@ -238,7 +238,7 @@ final class Customer
     /**
      * @return string
      */
-    public function get_state() : string
+    public function get_state(): string
     {
         return $this->state;
     }
@@ -252,7 +252,7 @@ final class Customer
     /**
      * @return string
      */
-    public function get_vat_number() : string
+    public function get_vat_number(): string
     {
         return $this->vat_number;
     }
@@ -266,7 +266,7 @@ final class Customer
     /**
      * @return string
      */
-    public function get_note() : string
+    public function get_note(): string
     {
         return $this->note;
     }
@@ -280,7 +280,7 @@ final class Customer
     /**
      * @return array
      */
-    public function get_meta() : array
+    public function get_meta(): array
     {
         return $this->meta;
     }

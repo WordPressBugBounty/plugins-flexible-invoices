@@ -4,7 +4,7 @@ namespace WPDeskFIVendor\Mpdf\Tag;
 
 use WPDeskFIVendor\Mpdf\Mpdf;
 use WPDeskFIVendor\Mpdf\Utils\UtfString;
-class Input extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class Input extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -34,7 +34,7 @@ class Input extends \WPDeskFIVendor\Mpdf\Tag\Tag
         if (isset($attr['REQUIRED'])) {
             $objattr['required'] = \true;
         }
-        if (isset($attr['SPELLCHECK']) && \strtolower($attr['SPELLCHECK']) === 'true') {
+        if (isset($attr['SPELLCHECK']) && strtolower($attr['SPELLCHECK']) === 'true') {
             $objattr['spellcheck'] = \true;
         }
         if (isset($attr['TITLE'])) {
@@ -44,19 +44,19 @@ class Input extends \WPDeskFIVendor\Mpdf\Tag\Tag
         } else {
             $objattr['title'] = '';
         }
-        $objattr['title'] = \WPDeskFIVendor\Mpdf\Utils\UtfString::strcode2utf($objattr['title']);
+        $objattr['title'] = UtfString::strcode2utf($objattr['title']);
         $objattr['title'] = $this->mpdf->lesser_entity_decode($objattr['title']);
         if ($this->mpdf->onlyCoreFonts) {
-            $objattr['title'] = \mb_convert_encoding($objattr['title'], $this->mpdf->mb_enc, 'UTF-8');
+            $objattr['title'] = mb_convert_encoding($objattr['title'], $this->mpdf->mb_enc, 'UTF-8');
         }
         if ($this->mpdf->useActiveForms && isset($attr['NAME'])) {
             $objattr['fieldname'] = $attr['NAME'];
         }
         if (isset($attr['VALUE'])) {
-            $attr['VALUE'] = \WPDeskFIVendor\Mpdf\Utils\UtfString::strcode2utf($attr['VALUE']);
+            $attr['VALUE'] = UtfString::strcode2utf($attr['VALUE']);
             $attr['VALUE'] = $this->mpdf->lesser_entity_decode($attr['VALUE']);
             if ($this->mpdf->onlyCoreFonts) {
-                $attr['VALUE'] = \mb_convert_encoding($attr['VALUE'], $this->mpdf->mb_enc, 'UTF-8');
+                $attr['VALUE'] = mb_convert_encoding($attr['VALUE'], $this->mpdf->mb_enc, 'UTF-8');
             }
             $objattr['value'] = $attr['VALUE'];
         }
@@ -67,8 +67,8 @@ class Input extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $this->mpdf->SetFont($properties['FONT-FAMILY'], $this->mpdf->FontStyle, 0, \false);
         }
         if (isset($properties['FONT-SIZE'])) {
-            $mmsize = $this->sizeConverter->convert($properties['FONT-SIZE'], $this->mpdf->default_font_size / \WPDeskFIVendor\Mpdf\Mpdf::SCALE);
-            $this->mpdf->SetFontSize($mmsize * \WPDeskFIVendor\Mpdf\Mpdf::SCALE, \false);
+            $mmsize = $this->sizeConverter->convert($properties['FONT-SIZE'], $this->mpdf->default_font_size / Mpdf::SCALE);
+            $this->mpdf->SetFontSize($mmsize * Mpdf::SCALE, \false);
         }
         if (isset($properties['COLOR'])) {
             $objattr['color'] = $this->colorConverter->convert($properties['COLOR'], $this->mpdf->PDFAXwarnings);
@@ -100,7 +100,7 @@ class Input extends \WPDeskFIVendor\Mpdf\Tag\Tag
         if ($properties['VERTICAL-ALIGN']) {
             $objattr['vertical-align'] = $this->getAlign($properties['VERTICAL-ALIGN']);
         }
-        switch (\strtoupper($attr['TYPE'])) {
+        switch (strtoupper($attr['TYPE'])) {
             case 'HIDDEN':
                 $this->mpdf->ignorefollowingspaces = \true;
                 //Eliminate exceeding left-side spaces
@@ -205,25 +205,22 @@ class Input extends \WPDeskFIVendor\Mpdf\Tag\Tag
                             // WMF units are twips (1/20pt)
                             // divide by 20 to get points
                             // divide by k to get user units
-                            $w = \abs($info['w']) / (20 * \WPDeskFIVendor\Mpdf\Mpdf::SCALE);
-                            $h = \abs($info['h']) / (20 * \WPDeskFIVendor\Mpdf\Mpdf::SCALE);
+                            $w = abs($info['w']) / (20 * Mpdf::SCALE);
+                            $h = abs($info['h']) / (20 * Mpdf::SCALE);
+                        } else if ($info['type'] === 'svg') {
+                            // SVG units are pixels
+                            $w = abs($info['w']) / Mpdf::SCALE;
+                            $h = abs($info['h']) / Mpdf::SCALE;
                         } else {
-                            /* -- END IMAGES-WMF -- */
-                            if ($info['type'] === 'svg') {
-                                // SVG units are pixels
-                                $w = \abs($info['w']) / \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
-                                $h = \abs($info['h']) / \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
-                            } else {
-                                //Put image at default image dpi
-                                $w = $info['w'] / \WPDeskFIVendor\Mpdf\Mpdf::SCALE * (72 / $this->mpdf->img_dpi);
-                                $h = $info['h'] / \WPDeskFIVendor\Mpdf\Mpdf::SCALE * (72 / $this->mpdf->img_dpi);
-                            }
+                            //Put image at default image dpi
+                            $w = $info['w'] / Mpdf::SCALE * (72 / $this->mpdf->img_dpi);
+                            $h = $info['h'] / Mpdf::SCALE * (72 / $this->mpdf->img_dpi);
                         }
                         if (isset($properties['IMAGE-RESOLUTION'])) {
-                            if (\preg_match('/from-image/i', $properties['IMAGE-RESOLUTION']) && isset($info['set-dpi']) && $info['set-dpi'] > 0) {
+                            if (preg_match('/from-image/i', $properties['IMAGE-RESOLUTION']) && isset($info['set-dpi']) && $info['set-dpi'] > 0) {
                                 $w *= $this->mpdf->img_dpi / $info['set-dpi'];
                                 $h *= $this->mpdf->img_dpi / $info['set-dpi'];
-                            } elseif (\preg_match('/(\\d+)dpi/i', $properties['IMAGE-RESOLUTION'], $m)) {
+                            } elseif (preg_match('/(\d+)dpi/i', $properties['IMAGE-RESOLUTION'], $m)) {
                                 $dpi = $m[1];
                                 if ($dpi > 0) {
                                     $w *= $this->mpdf->img_dpi / $dpi;
@@ -265,11 +262,9 @@ class Input extends \WPDeskFIVendor\Mpdf\Tag\Tag
                         $objattr['wmf_x'] = $info['x'];
                         $objattr['wmf_y'] = $info['y'];
                         /* -- END IMAGES-WMF -- */
-                    } else {
-                        if ($info['type'] === 'svg') {
-                            $objattr['wmf_x'] = $info['x'];
-                            $objattr['wmf_y'] = $info['y'];
-                        }
+                    } else if ($info['type'] === 'svg') {
+                        $objattr['wmf_x'] = $info['x'];
+                        $objattr['wmf_y'] = $info['y'];
                     }
                     $objattr['height'] = $h + $extraheight;
                     $objattr['width'] = $w + $extrawidth;
@@ -291,7 +286,7 @@ class Input extends \WPDeskFIVendor\Mpdf\Tag\Tag
             // Draw a button
             case 'SUBMIT':
             case 'RESET':
-                $type = \strtoupper($attr['TYPE']);
+                $type = strtoupper($attr['TYPE']);
                 if ($type === 'IMAGE') {
                     $type = 'BUTTON';
                 }
@@ -300,7 +295,7 @@ class Input extends \WPDeskFIVendor\Mpdf\Tag\Tag
                     $objattr['noprint'] = \true;
                 }
                 if (!isset($attr['VALUE'])) {
-                    $objattr['value'] = \ucfirst(\strtolower($type));
+                    $objattr['value'] = ucfirst(strtolower($type));
                 }
                 $texto = ' ' . $objattr['value'] . ' ';
                 $width = $this->mpdf->GetStringWidth($texto) + $this->form->form_element_spacing['button']['outer']['h'] * 2 + $this->form->form_element_spacing['button']['inner']['h'] * 2;
@@ -315,13 +310,13 @@ class Input extends \WPDeskFIVendor\Mpdf\Tag\Tag
                 if ($type == '') {
                     $type = 'TEXT';
                 }
-                if (\strtoupper($attr['TYPE']) === 'PASSWORD') {
+                if (strtoupper($attr['TYPE']) === 'PASSWORD') {
                     $type = 'PASSWORD';
                 }
                 if (isset($attr['VALUE'])) {
                     if ($type === 'PASSWORD') {
-                        $num_stars = \mb_strlen($attr['VALUE'], $this->mpdf->mb_enc);
-                        $texto = \str_repeat('*', $num_stars);
+                        $num_stars = mb_strlen($attr['VALUE'], $this->mpdf->mb_enc);
+                        $texto = str_repeat('*', $num_stars);
                     } else {
                         $texto = $attr['VALUE'];
                     }
@@ -334,11 +329,11 @@ class Input extends \WPDeskFIVendor\Mpdf\Tag\Tag
                     $width = 20 * $spacesize + $xw;
                 }
                 // Default width in chars
-                if (isset($attr['SIZE']) && \ctype_digit($attr['SIZE'])) {
+                if (isset($attr['SIZE']) && ctype_digit($attr['SIZE'])) {
                     $width = $attr['SIZE'] * $spacesize + $xw;
                 }
                 $height = $this->mpdf->FontSize + $xh;
-                if (isset($attr['MAXLENGTH']) && \ctype_digit($attr['MAXLENGTH'])) {
+                if (isset($attr['MAXLENGTH']) && ctype_digit($attr['MAXLENGTH'])) {
                     $objattr['maxlength'] = $attr['MAXLENGTH'];
                 }
                 if ($this->mpdf->useActiveForms) {
@@ -363,7 +358,7 @@ class Input extends \WPDeskFIVendor\Mpdf\Tag\Tag
         $objattr['text'] = $texto;
         $objattr['width'] = $width;
         $objattr['height'] = $height;
-        $e = "\xbb\xa4\xactype=input,objattr=" . \serialize($objattr) . "\xbb\xa4\xac";
+        $e = "\xbb\xa4\xactype=input,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
         /* -- TABLES -- */
         // Output it to buffers
         if ($this->mpdf->tableLevel) {

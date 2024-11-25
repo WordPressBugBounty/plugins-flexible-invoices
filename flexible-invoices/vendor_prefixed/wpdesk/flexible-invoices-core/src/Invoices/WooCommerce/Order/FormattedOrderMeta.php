@@ -8,14 +8,14 @@ use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\WooCommerce
  */
-class FormattedOrderMeta implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+class FormattedOrderMeta implements Hookable
 {
     /**
      * Fires hooks
      */
     public function hooks()
     {
-        \add_filter('woocommerce_ajax_get_customer_details', [$this, 'get_customer_details'], 10, 2);
+        add_filter('woocommerce_ajax_get_customer_details', [$this, 'get_customer_details'], 10, 2);
     }
     /**
      * @param              $data

@@ -15,21 +15,21 @@ final class BookmarkWriter
      * @var \Mpdf\Writer\BaseWriter
      */
     private $writer;
-    public function __construct(\WPDeskFIVendor\Mpdf\Mpdf $mpdf, \WPDeskFIVendor\Mpdf\Writer\BaseWriter $writer)
+    public function __construct(Mpdf $mpdf, BaseWriter $writer)
     {
         $this->mpdf = $mpdf;
         $this->writer = $writer;
     }
     public function writeBookmarks()
     {
-        $nb = \count($this->mpdf->BMoutlines);
+        $nb = count($this->mpdf->BMoutlines);
         if ($nb === 0) {
             return;
         }
         $bmo = $this->mpdf->BMoutlines;
         $this->mpdf->BMoutlines = [];
         $lastlevel = -1;
-        for ($i = 0; $i < \count($bmo); $i++) {
+        for ($i = 0; $i < count($bmo); $i++) {
             if ($bmo[$i]['l'] > 0) {
                 while ($bmo[$i]['l'] - $lastlevel > 1) {
                     // If jump down more than one level, insert a new entry
@@ -44,7 +44,7 @@ final class BookmarkWriter
             $this->mpdf->BMoutlines[] = $bmo[$i];
             $lastlevel = $bmo[$i]['l'];
         }
-        $nb = \count($this->mpdf->BMoutlines);
+        $nb = count($this->mpdf->BMoutlines);
         $lru = [];
         $level = 0;
         foreach ($this->mpdf->BMoutlines as $i => $o) {
@@ -92,22 +92,22 @@ final class BookmarkWriter
             } else {
                 $h = 0;
             }
-            $this->writer->write(\sprintf('/Dest [%d 0 R /XYZ 0 %.3F null]', 1 + 2 * $o['p'], ($h - $o['y']) * \WPDeskFIVendor\Mpdf\Mpdf::SCALE));
+            $this->writer->write(sprintf('/Dest [%d 0 R /XYZ 0 %.3F null]', 1 + 2 * $o['p'], ($h - $o['y']) * Mpdf::SCALE));
             if (isset($this->mpdf->bookmarkStyles) && isset($this->mpdf->bookmarkStyles[$o['l']])) {
                 // font style
                 $bms = $this->mpdf->bookmarkStyles[$o['l']]['style'];
                 $style = 0;
-                if (\strpos($bms, 'B') !== \false) {
+                if (strpos($bms, 'B') !== \false) {
                     $style += 2;
                 }
-                if (\strpos($bms, 'I') !== \false) {
+                if (strpos($bms, 'I') !== \false) {
                     $style += 1;
                 }
-                $this->writer->write(\sprintf('/F %d', $style));
+                $this->writer->write(sprintf('/F %d', $style));
                 // Colour
                 $col = $this->mpdf->bookmarkStyles[$o['l']]['color'];
-                if (isset($col) && \is_array($col) && \count($col) == 3) {
-                    $this->writer->write(\sprintf('/C [%.3F %.3F %.3F]', $col[0] / 255, $col[1] / 255, $col[2] / 255));
+                if (isset($col) && is_array($col) && count($col) == 3) {
+                    $this->writer->write(sprintf('/C [%.3F %.3F %.3F]', $col[0] / 255, $col[1] / 255, $col[2] / 255));
                 }
             }
             $this->writer->write('/Count 0>>');

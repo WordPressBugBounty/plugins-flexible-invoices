@@ -55,7 +55,7 @@ if ($invoice->get_type() !== 'proforma') {
 echo \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Template::rtl_align('right');
 ?>">
 			<strong><?php 
-echo \esc_html($helper->string_as_money(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\CalculateTotals::calculate_due_price($invoice->get_total_gross(), $invoice->get_total_paid())));
+echo \esc_html($helper->string_as_money(CalculateTotals::calculate_due_price($invoice->get_total_gross(), $invoice->get_total_paid())));
 ?></strong>
 		</td>
 	</tr>

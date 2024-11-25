@@ -4,7 +4,7 @@ namespace WPDeskFIVendor\Mpdf\Tag;
 
 use WPDeskFIVendor\Mpdf\Mpdf;
 use WPDeskFIVendor\Mpdf\Utils\UtfString;
-class TextCircle extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class TextCircle extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -31,24 +31,24 @@ class TextCircle extends \WPDeskFIVendor\Mpdf\Tag\Tag
         $objattr['char-width'] = 100;
         $this->mpdf->InlineProperties['TEXTCIRCLE'] = $this->mpdf->saveInlineProperties();
         $properties = $this->cssManager->MergeCSS('INLINE', 'TEXTCIRCLE', $attr);
-        if (isset($properties['DISPLAY']) && \strtolower($properties['DISPLAY']) === 'none') {
+        if (isset($properties['DISPLAY']) && strtolower($properties['DISPLAY']) === 'none') {
             return;
         }
         if (isset($attr['R'])) {
             $objattr['r'] = $this->sizeConverter->convert($attr['R'], $this->mpdf->blk[$this->mpdf->blklvl]['inner_width'], $this->mpdf->FontSize, \false);
         }
         if (isset($attr['TOP-TEXT'])) {
-            $objattr['top-text'] = \WPDeskFIVendor\Mpdf\Utils\UtfString::strcode2utf($attr['TOP-TEXT']);
+            $objattr['top-text'] = UtfString::strcode2utf($attr['TOP-TEXT']);
             $objattr['top-text'] = $this->mpdf->lesser_entity_decode($objattr['top-text']);
             if ($this->mpdf->onlyCoreFonts) {
-                $objattr['top-text'] = \mb_convert_encoding($objattr['top-text'], $this->mpdf->mb_enc, 'UTF-8');
+                $objattr['top-text'] = mb_convert_encoding($objattr['top-text'], $this->mpdf->mb_enc, 'UTF-8');
             }
         }
         if (isset($attr['BOTTOM-TEXT'])) {
-            $objattr['bottom-text'] = \WPDeskFIVendor\Mpdf\Utils\UtfString::strcode2utf($attr['BOTTOM-TEXT']);
+            $objattr['bottom-text'] = UtfString::strcode2utf($attr['BOTTOM-TEXT']);
             $objattr['bottom-text'] = $this->mpdf->lesser_entity_decode($objattr['bottom-text']);
             if ($this->mpdf->onlyCoreFonts) {
-                $objattr['bottom-text'] = \mb_convert_encoding($objattr['bottom-text'], $this->mpdf->mb_enc, 'UTF-8');
+                $objattr['bottom-text'] = mb_convert_encoding($objattr['bottom-text'], $this->mpdf->mb_enc, 'UTF-8');
             }
         }
         if (!empty($attr['SPACE-WIDTH'])) {
@@ -60,29 +60,29 @@ class TextCircle extends \WPDeskFIVendor\Mpdf\Tag\Tag
         // VISIBILITY
         $objattr['visibility'] = 'visible';
         if (isset($properties['VISIBILITY'])) {
-            $v = \strtolower($properties['VISIBILITY']);
+            $v = strtolower($properties['VISIBILITY']);
             if (($v === 'hidden' || $v === 'printonly' || $v === 'screenonly') && $this->mpdf->visibility === 'visible') {
                 $objattr['visibility'] = $v;
             }
         }
         if (isset($properties['FONT-SIZE'])) {
-            if (\strtolower($properties['FONT-SIZE']) === 'auto') {
+            if (strtolower($properties['FONT-SIZE']) === 'auto') {
                 if ($objattr['top-text'] && $objattr['bottom-text']) {
                     $objattr['fontsize'] = -2;
                 } else {
                     $objattr['fontsize'] = -1;
                 }
             } else {
-                $mmsize = $this->sizeConverter->convert($properties['FONT-SIZE'], $this->mpdf->default_font_size / \WPDeskFIVendor\Mpdf\Mpdf::SCALE);
-                $this->mpdf->SetFontSize($mmsize * \WPDeskFIVendor\Mpdf\Mpdf::SCALE, \false);
+                $mmsize = $this->sizeConverter->convert($properties['FONT-SIZE'], $this->mpdf->default_font_size / Mpdf::SCALE);
+                $this->mpdf->SetFontSize($mmsize * Mpdf::SCALE, \false);
                 $objattr['fontsize'] = $this->mpdf->FontSizePt;
             }
         }
         if (isset($attr['DIVIDER'])) {
-            $objattr['divider'] = \WPDeskFIVendor\Mpdf\Utils\UtfString::strcode2utf($attr['DIVIDER']);
+            $objattr['divider'] = UtfString::strcode2utf($attr['DIVIDER']);
             $objattr['divider'] = $this->mpdf->lesser_entity_decode($objattr['divider']);
             if ($this->mpdf->onlyCoreFonts) {
-                $objattr['divider'] = \mb_convert_encoding($objattr['divider'], $this->mpdf->mb_enc, 'UTF-8');
+                $objattr['divider'] = mb_convert_encoding($objattr['divider'], $this->mpdf->mb_enc, 'UTF-8');
             }
         }
         if (isset($properties['COLOR'])) {
@@ -90,12 +90,12 @@ class TextCircle extends \WPDeskFIVendor\Mpdf\Tag\Tag
         }
         $objattr['fontstyle'] = '';
         if (isset($properties['FONT-WEIGHT'])) {
-            if (\strtoupper($properties['FONT-WEIGHT']) === 'BOLD') {
+            if (strtoupper($properties['FONT-WEIGHT']) === 'BOLD') {
                 $objattr['fontstyle'] .= 'B';
             }
         }
         if (isset($properties['FONT-STYLE'])) {
-            if (\strtoupper($properties['FONT-STYLE']) === 'ITALIC') {
+            if (strtoupper($properties['FONT-STYLE']) === 'ITALIC') {
                 $objattr['fontstyle'] .= 'I';
             }
         }
@@ -149,9 +149,9 @@ class TextCircle extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $objattr['bgcolor'] = \false;
         }
         if ($this->mpdf->HREF) {
-            if (\strpos($this->mpdf->HREF, '.') === \false && \strpos($this->mpdf->HREF, '@') !== 0) {
+            if (strpos($this->mpdf->HREF, '.') === \false && strpos($this->mpdf->HREF, '@') !== 0) {
                 $href = $this->mpdf->HREF;
-                while (\array_key_exists($href, $this->mpdf->internallink)) {
+                while (array_key_exists($href, $this->mpdf->internallink)) {
                     $href = '#' . $href;
                 }
                 $this->mpdf->internallink[$href] = $this->mpdf->AddLink();
@@ -167,7 +167,7 @@ class TextCircle extends \WPDeskFIVendor\Mpdf\Tag\Tag
         $objattr['height'] = $h + $extraheight;
         $objattr['width'] = $w + $extrawidth;
         $objattr['type'] = 'textcircle';
-        $e = "\xbb\xa4\xactype=image,objattr=" . \serialize($objattr) . "\xbb\xa4\xac";
+        $e = "\xbb\xa4\xactype=image,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
         /* -- TABLES -- */
         // Output it to buffers
         if ($this->mpdf->tableLevel) {

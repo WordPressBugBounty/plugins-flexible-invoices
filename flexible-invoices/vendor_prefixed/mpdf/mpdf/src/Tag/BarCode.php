@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class BarCode extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class BarCode extends Tag
 {
     /**
      * @var \Mpdf\Barcode
@@ -29,15 +29,15 @@ class BarCode extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $objattr['border_right']['w'] = 0;
             $objattr['code'] = $attr['CODE'];
             if (isset($attr['TYPE'])) {
-                $objattr['btype'] = \strtoupper(\trim($attr['TYPE']));
+                $objattr['btype'] = strtoupper(trim($attr['TYPE']));
             } else {
                 $objattr['btype'] = 'EAN13';
             }
             // default
-            if (\preg_match('/^(EAN13|ISBN|ISSN|EAN8|UPCA|UPCE)P([25])$/', $objattr['btype'], $m)) {
+            if (preg_match('/^(EAN13|ISBN|ISSN|EAN8|UPCA|UPCE)P([25])$/', $objattr['btype'], $m)) {
                 $objattr['btype'] = $m[1];
                 $objattr['bsupp'] = $m[2];
-                if (\preg_match('/^(\\S+)\\s+(.*)$/', $objattr['code'], $mm)) {
+                if (preg_match('/^(\S+)\s+(.*)$/', $objattr['code'], $mm)) {
                     $objattr['code'] = $mm[1];
                     $objattr['bsupp_code'] = $mm[2];
                 }
@@ -65,7 +65,7 @@ class BarCode extends \WPDeskFIVendor\Mpdf\Tag\Tag
                 $objattr['pr_ratio'] = '';
             }
             $properties = $this->cssManager->MergeCSS('', 'BARCODE', $attr);
-            if (isset($properties['DISPLAY']) && \strtolower($properties['DISPLAY']) === 'none') {
+            if (isset($properties['DISPLAY']) && strtolower($properties['DISPLAY']) === 'none') {
                 return;
             }
             if (isset($properties['MARGIN-TOP'])) {
@@ -118,8 +118,8 @@ class BarCode extends \WPDeskFIVendor\Mpdf\Tag\Tag
                 $objattr['bgcolor'] = \false;
             }
             $this->barcode = new \WPDeskFIVendor\Mpdf\Barcode();
-            if (\in_array($objattr['btype'], ['EAN13', 'ISBN', 'ISSN', 'UPCA', 'UPCE', 'EAN8'])) {
-                $code = \preg_replace('/\\-/', '', $objattr['code']);
+            if (in_array($objattr['btype'], ['EAN13', 'ISBN', 'ISSN', 'UPCA', 'UPCE', 'EAN8'])) {
+                $code = preg_replace('/\-/', '', $objattr['code']);
                 $arrcode = $this->barcode->getBarcodeArray($code, $objattr['btype']);
                 if ($objattr['bsupp'] == 2 || $objattr['bsupp'] == 5) {
                     // EAN-2 or -5 Supplement
@@ -148,11 +148,11 @@ class BarCode extends \WPDeskFIVendor\Mpdf\Tag\Tag
                 if (isset($attr['DISABLEBORDER'])) {
                     $objattr['disableborder'] = (bool) $attr['DISABLEBORDER'];
                 }
-            } elseif (\in_array($objattr['btype'], ['IMB', 'RM4SCC', 'KIX', 'POSTNET', 'PLANET'])) {
+            } elseif (in_array($objattr['btype'], ['IMB', 'RM4SCC', 'KIX', 'POSTNET', 'PLANET'])) {
                 $arrcode = $this->barcode->getBarcodeArray($objattr['code'], $objattr['btype']);
                 $w = $arrcode['maxw'] * $arrcode['nom-X'] * $objattr['bsize'] + $arrcode['quietL'] + $arrcode['quietR'];
                 $h = $arrcode['nom-H'] * $objattr['bsize'] + 2 * $arrcode['quietTB'];
-            } elseif (\in_array($objattr['btype'], ['C128A', 'C128B', 'C128C', 'C128RAW', 'EAN128A', 'EAN128B', 'EAN128C', 'C39', 'C39+', 'C39E', 'C39E+', 'S25', 'S25+', 'I25', 'I25+', 'I25B', 'I25B+', 'C93', 'MSI', 'MSI+', 'CODABAR', 'CODE11'])) {
+            } elseif (in_array($objattr['btype'], ['C128A', 'C128B', 'C128C', 'C128RAW', 'EAN128A', 'EAN128B', 'EAN128C', 'C39', 'C39+', 'C39E', 'C39E+', 'S25', 'S25+', 'I25', 'I25+', 'I25B', 'I25B+', 'C93', 'MSI', 'MSI+', 'CODABAR', 'CODE11'])) {
                 $arrcode = $this->barcode->getBarcodeArray($objattr['code'], $objattr['btype'], $objattr['pr_ratio']);
                 $w = ($arrcode['maxw'] + $arrcode['lightmL'] + $arrcode['lightmR']) * $arrcode['nom-X'] * $objattr['bsize'];
                 $h = (2 * $arrcode['lightTB'] * $arrcode['nom-X'] + $arrcode['nom-H']) * $objattr['bsize'] * $objattr['bheight'];
@@ -168,12 +168,12 @@ class BarCode extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $objattr['barcode_width'] = $w;
             /* -- CSS-IMAGE-FLOAT -- */
             if (!$this->mpdf->ColActive && !$this->mpdf->tableLevel && !$this->mpdf->listlvl && !$this->mpdf->kwt) {
-                if (isset($properties['FLOAT']) && (\strtoupper($properties['FLOAT']) === 'RIGHT' || \strtoupper($properties['FLOAT']) === 'LEFT')) {
-                    $objattr['float'] = \strtoupper(\substr($properties['FLOAT'], 0, 1));
+                if (isset($properties['FLOAT']) && (strtoupper($properties['FLOAT']) === 'RIGHT' || strtoupper($properties['FLOAT']) === 'LEFT')) {
+                    $objattr['float'] = strtoupper(substr($properties['FLOAT'], 0, 1));
                 }
             }
             /* -- END CSS-IMAGE-FLOAT -- */
-            $e = "\xbb\xa4\xactype=barcode,objattr=" . \serialize($objattr) . "\xbb\xa4\xac";
+            $e = "\xbb\xa4\xactype=barcode,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
             /* -- TABLES -- */
             // Output it to buffers
             if ($this->mpdf->tableLevel) {

@@ -152,7 +152,7 @@ class Indic
              *
              * We recategorize the first kind to look like a Nukta and attached to the base directly.
              */
-            if ($info['general_category'] == \WPDeskFIVendor\Mpdf\Ucdn::UNICODE_GENERAL_CATEGORY_NON_SPACING_MARK) {
+            if ($info['general_category'] == Ucdn::UNICODE_GENERAL_CATEGORY_NON_SPACING_MARK) {
                 $cat = self::OT_N;
             }
         }
@@ -161,7 +161,7 @@ class Indic
          */
         if (self::FLAG($cat) & (self::FLAG(self::OT_C) | self::FLAG(self::OT_CM) | self::FLAG(self::OT_RA) | self::FLAG(self::OT_V) | self::FLAG(self::OT_NBSP) | self::FLAG(self::OT_DOTTEDCIRCLE))) {
             // = CONSONANT_FLAGS like is_consonant
-            if ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_KHMER) {
+            if ($scriptblock == Ucdn::SCRIPT_KHMER) {
                 $pos = self::POS_BELOW_C;
             } else {
                 $pos = self::POS_BASE_C;
@@ -193,33 +193,33 @@ class Indic
         $ptr = 0;
         $syllable_serial = 1;
         $broken_syllables = \false;
-        while ($ptr < \strlen($s)) {
+        while ($ptr < strlen($s)) {
             $match = '';
             $syllable_length = 1;
             $syllable_type = self::NON_INDIC_CLUSTER;
             // CONSONANT_SYLLABLE Consonant syllable
             // From OT spec:
-            if (\preg_match('/^([CR]m*[N]?(H[ZJ]?|[ZJ]H))*[CR]m*[N]?[A]?(H[ZJ]?|[M]*[N]?[H]?)?[S]?[v]{0,2}/', \substr($s, $ptr), $ma)) {
+            if (preg_match('/^([CR]m*[N]?(H[ZJ]?|[ZJ]H))*[CR]m*[N]?[A]?(H[ZJ]?|[M]*[N]?[H]?)?[S]?[v]{0,2}/', substr($s, $ptr), $ma)) {
                 // From HarfBuzz:
                 //if (preg_match('/^r?([CR]J?(Z?[N]{0,2})?[ZJ]?H(J[N]?)?){0,4}[CR]J?(Z?[N]{0,2})?A?((([ZJ]?H(J[N]?)?)|HZ)|(HJ)?([ZJ]{0,3}M[N]?(H|JHJR)?){0,4})?(S[Z]?)?[v]{0,2}/', substr($s,$ptr), $ma)) {
-                $syllable_length = \strlen($ma[0]);
+                $syllable_length = strlen($ma[0]);
                 $syllable_type = self::CONSONANT_SYLLABLE;
-            } elseif (\preg_match('/^(RH|r)?V[N]?([ZJ]?H[CR]m*|J[CR]m*)?([M]*[N]?[H]?)?[S]?[v]{0,2}/', \substr($s, $ptr), $ma)) {
+            } elseif (preg_match('/^(RH|r)?V[N]?([ZJ]?H[CR]m*|J[CR]m*)?([M]*[N]?[H]?)?[S]?[v]{0,2}/', substr($s, $ptr), $ma)) {
                 // From HarfBuzz:
                 //else if (preg_match('/^(RH|r)?V(Z?[N]{0,2})?(J|([ZJ]?H(J[N]?)?[CR]J?(Z?[N]{0,2})?){0,4}((([ZJ]?H(J[N]?)?)|HZ)|(HJ)?([ZJ]{0,3}M[N]?(H|JHJR)?){0,4})?(S[Z]?)?[v]{0,2})/', substr($s,$ptr), $ma)) {
-                $syllable_length = \strlen($ma[0]);
+                $syllable_length = strlen($ma[0]);
                 $syllable_type = self::VOWEL_SYLLABLE;
-            } elseif (($ptr == 0 || $o[$ptr - 1]['general_category'] < \WPDeskFIVendor\Mpdf\Ucdn::UNICODE_GENERAL_CATEGORY_LOWERCASE_LETTER || $o[$ptr - 1]['general_category'] > \WPDeskFIVendor\Mpdf\Ucdn::UNICODE_GENERAL_CATEGORY_NON_SPACING_MARK) && \preg_match('/^(RH|r)?[sD][N]?([ZJ]?H[CR]m*)?([M]*[N]?[H]?)?[S]?[v]{0,2}/', \substr($s, $ptr), $ma)) {
+            } elseif (($ptr == 0 || $o[$ptr - 1]['general_category'] < Ucdn::UNICODE_GENERAL_CATEGORY_LOWERCASE_LETTER || $o[$ptr - 1]['general_category'] > Ucdn::UNICODE_GENERAL_CATEGORY_NON_SPACING_MARK) && preg_match('/^(RH|r)?[sD][N]?([ZJ]?H[CR]m*)?([M]*[N]?[H]?)?[S]?[v]{0,2}/', substr($s, $ptr), $ma)) {
                 // From HarfBuzz:
                 // && (preg_match('/^(RH|r)?[sD](Z?[N]{0,2})?(([ZJ]?H(J[N]?)?)[CR]J?(Z?[N]{0,2})?){0,4}((([ZJ]?H(J[N]?)?)|HZ)|(HJ)?([ZJ]{0,3}M[N]?(H|JHJR)?){0,4})?(S[Z]?)?[v]{0,2}/', substr($s,$ptr), $ma)) {
-                $syllable_length = \strlen($ma[0]);
+                $syllable_length = strlen($ma[0]);
                 $syllable_type = self::STANDALONE_CLUSTER;
-            } elseif (\preg_match('/^(RH|r)?[N]?([ZJ]?H[CR])?([M]*[N]?[H]?)?[S]?[v]{0,2}/', \substr($s, $ptr), $ma)) {
+            } elseif (preg_match('/^(RH|r)?[N]?([ZJ]?H[CR])?([M]*[N]?[H]?)?[S]?[v]{0,2}/', substr($s, $ptr), $ma)) {
                 // From HarfBuzz:
                 //else if (preg_match('/^(RH|r)?(Z?[N]{0,2})?(([ZJ]?H(J[N]?)?)[CR]J?(Z?[N]{0,2})?){0,4}((([ZJ]?H(J[N]?)?)|HZ)|(HJ)?([ZJ]{0,3}M[N]?(H|JHJR)?){0,4})(S[Z]?)?[v]{0,2}/', substr($s,$ptr), $ma)) {
-                if (\strlen($ma[0])) {
+                if (strlen($ma[0])) {
                     // May match blank
-                    $syllable_length = \strlen($ma[0]);
+                    $syllable_length = strlen($ma[0]);
                     $syllable_type = self::BROKEN_CLUSTER;
                     $broken_syllables = \true;
                 }
@@ -239,17 +239,17 @@ class Indic
         $ptr = 0;
         $syllable_serial = 1;
         $broken_syllables = \false;
-        while ($ptr < \strlen($s)) {
+        while ($ptr < strlen($s)) {
             $match = '';
             $syllable_length = 1;
             $syllable_type = self::NON_INDIC_CLUSTER;
             // CONSONANT_SYLLABLE Consonant syllable
             // From OT spec:
-            if (\preg_match('/^([CR]HJ|[CR]JH){0,8}[CR][HM]{0,3}[S]{0,1}/', \substr($s, $ptr), $ma)) {
-                $syllable_length = \strlen($ma[0]);
+            if (preg_match('/^([CR]HJ|[CR]JH){0,8}[CR][HM]{0,3}[S]{0,1}/', substr($s, $ptr), $ma)) {
+                $syllable_length = strlen($ma[0]);
                 $syllable_type = self::CONSONANT_SYLLABLE;
-            } elseif (\preg_match('/^V[S]{0,1}/', \substr($s, $ptr), $ma)) {
-                $syllable_length = \strlen($ma[0]);
+            } elseif (preg_match('/^V[S]{0,1}/', substr($s, $ptr), $ma)) {
+                $syllable_length = strlen($ma[0]);
                 $syllable_type = self::VOWEL_SYLLABLE;
             }
             for ($i = $ptr; $i < $ptr + $syllable_length; $i++) {
@@ -267,21 +267,21 @@ class Indic
         $ptr = 0;
         $syllable_serial = 1;
         $broken_syllables = \false;
-        while ($ptr < \strlen($s)) {
+        while ($ptr < strlen($s)) {
             $match = '';
             $syllable_length = 1;
             $syllable_type = self::NON_INDIC_CLUSTER;
             // CONSONANT_SYLLABLE Consonant syllable
-            if (\preg_match('/^r?([CR]J?((Z?F)?[N]{0,2})?[ZJ]?G(JN?)?){0,4}[CR]J?((Z?F)?[N]{0,2})?A?((([ZJ]?G(JN?)?)|GZ)|(GJ)?([ZJ]{0,3}MN?(H|JHJR)?){0,4})?(G([CR]J?((Z?F)?[N]{0,2})?|V))?(SZ?)?[v]{0,2}/', \substr($s, $ptr), $ma)) {
-                $syllable_length = \strlen($ma[0]);
+            if (preg_match('/^r?([CR]J?((Z?F)?[N]{0,2})?[ZJ]?G(JN?)?){0,4}[CR]J?((Z?F)?[N]{0,2})?A?((([ZJ]?G(JN?)?)|GZ)|(GJ)?([ZJ]{0,3}MN?(H|JHJR)?){0,4})?(G([CR]J?((Z?F)?[N]{0,2})?|V))?(SZ?)?[v]{0,2}/', substr($s, $ptr), $ma)) {
+                $syllable_length = strlen($ma[0]);
                 $syllable_type = self::CONSONANT_SYLLABLE;
-            } elseif (\preg_match('/^(RH|r)?V((Z?F)?[N]{0,2})?(J|([ZJ]?G(JN?)?[CR]J?((Z?F)?[N]{0,2})?){0,4}((([ZJ]?G(JN?)?)|GZ)|(GJ)?([ZJ]{0,3}MN?(H|JHJR)?){0,4})?(G([CR]J?((Z?F)?[N]{0,2})?|V))?(SZ?)?[v]{0,2})/', \substr($s, $ptr), $ma)) {
-                $syllable_length = \strlen($ma[0]);
+            } elseif (preg_match('/^(RH|r)?V((Z?F)?[N]{0,2})?(J|([ZJ]?G(JN?)?[CR]J?((Z?F)?[N]{0,2})?){0,4}((([ZJ]?G(JN?)?)|GZ)|(GJ)?([ZJ]{0,3}MN?(H|JHJR)?){0,4})?(G([CR]J?((Z?F)?[N]{0,2})?|V))?(SZ?)?[v]{0,2})/', substr($s, $ptr), $ma)) {
+                $syllable_length = strlen($ma[0]);
                 $syllable_type = self::VOWEL_SYLLABLE;
-            } elseif (\preg_match('/^(RH|r)?((Z?F)?[N]{0,2})?(([ZJ]?G(JN?)?)[CR]J?((Z?F)?[N]{0,2})?){0,4}((([ZJ]?G(JN?)?)|GZ)|(GJ)?([ZJ]{0,3}MN?(H|JHJR)?){0,4})(G([CR]J?((Z?F)?[N]{0,2})?|V))?(SZ?)?[v]{0,2}/', \substr($s, $ptr), $ma)) {
-                if (\strlen($ma[0])) {
+            } elseif (preg_match('/^(RH|r)?((Z?F)?[N]{0,2})?(([ZJ]?G(JN?)?)[CR]J?((Z?F)?[N]{0,2})?){0,4}((([ZJ]?G(JN?)?)|GZ)|(GJ)?([ZJ]{0,3}MN?(H|JHJR)?){0,4})(G([CR]J?((Z?F)?[N]{0,2})?|V))?(SZ?)?[v]{0,2}/', substr($s, $ptr), $ma)) {
+                if (strlen($ma[0])) {
                     // May match blank
-                    $syllable_length = \strlen($ma[0]);
+                    $syllable_length = strlen($ma[0]);
                     $syllable_type = self::BROKEN_CLUSTER;
                     $broken_syllables = \true;
                 }
@@ -302,7 +302,7 @@ class Indic
         if ($broken_syllables && $dottedcircle) {
             self::insert_dotted_circles($info, $dottedcircle);
         }
-        $count = \count($info);
+        $count = count($info);
         if (!$count) {
             return;
         }
@@ -319,7 +319,7 @@ class Indic
     }
     public static function update_consonant_positions(&$info, $GSUBdata)
     {
-        $count = \count($info);
+        $count = count($info);
         for ($i = 0; $i < $count; $i++) {
             if ($info[$i]['indic_position'] == self::POS_BASE_C) {
                 $c = $info[$i]['uni'];
@@ -338,17 +338,17 @@ class Indic
     {
         $idx = 0;
         $last_syllable = 0;
-        while ($idx < \count($info)) {
+        while ($idx < count($info)) {
             $syllable = $info[$idx]['syllable'];
             $syllable_type = $syllable & 0xf;
             if ($last_syllable != $syllable && $syllable_type == self::BROKEN_CLUSTER) {
                 $last_syllable = $syllable;
                 $dottedcircle[0]['syllable'] = $info[$idx]['syllable'];
                 /* Insert dottedcircle after possible Repha. */
-                while ($idx < \count($info) && $last_syllable == $info[$idx]['syllable'] && $info[$idx]['indic_category'] == self::OT_REPHA) {
+                while ($idx < count($info) && $last_syllable == $info[$idx]['syllable'] && $info[$idx]['indic_category'] == self::OT_REPHA) {
                     $idx++;
                 }
-                \array_splice($info, $idx, 0, $dottedcircle);
+                array_splice($info, $idx, 0, $dottedcircle);
             } else {
                 $idx++;
             }
@@ -402,11 +402,11 @@ class Indic
         $base = $end;
         $has_reph = \false;
         $limit = $start;
-        if ($scriptblock != \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_KHMER) {
+        if ($scriptblock != Ucdn::SCRIPT_KHMER) {
             /* -> If the syllable starts with Ra + Halant (in a script that has Reph)
              * 	and has more than one consonant, Ra is excluded from candidates for
              * 	base consonants. */
-            if (\count($GSUBdata['rphf']) && $start + 3 <= $end && ($indic_config[4] == self::REPH_MODE_IMPLICIT && !self::is_joiner($info[$start + 2]) || $indic_config[4] == self::REPH_MODE_EXPLICIT && $info[$start + 2]['indic_category'] == self::OT_ZWJ)) {
+            if (count($GSUBdata['rphf']) && $start + 3 <= $end && ($indic_config[4] == self::REPH_MODE_IMPLICIT && !self::is_joiner($info[$start + 2]) || $indic_config[4] == self::REPH_MODE_EXPLICIT && $info[$start + 2]['indic_category'] == self::OT_ZWJ)) {
                 /* See if it matches the 'rphf' feature. */
                 //$glyphs = array($info[$start]['uni'], $info[$start + 1]['uni']);
                 //if ($indic_plan->rphf->would_substitute ($glyphs, count($glyphs), true, face)) {
@@ -463,7 +463,7 @@ class Indic
                          * search continues. This is particularly important for Bengali
                          * sequence Ra,H,Ya that should form Ya-Phalaa by subjoining Ya] */
                         if ($start < $i && $info[$i]['indic_category'] == self::OT_ZWJ && $info[$i - 1]['indic_category'] == self::OT_H) {
-                            if (!\defined("OMIT_INDIC_FIX_1") || OMIT_INDIC_FIX_1 != 1) {
+                            if (!defined("OMIT_INDIC_FIX_1") || OMIT_INDIC_FIX_1 != 1) {
                                 $base = $i;
                             }
                             // INDIC_FIX_1
@@ -505,7 +505,7 @@ class Indic
          * 	base consonants.
          *
          * 	Only do this for unforced Reph. (ie. not for Ra,H,ZWJ. */
-        if ($scriptblock != \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_KHMER) {
+        if ($scriptblock != Ucdn::SCRIPT_KHMER) {
             if ($has_reph && $base == $start && $limit - $base <= 2) {
                 /* Have no other consonant, so Reph is not formed and Ra becomes base. */
                 $has_reph = \false;
@@ -541,7 +541,7 @@ class Indic
          */
         /* Reorder characters */
         for ($i = $start; $i < $base; $i++) {
-            $info[$i]['indic_position'] = \min(self::POS_PRE_C, $info[$i]['indic_position']);
+            $info[$i]['indic_position'] = min(self::POS_PRE_C, $info[$i]['indic_position']);
         }
         if ($base < $end) {
             $info[$base]['indic_position'] = self::POS_BASE_C;
@@ -560,7 +560,7 @@ class Indic
             }
         }
         /* Handle beginning Ra */
-        if ($scriptblock != \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_KHMER) {
+        if ($scriptblock != Ucdn::SCRIPT_KHMER) {
             if ($has_reph) {
                 $info[$start]['indic_position'] = self::POS_RA_TO_BECOME_REPH;
             }
@@ -623,7 +623,7 @@ class Indic
                 }
             }
         }
-        if ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_KHMER) {
+        if ($scriptblock == Ucdn::SCRIPT_KHMER) {
             /* KHMER_FIX_2 */
             /* Move Coeng+RO (Halant,Ra) sequence before base consonant. */
             for ($i = $base + 1; $i < $end; $i++) {
@@ -650,7 +650,7 @@ class Indic
         for ($i = $start; $i < $end; $i++) {
             $info[$i]['mask'] = 0;
         }
-        if ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_KHMER) {
+        if ($scriptblock == Ucdn::SCRIPT_KHMER) {
             /* Find a Coeng+RO (Halant,Ra) sequence and mark it for pre-base processing. */
             $mask = self::FLAG(self::PREF);
             for ($i = $base; $i < $end - 1; $i++) {
@@ -681,7 +681,7 @@ class Indic
                 break;
             }
         }
-        if ($scriptblock != \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_KHMER) {
+        if ($scriptblock != Ucdn::SCRIPT_KHMER) {
             /* Reph */
             for ($i = $start; $i < $end; $i++) {
                 if ($info[$i]['indic_position'] == self::POS_RA_TO_BECOME_REPH) {
@@ -699,8 +699,8 @@ class Indic
         for ($i = $base + 1; $i < $end; $i++) {
             $info[$i]['mask'] |= $mask;
         }
-        if ($scriptblock != \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_KHMER) {
-            if (!\defined("OMIT_INDIC_FIX_3") || OMIT_INDIC_FIX_3 != 1) {
+        if ($scriptblock != Ucdn::SCRIPT_KHMER) {
+            if (!defined("OMIT_INDIC_FIX_3") || OMIT_INDIC_FIX_3 != 1) {
                 /* INDIC_FIX_3 */
                 /* Find a (pre-base) Consonant, Halant,Ra sequence and mark Halant|Ra for below-base BLWF processing. */
                 // TEST CASE &#x995;&#x9cd;&#x9b0;&#x9cd;&#x995; in FreeSans versus Vrinda
@@ -723,7 +723,7 @@ class Indic
                 }
             }
         }
-        if ($is_old_spec && $scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_DEVANAGARI) {
+        if ($is_old_spec && $scriptblock == Ucdn::SCRIPT_DEVANAGARI) {
             /* Old-spec eye-lash Ra needs special handling.	From the spec:
              * "The feature 'below-base form' is applied to consonants
              * having below-base forms and following the base consonant.
@@ -747,8 +747,8 @@ class Indic
                 }
             }
         }
-        if ($scriptblock != \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_KHMER) {
-            if (\count($GSUBdata['pref']) && $base + 2 < $end) {
+        if ($scriptblock != Ucdn::SCRIPT_KHMER) {
+            if (count($GSUBdata['pref']) && $base + 2 < $end) {
                 /* Find a Halant,Ra sequence and mark it for pre-base processing. */
                 for ($i = $base + 1; $i + 1 < $end; $i++) {
                     // If old_spec find Ra-Halant...
@@ -766,7 +766,7 @@ class Indic
                 $non_joiner = $info[$i]['indic_category'] == self::OT_ZWNJ;
                 $j = $i;
                 while ($j > $start) {
-                    if (\defined("OMIT_INDIC_FIX_4") && OMIT_INDIC_FIX_4 == 1) {
+                    if (defined("OMIT_INDIC_FIX_4") && OMIT_INDIC_FIX_4 == 1) {
                         // INDIC_FIX_4 = do nothing - carry on //
                         // ZWNJ should block H C from forming blwf post-base - need to unmask backwards beyond first consonant arrived at //
                         if (!self::is_consonant($info[$j])) {
@@ -787,7 +787,7 @@ class Indic
     }
     public static function final_reordering(&$info, $GSUBdata, $indic_config, $scriptblock, $is_old_spec)
     {
-        $count = \count($info);
+        $count = count($info);
         if (!$count) {
             return;
         }
@@ -843,7 +843,7 @@ class Indic
              * The glyphs formed by 'half' are Chillus or ligated explicit viramas.
              * We want to position matra after them.
              */
-            if ($scriptblock != \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_MALAYALAM && $scriptblock != \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_TAMIL) {
+            if ($scriptblock != Ucdn::SCRIPT_MALAYALAM && $scriptblock != Ucdn::SCRIPT_TAMIL) {
                 while ($new_pos > $start && !self::is_one_of($info[$new_pos], self::FLAG(self::OT_M) | self::FLAG(self::OT_H) | self::FLAG(self::OT_COENG))) {
                     $new_pos--;
                 }
@@ -1006,7 +1006,7 @@ class Indic
          * 	If a pre-base reordering consonant is found, reorder it according to
          * 	the following rules:
          */
-        if (\count($GSUBdata['pref']) && $base + 1 < $end) {
+        if (count($GSUBdata['pref']) && $base + 1 < $end) {
             /* Otherwise there can't be any pre-base reordering Ra. */
             for ($i = $base + 1; $i < $end; $i++) {
                 if ($info[$i]['mask'] & self::FLAG(self::PREF)) {
@@ -1028,7 +1028,7 @@ class Indic
                          * The glyphs formed by 'half' are Chillus or ligated explicit viramas.
                          * We want to position matra after them.
                          */
-                        if ($scriptblock != \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_MALAYALAM && $scriptblock != \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_TAMIL) {
+                        if ($scriptblock != Ucdn::SCRIPT_MALAYALAM && $scriptblock != Ucdn::SCRIPT_TAMIL) {
                             while ($new_pos > $start && !self::is_one_of($info[$new_pos - 1], self::FLAG(self::OT_M) | self::FLAG(self::OT_H) | self::FLAG(self::OT_COENG))) {
                                 $new_pos--;
                             }
@@ -1061,7 +1061,7 @@ class Indic
             }
         }
         /* Apply 'init' to the Left Matra if it's a word start. */
-        if ($info[$start]['indic_position'] == self::POS_PRE_M && ($start == 0 || ($info[$start - 1]['general_category'] < \WPDeskFIVendor\Mpdf\Ucdn::UNICODE_GENERAL_CATEGORY_FORMAT || $info[$start - 1]['general_category'] > \WPDeskFIVendor\Mpdf\Ucdn::UNICODE_GENERAL_CATEGORY_NON_SPACING_MARK))) {
+        if ($info[$start]['indic_position'] == self::POS_PRE_M && ($start == 0 || ($info[$start - 1]['general_category'] < Ucdn::UNICODE_GENERAL_CATEGORY_FORMAT || $info[$start - 1]['general_category'] > Ucdn::UNICODE_GENERAL_CATEGORY_NON_SPACING_MARK))) {
             $info[$start]['mask'] |= self::FLAG(self::INIT);
         }
         /*
@@ -1073,11 +1073,11 @@ class Indic
         $t = [];
         $t[0] = $info[$from];
         if ($from > $to) {
-            \array_splice($info, $from, 1);
-            \array_splice($info, $to, 0, $t);
+            array_splice($info, $from, 1);
+            array_splice($info, $to, 0, $t);
         } else {
-            \array_splice($info, $to, 0, $t);
-            \array_splice($info, $from, 1);
+            array_splice($info, $to, 0, $t);
+            array_splice($info, $from, 1);
         }
     }
     public static $ra_chars = [

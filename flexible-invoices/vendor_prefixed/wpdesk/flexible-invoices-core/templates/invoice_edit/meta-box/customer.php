@@ -66,7 +66,7 @@ echo \esc_html($client->get_postcode());
 			<?php 
 \esc_html_e('Country', 'flexible-invoices');
 ?>: <span><?php 
-echo \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Countries::get_country_label($client->get_country());
+echo Helpers\Countries::get_country_label($client->get_country());
 ?></span>
 		</div>
 		<?php 
@@ -78,7 +78,7 @@ echo $state_style;
 			<?php 
 \esc_html_e('State', 'flexible-invoices');
 ?>: <span><?php 
-echo \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Countries::get_country_state_label($client->get_state(), $client->get_country());
+echo Helpers\Countries::get_country_state_label($client->get_state(), $client->get_country());
 ?></span>
 		</div>
 		<div class="inspire_invoices_client_phone">
@@ -197,7 +197,7 @@ echo \esc_attr($client->get_postcode());
 $fake_option = '';
 $countries = [];
 $states = [];
-if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active()) {
+if (Helpers\WooCommerce::is_active()) {
     $countries = \WC()->countries->get_countries();
 }
 $client_country = $client->get_country();
@@ -208,7 +208,7 @@ if (!isset($countries[$client_country]) && !empty($client_country)) {
 if (empty($client_country)) {
     $client_country = \get_option('woocommerce_default_country');
 }
-if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active()) {
+if (Helpers\WooCommerce::is_active()) {
     $states = \WC()->countries->get_states($client_country);
     if (!$states || empty($states)) {
         $states = [];
@@ -220,7 +220,7 @@ if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_
 \esc_html_e('Country', 'flexible-invoices');
 ?></label>
 			<?php 
-if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active()) {
+if (Helpers\WooCommerce::is_active()) {
     ?>
 				<select id="inspire_invoices_client_country" name="client[country]" class="country-select2 medium hs-beacon-search">
 					<?php 
@@ -256,7 +256,7 @@ if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_
 \esc_html_e('State', 'flexible-invoices');
 ?></label>
 			<?php 
-if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active()) {
+if (Helpers\WooCommerce::is_active()) {
     ?>
 				<select data-value="<?php 
     echo \esc_attr($client_state);

@@ -45,7 +45,7 @@ if ($layout_name !== 'default') {
 }
 ?>
 			<?php 
-\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::template_correction_after_notes($correction, $client_country, $hideVat, $hideVatNumber);
+Hooks::template_correction_after_notes($correction, $client_country, $hideVat, $hideVatNumber);
 ?>
         </td>
     </tr>

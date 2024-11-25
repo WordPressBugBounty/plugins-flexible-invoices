@@ -28,7 +28,7 @@ class OrderCustomer
      * @param WC_Order $order
      * @param string   $vat_field_key
      */
-    public function __construct(\WC_Order $order, string $vat_field_key = 'company_vat')
+    public function __construct(WC_Order $order, string $vat_field_key = 'company_vat')
     {
         $this->order = $order;
         $this->vat_number_key = $vat_field_key;
@@ -38,7 +38,7 @@ class OrderCustomer
      *
      * @return Customer
      */
-    public function get(string $type) : \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\Customer
+    public function get(string $type): Customer
     {
         switch ($type) {
             case 'billing':
@@ -51,9 +51,9 @@ class OrderCustomer
     /**
      * @return Customer
      */
-    private function get_billing_customer() : \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\Customer
+    private function get_billing_customer(): Customer
     {
-        $customer = new \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\Customer();
+        $customer = new Customer();
         $customer->set_id($this->order->get_customer_id());
         $customer->set_firstname($this->order->get_billing_first_name());
         $customer->set_lastname($this->order->get_billing_last_name());
@@ -73,9 +73,9 @@ class OrderCustomer
     /**
      * @return Customer
      */
-    private function get_shipping_customer() : \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\Customer
+    private function get_shipping_customer(): Customer
     {
-        $customer = new \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\Customer();
+        $customer = new Customer();
         $customer->set_id($this->order->get_customer_id());
         $customer->set_firstname($this->order->get_shipping_first_name());
         $customer->set_lastname($this->order->get_shipping_last_name());
@@ -92,7 +92,7 @@ class OrderCustomer
     /**
      * @return string
      */
-    private function get_vat_number() : string
+    private function get_vat_number(): string
     {
         $expected_vat_names = ['nip', 'vat_number', 'vat', 'company_vat_number', $this->vat_number_key];
         foreach ($expected_vat_names as $vat_key) {

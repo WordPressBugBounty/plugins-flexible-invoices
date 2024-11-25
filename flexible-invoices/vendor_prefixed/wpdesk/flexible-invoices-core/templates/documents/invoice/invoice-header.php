@@ -187,7 +187,7 @@ echo \esc_attr($settings->get('template_table_rows_even', '#F1F1F1'));
 ?>;
         }
         <?php 
-\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::template_custom_css_hook($settings);
+Hooks::template_custom_css_hook($settings);
 ?>
     </style>
 </head>

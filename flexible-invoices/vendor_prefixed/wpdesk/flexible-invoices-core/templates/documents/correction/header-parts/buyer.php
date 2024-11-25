@@ -12,7 +12,7 @@ if (!empty($client->get_street())) {
 if (!empty($client->get_street2())) {
     $output_street .= '<span>' . $client->get_street2() . '</span><br/>';
 }
-$client_street = \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::template_customer_street_filter($output_street, $client);
+$client_street = Hooks::template_customer_street_filter($output_street, $client);
 ?>
 <table style="margin-bottom: 0;">
 	<tr>
@@ -53,12 +53,12 @@ if (!empty($client->get_postcode()) || !empty($client->get_city())) {
 		</tr>
 		<tr>
 			<td><?php 
-    echo \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Countries::get_country_label($client->get_country());
+    echo Countries::get_country_label($client->get_country());
     ?></td>
 		</tr>
 		<tr>
 			<td><?php 
-    echo \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Countries::get_country_state_label($client->get_state(), $client->get_country());
+    echo Countries::get_country_state_label($client->get_state(), $client->get_country());
     ?></td>
 		</tr>
 	<?php 

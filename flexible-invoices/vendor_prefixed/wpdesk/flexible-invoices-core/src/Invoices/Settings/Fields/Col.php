@@ -8,7 +8,7 @@ use WPDeskFIVendor\WPDesk\Forms\Field\BasicField;
  *
  * @package WPDesk\FIT\Settings\Fields
  */
-class Col extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
+class Col extends BasicField
 {
     /**
      * @return string

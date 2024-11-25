@@ -2,13 +2,13 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class DotTab extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class DotTab extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
         $objattr = [];
         $objattr['type'] = 'dottab';
-        $dots = \str_repeat('.', 3) . '  ';
+        $dots = str_repeat('.', 3) . '  ';
         // minimum number of dots
         $objattr['width'] = $this->mpdf->GetStringWidth($dots);
         $objattr['margin_top'] = 0;
@@ -33,7 +33,7 @@ class DotTab extends \WPDeskFIVendor\Mpdf\Tag\Tag
         }
         $objattr['fontfamily'] = $this->mpdf->FontFamily;
         $objattr['fontsize'] = $this->mpdf->FontSizePt;
-        $e = "\xbb\xa4\xactype=dottab,objattr=" . \serialize($objattr) . "\xbb\xa4\xac";
+        $e = "\xbb\xa4\xactype=dottab,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
         /* -- TABLES -- */
         // Output it to buffers
         if ($this->mpdf->tableLevel) {

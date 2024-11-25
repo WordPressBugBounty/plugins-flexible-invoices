@@ -10,7 +10,7 @@ trait Strict
      */
     public function __call($name, $args)
     {
-        $class = \method_exists($this, $name) ? 'parent' : \get_class($this);
+        $class = method_exists($this, $name) ? 'parent' : get_class($this);
         throw new \WPDeskFIVendor\Mpdf\MpdfException("Call to undefined method {$class}::{$name}()");
     }
     /**
@@ -19,7 +19,7 @@ trait Strict
      */
     public static function __callStatic($name, $args)
     {
-        $class = \get_called_class();
+        $class = get_called_class();
         throw new \WPDeskFIVendor\Mpdf\MpdfException("Call to undefined static function {$class}::{$name}()");
     }
     /**
@@ -27,7 +27,7 @@ trait Strict
      */
     public function &__get($name)
     {
-        $class = \get_class($this);
+        $class = get_class($this);
         throw new \WPDeskFIVendor\Mpdf\MpdfException("Cannot read an undeclared property {$class}::\${$name}");
     }
     /**
@@ -36,7 +36,7 @@ trait Strict
      */
     public function __set($name, $value)
     {
-        $class = \get_class($this);
+        $class = get_class($this);
         throw new \WPDeskFIVendor\Mpdf\MpdfException("Cannot write to an undeclared property {$class}::\${$name}");
     }
     /**
@@ -45,7 +45,7 @@ trait Strict
      */
     public function __isset($name)
     {
-        $class = \get_class($this);
+        $class = get_class($this);
         throw new \WPDeskFIVendor\Mpdf\MpdfException("Cannot read an undeclared property {$class}::\${$name}");
     }
     /**
@@ -54,7 +54,7 @@ trait Strict
      */
     public function __unset($name)
     {
-        $class = \get_class($this);
+        $class = get_class($this);
         throw new \WPDeskFIVendor\Mpdf\MpdfException("Cannot unset the property {$class}::\${$name}.");
     }
 }

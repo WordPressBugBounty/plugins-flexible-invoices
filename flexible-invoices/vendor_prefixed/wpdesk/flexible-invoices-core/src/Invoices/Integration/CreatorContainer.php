@@ -17,14 +17,14 @@ class CreatorContainer
     /**
      * @param DocumentCreator $creator
      */
-    public function add_creator(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCreator $creator)
+    public function add_creator(DocumentCreator $creator)
     {
         $this->creators[$creator->get_type()] = $creator;
     }
     /**
      * @return DocumentCreator[]
      */
-    public function get_creators() : array
+    public function get_creators(): array
     {
         return $this->creators;
     }

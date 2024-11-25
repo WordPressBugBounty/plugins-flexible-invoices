@@ -41,7 +41,7 @@ class Imb extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WPDes
      */
     public function __construct($code, $xDim, $gapWidth, $daft)
     {
-        if (!\function_exists('bcadd')) {
+        if (!function_exists('bcadd')) {
             throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException('IMB barcodes require bcmath extension to be loaded.');
         }
         $this->init($code, $gapWidth, $daft);
@@ -68,55 +68,55 @@ class Imb extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WPDes
         $dsc_chr = [7, 1, 9, 5, 8, 0, 2, 4, 6, 3, 5, 8, 9, 7, 3, 0, 6, 1, 7, 4, 6, 8, 9, 2, 5, 1, 7, 5, 4, 3, 8, 7, 6, 0, 2, 5, 4, 9, 3, 0, 1, 6, 8, 2, 0, 4, 5, 9, 6, 7, 5, 2, 6, 3, 8, 5, 1, 9, 8, 7, 4, 0, 2, 6, 3];
         $asc_pos = [3, 0, 8, 11, 1, 12, 8, 11, 10, 6, 4, 12, 2, 7, 9, 6, 7, 9, 2, 8, 4, 0, 12, 7, 10, 9, 0, 7, 10, 5, 7, 9, 6, 8, 2, 12, 1, 4, 2, 0, 1, 5, 4, 6, 12, 1, 0, 9, 4, 7, 5, 10, 2, 6, 9, 11, 2, 12, 6, 7, 5, 11, 0, 3, 2];
         $dsc_pos = [2, 10, 12, 5, 9, 1, 5, 4, 3, 9, 11, 5, 10, 1, 6, 3, 4, 1, 10, 0, 2, 11, 8, 6, 1, 12, 3, 8, 6, 4, 4, 11, 0, 6, 1, 9, 11, 5, 3, 7, 3, 10, 7, 11, 8, 2, 10, 3, 5, 8, 0, 3, 12, 11, 8, 4, 5, 1, 3, 0, 7, 12, 9, 8, 10];
-        $codeArray = \explode('-', $code);
+        $codeArray = explode('-', $code);
         $trackingNumber = $codeArray[0];
         $routingCode = '';
         if (isset($codeArray[1])) {
             $routingCode = $codeArray[1];
         }
         // Conversion of Routing Code
-        switch (\strlen($routingCode)) {
+        switch (strlen($routingCode)) {
             case 0:
                 $binaryCode = 0;
                 break;
             case 5:
-                $binaryCode = \bcadd($routingCode, '1');
+                $binaryCode = bcadd($routingCode, '1');
                 break;
             case 9:
-                $binaryCode = \bcadd($routingCode, '100001');
+                $binaryCode = bcadd($routingCode, '100001');
                 break;
             case 11:
-                $binaryCode = \bcadd($routingCode, '1000100001');
+                $binaryCode = bcadd($routingCode, '1000100001');
                 break;
             default:
-                throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid MSI routing code "%s"', $routingCode));
+                throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid MSI routing code "%s"', $routingCode));
         }
-        $binaryCode = \bcmul($binaryCode, 10);
-        $binaryCode = \bcadd($binaryCode, $trackingNumber[0]);
-        $binaryCode = \bcmul($binaryCode, 5);
-        $binaryCode = \bcadd($binaryCode, $trackingNumber[1]);
-        $binaryCode .= \substr($trackingNumber, 2, 18);
+        $binaryCode = bcmul($binaryCode, 10);
+        $binaryCode = bcadd($binaryCode, $trackingNumber[0]);
+        $binaryCode = bcmul($binaryCode, 5);
+        $binaryCode = bcadd($binaryCode, $trackingNumber[1]);
+        $binaryCode .= substr($trackingNumber, 2, 18);
         // convert to hexadecimal
         $binaryCode = $this->decToHex($binaryCode);
         // pad to get 13 bytes
-        $binaryCode = \str_pad($binaryCode, 26, '0', \STR_PAD_LEFT);
+        $binaryCode = str_pad($binaryCode, 26, '0', \STR_PAD_LEFT);
         // convert string to array of bytes
-        $binaryCodeArray = \chunk_split($binaryCode, 2, "\r");
-        $binaryCodeArray = \substr($binaryCodeArray, 0, -1);
-        $binaryCodeArray = \explode("\r", $binaryCodeArray);
+        $binaryCodeArray = chunk_split($binaryCode, 2, "\r");
+        $binaryCodeArray = substr($binaryCodeArray, 0, -1);
+        $binaryCodeArray = explode("\r", $binaryCodeArray);
         // calculate frame check sequence
         $fcs = $this->imbCrc11Fcs($binaryCodeArray);
         // exclude first 2 bits from first byte
-        $first_byte = \sprintf('%2s', \dechex(\hexdec($binaryCodeArray[0]) << 2 >> 2));
-        $binaryCode102bit = $first_byte . \substr($binaryCode, 2);
+        $first_byte = sprintf('%2s', dechex(hexdec($binaryCodeArray[0]) << 2 >> 2));
+        $binaryCode102bit = $first_byte . substr($binaryCode, 2);
         // convert binary data to codewords
         $codewords = [];
         $data = $this->hexToDec($binaryCode102bit);
-        $codewords[0] = \bcmod($data, 636) * 2;
-        $data = \bcdiv($data, 636);
+        $codewords[0] = bcmod($data, 636) * 2;
+        $data = bcdiv($data, 636);
         for ($i = 1; $i < 9; ++$i) {
-            $codewords[$i] = \bcmod($data, 1365);
-            $data = \bcdiv($data, 1365);
+            $codewords[$i] = bcmod($data, 1365);
+            $data = bcdiv($data, 1365);
         }
         $codewords[9] = $data;
         if ($fcs >> 10 == 1) {
@@ -141,13 +141,13 @@ class Imb extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WPDes
             $characters[] = $chrcode;
             $bitmask /= 2;
         }
-        $characters = \array_reverse($characters);
+        $characters = array_reverse($characters);
         // build bars
         $k = 0;
         $bararray = ['code' => $code, 'maxw' => 0, 'maxh' => $daft['F'], 'bcode' => []];
         for ($i = 0; $i < 65; ++$i) {
-            $asc = ($characters[$asc_chr[$i]] & \pow(2, $asc_pos[$i])) > 0;
-            $dsc = ($characters[$dsc_chr[$i]] & \pow(2, $dsc_pos[$i])) > 0;
+            $asc = ($characters[$asc_chr[$i]] & pow(2, $asc_pos[$i])) > 0;
+            $dsc = ($characters[$dsc_chr[$i]] & pow(2, $dsc_pos[$i])) > 0;
             if ($asc and $dsc) {
                 // full bar (F)
                 $p = 0;
@@ -187,7 +187,7 @@ class Imb extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WPDes
         $fcs = 0x7ff;
         // Frame Check Sequence
         // do most significant byte skipping the 2 most significant bits
-        $data = \hexdec($codeArray[0]) << 5;
+        $data = hexdec($codeArray[0]) << 5;
         for ($bit = 2; $bit < 8; ++$bit) {
             if (($fcs ^ $data) & 0x400) {
                 $fcs = $fcs << 1 ^ $genpoly;
@@ -199,7 +199,7 @@ class Imb extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WPDes
         }
         // do rest of bytes
         for ($byte = 1; $byte < 13; ++$byte) {
-            $data = \hexdec($codeArray[$byte]) << 3;
+            $data = hexdec($codeArray[$byte]) << 3;
             for ($bit = 0; $bit < 8; ++$bit) {
                 if (($fcs ^ $data) & 0x400) {
                     $fcs = $fcs << 1 ^ $genpoly;
@@ -283,14 +283,14 @@ class Imb extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WPDes
         }
         while ($number > 0) {
             if ($number == 0) {
-                \array_push($hex, '0');
+                array_push($hex, '0');
             } else {
-                \array_push($hex, \strtoupper(\dechex(\bcmod($number, '16'))));
-                $number = \bcdiv($number, '16', 0);
+                array_push($hex, strtoupper(dechex(bcmod($number, '16'))));
+                $number = bcdiv($number, '16', 0);
             }
         }
-        $hex = \array_reverse($hex);
-        return \implode($hex);
+        $hex = array_reverse($hex);
+        return implode($hex);
     }
     /**
      * Convert large hexadecimal number to decimal representation (string).
@@ -303,10 +303,10 @@ class Imb extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WPDes
     {
         $dec = 0;
         $bitval = 1;
-        $len = \strlen($hex);
+        $len = strlen($hex);
         for ($pos = $len - 1; $pos >= 0; --$pos) {
-            $dec = \bcadd($dec, \bcmul(\hexdec($hex[$pos]), $bitval));
-            $bitval = \bcmul($bitval, 16);
+            $dec = bcadd($dec, bcmul(hexdec($hex[$pos]), $bitval));
+            $bitval = bcmul($bitval, 16);
         }
         return $dec;
     }

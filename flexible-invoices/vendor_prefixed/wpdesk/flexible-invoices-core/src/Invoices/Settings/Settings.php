@@ -8,7 +8,7 @@ use WPDeskFIVendor\WPDesk\Persistence\PersistentContainer;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Settings
  */
-class Settings implements \WPDeskFIVendor\WPDesk\Persistence\PersistentContainer
+class Settings implements PersistentContainer
 {
     /**
      * @var string
@@ -29,7 +29,7 @@ class Settings implements \WPDeskFIVendor\WPDesk\Persistence\PersistentContainer
      */
     public function get($id, $default = null)
     {
-        $value = \get_option($this->prefix . $id, $default);
+        $value = get_option($this->prefix . $id, $default);
         return $this->get_real_value($value);
     }
     /**
@@ -42,7 +42,7 @@ class Settings implements \WPDeskFIVendor\WPDesk\Persistence\PersistentContainer
      */
     private function get_real_value($value)
     {
-        if (\is_string($value)) {
+        if (is_string($value)) {
             if ($value === 'on') {
                 return 'yes';
             }
@@ -58,18 +58,18 @@ class Settings implements \WPDeskFIVendor\WPDesk\Persistence\PersistentContainer
      *
      * @return bool
      */
-    public function set($id, $value) : bool
+    public function set($id, $value): bool
     {
-        return \update_option($this->prefix . $id, $value);
+        return update_option($this->prefix . $id, $value);
     }
     /**
      * @param string $id Setting name.
      *
      * @return bool
      */
-    public function has($id) : bool
+    public function has($id): bool
     {
-        $option = \get_option($this->prefix . $id);
+        $option = get_option($this->prefix . $id);
         return !empty($option);
     }
     /**
@@ -77,7 +77,7 @@ class Settings implements \WPDeskFIVendor\WPDesk\Persistence\PersistentContainer
      */
     public function delete($id)
     {
-        \delete_option($this->prefix . $id);
+        delete_option($this->prefix . $id);
     }
     /**
      * @param string $id

@@ -22,7 +22,7 @@ class PostTypeCapabilities
      *
      * @param Settings $settings
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings $settings)
+    public function __construct(Settings $settings)
     {
         $this->settings = $settings;
     }
@@ -31,17 +31,17 @@ class PostTypeCapabilities
      */
     public function assign_basic_roles_capabilities_action()
     {
-        $wp_roles = \wp_roles();
-        $roles_with_access = [\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\GeneralSettings::ADMIN_ROLE];
-        $new_roles = $this->settings->get('roles', [\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\GeneralSettings::SHOP_MANAGER_ROLE]);
-        if ($new_roles && \is_array($new_roles)) {
-            $roles_with_access = \array_merge($roles_with_access, $new_roles);
+        $wp_roles = wp_roles();
+        $roles_with_access = [GeneralSettings::ADMIN_ROLE];
+        $new_roles = $this->settings->get('roles', [GeneralSettings::SHOP_MANAGER_ROLE]);
+        if ($new_roles && is_array($new_roles)) {
+            $roles_with_access = array_merge($roles_with_access, $new_roles);
         }
         foreach ($wp_roles->roles as $role_id => $role_structure) {
             /** @var WP_Role $role */
-            $role = \get_role($role_id);
-            $capabilities = \array_unique(\array_values((array) $this->get_post_capability_map_as_object()));
-            if ($role instanceof \WP_Role && \in_array($role_id, $roles_with_access, \true)) {
+            $role = get_role($role_id);
+            $capabilities = array_unique(array_values((array) $this->get_post_capability_map_as_object()));
+            if ($role instanceof WP_Role && in_array($role_id, $roles_with_access, \true)) {
                 $this->add_caps_to_role($role, $capabilities);
             } else {
                 $this->remove_caps_from_role($role, $capabilities);
@@ -63,7 +63,7 @@ class PostTypeCapabilities
      * @param WP_Role $role
      * @param array   $capabilities
      */
-    private function add_caps_to_role(\WP_Role $role, array $capabilities)
+    private function add_caps_to_role(WP_Role $role, array $capabilities)
     {
         foreach ($capabilities as $cap) {
             $role->add_cap($cap);
@@ -75,7 +75,7 @@ class PostTypeCapabilities
      * @param WP_Role $role
      * @param array   $capabilities
      */
-    private function remove_caps_from_role(\WP_Role $role, array $capabilities)
+    private function remove_caps_from_role(WP_Role $role, array $capabilities)
     {
         foreach ($capabilities as $cap) {
             $role->remove_cap($cap);

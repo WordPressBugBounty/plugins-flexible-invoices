@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class A extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class A extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -11,14 +11,14 @@ class A extends \WPDeskFIVendor\Mpdf\Tag\Tag
             /* -- BOOKMARKS -- */
             if ($this->mpdf->anchor2Bookmark) {
                 $objattr = [];
-                $objattr['CONTENT'] = \htmlspecialchars_decode($attr['NAME'], \ENT_QUOTES);
+                $objattr['CONTENT'] = htmlspecialchars_decode($attr['NAME'], \ENT_QUOTES);
                 $objattr['type'] = 'bookmark';
                 if (!empty($attr['LEVEL'])) {
                     $objattr['bklevel'] = $attr['LEVEL'];
                 } else {
                     $objattr['bklevel'] = 0;
                 }
-                $e = "\xbb\xa4\xactype=bookmark,objattr=" . \serialize($objattr) . "\xbb\xa4\xac";
+                $e = "\xbb\xa4\xactype=bookmark,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
             }
             /* -- END BOOKMARKS -- */
             if ($this->mpdf->tableLevel) {

@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\Type;
@@ -12,7 +12,7 @@ namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\Type;
 /**
  * Class representing PDF token object
  */
-class PdfToken extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
+class PdfToken extends PdfType
 {
     /**
      * Helper method to create an instance.
@@ -35,6 +35,6 @@ class PdfToken extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
      */
     public static function ensure($token)
     {
-        return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::ensureType(self::class, $token, 'Token value expected.');
+        return PdfType::ensureType(self::class, $token, 'Token value expected.');
     }
 }

@@ -14,7 +14,7 @@ namespace WPDeskFIVendor;
 if (!\defined('ABSPATH')) {
     exit;
 }
-if (!\class_exists('WPDeskFIVendor\\WPDesk_Tracker_Data_Provider_Shipping_Methods_Zones')) {
+if (!\class_exists('WPDeskFIVendor\WPDesk_Tracker_Data_Provider_Shipping_Methods_Zones')) {
     /**
      * Class WPDesk_Tracker_Data_Provider_Shipping_Methods_Zones
      */

@@ -103,16 +103,16 @@ class Sea
         $ptr = 0;
         $syllable_serial = 1;
         $broken_syllables = \false;
-        while ($ptr < \strlen($s)) {
+        while ($ptr < strlen($s)) {
             $match = '';
             $syllable_length = 1;
             $syllable_type = self::NON_SEA_CLUSTER;
             // CONSONANT_SYLLABLE Consonant syllable
-            if (\preg_match('/^(C|V|G)(p|a|b|t|HC|M|R|T|A)*/', \substr($s, $ptr), $ma)) {
-                $syllable_length = \strlen($ma[0]);
+            if (preg_match('/^(C|V|G)(p|a|b|t|HC|M|R|T|A)*/', substr($s, $ptr), $ma)) {
+                $syllable_length = strlen($ma[0]);
                 $syllable_type = self::CONSONANT_SYLLABLE;
-            } elseif (\preg_match('/^(p|a|b|t|HC|M|R|T|A)+/', \substr($s, $ptr), $ma)) {
-                $syllable_length = \strlen($ma[0]);
+            } elseif (preg_match('/^(p|a|b|t|HC|M|R|T|A)+/', substr($s, $ptr), $ma)) {
+                $syllable_length = strlen($ma[0]);
                 $syllable_type = self::BROKEN_CLUSTER;
                 $broken_syllables = \true;
             }
@@ -131,7 +131,7 @@ class Sea
         if ($broken_syllables && $dottedcircle) {
             self::insert_dotted_circles($info, $dottedcircle);
         }
-        $count = \count($info);
+        $count = count($info);
         if (!$count) {
             return;
         }
@@ -150,13 +150,13 @@ class Sea
     {
         $idx = 0;
         $last_syllable = 0;
-        while ($idx < \count($info)) {
+        while ($idx < count($info)) {
             $syllable = $info[$idx]['syllable'];
             $syllable_type = $syllable & 0xf;
             if ($last_syllable != $syllable && $syllable_type == self::BROKEN_CLUSTER) {
                 $last_syllable = $syllable;
                 $dottedcircle[0]['syllable'] = $info[$idx]['syllable'];
-                \array_splice($info, $idx, 0, $dottedcircle);
+                array_splice($info, $idx, 0, $dottedcircle);
             } else {
                 $idx++;
             }
@@ -203,7 +203,7 @@ class Sea
     }
     public static function final_reordering(&$info, $GSUBdata, $scriptblock)
     {
-        $count = \count($info);
+        $count = count($info);
         if (!$count) {
             return;
         }

@@ -8,7 +8,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks;
 $output_street = '';
 $output_street .= $client->get_street() ? '<span>' . \esc_html($client->get_street()) . '</span><br/>' : '';
 $output_street .= $client->get_street2() ? '<span>' . \esc_html($client->get_street2()) . '</span><br/>' : '';
-$client_street = \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::template_customer_street_filter($output_street, $client);
+$client_street = Hooks::template_customer_street_filter($output_street, $client);
 ?>
 <table style="margin-bottom: 0;">
     <tr><td><h2><?php 
@@ -44,13 +44,13 @@ if (!empty($client->get_postcode()) || !empty($client->get_city())) {
     if ($client->get_state() && $client->get_country()) {
         ?>
 		<tr><td><?php 
-        echo \esc_html(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Countries::get_country_state_label($client->get_state(), $client->get_country()));
+        echo \esc_html(Countries::get_country_state_label($client->get_state(), $client->get_country()));
         ?></td></tr>
 		<?php 
     }
     ?>
         <tr><td><?php 
-    echo \esc_html(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Countries::get_country_label($client->get_country()));
+    echo \esc_html(Countries::get_country_label($client->get_country()));
     ?></td></tr>
     <?php 
 }

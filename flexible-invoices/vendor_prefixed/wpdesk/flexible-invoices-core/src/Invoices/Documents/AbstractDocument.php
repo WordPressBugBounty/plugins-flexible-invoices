@@ -12,7 +12,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Documents
  */
-abstract class AbstractDocument implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document
+abstract class AbstractDocument implements Document
 {
     const DOCUMENT_TYPE = 'invoice';
     /**
@@ -414,7 +414,7 @@ abstract class AbstractDocument implements \WPDeskFIVendor\WPDesk\Library\Flexib
     /**
      * @param Seller $seller
      */
-    public function set_seller(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Seller $seller)
+    public function set_seller(Seller $seller)
     {
         $this->owner = $seller;
     }
@@ -428,7 +428,7 @@ abstract class AbstractDocument implements \WPDeskFIVendor\WPDesk\Library\Flexib
     /**
      * @param Customer $customer
      */
-    public function set_customer(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Customer $customer)
+    public function set_customer(Customer $customer)
     {
         $this->client = $customer;
     }
@@ -442,7 +442,7 @@ abstract class AbstractDocument implements \WPDeskFIVendor\WPDesk\Library\Flexib
     /**
      * @param Recipient $recipient
      */
-    public function set_recipient(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Recipient $recipient)
+    public function set_recipient(Recipient $recipient)
     {
         $this->recipient = $recipient;
     }

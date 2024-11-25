@@ -11,13 +11,13 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Template;
 $price_label = $hideVat ? \esc_html__('Price', 'flexible-invoices') : \esc_html__('Net price', 'flexible-invoices');
 $amount_label = $hideVat ? \esc_html__('Amount', 'flexible-invoices') : \esc_html__('Net amount', 'flexible-invoices');
 $table_sum_width = '300px';
-$exchange_table = \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::template_exchange_vertical_filter($correction, $products, $client);
+$exchange_table = Hooks::template_exchange_vertical_filter($correction, $products, $client);
 if (empty($exchange_table)) {
     $table_sum_width = 'auto';
 }
-$col1_styles = 'width:78%;text-align:' . \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Template::rtl_align('left') . ';';
-$col2_styles = 'width:22%;text-align:' . \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Template::rtl_align('right') . ';';
-$table_sum_styles = 'width:' . $table_sum_width . ';text-align:' . \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Template::rtl_align('right') . ';';
+$col1_styles = 'width:78%;text-align:' . Template::rtl_align('left') . ';';
+$col2_styles = 'width:22%;text-align:' . Template::rtl_align('right') . ';';
+$table_sum_styles = 'width:' . $table_sum_width . ';text-align:' . Template::rtl_align('right') . ';';
 ?>
 <table class="table-without-margin">
 	<tr>
@@ -124,7 +124,7 @@ require __DIR__ . '/totals/' . $correction->get_type() . '-vertical.php';
 /**
  * Exchange table
  */
-$exchange_table = \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::template_exchange_vertical_filter($correction, $products, $client);
+$exchange_table = Hooks::template_exchange_vertical_filter($correction, $products, $client);
 if (!empty($exchange_table)) {
     ?>
 	<table class="table-without-margin" style="margin-top: 10px;">
@@ -175,7 +175,7 @@ echo $corrected_invoice->get_formatted_number();
 echo $corrected_invoice->get_date_of_issue();
 ?></strong></p>
             <?php 
-\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::template_correction_after_notes($correction, $client_country, $hideVat, $hideVatNumber);
+Hooks::template_correction_after_notes($correction, $client_country, $hideVat, $hideVatNumber);
 ?>
 		</td>
 	</tr>

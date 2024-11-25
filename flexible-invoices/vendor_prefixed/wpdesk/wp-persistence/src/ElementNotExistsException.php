@@ -6,6 +6,6 @@ use WPDeskFIVendor\Psr\Container\NotFoundExceptionInterface;
 /**
  * @package WPDesk\Persistence
  */
-class ElementNotExistsException extends \RuntimeException implements \WPDeskFIVendor\Psr\Container\NotFoundExceptionInterface
+class ElementNotExistsException extends \RuntimeException implements NotFoundExceptionInterface
 {
 }

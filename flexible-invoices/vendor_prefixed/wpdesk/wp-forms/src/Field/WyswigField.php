@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\WPDesk\Forms\Field;
 
-class WyswigField extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
+class WyswigField extends BasicField
 {
     public function __construct()
     {

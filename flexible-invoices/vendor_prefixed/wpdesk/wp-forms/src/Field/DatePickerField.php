@@ -3,7 +3,7 @@
 namespace WPDeskFIVendor\WPDesk\Forms\Field;
 
 use WPDeskFIVendor\WPDesk\Forms\Sanitizer\TextFieldSanitizer;
-class DatePickerField extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
+class DatePickerField extends BasicField
 {
     public function __construct()
     {
@@ -15,7 +15,7 @@ class DatePickerField extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
     }
     public function get_sanitizer()
     {
-        return new \WPDeskFIVendor\WPDesk\Forms\Sanitizer\TextFieldSanitizer();
+        return new TextFieldSanitizer();
     }
     public function get_template_name()
     {

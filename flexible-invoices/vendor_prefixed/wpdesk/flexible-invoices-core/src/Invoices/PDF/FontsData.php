@@ -20,7 +20,7 @@ final class FontsData
      *
      * @return $this
      */
-    public function set_font(string $slug, string $name, array $attr = []) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\FontsData
+    public function set_font(string $slug, string $name, array $attr = []): FontsData
     {
         $this->fonts_data[$slug] = ['R' => $name . '.ttf', 'I' => $name . '-Italic.ttf', 'B' => $name . '-Bold.ttf', 'BI' => $name . '-BoldItalic.ttf'];
         if (!empty($attr)) {
@@ -35,7 +35,7 @@ final class FontsData
      *
      * @return $this
      */
-    public function set_font_without_italic(string $slug, string $name, array $attr = []) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\FontsData
+    public function set_font_without_italic(string $slug, string $name, array $attr = []): FontsData
     {
         $this->fonts_data[$slug] = ['R' => $name . '.ttf', 'I' => $name . '.ttf', 'B' => $name . '-Bold.ttf', 'BI' => $name . '-Bold.ttf'];
         if (!empty($attr)) {
@@ -50,7 +50,7 @@ final class FontsData
      *
      * @return $this
      */
-    public function set_font_without_bold(string $slug, string $name, array $attr = []) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\FontsData
+    public function set_font_without_bold(string $slug, string $name, array $attr = []): FontsData
     {
         $this->fonts_data[$slug] = ['R' => $name . '.ttf', 'I' => $name . '-Italic.ttf', 'B' => $name . '.ttf', 'BI' => $name . '-Italic.ttf'];
         if (!empty($attr)) {
@@ -65,7 +65,7 @@ final class FontsData
      *
      * @return $this
      */
-    public function set_font_without_bold_italic(string $slug, string $name, array $attr = []) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\FontsData
+    public function set_font_without_bold_italic(string $slug, string $name, array $attr = []): FontsData
     {
         $this->fonts_data[$slug] = ['R' => $name . '.ttf', 'I' => $name . '.ttf', 'B' => $name . '.ttf', 'BI' => $name . '.ttf'];
         if (!empty($attr)) {

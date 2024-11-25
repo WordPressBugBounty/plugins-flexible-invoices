@@ -9,36 +9,36 @@ class Cache
     private $cleanupInterval;
     public function __construct($basePath, $cleanupInterval = 3600)
     {
-        if (!\is_int($cleanupInterval) && \false !== $cleanupInterval) {
+        if (!is_int($cleanupInterval) && \false !== $cleanupInterval) {
             throw new \WPDeskFIVendor\Mpdf\MpdfException('Cache cleanup interval has to be an integer or false');
         }
         if (!$this->createBasePath($basePath)) {
-            throw new \WPDeskFIVendor\Mpdf\MpdfException(\sprintf('Temporary files directory "%s" is not writable', $basePath));
+            throw new \WPDeskFIVendor\Mpdf\MpdfException(sprintf('Temporary files directory "%s" is not writable', $basePath));
         }
         $this->basePath = $basePath;
         $this->cleanupInterval = $cleanupInterval;
     }
     protected function createBasePath($basePath)
     {
-        if (!\file_exists($basePath)) {
-            if (!$this->createBasePath(\dirname($basePath))) {
+        if (!file_exists($basePath)) {
+            if (!$this->createBasePath(dirname($basePath))) {
                 return \false;
             }
             if (!$this->createDirectory($basePath)) {
                 return \false;
             }
         }
-        if (!\is_writable($basePath) || !\is_dir($basePath)) {
+        if (!is_writable($basePath) || !is_dir($basePath)) {
             return \false;
         }
         return \true;
     }
     protected function createDirectory($basePath)
     {
-        if (!\mkdir($basePath)) {
+        if (!mkdir($basePath)) {
             return \false;
         }
-        if (!\chmod($basePath, 0777)) {
+        if (!chmod($basePath, 0777)) {
             return \false;
         }
         return \true;
@@ -49,32 +49,32 @@ class Cache
     }
     public function has($filename)
     {
-        return \file_exists($this->getFilePath($filename));
+        return file_exists($this->getFilePath($filename));
     }
     public function load($filename)
     {
-        return \file_get_contents($this->getFilePath($filename));
+        return file_get_contents($this->getFilePath($filename));
     }
     public function write($filename, $data)
     {
-        $tempFile = \tempnam($this->basePath, 'cache_tmp_');
-        \file_put_contents($tempFile, $data);
-        \chmod($tempFile, 0664);
+        $tempFile = tempnam($this->basePath, 'cache_tmp_');
+        file_put_contents($tempFile, $data);
+        chmod($tempFile, 0664);
         $path = $this->getFilePath($filename);
-        \rename($tempFile, $path);
+        rename($tempFile, $path);
         return $path;
     }
     public function remove($filename)
     {
-        return \unlink($this->getFilePath($filename));
+        return unlink($this->getFilePath($filename));
     }
     public function clearOld()
     {
-        $iterator = new \DirectoryIterator($this->basePath);
+        $iterator = new DirectoryIterator($this->basePath);
         /** @var \DirectoryIterator $item */
         foreach ($iterator as $item) {
             if (!$item->isDot() && $item->isFile() && !$this->isDotFile($item) && $this->isOld($item)) {
-                \unlink($item->getPathname());
+                unlink($item->getPathname());
             }
         }
     }
@@ -82,12 +82,12 @@ class Cache
     {
         return $this->basePath . '/' . $filename;
     }
-    private function isOld(\DirectoryIterator $item)
+    private function isOld(DirectoryIterator $item)
     {
-        return $this->cleanupInterval ? $item->getMTime() + $this->cleanupInterval < \time() : \false;
+        return $this->cleanupInterval ? $item->getMTime() + $this->cleanupInterval < time() : \false;
     }
-    public function isDotFile(\DirectoryIterator $item)
+    public function isDotFile(DirectoryIterator $item)
     {
-        return \substr($item->getFilename(), 0, 1) === '.';
+        return substr($item->getFilename(), 0, 1) === '.';
     }
 }

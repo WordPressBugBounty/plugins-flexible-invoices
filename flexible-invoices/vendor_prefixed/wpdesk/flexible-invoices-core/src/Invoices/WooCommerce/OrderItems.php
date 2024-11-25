@@ -31,18 +31,18 @@ class OrderItems
     /**
      * @param WC_Order $order
      */
-    public function __construct(\WC_Order $order)
+    public function __construct(WC_Order $order)
     {
         $this->order = $order;
-        $this->unit = \esc_html_x('item', 'Units Of Measure For Items In Inventory', 'flexible-invoices');
-        $this->settings = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings();
+        $this->unit = esc_html_x('item', 'Units Of Measure For Items In Inventory', 'flexible-invoices');
+        $this->settings = new Settings();
     }
     /**
      * @param OrderItem $item
      *
      * @return bool
      */
-    private function should_skip_item(\WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\OrderItem $item) : bool
+    private function should_skip_item(OrderItem $item): bool
     {
         if ($item->get_type() === self::WC_COUPON_ITEM_TYPE) {
             return \true;
@@ -58,28 +58,28 @@ class OrderItems
          *
          * @return bool
          */
-        return (bool) \apply_filters('fi/core/woocommerce/document/item/skip', \false, $item);
+        return (bool) apply_filters('fi/core/woocommerce/document/item/skip', \false, $item);
     }
     /**
      * @return bool
      */
-    private function is_discount_enabled() : bool
+    private function is_discount_enabled(): bool
     {
         return $this->settings->get('show_discount') === 'yes';
     }
     /**
      * @return array
      */
-    public function get_items() : array
+    public function get_items(): array
     {
         $items = [];
-        $order_items = (new \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\OrderFormattedData($this->order))->get_order_items()->get_items();
+        $order_items = (new OrderFormattedData($this->order))->get_order_items()->get_items();
         foreach ($order_items as $order_item) {
             if ($this->should_skip_item($order_item)) {
                 continue;
             }
-            $fq = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\FQIntegration($order_item->get_item_object());
-            $items_factory = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\ItemFactory($order_item->get_type());
+            $fq = new FQIntegration($order_item->get_item_object());
+            $items_factory = new ItemFactory($order_item->get_type());
             $item = $items_factory->get_item();
             /**
              * Filter item title.
@@ -89,7 +89,7 @@ class OrderItems
              *
              * @return string
              */
-            $title = \apply_filters('fi/core/woocommerce/document/item/title', $order_item->get_name(), $order_item);
+            $title = apply_filters('fi/core/woocommerce/document/item/title', $order_item->get_name(), $order_item);
             $tax_rate = $this->get_vat_rate_by_tax_id($order_item->get_tax_id());
             if ($tax_rate['index'] === 0) {
                 $tax_rate = $this->calculate_tax_rate_from_amount($order_item);
@@ -103,7 +103,7 @@ class OrderItems
             }
             $net_price_sum = $order_item->get_net_price();
             $item->set_name($title)->set_net_price($net_price)->set_net_price_sum($net_price_sum)->set_discount($discount)->set_gross_price($order_item->get_gross_price())->set_vat_rate($tax_rate['rate'] ?? 0)->set_vat_rate_name($tax_rate['name'] ?? 'VAT')->set_vat_type_index($tax_rate['index'] ?? '')->set_vat_sum($order_item->get_vat_price())->set_qty($order_item->get_qty())->set_unit($fq->get_item_unit($this->unit))->set_meta($order_item->get_meta_data());
-            if (\is_a($item, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\WooProductItem::class)) {
+            if (is_a($item, WooProductItem::class)) {
                 if ('yes' === $this->settings->get('woocommerce_get_sku')) {
                     $item->set_sku($this->get_sku($order_item));
                 }
@@ -116,7 +116,7 @@ class OrderItems
                  *
                  * @return bool
                  */
-                $show_meta_in_title = \apply_filters('fi/core/woocommerce/document/item/show_meta', $show_meta);
+                $show_meta_in_title = apply_filters('fi/core/woocommerce/document/item/show_meta', $show_meta);
                 if ($show_meta_in_title) {
                     $variation_data = $this->get_variation_info($order_item->get_meta_data());
                     $item->set_name($order_item->get_name() . $variation_data);
@@ -130,17 +130,17 @@ class OrderItems
              *
              * @return bool
              */
-            $items[] = \apply_filters('fi/core/order/data/product', $item->get(), $this->order);
+            $items[] = apply_filters('fi/core/order/data/product', $item->get(), $this->order);
         }
         return $items;
     }
-    private function get_sku(\WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\ProductOrderItem $item) : string
+    private function get_sku(ProductOrderItem $item): string
     {
         $sku = $item->get_sku();
         $variation_id = $item->get_variation_id();
         // Only for product variation
         if (!empty($variation_id)) {
-            $variation = \wc_get_product($variation_id);
+            $variation = wc_get_product($variation_id);
             $variation_sku = $variation->get_sku();
             if (!empty($variation_sku)) {
                 $sku = $variation_sku;
@@ -151,10 +151,10 @@ class OrderItems
     /**
      * @return array
      */
-    private function get_vat_types() : array
+    private function get_vat_types(): array
     {
         $rates = [];
-        $invoices_tax = \get_option('inspire_invoices_tax', []);
+        $invoices_tax = get_option('inspire_invoices_tax', []);
         $index = 0;
         foreach ($invoices_tax as $tax) {
             if (empty($tax['rate']) || empty($tax['name'])) {
@@ -172,14 +172,14 @@ class OrderItems
          *
          * @since 1.3.0
          */
-        return (array) \apply_filters('inspire_invoices_vat_types', $rates);
+        return (array) apply_filters('inspire_invoices_vat_types', $rates);
     }
     /**
      * @param $tax_id
      *
      * @return array
      */
-    private function get_vat_rate_by_tax_id($tax_id) : array
+    private function get_vat_rate_by_tax_id($tax_id): array
     {
         $vat_types = $this->get_vat_types();
         foreach ($vat_types as $vat_type) {
@@ -190,7 +190,7 @@ class OrderItems
         }
         return ['index' => 0, 'rate' => 0, 'name' => '0%'];
     }
-    private function calculate_tax_rate_from_amount(\WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\OrderItem $order_item) : array
+    private function calculate_tax_rate_from_amount(OrderItem $order_item): array
     {
         if ($order_item->get_vat_price() !== 0.0 && $order_item->get_rate() === 0.0) {
             $rate = $order_item->get_vat_price() / $order_item->get_net_price() * 100;
@@ -203,14 +203,14 @@ class OrderItems
      *
      * @return array
      */
-    private function get_product_attributes(int $id) : array
+    private function get_product_attributes(int $id): array
     {
         $parsed_attributes = [];
-        $product = \wc_get_product($id);
+        $product = wc_get_product($id);
         if ($product) {
             $attributes = $product->get_attributes();
             foreach ($attributes as $attribute_key => $attribute) {
-                if ($attribute instanceof \WC_Product_Attribute) {
+                if ($attribute instanceof WC_Product_Attribute) {
                     $parsed_attributes[$attribute_key] = ['key' => $attribute_key, 'id' => $attribute->get_id(), 'values' => $attribute->get_options(), 'name' => $attribute->get_name(), 'visible' => $attribute->get_visible()];
                 }
             }
@@ -222,14 +222,14 @@ class OrderItems
      *
      * @return string
      */
-    private function get_variation_info(array $meta_data) : string
+    private function get_variation_info(array $meta_data): string
     {
         $variation_data = [];
         foreach ($meta_data as $meta) {
             $variation_data[] = $meta->key . ': ' . $meta->value;
         }
         if (!empty($variation_data)) {
-            return ' (' . \implode(', ', $variation_data) . ')';
+            return ' (' . implode(', ', $variation_data) . ')';
         }
         return '';
     }

@@ -13,7 +13,7 @@ use WC_Order_Item;
  *
  * @package WPDesk\Library\WPDeskOrder\Abstracts
  */
-abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\OrderItemInterface
+abstract class OrderItem implements OrderItemInterface
 {
     /**
      * @var int
@@ -103,7 +103,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return int
      */
-    public function get_item_id() : int
+    public function get_item_id(): int
     {
         return $this->item_id;
     }
@@ -117,7 +117,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return string
      */
-    public function get_type() : string
+    public function get_type(): string
     {
         return $this->type;
     }
@@ -131,7 +131,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return string
      */
-    public function get_name() : string
+    public function get_name(): string
     {
         return $this->name;
     }
@@ -145,7 +145,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return float
      */
-    public function get_qty() : float
+    public function get_qty(): float
     {
         return $this->qty;
     }
@@ -159,7 +159,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return float
      */
-    public function get_discount_price() : float
+    public function get_discount_price(): float
     {
         return $this->discount_price;
     }
@@ -173,7 +173,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return float
      */
-    public function get_net_price() : float
+    public function get_net_price(): float
     {
         return $this->net_price;
     }
@@ -187,7 +187,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return float
      */
-    public function get_net_price_r() : float
+    public function get_net_price_r(): float
     {
         return $this->net_price_r;
     }
@@ -201,7 +201,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return float
      */
-    public function get_gross_price() : float
+    public function get_gross_price(): float
     {
         return $this->gross_price;
     }
@@ -215,7 +215,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return float
      */
-    public function get_gross_price_r() : float
+    public function get_gross_price_r(): float
     {
         return $this->gross_price_r;
     }
@@ -229,7 +229,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return float
      */
-    public function get_vat_price() : float
+    public function get_vat_price(): float
     {
         return $this->vat_price;
     }
@@ -243,7 +243,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return float
      */
-    public function get_vat_price_r() : float
+    public function get_vat_price_r(): float
     {
         return $this->vat_price_r;
     }
@@ -257,7 +257,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return string
      */
-    public function get_currency_slug() : string
+    public function get_currency_slug(): string
     {
         return $this->currency_slug;
     }
@@ -271,7 +271,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return string
      */
-    public function get_currency_symbol() : string
+    public function get_currency_symbol(): string
     {
         return $this->currency_symbol;
     }
@@ -285,7 +285,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return float
      */
-    public function get_rate() : float
+    public function get_rate(): float
     {
         return $this->rate;
     }
@@ -299,7 +299,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return array
      */
-    public function get_meta_data() : array
+    public function get_meta_data(): array
     {
         return $this->meta_data;
     }
@@ -313,7 +313,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return string
      */
-    public function get_tax_class() : string
+    public function get_tax_class(): string
     {
         return $this->tax_class;
     }
@@ -327,7 +327,7 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return int
      */
-    public function get_tax_id() : int
+    public function get_tax_id(): int
     {
         return $this->tax_id;
     }
@@ -341,21 +341,21 @@ abstract class OrderItem implements \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return int
      */
-    public function get_product_id() : int
+    public function get_product_id(): int
     {
         return $this->product_id;
     }
     /**
      * @param WC_Order_Item $item
      */
-    public function set_item_object(\WC_Order_Item $item)
+    public function set_item_object(WC_Order_Item $item)
     {
         $this->item_object = $item;
     }
     /**
      * @return WC_Order_Item
      */
-    public function get_item_object() : \WC_Order_Item
+    public function get_item_object(): WC_Order_Item
     {
         return $this->item_object;
     }

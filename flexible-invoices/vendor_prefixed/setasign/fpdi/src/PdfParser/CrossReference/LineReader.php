@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference;
@@ -17,7 +17,7 @@ use WPDeskFIVendor\setasign\Fpdi\PdfParser\StreamReader;
  * This reader class read all cross-reference entries in a single run.
  * It supports reading cross-references with e.g. invalid data (e.g. entries with a length < or > 20 bytes).
  */
-class LineReader extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\AbstractReader implements \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\ReaderInterface
+class LineReader extends AbstractReader implements ReaderInterface
 {
     /**
      * The object offsets.
@@ -31,7 +31,7 @@ class LineReader extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\
      * @param PdfParser $parser
      * @throws CrossReferenceException
      */
-    public function __construct(\WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParser $parser)
+    public function __construct(PdfParser $parser)
     {
         $this->read($this->extract($parser->getStreamReader()));
         parent::__construct($parser);
@@ -63,7 +63,7 @@ class LineReader extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\
      * @return string
      * @throws CrossReferenceException
      */
-    protected function extract(\WPDeskFIVendor\setasign\Fpdi\PdfParser\StreamReader $reader)
+    protected function extract(StreamReader $reader)
     {
         $bytesPerCycle = 100;
         $reader->reset(null, $bytesPerCycle);
@@ -75,7 +75,7 @@ class LineReader extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\
             $cycles++;
         } while ($trailerPos === \false && $reader->increaseLength($bytesPerCycle) !== \false);
         if ($trailerPos === \false) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException('Unexpected end of cross reference. "trailer"-keyword not found.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::NO_TRAILER_FOUND);
+            throw new CrossReferenceException('Unexpected end of cross reference. "trailer"-keyword not found.', CrossReferenceException::NO_TRAILER_FOUND);
         }
         $xrefContent = \substr($reader->getBuffer(\false), 0, $trailerPos);
         $reader->reset($reader->getPosition() + $trailerPos);
@@ -92,7 +92,7 @@ class LineReader extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\
         // get eol markers in the first 100 bytes
         \preg_match_all("/(\r\n|\n|\r)/", \substr($xrefContent, 0, 100), $m);
         if (\count($m[0]) === 0) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException('No data found in cross-reference.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::INVALID_DATA);
+            throw new CrossReferenceException('No data found in cross-reference.', CrossReferenceException::INVALID_DATA);
         }
         // count(array_count_values()) is faster then count(array_unique())
         // @see https://github.com/symfony/symfony/pull/23731
@@ -111,7 +111,7 @@ class LineReader extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\
         $start = 0;
         $offsets = [];
         // trim all lines and remove empty lines
-        $lines = \array_filter(\array_map('\\trim', $lines));
+        $lines = \array_filter(\array_map('\trim', $lines));
         foreach ($lines as $line) {
             $pieces = \explode(' ', $line);
             switch (\count($pieces)) {
@@ -130,7 +130,7 @@ class LineReader extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\
                     }
                 // fall through if pieces doesn't match
                 default:
-                    throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException(\sprintf('Unexpected data in xref table (%s)', \implode(' ', $pieces)), \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::INVALID_DATA);
+                    throw new CrossReferenceException(\sprintf('Unexpected data in xref table (%s)', \implode(' ', $pieces)), CrossReferenceException::INVALID_DATA);
             }
         }
         $this->offsets = $offsets;

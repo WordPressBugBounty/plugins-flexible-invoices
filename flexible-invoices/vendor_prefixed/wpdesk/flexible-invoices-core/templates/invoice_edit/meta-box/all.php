@@ -30,7 +30,7 @@ require __DIR__ . '/customer.php';
 ?>
 	</div>
 	<?php 
-if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\InvoicesIntegration::is_super()) {
+if (InvoicesIntegration::is_super()) {
     ?>
 		<div class="ocs-meta-col">
 			<h3><?php 

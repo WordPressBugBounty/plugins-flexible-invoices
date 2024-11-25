@@ -9,7 +9,7 @@ use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\WordPress
  */
-class DuplicatesNotice implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+class DuplicatesNotice implements Hookable
 {
     const POST_TYPE_NAME = 'inspire_invoice';
     const TRANSIENT_NAME = 'flexible_invoices_duplicates';
@@ -18,8 +18,8 @@ class DuplicatesNotice implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Ho
      */
     public function hooks()
     {
-        \add_action('save_post', [$this, 'check_for_duplicates'], 10, 2);
-        \add_action('admin_init', [$this, 'add_duplicates_notice_error']);
+        add_action('save_post', [$this, 'check_for_duplicates'], 10, 2);
+        add_action('admin_init', [$this, 'add_duplicates_notice_error']);
     }
     /**
      * @return void
@@ -28,34 +28,34 @@ class DuplicatesNotice implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Ho
     {
         if ($this->has_duplicates()) {
             // Translators: %s url.
-            new \WPDeskFIVendor\WPDesk\Notice\Notice(\sprintf(\__('<strong>Warning!</strong> There are documents with the same number in the invoice list. Check <a href="%s">here</a>.', 'flexible-invoices'), \admin_url('edit.php?post_type=' . self::POST_TYPE_NAME . '&filter=show_duplicated')), \WPDeskFIVendor\WPDesk\Notice\Notice::NOTICE_TYPE_ERROR, \true);
+            new Notice(sprintf(__('<strong>Warning!</strong> There are documents with the same number in the invoice list. Check <a href="%s">here</a>.', 'flexible-invoices'), admin_url('edit.php?post_type=' . self::POST_TYPE_NAME . '&filter=show_duplicated')), Notice::NOTICE_TYPE_ERROR, \true);
             /**
              * Fires when duplicates exist.
              *
              * @since 3.0.0
              */
-            \do_action('fi/core/duplicates', \true);
+            do_action('fi/core/duplicates', \true);
         }
     }
-    private function has_duplicates() : bool
+    private function has_duplicates(): bool
     {
-        return 'yes' === \get_transient(self::TRANSIENT_NAME);
+        return 'yes' === get_transient(self::TRANSIENT_NAME);
     }
     public function check_for_duplicates($post_id, $post)
     {
         if ($post->post_type === self::POST_TYPE_NAME) {
             $has_duplicates = $this->find_duplicates();
             if ($has_duplicates) {
-                \set_transient(self::TRANSIENT_NAME, 'yes', MONTH_IN_SECONDS);
+                set_transient(self::TRANSIENT_NAME, 'yes', \MONTH_IN_SECONDS);
             } else {
-                \delete_transient(self::TRANSIENT_NAME);
+                delete_transient(self::TRANSIENT_NAME);
             }
         }
     }
     /**
      * @return int
      */
-    private function find_duplicates() : int
+    private function find_duplicates(): int
     {
         global $wpdb;
         //phpcs:ignore

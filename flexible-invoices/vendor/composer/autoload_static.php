@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4d34897a7f8cd624c3351f3d7ec1ee95
+class ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -653,6 +653,7 @@ class ComposerStaticInit4d34897a7f8cd624c3351f3d7ec1ee95
         'WPDeskFIVendor\\WPDesk\\Logger\\BasicLoggerFactory' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-logs/src/BasicLoggerFactory.php',
         'WPDeskFIVendor\\WPDesk\\Logger\\LoggerFacade' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-logs/src/LoggerFacade.php',
         'WPDeskFIVendor\\WPDesk\\Logger\\LoggerFactory' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-logs/src/LoggerFactory.php',
+        'WPDeskFIVendor\\WPDesk\\Logger\\Processor\\SensitiveDataProcessor' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-logs/src/Processor/SensitiveDataProcessor.php',
         'WPDeskFIVendor\\WPDesk\\Logger\\Settings' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-logs/src/Settings.php',
         'WPDeskFIVendor\\WPDesk\\Logger\\SimpleLoggerFactory' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-logs/src/SimpleLoggerFactory.php',
         'WPDeskFIVendor\\WPDesk\\Logger\\WC\\Exception\\WCLoggerAlreadyCaptured' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-logs/src/WC/Exception/WCLoggerAlreadyCaptured.php',
@@ -721,9 +722,15 @@ class ComposerStaticInit4d34897a7f8cd624c3351f3d7ec1ee95
         'WPDeskFIVendor\\WPDesk\\Plugin\\Flow\\Initialization\\Simple\\SimplePaidStrategy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-plugin-flow-common/src/Initialization/Simple/SimplePaidStrategy.php',
         'WPDeskFIVendor\\WPDesk\\Plugin\\Flow\\Initialization\\Simple\\TrackerInstanceAsFilterTrait' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-plugin-flow-common/src/Initialization/TrackerInstanceAsFilterTrait.php',
         'WPDeskFIVendor\\WPDesk\\Plugin\\Flow\\PluginBootstrap' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-plugin-flow-common/src/PluginBootstrap.php',
+        'WPDeskFIVendor\\WPDesk\\ShowDecision\\AndStrategy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-show-decision/src/AndStrategy.php',
+        'WPDeskFIVendor\\WPDesk\\ShowDecision\\ConstantDefinedStrategy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-show-decision/src/ConstantDefinedStrategy.php',
+        'WPDeskFIVendor\\WPDesk\\ShowDecision\\ConstantNotDefinedStrategy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-show-decision/src/ConstantNotDefinedStrategy.php',
         'WPDeskFIVendor\\WPDesk\\ShowDecision\\GetStrategy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-show-decision/src/GetStrategy.php',
+        'WPDeskFIVendor\\WPDesk\\ShowDecision\\OrStrategy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-show-decision/src/OrStrategy.php',
         'WPDeskFIVendor\\WPDesk\\ShowDecision\\PostTypeStrategy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-show-decision/src/PostTypeStrategy.php',
         'WPDeskFIVendor\\WPDesk\\ShowDecision\\ShouldShowStrategy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-show-decision/src/ShouldShowStrategy.php',
+        'WPDeskFIVendor\\WPDesk\\ShowDecision\\WooCommerce\\ShippingMethodInstanceStrategy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-show-decision/src/WooCommerce/ShippingMethodInstanceStrategy.php',
+        'WPDeskFIVendor\\WPDesk\\ShowDecision\\WooCommerce\\ShippingMethodStrategy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-show-decision/src/WooCommerce/ShippingMethodStrategy.php',
         'WPDeskFIVendor\\WPDesk\\Tracker\\Assets' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-wpdesk-tracker/src/PSR/WPDesk/Tracker/Assets.php',
         'WPDeskFIVendor\\WPDesk\\Tracker\\OptInOptOut' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-wpdesk-tracker/src/PSR/WPDesk/Tracker/OptInOptOut.php',
         'WPDeskFIVendor\\WPDesk\\Tracker\\OptInPage' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-wpdesk-tracker/src/PSR/WPDesk/Tracker/OptInPage.php',
@@ -740,6 +747,7 @@ class ComposerStaticInit4d34897a7f8cd624c3351f3d7ec1ee95
         'WPDeskFIVendor\\WPDesk\\View\\Resolver\\NullResolver' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-view/src/Resolver/NullResolver.php',
         'WPDeskFIVendor\\WPDesk\\View\\Resolver\\Resolver' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-view/src/Resolver/Resolver.php',
         'WPDeskFIVendor\\WPDesk\\View\\Resolver\\WPThemeResolver' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-view/src/Resolver/WPThemeResolver.php',
+        'WPDeskFIVendor\\WPDesk\\View\\Resolver\\WooTemplateResolver' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-view/src/Resolver/WooTemplateResolver.php',
         'WPDeskFIVendor\\WPDesk_Basic_Requirement_Checker' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-basic-requirements/src/Basic_Requirement_Checker.php',
         'WPDeskFIVendor\\WPDesk_Basic_Requirement_Checker_Factory' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-basic-requirements/src/Basic_Requirement_Checker_Factory.php',
         'WPDeskFIVendor\\WPDesk_Basic_Requirement_Checker_With_Update_Disable' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-basic-requirements/src/Basic_Requirement_Checker_With_Update_Disable.php',
@@ -858,9 +866,9 @@ class ComposerStaticInit4d34897a7f8cd624c3351f3d7ec1ee95
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4d34897a7f8cd624c3351f3d7ec1ee95::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4d34897a7f8cd624c3351f3d7ec1ee95::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit4d34897a7f8cd624c3351f3d7ec1ee95::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9::$classMap;
 
         }, null, ClassLoader::class);
     }

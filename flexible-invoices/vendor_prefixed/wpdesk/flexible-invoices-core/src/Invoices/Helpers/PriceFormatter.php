@@ -9,10 +9,10 @@ class PriceFormatter
      *
      * @return float
      */
-    public static function string_to_float($price) : float
+    public static function string_to_float($price): float
     {
-        if (\is_string($price)) {
-            return (float) \str_replace(',', '.', $price);
+        if (is_string($price)) {
+            return (float) str_replace(',', '.', $price);
         }
         return (float) $price;
     }
@@ -24,8 +24,8 @@ class PriceFormatter
      *
      * @return float
      */
-    public static function number_format(float $price, int $decimals = 2, $decimal_separator = '.', $thousand_separator = ' ') : float
+    public static function number_format(float $price, int $decimals = 2, $decimal_separator = '.', $thousand_separator = ' '): float
     {
-        return (float) \number_format($price, $decimals, $decimal_separator, $thousand_separator);
+        return (float) number_format($price, $decimals, $decimal_separator, $thousand_separator);
     }
 }

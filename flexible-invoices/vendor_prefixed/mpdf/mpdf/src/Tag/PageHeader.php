@@ -2,6 +2,6 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class PageHeader extends \WPDeskFIVendor\Mpdf\Tag\PageFooter
+class PageHeader extends PageFooter
 {
 }

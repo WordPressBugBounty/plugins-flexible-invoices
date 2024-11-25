@@ -8,7 +8,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Recipie
  *
  * @package WPDesk\Library\FlexibleInvoicesAbstracts\ValueObjects
  */
-class DocumentRecipient implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Recipient
+class DocumentRecipient implements Recipient
 {
     /**
      * @var string

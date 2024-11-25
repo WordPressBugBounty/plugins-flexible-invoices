@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\WPDesk\Forms\Field;
 
-class TextAreaField extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
+class TextAreaField extends BasicField
 {
     public function __construct()
     {

@@ -7,11 +7,11 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentExcept
  *
  * @package WPDesk\Library\FlexibleInvoicesAbstracts\Exceptions
  */
-class UnknownDocumentTypeException extends \RuntimeException implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentExceptions\DocumentException
+class UnknownDocumentTypeException extends \RuntimeException implements DocumentException
 {
     public function __construct($document_type)
     {
-        $message = \sprintf('Unknown document type %1$s!', $document_type);
+        $message = sprintf('Unknown document type %1$s!', $document_type);
         parent::__construct($message);
     }
 }

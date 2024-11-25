@@ -3,7 +3,7 @@
 namespace WPDeskFIVendor\Mpdf\Tag;
 
 use WPDeskFIVendor\Mpdf\Mpdf;
-class TextArea extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class TextArea extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -27,13 +27,13 @@ class TextArea extends \WPDeskFIVendor\Mpdf\Tag\Tag
         if (isset($attr['REQUIRED'])) {
             $objattr['required'] = \true;
         }
-        if (isset($attr['SPELLCHECK']) && \strtolower($attr['SPELLCHECK']) === 'true') {
+        if (isset($attr['SPELLCHECK']) && strtolower($attr['SPELLCHECK']) === 'true') {
             $objattr['spellcheck'] = \true;
         }
         if (isset($attr['TITLE'])) {
             $objattr['title'] = $attr['TITLE'];
             if ($this->mpdf->onlyCoreFonts) {
-                $objattr['title'] = \mb_convert_encoding($objattr['title'], $this->mpdf->mb_enc, 'UTF-8');
+                $objattr['title'] = mb_convert_encoding($objattr['title'], $this->mpdf->mb_enc, 'UTF-8');
             }
         }
         if ($this->mpdf->useActiveForms) {
@@ -63,8 +63,8 @@ class TextArea extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $this->mpdf->SetFont($properties['FONT-FAMILY'], '', 0, \false);
         }
         if (isset($properties['FONT-SIZE'])) {
-            $mmsize = $this->sizeConverter->convert($properties['FONT-SIZE'], $this->mpdf->default_font_size / \WPDeskFIVendor\Mpdf\Mpdf::SCALE);
-            $this->mpdf->SetFontSize($mmsize * \WPDeskFIVendor\Mpdf\Mpdf::SCALE, \false);
+            $mmsize = $this->sizeConverter->convert($properties['FONT-SIZE'], $this->mpdf->default_font_size / Mpdf::SCALE);
+            $this->mpdf->SetFontSize($mmsize * Mpdf::SCALE, \false);
         }
         if (isset($properties['COLOR'])) {
             $objattr['color'] = $this->colorConverter->convert($properties['COLOR'], $this->mpdf->PDFAXwarnings);
@@ -77,7 +77,7 @@ class TextArea extends \WPDeskFIVendor\Mpdf\Tag\Tag
             } elseif (isset($attr['ALIGN'])) {
                 $objattr['text_align'] = $this->getAlign($attr['ALIGN']);
             }
-            if (isset($properties['OVERFLOW']) && \strtolower($properties['OVERFLOW']) === 'hidden') {
+            if (isset($properties['OVERFLOW']) && strtolower($properties['OVERFLOW']) === 'hidden') {
                 $objattr['donotscroll'] = \true;
             }
             if (isset($properties['BORDER-TOP-COLOR'])) {
@@ -111,17 +111,17 @@ class TextArea extends \WPDeskFIVendor\Mpdf\Tag\Tag
         }
         $charsize = $this->mpdf->GetCharWidth('w', \false);
         if ($w) {
-            $colsize = \round(($w - $this->form->form_element_spacing['textarea']['outer']['h'] * 2 - $this->form->form_element_spacing['textarea']['inner']['h'] * 2) / $charsize);
+            $colsize = round(($w - $this->form->form_element_spacing['textarea']['outer']['h'] * 2 - $this->form->form_element_spacing['textarea']['inner']['h'] * 2) / $charsize);
         }
         if ($h) {
-            $rowsize = \round(($h - $this->form->form_element_spacing['textarea']['outer']['v'] * 2 - $this->form->form_element_spacing['textarea']['inner']['v'] * 2) / $this->mpdf->lineheight);
+            $rowsize = round(($h - $this->form->form_element_spacing['textarea']['outer']['v'] * 2 - $this->form->form_element_spacing['textarea']['inner']['v'] * 2) / $this->mpdf->lineheight);
         }
         $objattr['type'] = 'textarea';
         $objattr['width'] = $colsize * $charsize + $this->form->form_element_spacing['textarea']['outer']['h'] * 2 + $this->form->form_element_spacing['textarea']['inner']['h'] * 2;
         $objattr['height'] = $rowsize * $this->mpdf->lineheight + $this->form->form_element_spacing['textarea']['outer']['v'] * 2 + $this->form->form_element_spacing['textarea']['inner']['v'] * 2;
         $objattr['rows'] = $rowsize;
         $objattr['cols'] = $colsize;
-        $this->mpdf->specialcontent = \serialize($objattr);
+        $this->mpdf->specialcontent = serialize($objattr);
         if ($this->mpdf->tableLevel) {
             // *TABLES*
             $this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['s'] += $objattr['width'];

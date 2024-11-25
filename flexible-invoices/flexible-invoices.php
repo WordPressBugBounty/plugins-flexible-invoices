@@ -3,16 +3,16 @@
  * Plugin Name: Flexible Invoices for WooCommerce and WordPress
  * Plugin URI: https://wordpress.org/plugins/flexible-invoices/
  * Description: Flexible Invoices for WooCommerce and WordPress made simple. Available <a href="https://www.flexibleinvoices.com/?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-invoices-plugins-upgrade-link&utm_content=plugin-list-description" target="_blank">PRO extension</a> with automations and different types of documents.
- * Version: 5.7.9
+ * Version: 5.7.10
  * Author: WP Desk
  * Author URI: https://www.flexibleinvoices.com/
  * Text Domain: flexible-invoices
  * Domain Path: /lang/
  * Requires at least: 5.8
- * Tested up to: 6.6
+ * Tested up to: 6.7
  * WC requires at least: 8.8
  * WC tested up to: 9.2
- * Requires PHP: 7.3
+ * Requires PHP: 7.4
  *
  * Copyright 2020 WP Desk Ltd.
  *
@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 /* THESE TWO VARIABLES CAN BE CHANGED AUTOMATICALLY */
-$plugin_version = '5.7.9';
+$plugin_version = '5.7.10';
 $plugin_release_timestamp = '2023-11-27 10:37';
 
 $plugin_name        = 'Flexible Invoices for WooCommerce and WordPress';
@@ -47,12 +47,6 @@ $plugin_text_domain = 'flexible-invoices';
 $product_id         = 'Flexible Invoices for WooCommerce and WordPress';
 $plugin_file        = __FILE__;
 $plugin_dir         = dirname( __FILE__ );
-
-/** Dummy plugin name and description - for translations only. */
-$dummy_name       = __( 'Flexible Invoices for WooCommerce and WordPress', 'flexible-invoices' );
-$dummy_desc       = __( 'Flexible Invoices for WooCommerce and WordPress made simple. Available <a href="https://www.flexibleinvoices.com/?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-invoices-plugins-upgrade-link&utm_content=plugin-list-description" target="_blank">PRO extension</a> with automations and different types of documents.', 'flexible-invoices' );
-$dummy_plugin_uri = __( 'https://www.flexibleinvoices.com/', 'flexible-invoices' );
-$dummy_author_uri = __( 'https://flexibleinvoices.com/', 'flexible-invoices' );
 
 $requirements = [
 	'php'     => '7.3',

@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi;
@@ -174,9 +174,9 @@ trait FpdfTplTrait
         $this->SetAutoPageBreak(\false);
         $this->currentTemplateId = $templateId;
         $this->h = $height;
-        $this->hPt = $height / $this->k;
+        $this->hPt = $height * $this->k;
         $this->w = $width;
-        $this->wPt = $width / $this->k;
+        $this->wPt = $width * $this->k;
         $this->SetXY($this->lMargin, $this->tMargin);
         $this->SetRightMargin($this->w - $width + $this->rMargin);
         return $templateId;
@@ -308,7 +308,7 @@ trait FpdfTplTrait
     {
         parent::SetFontSize($size);
         if ($this->page === 0 && $this->currentTemplateId !== null) {
-            $this->_out(\sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
+            $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
         }
     }
     protected function _putimages()

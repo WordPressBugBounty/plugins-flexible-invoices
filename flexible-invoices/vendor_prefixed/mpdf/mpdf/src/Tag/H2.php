@@ -2,6 +2,6 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class H2 extends \WPDeskFIVendor\Mpdf\Tag\BlockTag
+class H2 extends BlockTag
 {
 }

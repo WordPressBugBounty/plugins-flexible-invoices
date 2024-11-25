@@ -18,7 +18,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_mode(string $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_mode(string $value): Config
     {
         $this->config['mode'] = $value;
         return $this;
@@ -28,7 +28,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_format(string $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_format(string $value): Config
     {
         $this->config['format'] = $value;
         return $this;
@@ -38,7 +38,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_orientation(string $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_orientation(string $value): Config
     {
         $this->config['orientation'] = $value;
         return $this;
@@ -48,7 +48,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_default_font(string $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_default_font(string $value): Config
     {
         $this->config['default_font'] = $value;
         return $this;
@@ -58,7 +58,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_default_font_size(string $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_default_font_size(string $value): Config
     {
         $this->config['default_font_size'] = $value;
         return $this;
@@ -68,7 +68,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_font_data(array $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_font_data(array $value): Config
     {
         $this->config['fontdata'] = $value;
         return $this;
@@ -78,7 +78,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_font_dir(array $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_font_dir(array $value): Config
     {
         foreach ($value as $dir) {
             $this->config['fontDir'][] = $dir;
@@ -90,7 +90,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_temp_dir(string $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_temp_dir(string $value): Config
     {
         $this->config['tempDir'] = $value;
         return $this;
@@ -100,7 +100,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_auto_script_to_lang(bool $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_auto_script_to_lang(bool $value): Config
     {
         $this->config['autoScriptToLang'] = $value;
         return $this;
@@ -110,7 +110,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_auto_lang_to_font(bool $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_auto_lang_to_font(bool $value): Config
     {
         $this->config['autoLangToFont'] = $value;
         return $this;
@@ -120,7 +120,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_img_dpi(int $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_img_dpi(int $value): Config
     {
         $this->config['img_dpi'] = $value;
         return $this;
@@ -130,7 +130,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_dpi(int $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_dpi(int $value): Config
     {
         $this->config['dpi'] = $value;
         return $this;
@@ -140,7 +140,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_margin_left(int $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_margin_left(int $value): Config
     {
         $this->config['margin_left'] = $value;
         return $this;
@@ -150,7 +150,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_margin_right(int $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_margin_right(int $value): Config
     {
         $this->config['margin_right'] = $value;
         return $this;
@@ -160,7 +160,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_margin_top(int $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_margin_top(int $value): Config
     {
         $this->config['margin_top'] = $value;
         return $this;
@@ -170,7 +170,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_margin_bottom(int $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_margin_bottom(int $value): Config
     {
         $this->config['margin_bottom'] = $value;
         return $this;
@@ -180,7 +180,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_margin_header(int $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_margin_header(int $value): Config
     {
         $this->config['margin_header'] = $value;
         return $this;
@@ -190,7 +190,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_margin_footer(int $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_margin_footer(int $value): Config
     {
         $this->config['margin_footer'] = $value;
         return $this;
@@ -201,7 +201,7 @@ final class Config
      *
      * @return Config
      */
-    public function set_custom(string $name, $value) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\Config
+    public function set_custom(string $name, $value): Config
     {
         $this->config[$name] = $value;
         return $this;

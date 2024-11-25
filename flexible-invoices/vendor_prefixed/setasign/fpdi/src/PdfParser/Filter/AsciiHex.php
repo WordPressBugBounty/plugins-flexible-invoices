@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter;
@@ -12,7 +12,7 @@ namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter;
 /**
  * Class for handling ASCII hexadecimal encoded data
  */
-class AsciiHex implements \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\FilterInterface
+class AsciiHex implements FilterInterface
 {
     /**
      * Converts an ASCII hexadecimal encoded string into its binary representation.

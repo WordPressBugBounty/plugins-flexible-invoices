@@ -3,7 +3,7 @@
 namespace WPDeskFIVendor\Mpdf\Tag;
 
 use WPDeskFIVendor\Mpdf\Mpdf;
-class Select extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class Select extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -15,10 +15,10 @@ class Select extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $this->mpdf->SetFont($properties['FONT-FAMILY'], $this->mpdf->FontStyle, 0, \false);
         }
         if (isset($properties['FONT-SIZE'])) {
-            $mmsize = $this->sizeConverter->convert($properties['FONT-SIZE'], $this->mpdf->default_font_size / \WPDeskFIVendor\Mpdf\Mpdf::SCALE);
-            $this->mpdf->SetFontSize($mmsize * \WPDeskFIVendor\Mpdf\Mpdf::SCALE, \false);
+            $mmsize = $this->sizeConverter->convert($properties['FONT-SIZE'], $this->mpdf->default_font_size / Mpdf::SCALE);
+            $this->mpdf->SetFontSize($mmsize * Mpdf::SCALE, \false);
         }
-        if (isset($attr['SPELLCHECK']) && \strtolower($attr['SPELLCHECK']) === 'true') {
+        if (isset($attr['SPELLCHECK']) && strtolower($attr['SPELLCHECK']) === 'true') {
             $this->mpdf->selectoption['SPELLCHECK'] = \true;
         }
         if (isset($properties['COLOR'])) {
@@ -122,7 +122,7 @@ class Select extends \WPDeskFIVendor\Mpdf\Tag\Tag
         $objattr['fontsize'] = $this->mpdf->FontSizePt;
         $objattr['width'] = $w + $this->form->form_element_spacing['select']['outer']['h'] * 2 + $this->form->form_element_spacing['select']['inner']['h'] * 2 + $this->mpdf->FontSize * 1.4;
         $objattr['height'] = $this->mpdf->FontSize * $rows + $this->form->form_element_spacing['select']['outer']['v'] * 2 + $this->form->form_element_spacing['select']['inner']['v'] * 2;
-        $e = "\xbb\xa4\xactype=select,objattr=" . \serialize($objattr) . "\xbb\xa4\xac";
+        $e = "\xbb\xa4\xactype=select,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
         // Output it to buffers
         if ($this->mpdf->tableLevel) {
             // *TABLES*

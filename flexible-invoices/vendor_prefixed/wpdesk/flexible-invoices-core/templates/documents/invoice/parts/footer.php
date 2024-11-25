@@ -13,7 +13,7 @@ $layout_name = isset($layout_name) ? $layout_name : 'default';
 <table id="footer" class="table-without-margin" style="margin-top: 10px;">
     <tr>
         <td style="text-align: <?php 
-echo \esc_attr(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Template::rtl_align('left'));
+echo \esc_attr(Template::rtl_align('left'));
 ?>;">
 			<?php 
 $note = $invoice->get_notes();
@@ -31,7 +31,7 @@ if (!empty($note)) {
 }
 ?>
             <?php 
-\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::template_invoice_after_notes($invoice, $client_country, $hideVat, $hideVatNumber);
+Hooks::template_invoice_after_notes($invoice, $client_country, $hideVat, $hideVatNumber);
 ?>
 
 			<?php 

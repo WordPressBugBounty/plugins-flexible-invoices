@@ -36,8 +36,8 @@ class EanUpc extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WP
      */
     private function init($code, $length)
     {
-        if (\preg_match('/[\\D]+/', $code)) {
-            throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid EAN UPC barcode value "%s"', $code));
+        if (preg_match('/[\D]+/', $code)) {
+            throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid EAN UPC barcode value "%s"', $code));
         }
         $upce = \false;
         $checkdigit = \false;
@@ -49,8 +49,8 @@ class EanUpc extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WP
         }
         $dataLength = $length - 1;
         // Padding
-        $code = \str_pad($code, $dataLength, '0', \STR_PAD_LEFT);
-        $codeLength = \strlen($code);
+        $code = str_pad($code, $dataLength, '0', \STR_PAD_LEFT);
+        $codeLength = strlen($code);
         // Calculate check digit
         $sum_a = 0;
         for ($i = 1; $i < $dataLength; $i += 2) {
@@ -76,7 +76,7 @@ class EanUpc extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WP
             $checkdigit = $r;
         } elseif ($r !== (int) $code[$dataLength]) {
             // Wrong checkdigit
-            throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid EAN UPC barcode value "%s"', $code));
+            throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid EAN UPC barcode value "%s"', $code));
         }
         if ($length == 12) {
             // UPC-A
@@ -85,35 +85,35 @@ class EanUpc extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WP
         }
         if ($upce) {
             // Convert UPC-A to UPC-E
-            $tmp = \substr($code, 4, 3);
-            $prodCode = (int) \substr($code, 7, 5);
+            $tmp = substr($code, 4, 3);
+            $prodCode = (int) substr($code, 7, 5);
             // product code
             $invalidUpce = \false;
             if ($tmp == '000' or $tmp == '100' or $tmp == '200') {
                 // Manufacturer code ends in 000, 100, or 200
-                $upceCode = \substr($code, 2, 2) . \substr($code, 9, 3) . \substr($code, 4, 1);
+                $upceCode = substr($code, 2, 2) . substr($code, 9, 3) . substr($code, 4, 1);
                 if ($prodCode > 999) {
                     $invalidUpce = \true;
                 }
             } else {
-                $tmp = \substr($code, 5, 2);
+                $tmp = substr($code, 5, 2);
                 if ($tmp == '00') {
                     // Manufacturer code ends in 00
-                    $upceCode = \substr($code, 2, 3) . \substr($code, 10, 2) . '3';
+                    $upceCode = substr($code, 2, 3) . substr($code, 10, 2) . '3';
                     if ($prodCode > 99) {
                         $invalidUpce = \true;
                     }
                 } else {
-                    $tmp = \substr($code, 6, 1);
+                    $tmp = substr($code, 6, 1);
                     if ($tmp == '0') {
                         // Manufacturer code ends in 0
-                        $upceCode = \substr($code, 2, 4) . \substr($code, 11, 1) . '4';
+                        $upceCode = substr($code, 2, 4) . substr($code, 11, 1) . '4';
                         if ($prodCode > 9) {
                             $invalidUpce = \true;
                         }
                     } else {
                         // Manufacturer code does not end in zero
-                        $upceCode = \substr($code, 2, 5) . \substr($code, 11, 1);
+                        $upceCode = substr($code, 2, 5) . substr($code, 11, 1);
                         if ($prodCode > 9) {
                             $invalidUpce = \true;
                         }
@@ -179,7 +179,7 @@ class EanUpc extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WP
             // right guard bar
         } else {
             $bararray = ['code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => []];
-            $halfLen = \ceil($length / 2);
+            $halfLen = ceil($length / 2);
             if ($length == 8) {
                 for ($i = 0; $i < $halfLen; ++$i) {
                     $seq .= $codes['A'][$code[$i]];
@@ -198,7 +198,7 @@ class EanUpc extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WP
             $seq .= '101';
             // right guard bar
         }
-        $clen = \strlen($seq);
+        $clen = strlen($seq);
         $w = 0;
         for ($i = 0; $i < $clen; ++$i) {
             $w += 1;

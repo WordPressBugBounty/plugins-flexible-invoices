@@ -85,23 +85,30 @@ class Plugin extends AbstractPlugin implements LoggerAwareInterface, HookableCol
 	 */
 	public function hooks() {
 		parent::hooks();
-		$integration = new InvoicesIntegration( $this->plugin_info, $this->logger );
-		$this->add_hookable( $integration );
-		$this->add_hookable( new SupportMenuPage( $this->plugin_url . '/assets/' ) );
-		$this->add_hookable( new SupportLinks() );
+		add_action('init', function () {
+			$integration = new InvoicesIntegration( $this->plugin_info, $this->logger );
+			$this->add_hookable( $integration );
+			$this->add_hookable( new SupportMenuPage( $this->plugin_url . '/assets/' ) );
+			$this->add_hookable( new SupportLinks() );
 
-		if ( WooCommerce::is_active() ) {
-			$this->add_hookable( new RegisterCheckoutBlock( $this->plugin_info, $integration->get_settings() ) );
-			( new Tracker\Tracker( $this->plugin_info->get_plugin_file_name() ) )->hooks();
-			( new Tracker\UsageDataTracker( $this->plugin_info->get_plugin_file_name() ) )->hooks();
-			Translator::$text_domain = $this->plugin_text_domain;
-			Translator::init( $this->plugin_info );
-		}
+			if ( WooCommerce::is_active() ) {
+				$this->add_hookable( new RegisterCheckoutBlock( $this->plugin_info, $integration->get_settings() ) );
+				( new Tracker\Tracker( $this->plugin_info->get_plugin_file_name() ) )->hooks();
+				( new Tracker\UsageDataTracker( $this->plugin_info->get_plugin_file_name() ) )->hooks();
+				Translator::$text_domain = $this->plugin_text_domain;
+				Translator::init( $this->plugin_info );
+			}
 
-		$this->add_hookable( new AdvancedFiltersAddon() );
-		$this->add_hookable( new SendingSettingsAddon() );
-		( new DashboardWidget() )->hooks();
-		$this->hooks_on_hookable_objects();
+			$this->add_hookable( new AdvancedFiltersAddon() );
+			$this->add_hookable( new SendingSettingsAddon() );
+			$this->hooks_on_hookable_objects();
+
+		},1);
+
+		add_action( 'admin_init', function (){
+			(new DashboardWidget())->hooks();
+		});
+
 	}
 
 	/**

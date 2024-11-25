@@ -3,7 +3,7 @@
 namespace WPDeskFIVendor\WPDesk\Forms\Validator;
 
 use WPDeskFIVendor\WPDesk\Forms\Validator;
-class ChainValidator implements \WPDeskFIVendor\WPDesk\Forms\Validator
+class ChainValidator implements Validator
 {
     /** @var Validator[] */
     private $validators;
@@ -18,7 +18,7 @@ class ChainValidator implements \WPDeskFIVendor\WPDesk\Forms\Validator
      *
      * @return $this
      */
-    public function attach(\WPDeskFIVendor\WPDesk\Forms\Validator $validator)
+    public function attach(Validator $validator)
     {
         $this->validators[] = $validator;
         return $this;
@@ -33,7 +33,7 @@ class ChainValidator implements \WPDeskFIVendor\WPDesk\Forms\Validator
                 $messages[] = $validator->get_messages();
             }
         }
-        $this->messages = \array_merge(...$messages);
+        $this->messages = array_merge(...$messages);
         return $result;
     }
     public function get_messages()

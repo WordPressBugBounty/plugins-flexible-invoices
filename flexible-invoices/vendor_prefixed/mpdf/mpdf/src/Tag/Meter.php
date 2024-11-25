@@ -3,7 +3,7 @@
 namespace WPDeskFIVendor\Mpdf\Tag;
 
 use WPDeskFIVendor\Mpdf\Mpdf;
-class Meter extends \WPDeskFIVendor\Mpdf\Tag\InlineTag
+class Meter extends InlineTag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -77,12 +77,12 @@ class Meter extends \WPDeskFIVendor\Mpdf\Tag\InlineTag
         $objattr['border_left']['w'] = 0;
         $objattr['border_right']['w'] = 0;
         $properties = $this->cssManager->MergeCSS('INLINE', $tag, $attr);
-        if (isset($properties['DISPLAY']) && \strtolower($properties['DISPLAY']) === 'none') {
+        if (isset($properties['DISPLAY']) && strtolower($properties['DISPLAY']) === 'none') {
             return;
         }
         $objattr['visibility'] = 'visible';
         if (isset($properties['VISIBILITY'])) {
-            $v = \strtolower($properties['VISIBILITY']);
+            $v = strtolower($properties['VISIBILITY']);
             if (($v === 'hidden' || $v === 'printonly' || $v === 'screenonly') && $this->mpdf->visibility === 'visible') {
                 $objattr['visibility'] = $v;
             }
@@ -142,9 +142,9 @@ class Meter extends \WPDeskFIVendor\Mpdf\Tag\InlineTag
             $objattr['opacity'] = $properties['OPACITY'];
         }
         if ($this->mpdf->HREF) {
-            if (\strpos($this->mpdf->HREF, '.') === \false && \strpos($this->mpdf->HREF, '@') !== 0) {
+            if (strpos($this->mpdf->HREF, '.') === \false && strpos($this->mpdf->HREF, '@') !== 0) {
                 $href = $this->mpdf->HREF;
-                while (\array_key_exists($href, $this->mpdf->internallink)) {
+                while (array_key_exists($href, $this->mpdf->internallink)) {
                     $href = '#' . $href;
                 }
                 $this->mpdf->internallink[$href] = $this->mpdf->AddLink();
@@ -157,7 +157,7 @@ class Meter extends \WPDeskFIVendor\Mpdf\Tag\InlineTag
         $extrawidth = $objattr['padding_left'] + $objattr['padding_right'] + $objattr['margin_left'] + $objattr['margin_right'] + $objattr['border_left']['w'] + $objattr['border_right']['w'];
         $svg = $this->makeSVG($type, $value, $max, $min, $optimum, $low, $high);
         //Save to local file
-        $srcpath = $this->cache->write('/_tempSVG' . \uniqid(\random_int(1, 100000), \true) . '_' . \strtolower($tag) . '.svg', $svg);
+        $srcpath = $this->cache->write('/_tempSVG' . uniqid(random_int(1, 100000), \true) . '_' . strtolower($tag) . '.svg', $svg);
         $orig_srcpath = $srcpath;
         $this->mpdf->GetFullPath($srcpath);
         $info = $this->imageProcessor->getImage($srcpath, \true, \true, $orig_srcpath);
@@ -176,15 +176,15 @@ class Meter extends \WPDeskFIVendor\Mpdf\Tag\InlineTag
         // Default width and height calculation if needed
         if ($w == 0 && $h == 0) {
             // SVG units are pixels
-            $w = $this->mpdf->FontSize / (10 / \WPDeskFIVendor\Mpdf\Mpdf::SCALE) * \abs($info['w']) / \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
-            $h = $this->mpdf->FontSize / (10 / \WPDeskFIVendor\Mpdf\Mpdf::SCALE) * \abs($info['h']) / \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+            $w = $this->mpdf->FontSize / (10 / Mpdf::SCALE) * abs($info['w']) / Mpdf::SCALE;
+            $h = $this->mpdf->FontSize / (10 / Mpdf::SCALE) * abs($info['h']) / Mpdf::SCALE;
         }
         // IF WIDTH OR HEIGHT SPECIFIED
         if ($w == 0) {
-            $w = $info['h'] ? \abs($h * $info['w'] / $info['h']) : \INF;
+            $w = $info['h'] ? abs($h * $info['w'] / $info['h']) : \INF;
         }
         if ($h == 0) {
-            $h = $info['w'] ? \abs($w * $info['h'] / $info['w']) : \INF;
+            $h = $info['w'] ? abs($w * $info['h'] / $info['w']) : \INF;
         }
         // Resize to maximum dimensions of page
         $maxWidth = $this->mpdf->blk[$this->mpdf->blklvl]['inner_width'];
@@ -195,11 +195,11 @@ class Meter extends \WPDeskFIVendor\Mpdf\Tag\InlineTag
         if ($w + $extrawidth > $maxWidth + 0.0001) {
             // mPDF 5.7.4  0.0001 to allow for rounding errors when w==maxWidth
             $w = $maxWidth - $extrawidth;
-            $h = \abs($w * $info['h'] / $info['w']);
+            $h = abs($w * $info['h'] / $info['w']);
         }
         if ($h + $extraheight > $maxHeight) {
             $h = $maxHeight - $extraheight;
-            $w = \abs($h * $info['w'] / $info['h']);
+            $w = abs($h * $info['w'] / $info['h']);
         }
         $objattr['type'] = 'image';
         $objattr['itype'] = $info['type'];
@@ -211,7 +211,7 @@ class Meter extends \WPDeskFIVendor\Mpdf\Tag\InlineTag
         $objattr['width'] = $w + $extrawidth;
         $objattr['image_height'] = $h;
         $objattr['image_width'] = $w;
-        $e = "\xbb\xa4\xactype=image,objattr=" . \serialize($objattr) . "\xbb\xa4\xac";
+        $e = "\xbb\xa4\xactype=image,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
         if ($this->mpdf->tableLevel) {
             $this->mpdf->_saveCellTextBuffer($e, $this->mpdf->HREF);
             $this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['s'] += $objattr['width'];
@@ -408,14 +408,12 @@ class Meter extends \WPDeskFIVendor\Mpdf\Tag\InlineTag
                     } else {
                         $barcol = 'url(#GrORANGE)';
                     }
+                } else if ($value < $low) {
+                    $barcol = 'url(#GrORANGE)';
+                } elseif ($value > $high) {
+                    $barcol = 'url(#GrORANGE)';
                 } else {
-                    if ($value < $low) {
-                        $barcol = 'url(#GrORANGE)';
-                    } elseif ($value > $high) {
-                        $barcol = 'url(#GrORANGE)';
-                    } else {
-                        $barcol = 'url(#GrGREEN)';
-                    }
+                    $barcol = 'url(#GrGREEN)';
                 }
                 $svg .= '<rect x="0" y="0" rx="' . $h * $border_radius . 'px" ry="' . $h * $border_radius . 'px" width="' . $barw . '" height="' . $h . '" fill="' . $barcol . '" stroke="none" />';
             }

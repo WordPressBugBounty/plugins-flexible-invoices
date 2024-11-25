@@ -11,7 +11,7 @@ use WPDeskFIVendor\Symfony\Component\Console\Output\OutputInterface;
  *
  * @package WPDesk\Codeception\Command
  */
-class GenerateWooCommerce extends \WPDeskFIVendor\Codeception\Command\GenerateTest implements \WPDeskFIVendor\Codeception\CustomCommandInterface
+class GenerateWooCommerce extends GenerateTest implements CustomCommandInterface
 {
     /**
      * Get codeception command description.
@@ -40,7 +40,7 @@ class GenerateWooCommerce extends \WPDeskFIVendor\Codeception\Command\GenerateTe
      */
     protected function getGenerator($config, $class)
     {
-        return new \WPDeskFIVendor\WPDesk\Codeception\Command\WooCommerceTestGenerator($config, $class);
+        return new WooCommerceTestGenerator($config, $class);
     }
     /**
      * Execute command.
@@ -50,7 +50,7 @@ class GenerateWooCommerce extends \WPDeskFIVendor\Codeception\Command\GenerateTe
      *
      * @return void
      */
-    public function execute(\WPDeskFIVendor\Symfony\Component\Console\Input\InputInterface $input, \WPDeskFIVendor\Symfony\Component\Console\Output\OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output)
     {
         $suite = $input->getArgument('suite');
         $class = $input->getArgument('class');

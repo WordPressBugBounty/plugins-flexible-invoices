@@ -60,7 +60,7 @@ class Otl
     var $schOTLdata;
     var $lastBidiStrongType;
     var $debugOTL = \false;
-    public function __construct(\WPDeskFIVendor\Mpdf\Mpdf $mpdf, \WPDeskFIVendor\Mpdf\Fonts\FontCache $fontCache)
+    public function __construct(Mpdf $mpdf, FontCache $fontCache)
     {
         $this->mpdf = $mpdf;
         $this->fontCache = $fontCache;
@@ -74,7 +74,7 @@ class Otl
             $this->arabic_initialise();
         }
         $this->OTLdata = [];
-        if (\trim($str) == '') {
+        if (trim($str) == '') {
             return $str;
         }
         if (!$useOTL) {
@@ -118,11 +118,11 @@ class Otl
         $subchunk = 0;
         $charctr = 0;
         foreach ($earr as $char) {
-            $ucd_record = \WPDeskFIVendor\Mpdf\Ucdn::get_ucd_record($char);
+            $ucd_record = Ucdn::get_ucd_record($char);
             $sbl = $ucd_record[6];
             // Special case - Arabic End of Ayah
             if ($char == 1757) {
-                $sbl = \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_ARABIC;
+                $sbl = Ucdn::SCRIPT_ARABIC;
             }
             if ($sbl && $sbl != 40 && $sbl != 102) {
                 if ($scriptblock == 0) {
@@ -146,7 +146,7 @@ class Otl
             //$OTLdata[$subchunk][$charctr]['normalization_check'] = $ucd_record[5];
             //$OTLdata[$subchunk][$charctr]['script'] = $ucd_record[6];
             $charasstr = $this->unicode_hex($char);
-            if (\strpos($this->GlyphClassMarks, $charasstr) !== \false) {
+            if (strpos($this->GlyphClassMarks, $charasstr) !== \false) {
                 $OTLdata[$subchunk][$charctr]['group'] = 'M';
             } elseif ($char == 32 || $char == 12288) {
                 $OTLdata[$subchunk][$charctr]['group'] = 'S';
@@ -164,56 +164,56 @@ class Otl
             // 3. Get Appropriate Scripts, and Shaper engine from analysing text and list of available scripts/langsys in font
             //==============================
             // Based on actual script block of text, select shaper (and line-breaking dictionaries)
-            if (\WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_DEVANAGARI <= $scriptblock && $scriptblock <= \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_MALAYALAM) {
+            if (Ucdn::SCRIPT_DEVANAGARI <= $scriptblock && $scriptblock <= Ucdn::SCRIPT_MALAYALAM) {
                 $this->shaper = "I";
-            } elseif ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_ARABIC || $scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_SYRIAC) {
+            } elseif ($scriptblock == Ucdn::SCRIPT_ARABIC || $scriptblock == Ucdn::SCRIPT_SYRIAC) {
                 $this->shaper = "A";
-            } elseif ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_NKO || $scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_MANDAIC) {
+            } elseif ($scriptblock == Ucdn::SCRIPT_NKO || $scriptblock == Ucdn::SCRIPT_MANDAIC) {
                 $this->shaper = "A";
-            } elseif ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_KHMER) {
+            } elseif ($scriptblock == Ucdn::SCRIPT_KHMER) {
                 $this->shaper = "K";
-            } elseif ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_THAI) {
+            } elseif ($scriptblock == Ucdn::SCRIPT_THAI) {
                 $this->shaper = "T";
-            } elseif ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_LAO) {
+            } elseif ($scriptblock == Ucdn::SCRIPT_LAO) {
                 $this->shaper = "L";
-            } elseif ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_SINHALA) {
+            } elseif ($scriptblock == Ucdn::SCRIPT_SINHALA) {
                 $this->shaper = "S";
-            } elseif ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_MYANMAR) {
+            } elseif ($scriptblock == Ucdn::SCRIPT_MYANMAR) {
                 $this->shaper = "M";
-            } elseif ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_NEW_TAI_LUE) {
+            } elseif ($scriptblock == Ucdn::SCRIPT_NEW_TAI_LUE) {
                 $this->shaper = "E";
-            } elseif ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_CHAM) {
+            } elseif ($scriptblock == Ucdn::SCRIPT_CHAM) {
                 $this->shaper = "E";
-            } elseif ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_TAI_THAM) {
+            } elseif ($scriptblock == Ucdn::SCRIPT_TAI_THAM) {
                 $this->shaper = "E";
             } else {
                 $this->shaper = "";
             }
             // Get scripttag based on actual text script
-            $scripttag = \WPDeskFIVendor\Mpdf\Ucdn::$uni_scriptblock[$scriptblock];
+            $scripttag = Ucdn::$uni_scriptblock[$scriptblock];
             $GSUBscriptTag = '';
             $GSUBlangsys = '';
             $GPOSscriptTag = '';
             $GPOSlangsys = '';
             $is_old_spec = \false;
             $ScriptLang = $this->mpdf->CurrentFont['GSUBScriptLang'];
-            if (\count($ScriptLang)) {
+            if (count($ScriptLang)) {
                 list($GSUBscriptTag, $is_old_spec) = $this->_getOTLscriptTag($ScriptLang, $scripttag, $scriptblock, $this->shaper, $useOTL, 'GSUB');
-                if ($this->mpdf->fontLanguageOverride && \strpos($ScriptLang[$GSUBscriptTag], $this->mpdf->fontLanguageOverride) !== \false) {
-                    $GSUBlangsys = \str_pad($this->mpdf->fontLanguageOverride, 4);
+                if ($this->mpdf->fontLanguageOverride && strpos($ScriptLang[$GSUBscriptTag], $this->mpdf->fontLanguageOverride) !== \false) {
+                    $GSUBlangsys = str_pad($this->mpdf->fontLanguageOverride, 4);
                 } elseif ($GSUBscriptTag && isset($ScriptLang[$GSUBscriptTag]) && $ScriptLang[$GSUBscriptTag] != '') {
                     $GSUBlangsys = $this->_getOTLLangTag($this->mpdf->currentLang, $ScriptLang[$GSUBscriptTag]);
                 }
             }
             $ScriptLang = $this->mpdf->CurrentFont['GPOSScriptLang'];
             // NB If after GSUB, the same script/lang exist for GPOS, just use these...
-            if ($GSUBscriptTag && $GSUBlangsys && isset($ScriptLang[$GSUBscriptTag]) && \strpos($ScriptLang[$GSUBscriptTag], $GSUBlangsys) !== \false) {
+            if ($GSUBscriptTag && $GSUBlangsys && isset($ScriptLang[$GSUBscriptTag]) && strpos($ScriptLang[$GSUBscriptTag], $GSUBlangsys) !== \false) {
                 $GPOSlangsys = $GSUBlangsys;
                 $GPOSscriptTag = $GSUBscriptTag;
-            } elseif (\count($ScriptLang)) {
+            } elseif (count($ScriptLang)) {
                 list($GPOSscriptTag, $dummy) = $this->_getOTLscriptTag($ScriptLang, $scripttag, $scriptblock, $this->shaper, $useOTL, 'GPOS');
-                if ($GPOSscriptTag && $this->mpdf->fontLanguageOverride && \strpos($ScriptLang[$GPOSscriptTag], $this->mpdf->fontLanguageOverride) !== \false) {
-                    $GPOSlangsys = \str_pad($this->mpdf->fontLanguageOverride, 4);
+                if ($GPOSscriptTag && $this->mpdf->fontLanguageOverride && strpos($ScriptLang[$GPOSscriptTag], $this->mpdf->fontLanguageOverride) !== \false) {
+                    $GPOSlangsys = str_pad($this->mpdf->fontLanguageOverride, 4);
                 } elseif ($GPOSscriptTag && isset($ScriptLang[$GPOSscriptTag]) && $ScriptLang[$GPOSscriptTag] != '') {
                     $GPOSlangsys = $this->_getOTLLangTag($this->mpdf->currentLang, $ScriptLang[$GPOSscriptTag]);
                 }
@@ -226,9 +226,9 @@ class Otl
             		}*/
             if (!$GSUBscriptTag && !$GSUBlangsys && !$GPOSscriptTag && !$GPOSlangsys) {
                 // Remove ZWJ and ZWNJ
-                for ($i = 0; $i < \count($this->OTLdata); $i++) {
+                for ($i = 0; $i < count($this->OTLdata); $i++) {
                     if ($this->OTLdata[$i]['uni'] == 8204 || $this->OTLdata[$i]['uni'] == 8205) {
-                        \array_splice($this->OTLdata, $i, 1);
+                        array_splice($this->OTLdata, $i, 1);
                     }
                 }
                 $this->schOTLdata[$sch] = $this->OTLdata;
@@ -263,7 +263,7 @@ class Otl
             if ($this->mpdf->useDictionaryLBR && ($this->shaper == "K" || $this->shaper == "T" || $this->shaper == "L")) {
                 // Sets $this->OTLdata[$i]['wordend']=true at possible end of word boundaries
                 $this->seaLineBreaking();
-            } elseif ($this->mpdf->useTibetanLBR && $scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_TIBETAN) {
+            } elseif ($this->mpdf->useTibetanLBR && $scriptblock == Ucdn::SCRIPT_TIBETAN) {
                 // Sets $this->OTLdata[$i]['wordend']=true at possible end of word boundaries
                 $this->tibetanLineBreaking();
             }
@@ -323,10 +323,10 @@ class Otl
                         $usetags = $this->_applyTagSettings($tags, $GSUBFeatures, $omittags, \true);
                     }
                     $this->arabGlyphs = $this->GSUBdata[$this->GSUBfont]['rtlSUB'];
-                    $gcms = \explode("| ", $this->GlyphClassMarks);
+                    $gcms = explode("| ", $this->GlyphClassMarks);
                     $gcm = [];
                     foreach ($gcms as $g) {
-                        $gcm[\hexdec($g)] = 1;
+                        $gcm[hexdec($g)] = 1;
                     }
                     $this->arabTransparentJoin = $this->arabTransparent + $gcm;
                     $this->arabic_shaper($usetags, $GSUBscriptTag);
@@ -334,7 +334,7 @@ class Otl
                     // c. Set Kashida points (after joining occurred - medi, fina, init) but before other substitutions
                     //-----------------------------------------------------------------------------------
                     //if ($scriptblock == Ucdn::SCRIPT_ARABIC ) {
-                    for ($i = 0; $i < \count($this->OTLdata); $i++) {
+                    for ($i = 0; $i < count($this->OTLdata); $i++) {
                         // Put the kashida marker on the character BEFORE which is inserted the kashida
                         // Kashida marker is inverse of priority i.e. Priority 1 => 7, Priority 7 => 1.
                         // Priority 1   User-inserted Kashida 0640 = Tatweel
@@ -345,7 +345,7 @@ class Otl
                             // Put before the next character
                         } elseif ($this->OTLdata[$i]['uni'] == 0xfeb3 || $this->OTLdata[$i]['uni'] == 0xfeb4 || $this->OTLdata[$i]['uni'] == 0xfebb || $this->OTLdata[$i]['uni'] == 0xfebc) {
                             $checkpos = $i + 1;
-                            while (isset($this->OTLdata[$checkpos]) && \strpos($this->GlyphClassMarks, $this->OTLdata[$checkpos]['hex']) !== \false) {
+                            while (isset($this->OTLdata[$checkpos]) && strpos($this->GlyphClassMarks, $this->OTLdata[$checkpos]['hex']) !== \false) {
                                 $checkpos++;
                             }
                             if (isset($this->OTLdata[$checkpos])) {
@@ -358,7 +358,7 @@ class Otl
                             $this->OTLdata[$i]['GPOSinfo']['kashida'] = 5;
                         } elseif ($this->OTLdata[$i]['uni'] == 0xfeae || $this->OTLdata[$i]['uni'] == 0xfef2 || $this->OTLdata[$i]['uni'] == 0xfef0 || $this->OTLdata[$i]['uni'] == 0xfef4 || $this->OTLdata[$i]['uni'] == 0xfbe9 || $this->OTLdata[$i]['uni'] == 0xfbfd || $this->OTLdata[$i]['uni'] == 0xfbff) {
                             $checkpos = $i - 1;
-                            while (isset($this->OTLdata[$checkpos]) && \strpos($this->GlyphClassMarks, $this->OTLdata[$checkpos]['hex']) !== \false) {
+                            while (isset($this->OTLdata[$checkpos]) && strpos($this->GlyphClassMarks, $this->OTLdata[$checkpos]['hex']) !== \false) {
                                 $checkpos--;
                             }
                             if (isset($this->OTLdata[$checkpos]) && $this->OTLdata[$checkpos]['uni'] == 0xfe92) {
@@ -378,10 +378,10 @@ class Otl
                         		  &#x641;&#x64e;&#x62a;&#x64f;&#x630;&#x64e;&#x643;&#x651;&#x650;&#x631;
                         		 */
                         if (!isset($this->OTLdata[$i]['GPOSinfo']['kashida'])) {
-                            if (\strpos($this->GSUBdata[$this->GSUBfont]['finals'], $this->OTLdata[$i]['hex']) !== \false) {
+                            if (strpos($this->GSUBdata[$this->GSUBfont]['finals'], $this->OTLdata[$i]['hex']) !== \false) {
                                 // ANY OTHER FINAL FORM
                                 $this->OTLdata[$i]['GPOSinfo']['kashida'] = 2;
-                            } elseif (\strpos('0FEAE 0FEF0 0FEF2', $this->OTLdata[$i]['hex']) !== \false) {
+                            } elseif (strpos('0FEAE 0FEF0 0FEF2', $this->OTLdata[$i]['hex']) !== \false) {
                                 // not already included in 5 above
                                 $this->OTLdata[$i]['GPOSinfo']['kashida'] = 1;
                             }
@@ -396,7 +396,7 @@ class Otl
                     if (!empty($this->mpdf->OTLtags)) {
                         $usetags = $this->_applyTagSettings($tags, $GSUBFeatures, $omittags, \false);
                     }
-                    $ts = \explode(' ', $usetags);
+                    $ts = explode(' ', $usetags);
                     foreach ($ts as $ut) {
                         //  - Apply one at a time in Feature order
                         $this->_applyGSUBrules($ut, $GSUBscriptTag, $GSUBlangsys);
@@ -405,8 +405,8 @@ class Otl
                     // e. NOT IN SPEC
                     // If space precedes a mark -> substitute a &nbsp; before the Mark, to prevent line breaking Test:
                     //-----------------------------------------------------------------------------------
-                    for ($ptr = 1; $ptr < \count($this->OTLdata); $ptr++) {
-                        if ($this->OTLdata[$ptr]['general_category'] == \WPDeskFIVendor\Mpdf\Ucdn::UNICODE_GENERAL_CATEGORY_NON_SPACING_MARK && $this->OTLdata[$ptr - 1]['uni'] == 32) {
+                    for ($ptr = 1; $ptr < count($this->OTLdata); $ptr++) {
+                        if ($this->OTLdata[$ptr]['general_category'] == Ucdn::UNICODE_GENERAL_CATEGORY_NON_SPACING_MARK && $this->OTLdata[$ptr - 1]['uni'] == 32) {
                             $this->OTLdata[$ptr - 1]['uni'] = 0xa0;
                             $this->OTLdata[$ptr - 1]['hex'] = '000A0';
                         }
@@ -417,18 +417,18 @@ class Otl
                     // a. First decompose/compose split mattras
                     // (normalize) ??????? Nukta/Halant order etc ??????????????????????????????????????????????????????????????????????????
                     //-----------------------------------------------------------------------------------
-                    for ($ptr = 0; $ptr < \count($this->OTLdata); $ptr++) {
+                    for ($ptr = 0; $ptr < count($this->OTLdata); $ptr++) {
                         $char = $this->OTLdata[$ptr]['uni'];
-                        $sub = \WPDeskFIVendor\Mpdf\Shaper\Indic::decompose_indic($char);
+                        $sub = Indic::decompose_indic($char);
                         if ($sub) {
                             $newinfo = [];
-                            for ($i = 0; $i < \count($sub); $i++) {
+                            for ($i = 0; $i < count($sub); $i++) {
                                 $newinfo[$i] = [];
-                                $ucd_record = \WPDeskFIVendor\Mpdf\Ucdn::get_ucd_record($sub[$i]);
+                                $ucd_record = Ucdn::get_ucd_record($sub[$i]);
                                 $newinfo[$i]['general_category'] = $ucd_record[0];
                                 $newinfo[$i]['bidi_type'] = $ucd_record[2];
                                 $charasstr = $this->unicode_hex($sub[$i]);
-                                if (\strpos($this->GlyphClassMarks, $charasstr) !== \false) {
+                                if (strpos($this->GlyphClassMarks, $charasstr) !== \false) {
                                     $newinfo[$i]['group'] = 'M';
                                 } else {
                                     $newinfo[$i]['group'] = 'C';
@@ -436,8 +436,8 @@ class Otl
                                 $newinfo[$i]['uni'] = $sub[$i];
                                 $newinfo[$i]['hex'] = $charasstr;
                             }
-                            \array_splice($this->OTLdata, $ptr, 1, $newinfo);
-                            $ptr += \count($sub) - 1;
+                            array_splice($this->OTLdata, $ptr, 1, $newinfo);
+                            $ptr += count($sub) - 1;
                         }
                         /* Only Composition-exclusion exceptions that we want to recompose. */
                         if ($this->shaper == 'I') {
@@ -445,13 +445,13 @@ class Otl
                                 $sub = 0x9df;
                                 $newinfo = [];
                                 $newinfo[0] = [];
-                                $ucd_record = \WPDeskFIVendor\Mpdf\Ucdn::get_ucd_record($sub);
+                                $ucd_record = Ucdn::get_ucd_record($sub);
                                 $newinfo[0]['general_category'] = $ucd_record[0];
                                 $newinfo[0]['bidi_type'] = $ucd_record[2];
                                 $newinfo[0]['group'] = 'C';
                                 $newinfo[0]['uni'] = $sub;
                                 $newinfo[0]['hex'] = $this->unicode_hex($sub);
-                                \array_splice($this->OTLdata, $ptr, 2, $newinfo);
+                                array_splice($this->OTLdata, $ptr, 2, $newinfo);
                             }
                         }
                     }
@@ -460,20 +460,20 @@ class Otl
                     //-----------------------------------------------------------------------------------
                     $indic_category_string = '';
                     foreach ($this->OTLdata as $eid => $c) {
-                        \WPDeskFIVendor\Mpdf\Shaper\Indic::set_indic_properties($this->OTLdata[$eid], $scriptblock);
+                        Indic::set_indic_properties($this->OTLdata[$eid], $scriptblock);
                         // sets ['indic_category'] and ['indic_position']
                         //$c['general_category']
                         //$c['combining_class']
                         //$c['uni'] =  $char;
-                        $indic_category_string .= \WPDeskFIVendor\Mpdf\Shaper\Indic::$indic_category_char[$this->OTLdata[$eid]['indic_category']];
+                        $indic_category_string .= Indic::$indic_category_char[$this->OTLdata[$eid]['indic_category']];
                     }
                     $broken_syllables = \false;
                     if ($this->shaper == 'I') {
-                        \WPDeskFIVendor\Mpdf\Shaper\Indic::set_syllables($this->OTLdata, $indic_category_string, $broken_syllables);
+                        Indic::set_syllables($this->OTLdata, $indic_category_string, $broken_syllables);
                     } elseif ($this->shaper == 'S') {
-                        \WPDeskFIVendor\Mpdf\Shaper\Indic::set_syllables_sinhala($this->OTLdata, $indic_category_string, $broken_syllables);
+                        Indic::set_syllables_sinhala($this->OTLdata, $indic_category_string, $broken_syllables);
                     } elseif ($this->shaper == 'K') {
-                        \WPDeskFIVendor\Mpdf\Shaper\Indic::set_syllables_khmer($this->OTLdata, $indic_category_string, $broken_syllables);
+                        Indic::set_syllables_khmer($this->OTLdata, $indic_category_string, $broken_syllables);
                     }
                     $indic_category_string = '';
                     //-----------------------------------------------------------------------------------
@@ -482,23 +482,23 @@ class Otl
                     // Find base consonant
                     // Decompose/compose and reorder Matras
                     // Reorder marks to canonical order
-                    $indic_config = \WPDeskFIVendor\Mpdf\Shaper\Indic::$indic_configs[$scriptblock];
+                    $indic_config = Indic::$indic_configs[$scriptblock];
                     $dottedcircle = \false;
                     if ($broken_syllables) {
                         if ($this->mpdf->_charDefined($this->mpdf->fonts[$this->fontkey]['cw'], 0x25cc)) {
                             $dottedcircle = [];
-                            $ucd_record = \WPDeskFIVendor\Mpdf\Ucdn::get_ucd_record(0x25cc);
+                            $ucd_record = Ucdn::get_ucd_record(0x25cc);
                             $dottedcircle[0]['general_category'] = $ucd_record[0];
                             $dottedcircle[0]['bidi_type'] = $ucd_record[2];
                             $dottedcircle[0]['group'] = 'C';
                             $dottedcircle[0]['uni'] = 0x25cc;
-                            $dottedcircle[0]['indic_category'] = \WPDeskFIVendor\Mpdf\Shaper\Indic::OT_DOTTEDCIRCLE;
-                            $dottedcircle[0]['indic_position'] = \WPDeskFIVendor\Mpdf\Shaper\Indic::POS_BASE_C;
+                            $dottedcircle[0]['indic_category'] = Indic::OT_DOTTEDCIRCLE;
+                            $dottedcircle[0]['indic_position'] = Indic::POS_BASE_C;
                             $dottedcircle[0]['hex'] = '025CC';
                             // TEMPORARY *****
                         }
                     }
-                    \WPDeskFIVendor\Mpdf\Shaper\Indic::initial_reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $broken_syllables, $indic_config, $scriptblock, $is_old_spec, $dottedcircle);
+                    Indic::initial_reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $broken_syllables, $indic_config, $scriptblock, $is_old_spec, $dottedcircle);
                     //-----------------------------------------------------------------------------------
                     // d. Apply initial and basic shaping forms GSUB Lookups (one at a time)
                     //-----------------------------------------------------------------------------------
@@ -514,7 +514,7 @@ class Otl
                     // Reorder matras
                     // Reorder reph
                     // Reorder pre-base reordering consonants:
-                    \WPDeskFIVendor\Mpdf\Shaper\Indic::final_reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $indic_config, $scriptblock, $is_old_spec);
+                    Indic::final_reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $indic_config, $scriptblock, $is_old_spec);
                     //-----------------------------------------------------------------------------------
                     // f. Apply 'init' feature to first syllable in word (indicated by ['mask']) Indic::FLAG(Indic::INIT);
                     //-----------------------------------------------------------------------------------
@@ -545,12 +545,12 @@ class Otl
                     //-----------------------------------------------------------------------------------
                     $myanmar_category_string = '';
                     foreach ($this->OTLdata as $eid => $c) {
-                        \WPDeskFIVendor\Mpdf\Shaper\Myanmar::set_myanmar_properties($this->OTLdata[$eid]);
+                        Myanmar::set_myanmar_properties($this->OTLdata[$eid]);
                         // sets ['myanmar_category'] and ['myanmar_position']
-                        $myanmar_category_string .= \WPDeskFIVendor\Mpdf\Shaper\Myanmar::$myanmar_category_char[$this->OTLdata[$eid]['myanmar_category']];
+                        $myanmar_category_string .= Myanmar::$myanmar_category_char[$this->OTLdata[$eid]['myanmar_category']];
                     }
                     $broken_syllables = \false;
-                    \WPDeskFIVendor\Mpdf\Shaper\Myanmar::set_syllables($this->OTLdata, $myanmar_category_string, $broken_syllables);
+                    Myanmar::set_syllables($this->OTLdata, $myanmar_category_string, $broken_syllables);
                     $myanmar_category_string = '';
                     //-----------------------------------------------------------------------------------
                     // b. Re-ordering (Myanmar mym2)
@@ -559,17 +559,17 @@ class Otl
                     if ($broken_syllables) {
                         if ($this->mpdf->_charDefined($this->mpdf->fonts[$this->fontkey]['cw'], 0x25cc)) {
                             $dottedcircle = [];
-                            $ucd_record = \WPDeskFIVendor\Mpdf\Ucdn::get_ucd_record(0x25cc);
+                            $ucd_record = Ucdn::get_ucd_record(0x25cc);
                             $dottedcircle[0]['general_category'] = $ucd_record[0];
                             $dottedcircle[0]['bidi_type'] = $ucd_record[2];
                             $dottedcircle[0]['group'] = 'C';
                             $dottedcircle[0]['uni'] = 0x25cc;
-                            $dottedcircle[0]['myanmar_category'] = \WPDeskFIVendor\Mpdf\Shaper\Myanmar::OT_DOTTEDCIRCLE;
-                            $dottedcircle[0]['myanmar_position'] = \WPDeskFIVendor\Mpdf\Shaper\Myanmar::POS_BASE_C;
+                            $dottedcircle[0]['myanmar_category'] = Myanmar::OT_DOTTEDCIRCLE;
+                            $dottedcircle[0]['myanmar_position'] = Myanmar::POS_BASE_C;
                             $dottedcircle[0]['hex'] = '025CC';
                         }
                     }
-                    \WPDeskFIVendor\Mpdf\Shaper\Myanmar::reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $broken_syllables, $dottedcircle);
+                    Myanmar::reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $broken_syllables, $dottedcircle);
                     //-----------------------------------------------------------------------------------
                     // c. Apply initial and basic shaping forms GSUB Lookups (one at a time)
                     //-----------------------------------------------------------------------------------
@@ -597,15 +597,15 @@ class Otl
                     //-----------------------------------------------------------------------------------
                     $sea_category_string = '';
                     foreach ($this->OTLdata as $eid => $c) {
-                        \WPDeskFIVendor\Mpdf\Shaper\Sea::set_sea_properties($this->OTLdata[$eid], $scriptblock);
+                        Sea::set_sea_properties($this->OTLdata[$eid], $scriptblock);
                         // sets ['sea_category'] and ['sea_position']
                         //$c['general_category']
                         //$c['combining_class']
                         //$c['uni'] =  $char;
-                        $sea_category_string .= \WPDeskFIVendor\Mpdf\Shaper\Sea::$sea_category_char[$this->OTLdata[$eid]['sea_category']];
+                        $sea_category_string .= Sea::$sea_category_char[$this->OTLdata[$eid]['sea_category']];
                     }
                     $broken_syllables = \false;
-                    \WPDeskFIVendor\Mpdf\Shaper\Sea::set_syllables($this->OTLdata, $sea_category_string, $broken_syllables);
+                    Sea::set_syllables($this->OTLdata, $sea_category_string, $broken_syllables);
                     $sea_category_string = '';
                     //-----------------------------------------------------------------------------------
                     // b. Apply locl and ccmp shaping forms - before initial re-ordering; GSUB Lookups (one at a time)
@@ -622,18 +622,18 @@ class Otl
                     if ($broken_syllables) {
                         if ($this->mpdf->_charDefined($this->mpdf->fonts[$this->fontkey]['cw'], 0x25cc)) {
                             $dottedcircle = [];
-                            $ucd_record = \WPDeskFIVendor\Mpdf\Ucdn::get_ucd_record(0x25cc);
+                            $ucd_record = Ucdn::get_ucd_record(0x25cc);
                             $dottedcircle[0]['general_category'] = $ucd_record[0];
                             $dottedcircle[0]['bidi_type'] = $ucd_record[2];
                             $dottedcircle[0]['group'] = 'C';
                             $dottedcircle[0]['uni'] = 0x25cc;
-                            $dottedcircle[0]['sea_category'] = \WPDeskFIVendor\Mpdf\Shaper\Sea::OT_GB;
-                            $dottedcircle[0]['sea_position'] = \WPDeskFIVendor\Mpdf\Shaper\Sea::POS_BASE_C;
+                            $dottedcircle[0]['sea_category'] = Sea::OT_GB;
+                            $dottedcircle[0]['sea_position'] = Sea::POS_BASE_C;
                             $dottedcircle[0]['hex'] = '025CC';
                             // TEMPORARY *****
                         }
                     }
-                    \WPDeskFIVendor\Mpdf\Shaper\Sea::initial_reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $broken_syllables, $scriptblock, $dottedcircle);
+                    Sea::initial_reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $broken_syllables, $scriptblock, $dottedcircle);
                     //-----------------------------------------------------------------------------------
                     // d. Apply basic shaping forms GSUB Lookups (one at a time)
                     //-----------------------------------------------------------------------------------
@@ -642,7 +642,7 @@ class Otl
                     //-----------------------------------------------------------------------------------
                     // e. Final Re-ordering
                     //-----------------------------------------------------------------------------------
-                    \WPDeskFIVendor\Mpdf\Shaper\Sea::final_reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $scriptblock);
+                    Sea::final_reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $scriptblock);
                     //-----------------------------------------------------------------------------------
                     // f. Apply Presentation Forms GSUB Lookups (+ any discretionary)
                     //-----------------------------------------------------------------------------------
@@ -695,7 +695,7 @@ class Otl
                      * Lao versions are the same as Thai + 0x80.
                      */
                     if ($this->shaper == 'T' || $this->shaper == 'L') {
-                        for ($ptr = 0; $ptr < \count($this->OTLdata); $ptr++) {
+                        for ($ptr = 0; $ptr < count($this->OTLdata); $ptr++) {
                             $char = $this->OTLdata[$ptr]['uni'];
                             if (($char & ~0x80) == 0xe33) {
                                 // if SARA_AM (U+0E33 or U+0EB3)
@@ -703,11 +703,11 @@ class Otl
                                 $SARA_AA = $char - 1;
                                 $sub = [$SARA_AA, $NIKHAHIT];
                                 $newinfo = [];
-                                $ucd_record = \WPDeskFIVendor\Mpdf\Ucdn::get_ucd_record($sub[0]);
+                                $ucd_record = Ucdn::get_ucd_record($sub[0]);
                                 $newinfo[0]['general_category'] = $ucd_record[0];
                                 $newinfo[0]['bidi_type'] = $ucd_record[2];
                                 $charasstr = $this->unicode_hex($sub[0]);
-                                if (\strpos($this->GlyphClassMarks, $charasstr) !== \false) {
+                                if (strpos($this->GlyphClassMarks, $charasstr) !== \false) {
                                     $newinfo[0]['group'] = 'M';
                                 } else {
                                     $newinfo[0]['group'] = 'C';
@@ -723,11 +723,11 @@ class Otl
                                     $ntones++;
                                 }
                                 $newinfo = [];
-                                $ucd_record = \WPDeskFIVendor\Mpdf\Ucdn::get_ucd_record($sub[1]);
+                                $ucd_record = Ucdn::get_ucd_record($sub[1]);
                                 $newinfo[0]['general_category'] = $ucd_record[0];
                                 $newinfo[0]['bidi_type'] = $ucd_record[2];
                                 $charasstr = $this->unicode_hex($sub[1]);
-                                if (\strpos($this->GlyphClassMarks, $charasstr) !== \false) {
+                                if (strpos($this->GlyphClassMarks, $charasstr) !== \false) {
                                     $newinfo[0]['group'] = 'M';
                                 } else {
                                     $newinfo[0]['group'] = 'C';
@@ -735,12 +735,12 @@ class Otl
                                 $newinfo[0]['uni'] = $sub[1];
                                 $newinfo[0]['hex'] = $charasstr;
                                 // Insert NIKAHIT
-                                \array_splice($this->OTLdata, $ptr - $ntones, 0, $newinfo);
+                                array_splice($this->OTLdata, $ptr - $ntones, 0, $newinfo);
                                 $ptr++;
                             }
                         }
                     }
-                    if ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_TIBETAN) {
+                    if ($scriptblock == Ucdn::SCRIPT_TIBETAN) {
                         // =========================
                         // Reordering TIBETAN
                         // =========================
@@ -751,8 +751,8 @@ class Otl
                         // From MS OTL spec the following are Digit modifiers (Md): 0F18–0F19, 0F3E–0F3F
                         // Digits: 0F20–0F33
                         // On testing only 0x0F3F (pre-based mark) seems to need re-ordering
-                        for ($ptr = 0; $ptr < \count($this->OTLdata) - 1; $ptr++) {
-                            if (\WPDeskFIVendor\Mpdf\Shaper\Indic::in_range($this->OTLdata[$ptr]['uni'], 0xf20, 0xf33) && $this->OTLdata[$ptr + 1]['uni'] == 0xf3f) {
+                        for ($ptr = 0; $ptr < count($this->OTLdata) - 1; $ptr++) {
+                            if (Indic::in_range($this->OTLdata[$ptr]['uni'], 0xf20, 0xf33) && $this->OTLdata[$ptr + 1]['uni'] == 0xf3f) {
                                 $tmp = $this->OTLdata[$ptr + 1];
                                 $this->OTLdata[$ptr + 1] = $this->OTLdata[$ptr];
                                 $this->OTLdata[$ptr] = $tmp;
@@ -800,7 +800,7 @@ class Otl
                         $useGSUBtags = $this->_applyTagSettings($tags, $GSUBFeatures, $omittags, \false);
                     }
                     // APPLY GSUB rules (as long as not Latin + SmallCaps - but not OTL smcp)
-                    if (!($this->mpdf->textvar & \WPDeskFIVendor\Mpdf\Css\TextVars::FC_SMALLCAPS && $scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_LATIN && \strpos($useGSUBtags, 'smcp') === \false)) {
+                    if (!($this->mpdf->textvar & TextVars::FC_SMALLCAPS && $scriptblock == Ucdn::SCRIPT_LATIN && strpos($useGSUBtags, 'smcp') === \false)) {
                         $this->_applyGSUBrules($useGSUBtags, $GSUBscriptTag, $GSUBlangsys);
                     }
                 }
@@ -808,20 +808,20 @@ class Otl
             // Shapers - KHMER & THAI & LAO - Replace Word boundary marker with U+200B
             // Also TIBETAN (no shaper)
             //=======================================================
-            if ($this->shaper == "K" || $this->shaper == "T" || $this->shaper == "L" || $scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_TIBETAN) {
+            if ($this->shaper == "K" || $this->shaper == "T" || $this->shaper == "L" || $scriptblock == Ucdn::SCRIPT_TIBETAN) {
                 // Set up properties to insert a U+200B character
                 $newinfo = [];
                 //$newinfo[0] = array('general_category' => 1, 'bidi_type' => 14, 'group' => 'S', 'uni' => 0x200B, 'hex' => '0200B');
-                $newinfo[0] = ['general_category' => \WPDeskFIVendor\Mpdf\Ucdn::UNICODE_GENERAL_CATEGORY_FORMAT, 'bidi_type' => \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_BN, 'group' => 'S', 'uni' => 0x200b, 'hex' => '0200B'];
+                $newinfo[0] = ['general_category' => Ucdn::UNICODE_GENERAL_CATEGORY_FORMAT, 'bidi_type' => Ucdn::BIDI_CLASS_BN, 'group' => 'S', 'uni' => 0x200b, 'hex' => '0200B'];
                 // Then insert U+200B at (after) all word end boundaries
-                for ($i = \count($this->OTLdata) - 1; $i > 0; $i--) {
+                for ($i = count($this->OTLdata) - 1; $i > 0; $i--) {
                     // Make sure after GSUB that wordend has not been moved - check next char is not in the same syllable
                     if (isset($this->OTLdata[$i]['wordend']) && $this->OTLdata[$i]['wordend'] && isset($this->OTLdata[$i + 1]['uni']) && (!isset($this->OTLdata[$i + 1]['syllable']) || !isset($this->OTLdata[$i + 1]['syllable']) || $this->OTLdata[$i + 1]['syllable'] != $this->OTLdata[$i]['syllable'])) {
-                        \array_splice($this->OTLdata, $i + 1, 0, $newinfo);
+                        array_splice($this->OTLdata, $i + 1, 0, $newinfo);
                         $this->_updateLigatureMarks($i, 1);
                     } elseif ($this->OTLdata[$i]['uni'] == 0x2e) {
                         // Word end if Full-stop.
-                        \array_splice($this->OTLdata, $i + 1, 0, $newinfo);
+                        array_splice($this->OTLdata, $i + 1, 0, $newinfo);
                         $this->_updateLigatureMarks($i, 1);
                     }
                 }
@@ -830,9 +830,9 @@ class Otl
             //=======================================================
             if ($this->shaper == 'I' || $this->shaper == 'S' || $this->shaper == 'A' || $this->shaper == 'K' || $this->shaper == 'M') {
                 // Remove ZWJ and ZWNJ
-                for ($i = 0; $i < \count($this->OTLdata); $i++) {
+                for ($i = 0; $i < count($this->OTLdata); $i++) {
                     if ($this->OTLdata[$i]['uni'] == 8204 || $this->OTLdata[$i]['uni'] == 8205) {
-                        \array_splice($this->OTLdata, $i, 1);
+                        array_splice($this->OTLdata, $i, 1);
                         $this->_updateLigatureMarks($i, -1);
                     }
                 }
@@ -864,7 +864,7 @@ class Otl
                 // Set kern to be included by default in non-Latin script (? just when shapers used)
                 // Kern is used in some fonts to reposition marks etc. and is essential for correct display
                 //if ($this->shaper) {$tags .= ' kern'; }
-                if ($scriptblock != \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_LATIN) {
+                if ($scriptblock != Ucdn::SCRIPT_LATIN) {
                     $tags .= ' kern';
                 }
                 $omittags = '';
@@ -876,30 +876,30 @@ class Otl
                 //==============================
                 $LookupList = [];
                 foreach ($GPOSFeatures as $tag => $arr) {
-                    if (\strpos($usetags, $tag) !== \false) {
+                    if (strpos($usetags, $tag) !== \false) {
                         foreach ($arr as $lu) {
                             $LookupList[$lu] = $tag;
                         }
                     }
                 }
-                \ksort($LookupList);
+                ksort($LookupList);
                 // 9. Apply GPOS Lookups (in order specified in lookup list but selecting from specified tags)
                 //==============================
                 // APPLY THE GPOS RULES (as long as not Latin + SmallCaps - but not OTL smcp)
-                if (!($this->mpdf->textvar & \WPDeskFIVendor\Mpdf\Css\TextVars::FC_SMALLCAPS && $scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_LATIN && \strpos($useGSUBtags, 'smcp') === \false)) {
+                if (!($this->mpdf->textvar & TextVars::FC_SMALLCAPS && $scriptblock == Ucdn::SCRIPT_LATIN && strpos($useGSUBtags, 'smcp') === \false)) {
                     $this->_applyGPOSrules($LookupList, $is_old_spec);
                     // (sets: $this->OTLdata[n]['GPOSinfo'] XPlacement YPlacement XAdvance Entry Exit )
                 }
                 // 10. Process cursive text
                 //==============================
-                if (\count($this->Entry) || \count($this->Exit)) {
+                if (count($this->Entry) || count($this->Exit)) {
                     // RTL
                     $incurs = \false;
-                    for ($i = \count($this->OTLdata) - 1; $i >= 0; $i--) {
+                    for ($i = count($this->OTLdata) - 1; $i >= 0; $i--) {
                         if (isset($this->Entry[$i]) && isset($this->Entry[$i]['Y']) && $this->Entry[$i]['dir'] == 'RTL') {
                             $nextbase = $i - 1;
                             // Set as next base ignoring marks (next base reading RTL in logical oder
-                            while (isset($this->OTLdata[$nextbase]['hex']) && \strpos($this->GlyphClassMarks, $this->OTLdata[$nextbase]['hex']) !== \false) {
+                            while (isset($this->OTLdata[$nextbase]['hex']) && strpos($this->GlyphClassMarks, $this->OTLdata[$nextbase]['hex']) !== \false) {
                                 $nextbase--;
                             }
                             if (isset($this->Exit[$nextbase]) && isset($this->Exit[$nextbase]['Y'])) {
@@ -929,7 +929,7 @@ class Otl
                             } else {
                                 $incurs = \false;
                             }
-                        } elseif (\strpos($this->GlyphClassMarks, $this->OTLdata[$i]['hex']) !== \false) {
+                        } elseif (strpos($this->GlyphClassMarks, $this->OTLdata[$i]['hex']) !== \false) {
                             continue;
                         } else {
                             $incurs = \false;
@@ -937,11 +937,11 @@ class Otl
                     }
                     // LTR
                     $incurs = \false;
-                    for ($i = 0; $i < \count($this->OTLdata); $i++) {
+                    for ($i = 0; $i < count($this->OTLdata); $i++) {
                         if (isset($this->Exit[$i]) && isset($this->Exit[$i]['Y']) && $this->Exit[$i]['dir'] == 'LTR') {
                             $nextbase = $i + 1;
                             // Set as next base ignoring marks
-                            while (\strpos($this->GlyphClassMarks, $this->OTLdata[$nextbase]['hex']) !== \false) {
+                            while (strpos($this->GlyphClassMarks, $this->OTLdata[$nextbase]['hex']) !== \false) {
                                 $nextbase++;
                             }
                             if (isset($this->Entry[$nextbase]) && isset($this->Entry[$nextbase]['Y'])) {
@@ -971,7 +971,7 @@ class Otl
                             } else {
                                 $incurs = \false;
                             }
-                        } elseif (\strpos($this->GlyphClassMarks, $this->OTLdata[$i]['hex']) !== \false) {
+                        } elseif (strpos($this->GlyphClassMarks, $this->OTLdata[$i]['hex']) !== \false) {
                             continue;
                         } else {
                             $incurs = \false;
@@ -997,13 +997,13 @@ class Otl
         $e = '';
         $ectr = 0;
         for ($sch = 0; $sch <= $subchunk; $sch++) {
-            for ($i = 0; $i < \count($this->schOTLdata[$sch]); $i++) {
+            for ($i = 0; $i < count($this->schOTLdata[$sch]); $i++) {
                 if (isset($this->schOTLdata[$sch][$i]['GPOSinfo'])) {
                     $newGPOSinfo[$ectr] = $this->schOTLdata[$sch][$i]['GPOSinfo'];
                 }
                 $newchar_data[$ectr] = ['bidi_class' => $this->schOTLdata[$sch][$i]['bidi_type'], 'uni' => $this->schOTLdata[$sch][$i]['uni']];
                 $newgroup .= $this->schOTLdata[$sch][$i]['group'];
-                $e .= \WPDeskFIVendor\Mpdf\Utils\UtfString::code2utf($this->schOTLdata[$sch][$i]['uni']);
+                $e .= UtfString::code2utf($this->schOTLdata[$sch][$i]['uni']);
                 if (isset($this->mpdf->CurrentFont['subset'])) {
                     $this->mpdf->CurrentFont['subset'][$this->schOTLdata[$sch][$i]['uni']] = $this->schOTLdata[$sch][$i]['uni'];
                 }
@@ -1031,11 +1031,11 @@ class Otl
         if (isset($this->mpdf->OTLtags['Plus'])) {
             $fp = $this->mpdf->OTLtags['Plus'];
         }
-        \preg_match_all('/([a-zA-Z0-9]{4})/', $fp, $m);
-        for ($i = 0; $i < \count($m[0]); $i++) {
+        preg_match_all('/([a-zA-Z0-9]{4})/', $fp, $m);
+        for ($i = 0; $i < count($m[0]); $i++) {
             $t = $m[1][$i];
             // Is it a valid tag?
-            if (isset($Features[$t]) && \strpos($omittags, $t) === \false && (!$onlytags || \strpos($tags, $t) !== \false)) {
+            if (isset($Features[$t]) && strpos($omittags, $t) === \false && (!$onlytags || strpos($tags, $t) !== \false)) {
                 $usetags .= ' ' . $t;
             }
         }
@@ -1043,12 +1043,12 @@ class Otl
         if (isset($this->mpdf->OTLtags['Minus'])) {
             $fm = $this->mpdf->OTLtags['Minus'];
         }
-        \preg_match_all('/([a-zA-Z0-9]{4})/', $fm, $m);
-        for ($i = 0; $i < \count($m[0]); $i++) {
+        preg_match_all('/([a-zA-Z0-9]{4})/', $fm, $m);
+        for ($i = 0; $i < count($m[0]); $i++) {
             $t = $m[1][$i];
             // Is it a valid tag?
-            if (isset($Features[$t]) && \strpos($omittags, $t) === \false && (!$onlytags || \strpos($tags, $t) !== \false)) {
-                $usetags = \str_replace($t, '', $usetags);
+            if (isset($Features[$t]) && strpos($omittags, $t) === \false && (!$onlytags || strpos($tags, $t) !== \false)) {
+                $usetags = str_replace($t, '', $usetags);
             }
         }
         // Font features to enable - set by font-feature-settings
@@ -1056,11 +1056,11 @@ class Otl
             $ffp = $this->mpdf->OTLtags['FFPlus'];
             // Font Features - may include integer: salt4
         }
-        \preg_match_all('/([a-zA-Z0-9]{4})([\\d+]*)/', $ffp, $m);
-        for ($i = 0; $i < \count($m[0]); $i++) {
+        preg_match_all('/([a-zA-Z0-9]{4})([\d+]*)/', $ffp, $m);
+        for ($i = 0; $i < count($m[0]); $i++) {
             $t = $m[1][$i];
             // Is it a valid tag?
-            if (isset($Features[$t]) && \strpos($omittags, $t) === \false && (!$onlytags || \strpos($tags, $t) !== \false)) {
+            if (isset($Features[$t]) && strpos($omittags, $t) === \false && (!$onlytags || strpos($tags, $t) !== \false)) {
                 $usetags .= ' ' . $m[0][$i];
                 //  - may include integer: salt4
             }
@@ -1069,12 +1069,12 @@ class Otl
         if (isset($this->mpdf->OTLtags['FFMinus'])) {
             $ffm = $this->mpdf->OTLtags['FFMinus'];
         }
-        \preg_match_all('/([a-zA-Z0-9]{4})/', $ffm, $m);
-        for ($i = 0; $i < \count($m[0]); $i++) {
+        preg_match_all('/([a-zA-Z0-9]{4})/', $ffm, $m);
+        for ($i = 0; $i < count($m[0]); $i++) {
             $t = $m[1][$i];
             // Is it a valid tag?
-            if (isset($Features[$t]) && \strpos($omittags, $t) === \false && (!$onlytags || \strpos($tags, $t) !== \false)) {
-                $usetags = \str_replace($t, '', $usetags);
+            if (isset($Features[$t]) && strpos($omittags, $t) === \false && (!$onlytags || strpos($tags, $t) !== \false)) {
+                $usetags = str_replace($t, '', $usetags);
             }
         }
         return $usetags;
@@ -1088,24 +1088,24 @@ class Otl
         $GSUBFeatures = $this->mpdf->CurrentFont['GSUBFeatures'][$scriptTag][$langsys];
         $LookupList = [];
         foreach ($GSUBFeatures as $tag => $arr) {
-            if (\strpos($usetags, $tag) !== \false) {
+            if (strpos($usetags, $tag) !== \false) {
                 foreach ($arr as $lu) {
                     $LookupList[$lu] = $tag;
                 }
             }
         }
-        \ksort($LookupList);
+        ksort($LookupList);
         foreach ($LookupList as $lu => $tag) {
             $Type = $this->GSUBLookups[$lu]['Type'];
             $Flag = $this->GSUBLookups[$lu]['Flag'];
             $MarkFilteringSet = $this->GSUBLookups[$lu]['MarkFilteringSet'];
             $tagInt = 1;
-            if (\preg_match('/' . $tag . '([0-9]{1,2})/', $usetags, $m)) {
+            if (preg_match('/' . $tag . '([0-9]{1,2})/', $usetags, $m)) {
                 $tagInt = $m[1];
             }
             $ptr = 0;
             // Test each glyph sequentially
-            while ($ptr < \count($this->OTLdata)) {
+            while ($ptr < count($this->OTLdata)) {
                 // whilst there is another glyph ..0064
                 $currGlyph = $this->OTLdata[$ptr]['hex'];
                 $currGID = $this->OTLdata[$ptr]['uni'];
@@ -1131,20 +1131,20 @@ class Otl
     {
         // Features are applied one at a time, working through each codepoint
         $GSUBFeatures = $this->mpdf->CurrentFont['GSUBFeatures'][$scriptTag][$langsys];
-        $tags = \explode(' ', $usetags);
+        $tags = explode(' ', $usetags);
         foreach ($tags as $usetag) {
             $LookupList = [];
             foreach ($GSUBFeatures as $tag => $arr) {
-                if (\strpos($usetags, $tag) !== \false) {
+                if (strpos($usetags, $tag) !== \false) {
                     foreach ($arr as $lu) {
                         $LookupList[$lu] = $tag;
                     }
                 }
             }
-            \ksort($LookupList);
+            ksort($LookupList);
             $ptr = 0;
             // Test each glyph sequentially
-            while ($ptr < \count($this->OTLdata)) {
+            while ($ptr < count($this->OTLdata)) {
                 // whilst there is another glyph ..0064
                 $currGlyph = $this->OTLdata[$ptr]['hex'];
                 $currGID = $this->OTLdata[$ptr]['uni'];
@@ -1154,7 +1154,7 @@ class Otl
                     $Flag = $this->GSUBLookups[$lu]['Flag'];
                     $MarkFilteringSet = $this->GSUBLookups[$lu]['MarkFilteringSet'];
                     $tagInt = 1;
-                    if (\preg_match('/' . $tag . '([0-9]{1,2})/', $usetags, $m)) {
+                    if (preg_match('/' . $tag . '([0-9]{1,2})/', $usetags, $m)) {
                         $tagInt = $m[1];
                     }
                     foreach ($this->GSUBLookups[$lu]['Subtables'] as $c => $subtable_offset) {
@@ -1182,7 +1182,7 @@ class Otl
         $GSUBFeatures = $this->mpdf->CurrentFont['GSUBFeatures'][$scriptTag][$langsys];
         // ALL should be applied one syllable at a time
         // Implemented in functions checkContextMatch and checkContextMatchMultiple by failing to match if outside scope of current 'syllable'
-        $tags = \explode(' ', $usetags);
+        $tags = explode(' ', $usetags);
         foreach ($tags as $usetag) {
             $LookupList = [];
             foreach ($GSUBFeatures as $tag => $arr) {
@@ -1192,18 +1192,18 @@ class Otl
                     }
                 }
             }
-            \ksort($LookupList);
+            ksort($LookupList);
             foreach ($LookupList as $lu => $tag) {
                 $Type = $this->GSUBLookups[$lu]['Type'];
                 $Flag = $this->GSUBLookups[$lu]['Flag'];
                 $MarkFilteringSet = $this->GSUBLookups[$lu]['MarkFilteringSet'];
                 $tagInt = 1;
-                if (\preg_match('/' . $tag . '([0-9]{1,2})/', $usetags, $m)) {
+                if (preg_match('/' . $tag . '([0-9]{1,2})/', $usetags, $m)) {
                     $tagInt = $m[1];
                 }
                 $ptr = 0;
                 // Test each glyph sequentially
-                while ($ptr < \count($this->OTLdata)) {
+                while ($ptr < count($this->OTLdata)) {
                     // whilst there is another glyph ..0064
                     $currGlyph = $this->OTLdata[$ptr]['hex'];
                     $currGID = $this->OTLdata[$ptr]['uni'];
@@ -1234,7 +1234,7 @@ class Otl
         $GSUBFeatures = $this->mpdf->CurrentFont['GSUBFeatures'][$scriptTag][$langsys];
         // ALL should be applied one syllable at a time
         // Implemented in functions checkContextMatch and checkContextMatchMultiple by failing to match if outside scope of current 'syllable'
-        $tags = \explode(' ', $usetags);
+        $tags = explode(' ', $usetags);
         foreach ($tags as $usetag) {
             $LookupList = [];
             foreach ($GSUBFeatures as $tag => $arr) {
@@ -1244,18 +1244,18 @@ class Otl
                     }
                 }
             }
-            \ksort($LookupList);
+            ksort($LookupList);
             foreach ($LookupList as $lu => $tag) {
                 $Type = $this->GSUBLookups[$lu]['Type'];
                 $Flag = $this->GSUBLookups[$lu]['Flag'];
                 $MarkFilteringSet = $this->GSUBLookups[$lu]['MarkFilteringSet'];
                 $tagInt = 1;
-                if (\preg_match('/' . $tag . '([0-9]{1,2})/', $usetags, $m)) {
+                if (preg_match('/' . $tag . '([0-9]{1,2})/', $usetags, $m)) {
                     $tagInt = $m[1];
                 }
                 $ptr = 0;
                 // Test each glyph sequentially
-                while ($ptr < \count($this->OTLdata)) {
+                while ($ptr < count($this->OTLdata)) {
                     // whilst there is another glyph ..0064
                     $currGlyph = $this->OTLdata[$ptr]['hex'];
                     $currGID = $this->OTLdata[$ptr]['uni'];
@@ -1263,30 +1263,30 @@ class Otl
                     foreach ($this->GSUBLookups[$lu]['Subtables'] as $c => $subtable_offset) {
                         // NB Coverage only looks at glyphs for position 1 (esp. 7.3 and 8.3)
                         if (isset($this->GSLuCoverage[$lu][$c][$currGID])) {
-                            if (\strpos('rphf pref blwf half pstf cfar init', $usetag) !== \false) {
+                            if (strpos('rphf pref blwf half pstf cfar init', $usetag) !== \false) {
                                 // only apply when mask indicates
                                 $mask = 0;
                                 switch ($usetag) {
                                     case 'rphf':
-                                        $mask = 1 << \WPDeskFIVendor\Mpdf\Shaper\Indic::RPHF;
+                                        $mask = 1 << Indic::RPHF;
                                         break;
                                     case 'pref':
-                                        $mask = 1 << \WPDeskFIVendor\Mpdf\Shaper\Indic::PREF;
+                                        $mask = 1 << Indic::PREF;
                                         break;
                                     case 'blwf':
-                                        $mask = 1 << \WPDeskFIVendor\Mpdf\Shaper\Indic::BLWF;
+                                        $mask = 1 << Indic::BLWF;
                                         break;
                                     case 'half':
-                                        $mask = 1 << \WPDeskFIVendor\Mpdf\Shaper\Indic::HALF;
+                                        $mask = 1 << Indic::HALF;
                                         break;
                                     case 'pstf':
-                                        $mask = 1 << \WPDeskFIVendor\Mpdf\Shaper\Indic::PSTF;
+                                        $mask = 1 << Indic::PSTF;
                                         break;
                                     case 'cfar':
-                                        $mask = 1 << \WPDeskFIVendor\Mpdf\Shaper\Indic::CFAR;
+                                        $mask = 1 << Indic::CFAR;
                                         break;
                                     case 'init':
-                                        $mask = 1 << \WPDeskFIVendor\Mpdf\Shaper\Indic::INIT;
+                                        $mask = 1 << Indic::INIT;
                                         break;
                                 }
                                 if (!($this->OTLdata[$ptr]['mask'] & $mask)) {
@@ -1298,19 +1298,19 @@ class Otl
                             if ($shift) {
                                 break;
                             }
-                        } elseif (static::_OTL_OLD_SPEC_COMPAT_1 && $Type == 4 && !$is_old_spec && \strpos('0094D 009CD 00A4D 00ACD 00B4D 00BCD 00C4D 00CCD 00D4D', $currGlyph) !== \false) {
+                        } elseif (static::_OTL_OLD_SPEC_COMPAT_1 && $Type == 4 && !$is_old_spec && strpos('0094D 009CD 00A4D 00ACD 00B4D 00BCD 00C4D 00CCD 00D4D', $currGlyph) !== \false) {
                             // only apply when 'pref blwf pstf' tags, and when mask indicates
-                            if (\strpos('pref blwf pstf', $usetag) !== \false) {
+                            if (strpos('pref blwf pstf', $usetag) !== \false) {
                                 $mask = 0;
                                 switch ($usetag) {
                                     case 'pref':
-                                        $mask = 1 << \WPDeskFIVendor\Mpdf\Shaper\Indic::PREF;
+                                        $mask = 1 << Indic::PREF;
                                         break;
                                     case 'blwf':
-                                        $mask = 1 << \WPDeskFIVendor\Mpdf\Shaper\Indic::BLWF;
+                                        $mask = 1 << Indic::BLWF;
                                         break;
                                     case 'pstf':
-                                        $mask = 1 << \WPDeskFIVendor\Mpdf\Shaper\Indic::PSTF;
+                                        $mask = 1 << Indic::PSTF;
                                         break;
                                 }
                                 if (!($this->OTLdata[$ptr]['mask'] & $mask)) {
@@ -1535,7 +1535,7 @@ class Otl
                     // Other component/input Glyphs starting at position 2 (arrayindex 1)
                     $spos++;
                     //while $this->OTLdata[$spos]['uni'] is an "ignore" =>  spos++
-                    while (isset($this->OTLdata[$spos]) && \strpos($ignore, $this->OTLdata[$spos]['hex']) !== \false) {
+                    while (isset($this->OTLdata[$spos]) && strpos($ignore, $this->OTLdata[$spos]['hex']) !== \false) {
                         $spos++;
                     }
                     if (isset($this->OTLdata[$spos]) && $this->OTLdata[$spos]['uni'] == $checkGlyph) {
@@ -1625,7 +1625,7 @@ class Otl
                                     }
                                 }
                             }
-                            if (!\defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
+                            if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
                                 return $shift;
                             } else {
                                 return $InputGlyphCount;
@@ -1684,8 +1684,8 @@ class Otl
                             }
                             // Class 0 contains all the glyphs NOT in the other classes
                             $class0excl = [];
-                            for ($gc = 1; $gc <= \count($InputClasses); $gc++) {
-                                if (\is_array($InputClasses[$gc])) {
+                            for ($gc = 1; $gc <= count($InputClasses); $gc++) {
+                                if (is_array($InputClasses[$gc])) {
                                     $class0excl = $class0excl + $InputClasses[$gc];
                                 }
                             }
@@ -1720,7 +1720,7 @@ class Otl
                                         }
                                     }
                                 }
-                                if (!\defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
+                                if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
                                     return $shift;
                                 } else {
                                     return $InputGlyphCount;
@@ -1802,7 +1802,7 @@ class Otl
                                 }
                             }
                         }
-                        if (!\defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
+                        if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
                             return $shift;
                         } else {
                             return $InputGlyphCount;
@@ -1878,7 +1878,7 @@ class Otl
                             }
                             // Class 0 contains all the glyphs NOT in the other classes
                             $class0excl = [];
-                            for ($gc = 1; $gc <= \count($InputClasses); $gc++) {
+                            for ($gc = 1; $gc <= count($InputClasses); $gc++) {
                                 if (isset($InputClasses[$gc])) {
                                     $class0excl = $class0excl + $InputClasses[$gc];
                                 }
@@ -1897,7 +1897,7 @@ class Otl
                             }
                             // Class 0 contains all the glyphs NOT in the other classes
                             $bclass0excl = [];
-                            for ($gc = 1; $gc <= \count($BacktrackClasses); $gc++) {
+                            for ($gc = 1; $gc <= count($BacktrackClasses); $gc++) {
                                 if (isset($BacktrackClasses[$gc])) {
                                     $bclass0excl = $bclass0excl + $BacktrackClasses[$gc];
                                 }
@@ -1916,7 +1916,7 @@ class Otl
                             }
                             // Class 0 contains all the glyphs NOT in the other classes
                             $lclass0excl = [];
-                            for ($gc = 1; $gc <= \count($LookaheadClasses); $gc++) {
+                            for ($gc = 1; $gc <= count($LookaheadClasses); $gc++) {
                                 if (isset($LookaheadClasses[$gc])) {
                                     $lclass0excl = $lclass0excl + $LookaheadClasses[$gc];
                                 }
@@ -1951,7 +1951,7 @@ class Otl
                                         }
                                     }
                                 }
-                                if (!\defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
+                                if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
                                     return $shift;
                                 } else {
                                     return $InputGlyphCount;
@@ -1985,19 +1985,19 @@ class Otl
                 for ($b = 0; $b < $BacktrackGlyphCount; $b++) {
                     $this->seek($CoverageBacktrackOffset[$b]);
                     $glyphs = $this->_getCoverage();
-                    $CoverageBacktrackGlyphs[$b] = \implode("|", $glyphs);
+                    $CoverageBacktrackGlyphs[$b] = implode("|", $glyphs);
                 }
                 $CoverageInputGlyphs = [];
                 for ($b = 0; $b < $InputGlyphCount; $b++) {
                     $this->seek($CoverageInputOffset[$b]);
                     $glyphs = $this->_getCoverage();
-                    $CoverageInputGlyphs[$b] = \implode("|", $glyphs);
+                    $CoverageInputGlyphs[$b] = implode("|", $glyphs);
                 }
                 $CoverageLookaheadGlyphs = [];
                 for ($b = 0; $b < $LookaheadGlyphCount; $b++) {
                     $this->seek($CoverageLookaheadOffset[$b]);
                     $glyphs = $this->_getCoverage();
-                    $CoverageLookaheadGlyphs[$b] = \implode("|", $glyphs);
+                    $CoverageLookaheadGlyphs[$b] = implode("|", $glyphs);
                 }
                 $matched = $this->checkContextMatchMultiple($CoverageInputGlyphs, $CoverageBacktrackGlyphs, $CoverageLookaheadGlyphs, $ignore, $ptr);
                 if ($matched) {
@@ -2030,7 +2030,7 @@ class Otl
                             }
                         }
                     }
-                    if (!\defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
+                    if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
                         return isset($shift) ? $shift : 0;
                     } else {
                         return $InputGlyphCount;
@@ -2051,14 +2051,14 @@ class Otl
             // Any position lpos or mpos > $pos + count($substitute)
             //  $this->assocMarks = array();    // assocMarks[$pos mpos] => array(compID, ligPos)
             //  $this->assocLigs = array(); // Ligatures[$pos lpos] => nc
-            for ($p = \count($this->OTLdata) - 1; $p >= $pos + $n; $p--) {
+            for ($p = count($this->OTLdata) - 1; $p >= $pos + $n; $p--) {
                 if (isset($this->assocLigs[$p])) {
                     $tmp = $this->assocLigs[$p];
                     unset($this->assocLigs[$p]);
                     $this->assocLigs[$p + $n] = $tmp;
                 }
             }
-            for ($p = \count($this->OTLdata) - 1; $p >= 0; $p--) {
+            for ($p = count($this->OTLdata) - 1; $p >= 0; $p--) {
                 if (isset($this->assocMarks[$p])) {
                     if ($this->assocMarks[$p]['ligPos'] >= $pos + $n) {
                         $this->assocMarks[$p]['ligPos'] += $n;
@@ -2074,14 +2074,14 @@ class Otl
             // glyphs removed
             $nrem = -$n;
             // Update position of pre-existing Ligatures and associated Marks
-            for ($p = $pos + 1; $p < \count($this->OTLdata); $p++) {
+            for ($p = $pos + 1; $p < count($this->OTLdata); $p++) {
                 if (isset($this->assocLigs[$p])) {
                     $tmp = $this->assocLigs[$p];
                     unset($this->assocLigs[$p]);
                     $this->assocLigs[$p - $nrem] = $tmp;
                 }
             }
-            for ($p = 0; $p < \count($this->OTLdata); $p++) {
+            for ($p = 0; $p < count($this->OTLdata); $p++) {
                 if (isset($this->assocMarks[$p])) {
                     if ($this->assocMarks[$p]['ligPos'] >= $pos) {
                         $this->assocMarks[$p]['ligPos'] -= $nrem;
@@ -2104,7 +2104,7 @@ class Otl
             $this->OTLdata[$pos]['hex'] = $this->unicode_hex($substitute);
             return 1;
         } elseif ($Type == 2) {
-            for ($i = 0; $i < \count($substitute); $i++) {
+            for ($i = 0; $i < count($substitute); $i++) {
                 $uni = $substitute[$i];
                 $newOTLdata[$i] = [];
                 $newOTLdata[$i]['uni'] = $uni;
@@ -2114,7 +2114,7 @@ class Otl
                 //  if (!$bt) {
                 $bt = $this->OTLdata[$pos]['bidi_type'];
                 //  }
-                if (\strpos($this->GlyphClassMarks, $newOTLdata[$i]['hex']) !== \false) {
+                if (strpos($this->GlyphClassMarks, $newOTLdata[$i]['hex']) !== \false) {
                     $gp = 'M';
                 } elseif ($uni == 32) {
                     $gp = 'S';
@@ -2142,16 +2142,16 @@ class Otl
             }
             if ($this->shaper == 'K' || $this->shaper == 'T' || $this->shaper == 'L') {
                 if ($this->OTLdata[$pos]['wordend']) {
-                    $newOTLdata[\count($substitute) - 1]['wordend'] = \true;
+                    $newOTLdata[count($substitute) - 1]['wordend'] = \true;
                 }
             }
-            \array_splice($this->OTLdata, $pos, 1, $newOTLdata);
+            array_splice($this->OTLdata, $pos, 1, $newOTLdata);
             // Replace 1 with n
             // Update position of Ligatures and associated Marks
             // count($substitute)-1  is the number of glyphs added
-            $nadd = \count($substitute) - 1;
+            $nadd = count($substitute) - 1;
             $this->_updateLigatureMarks($pos, $nadd);
-            return \count($substitute);
+            return count($substitute);
         } elseif ($Type == 4) {
             // Create Ligatures and associated Marks
             $firstGlyph = $this->OTLdata[$pos]['hex'];
@@ -2163,13 +2163,13 @@ class Otl
             } else {
                 $current_syllable = 0;
             }
-            for ($i = 0; $i < \count($GlyphPos); $i++) {
+            for ($i = 0; $i < count($GlyphPos); $i++) {
                 // If subsequent components are not Marks as well - don't ligate
                 $unistr = $this->OTLdata[$GlyphPos[$i]]['hex'];
                 if ($this->restrictToSyllable && isset($this->OTLdata[$GlyphPos[$i]]['syllable']) && $this->OTLdata[$GlyphPos[$i]]['syllable'] != $current_syllable) {
                     return 0;
                 }
-                if (\strpos($this->GlyphClassMarks, $unistr) !== \false) {
+                if (strpos($this->GlyphClassMarks, $unistr) !== \false) {
                     $contains_marks = \true;
                 } else {
                     $contains_nonmarks = \true;
@@ -2182,7 +2182,7 @@ class Otl
                     $firstMarkAssoc = $this->assocMarks[$pos];
                 }
                 // If all components of the ligature are marks, we call this a mark ligature.
-                for ($i = 1; $i < \count($GlyphPos); $i++) {
+                for ($i = 1; $i < count($GlyphPos); $i++) {
                     // If subsequent components are not Marks as well - don't ligate
                     //      $unistr = $this->OTLdata[$GlyphPos[$i]]['hex'];
                     //      if (strpos($this->GlyphClassMarks, $unistr )===false) { return; }
@@ -2203,7 +2203,7 @@ class Otl
                         // => Lookup 17  E003 E066B E05A 102D
                         // E003 and 102D should form a mark ligature, but 102D is already associated with (non-mark) ligature E05A
                         // So instead of disallowing the mark ligature to form, just dissociate...
-                        if (!\is_array($nextMarkAssoc) || $nextMarkAssoc['ligPos'] != $pos) {
+                        if (!is_array($nextMarkAssoc) || $nextMarkAssoc['ligPos'] != $pos) {
                             unset($this->assocMarks[$GlyphPos[$i]]);
                         }
                     }
@@ -2219,7 +2219,7 @@ class Otl
                  *   LAM,LAM,HEH ligature.
                  */
                 // So if is_array($firstMarkAssoc) - the new (Mark) ligature should keep this association
-                $lastPos = $GlyphPos[\count($GlyphPos) - 1];
+                $lastPos = $GlyphPos[count($GlyphPos) - 1];
             } else {
                 /*
                  * - Ligatures cannot be formed across glyphs attached to different components
@@ -2249,7 +2249,7 @@ class Otl
                  *   https://bugzilla.gnome.org/show_bug.cgi?id=437633
                  */
                 $currComp = 0;
-                for ($i = 0; $i < \count($GlyphPos); $i++) {
+                for ($i = 0; $i < count($GlyphPos); $i++) {
                     if ($i > 0 && isset($this->assocLigs[$GlyphPos[$i]])) {
                         // One of the other components is already a ligature
                         $nc = $this->assocLigs[$GlyphPos[$i]];
@@ -2259,7 +2259,7 @@ class Otl
                     // While next char to right is a mark (but not the next matched glyph)
                     // ?? + also include a Mark Ligature here
                     $ic = 1;
-                    while (($i == \count($GlyphPos) - 1 || isset($GlyphPos[$i + 1]) && $GlyphPos[$i] + $ic < $GlyphPos[$i + 1]) && isset($this->OTLdata[$GlyphPos[$i] + $ic]) && \strpos($this->GlyphClassMarks, $this->OTLdata[$GlyphPos[$i] + $ic]['hex']) !== \false) {
+                    while (($i == count($GlyphPos) - 1 || isset($GlyphPos[$i + 1]) && $GlyphPos[$i] + $ic < $GlyphPos[$i + 1]) && isset($this->OTLdata[$GlyphPos[$i] + $ic]) && strpos($this->GlyphClassMarks, $this->OTLdata[$GlyphPos[$i] + $ic]['hex']) !== \false) {
                         $newComp = $currComp;
                         if (isset($this->assocMarks[$GlyphPos[$i] + $ic])) {
                             // One of the inbetween Marks is already associated with a Lig
@@ -2272,7 +2272,7 @@ class Otl
                     }
                     $currComp += $nc;
                 }
-                $lastPos = $GlyphPos[\count($GlyphPos) - 1] + $ic - 1;
+                $lastPos = $GlyphPos[count($GlyphPos) - 1] + $ic - 1;
                 $this->assocLigs[$pos] = $currComp;
                 // Number of components in new Ligature
             }
@@ -2283,7 +2283,7 @@ class Otl
             //  if (!$bt) {
             $bt = $this->OTLdata[$pos]['bidi_type'];
             //  }
-            if (\strpos($this->GlyphClassMarks, $this->unicode_hex($substitute)) !== \false) {
+            if (strpos($this->GlyphClassMarks, $this->unicode_hex($substitute)) !== \false) {
                 $gp = 'M';
             } elseif ($substitute == 32) {
                 $gp = 'S';
@@ -2298,8 +2298,8 @@ class Otl
             // If previous/first component of ligature is a medial form, then keep this as a kashida point
             // TEST (Arabic Typesetting) &#x64a;&#x64e;&#x646;&#x62a;&#x64f;&#x645;
             $ka = 0;
-            if (isset($this->OTLdata[$GlyphPos[\count($GlyphPos) - 1]]['GPOSinfo']['kashida'])) {
-                $ka = $this->OTLdata[$GlyphPos[\count($GlyphPos) - 1]]['GPOSinfo']['kashida'];
+            if (isset($this->OTLdata[$GlyphPos[count($GlyphPos) - 1]]['GPOSinfo']['kashida'])) {
+                $ka = $this->OTLdata[$GlyphPos[count($GlyphPos) - 1]]['GPOSinfo']['kashida'];
             }
             if ($ka == 1 && isset($this->OTLdata[$pos]['form']) && $this->OTLdata[$pos]['form'] == 3) {
                 $newOTLdata[0]['GPOSinfo']['kashida'] = $ka;
@@ -2320,12 +2320,12 @@ class Otl
                 $newOTLdata[0]['syllable'] = $this->OTLdata[$pos]['syllable'];
             }
             $newOTLdata[0]['is_ligature'] = \true;
-            \array_splice($this->OTLdata, $pos, 1, $newOTLdata);
+            array_splice($this->OTLdata, $pos, 1, $newOTLdata);
             // GlyphPos contains array of arr_pos to set null - not necessarily contiguous
             // +- Remove any assocMarks or assocLigs from the main components (the ones that are deleted)
-            for ($i = \count($GlyphPos) - 1; $i > 0; $i--) {
+            for ($i = count($GlyphPos) - 1; $i > 0; $i--) {
                 $gpos = $GlyphPos[$i];
-                \array_splice($this->OTLdata, $gpos, 1);
+                array_splice($this->OTLdata, $gpos, 1);
                 unset($this->assocLigs[$gpos]);
                 unset($this->assocMarks[$gpos]);
             }
@@ -2334,10 +2334,10 @@ class Otl
             // Update position of pre-existing Ligatures and associated Marks
             // Start after first GlyphPos
             // count($GlyphPos)-1  is the number of glyphs removed from string
-            for ($p = $GlyphPos[0] + 1; $p < \count($this->OTLdata) + \count($GlyphPos) - 1; $p++) {
+            for ($p = $GlyphPos[0] + 1; $p < count($this->OTLdata) + count($GlyphPos) - 1; $p++) {
                 $nrem = 0;
                 // Number of Glyphs removed at this point in the string
-                for ($i = 0; $i < \count($GlyphPos); $i++) {
+                for ($i = 0; $i < count($GlyphPos); $i++) {
                     if ($i > 0 && $p > $GlyphPos[$i]) {
                         $nrem++;
                     }
@@ -3042,33 +3042,33 @@ class Otl
     private function arabic_shaper($usetags, $scriptTag)
     {
         $chars = [];
-        for ($i = 0; $i < \count($this->OTLdata); $i++) {
+        for ($i = 0; $i < count($this->OTLdata); $i++) {
             $chars[] = $this->OTLdata[$i]['hex'];
         }
         $crntChar = null;
         $prevChar = null;
         $nextChar = null;
         $output = [];
-        $max = \count($chars);
+        $max = count($chars);
         for ($i = $max - 1; $i >= 0; $i--) {
             $crntChar = $chars[$i];
             if ($i > 0) {
-                $prevChar = \hexdec($chars[$i - 1]);
+                $prevChar = hexdec($chars[$i - 1]);
             } else {
                 $prevChar = null;
             }
             if ($prevChar && isset($this->arabTransparentJoin[$prevChar]) && isset($chars[$i - 2])) {
-                $prevChar = \hexdec($chars[$i - 2]);
+                $prevChar = hexdec($chars[$i - 2]);
                 if ($prevChar && isset($this->arabTransparentJoin[$prevChar]) && isset($chars[$i - 3])) {
-                    $prevChar = \hexdec($chars[$i - 3]);
+                    $prevChar = hexdec($chars[$i - 3]);
                     if ($prevChar && isset($this->arabTransparentJoin[$prevChar]) && isset($chars[$i - 4])) {
-                        $prevChar = \hexdec($chars[$i - 4]);
+                        $prevChar = hexdec($chars[$i - 4]);
                     }
                 }
             }
-            if ($crntChar && isset($this->arabTransparentJoin[\hexdec($crntChar)])) {
+            if ($crntChar && isset($this->arabTransparentJoin[hexdec($crntChar)])) {
                 // If next_char = RightJoining && prev_char = LeftJoining:
-                if (isset($chars[$i + 1]) && $chars[$i + 1] && isset($this->arabRightJoining[\hexdec($chars[$i + 1])]) && $prevChar && isset($this->arabLeftJoining[$prevChar])) {
+                if (isset($chars[$i + 1]) && $chars[$i + 1] && isset($this->arabRightJoining[hexdec($chars[$i + 1])]) && $prevChar && isset($this->arabLeftJoining[$prevChar])) {
                     $output[] = $this->get_arab_glyphs($crntChar, 1, $chars, $i, $scriptTag, $usetags);
                     // <final> form
                 } else {
@@ -3077,7 +3077,7 @@ class Otl
                 }
                 continue;
             }
-            if (\hexdec($crntChar) < 128) {
+            if (hexdec($crntChar) < 128) {
                 $output[] = [$crntChar, 0];
                 $nextChar = $crntChar;
                 continue;
@@ -3087,15 +3087,15 @@ class Otl
             if ($prevChar && isset($this->arabLeftJoining[$prevChar])) {
                 $form++;
             }
-            if ($nextChar && isset($this->arabRightJoining[\hexdec($nextChar)])) {
+            if ($nextChar && isset($this->arabRightJoining[hexdec($nextChar)])) {
                 $form += 2;
             }
             $output[] = $this->get_arab_glyphs($crntChar, $form, $chars, $i, $scriptTag, $usetags);
             $nextChar = $crntChar;
         }
-        $ra = \array_reverse($output);
-        for ($i = 0; $i < \count($this->OTLdata); $i++) {
-            $this->OTLdata[$i]['uni'] = \hexdec($ra[$i][0]);
+        $ra = array_reverse($output);
+        for ($i = 0; $i < count($this->OTLdata); $i++) {
+            $this->OTLdata[$i]['uni'] = hexdec($ra[$i][0]);
             $this->OTLdata[$i]['hex'] = $ra[$i][0];
             $this->OTLdata[$i]['form'] = $ra[$i][1];
             // Actaul form substituted 0=ISOLATED FORM :: 1=FINAL :: 2=INITIAL :: 3=MEDIAL
@@ -3104,7 +3104,7 @@ class Otl
     private function get_arab_glyphs($char, $type, &$chars, $i, $scriptTag, $usetags)
     {
         // Optional Feature settings    // doesn't control Syriac at present
-        if ($type === 0 && \strpos($usetags, 'isol') === \false || $type === 1 && \strpos($usetags, 'fina') === \false || $type === 2 && \strpos($usetags, 'init') === \false || $type === 3 && \strpos($usetags, 'medi') === \false) {
+        if ($type === 0 && strpos($usetags, 'isol') === \false || $type === 1 && strpos($usetags, 'fina') === \false || $type === 2 && strpos($usetags, 'init') === \false || $type === 3 && strpos($usetags, 'medi') === \false) {
             return [$char, 0];
         }
         // 0=ISOLATED FORM :: 1=FINAL :: 2=INITIAL :: 3=MEDIAL (:: 4=MED2 :: 5=FIN2 :: 6=FIN3)
@@ -3116,13 +3116,13 @@ class Otl
             $n = $i - 1;
             // if the preceding (base) character cannot be joined to
             // not in $this->arabLeftJoining i.e. not a char which can join to the next one
-            if (isset($chars[$n]) && isset($this->arabLeftJoining[\hexdec($chars[$n])])) {
+            if (isset($chars[$n]) && isset($this->arabLeftJoining[hexdec($chars[$n])])) {
                 // if in the middle of Syriac words
-                if (isset($chars[$i + 1]) && \preg_match('/[\\x{0700}-\\x{0745}]/u', \WPDeskFIVendor\Mpdf\Utils\UtfString::code2utf(\hexdec($chars[$n]))) && \preg_match('/[\\x{0700}-\\x{0745}]/u', \WPDeskFIVendor\Mpdf\Utils\UtfString::code2utf(\hexdec($chars[$i + 1]))) && isset($this->arabGlyphs[$char][4])) {
+                if (isset($chars[$i + 1]) && preg_match('/[\x{0700}-\x{0745}]/u', UtfString::code2utf(hexdec($chars[$n]))) && preg_match('/[\x{0700}-\x{0745}]/u', UtfString::code2utf(hexdec($chars[$i + 1]))) && isset($this->arabGlyphs[$char][4])) {
                     $retk = 4;
-                } elseif (!isset($chars[$i + 1]) || !\preg_match('/[\\x{0700}-\\x{0745}]/u', \WPDeskFIVendor\Mpdf\Utils\UtfString::code2utf(\hexdec($chars[$i + 1])))) {
+                } elseif (!isset($chars[$i + 1]) || !preg_match('/[\x{0700}-\x{0745}]/u', UtfString::code2utf(hexdec($chars[$i + 1])))) {
                     // if preceding base character IS (00715|00716|0072A)
-                    if (\strpos('0715|0716|072A', $chars[$n]) !== \false && isset($this->arabGlyphs[$char][6])) {
+                    if (strpos('0715|0716|072A', $chars[$n]) !== \false && isset($this->arabGlyphs[$char][6])) {
                         $retk = 6;
                     } elseif (isset($this->arabGlyphs[$char][5])) {
                         $retk = 5;
@@ -3153,14 +3153,14 @@ class Otl
                     // $k starts 0, 1...
                     if (!isset($chars[$i - $ig - $k])) {
                         $match = \false;
-                    } elseif (\strpos($v, $chars[$i - $ig - $k]) === \false) {
-                        while (\strpos($this->arabGlyphs[$char]['ignore'][$retk], $chars[$i - $ig - $k]) !== \false) {
+                    } elseif (strpos($v, $chars[$i - $ig - $k]) === \false) {
+                        while (strpos($this->arabGlyphs[$char]['ignore'][$retk], $chars[$i - $ig - $k]) !== \false) {
                             // ignore
                             $ig++;
                         }
                         if (!isset($chars[$i - $ig - $k])) {
                             $match = \false;
-                        } elseif (\strpos($v, $chars[$i - $ig - $k]) === \false) {
+                        } elseif (strpos($v, $chars[$i - $ig - $k]) === \false) {
                             $match = \false;
                         }
                     }
@@ -3172,14 +3172,14 @@ class Otl
                     // $k starts 0, 1...
                     if (!isset($chars[$i + $ig + $k])) {
                         $match = \false;
-                    } elseif (\strpos($v, $chars[$i + $ig + $k]) === \false) {
-                        while (\strpos($this->arabGlyphs[$char]['ignore'][$retk], $chars[$i + $ig + $k]) !== \false) {
+                    } elseif (strpos($v, $chars[$i + $ig + $k]) === \false) {
+                        while (strpos($this->arabGlyphs[$char]['ignore'][$retk], $chars[$i + $ig + $k]) !== \false) {
                             // ignore
                             $ig++;
                         }
                         if (!isset($chars[$i + $ig + $k])) {
                             $match = \false;
-                        } elseif (\strpos($v, $chars[$i + $ig + $k]) === \false) {
+                        } elseif (strpos($v, $chars[$i + $ig + $k]) === \false) {
                             $match = \false;
                         }
                     }
@@ -3202,7 +3202,7 @@ class Otl
     // Sets $this->OTLdata[$i]['wordend']=true at possible end of word boundaries
     private function tibetanLineBreaking()
     {
-        for ($ptr = 0; $ptr < \count($this->OTLdata); $ptr++) {
+        for ($ptr = 0; $ptr < count($this->OTLdata); $ptr++) {
             // Break opportunities at U+0F0B Tsheg or U=0F0D
             if (isset($this->OTLdata[$ptr]['uni']) && ($this->OTLdata[$ptr]['uni'] == 0xf0b || $this->OTLdata[$ptr]['uni'] == 0xf0d)) {
                 if (isset($this->OTLdata[$ptr + 1]['uni']) && ($this->OTLdata[$ptr + 1]['uni'] == 0xf0d || $this->OTLdata[$ptr + 1]['uni'] == 0xf0e)) {
@@ -3221,8 +3221,8 @@ class Otl
     private function seaLineBreaking()
     {
         // Load Line-breaking dictionary
-        if (!isset($this->lbdicts[$this->shaper]) && \file_exists(__DIR__ . '/../data/linebrdict' . $this->shaper . '.dat')) {
-            $this->lbdicts[$this->shaper] = \file_get_contents(__DIR__ . '/../data/linebrdict' . $this->shaper . '.dat');
+        if (!isset($this->lbdicts[$this->shaper]) && file_exists(__DIR__ . '/../data/linebrdict' . $this->shaper . '.dat')) {
+            $this->lbdicts[$this->shaper] = file_get_contents(__DIR__ . '/../data/linebrdict' . $this->shaper . '.dat');
         }
         $dict =& $this->lbdicts[$this->shaper];
         // Find all word boundaries and mark end of word $this->OTLdata[$i]['wordend']=true on last character
@@ -3233,14 +3233,14 @@ class Otl
         // (0x0EC6);        // Repeat character LAO   UTF-8 0xE0 0xBB 0x86
         $rollover = [];
         $ptr = 0;
-        while ($ptr < \count($this->OTLdata) - 3) {
-            if (\count($rollover)) {
+        while ($ptr < count($this->OTLdata) - 3) {
+            if (count($rollover)) {
                 $matches = $rollover;
                 $rollover = [];
             } else {
                 $matches = $this->checkwordmatch($dict, $ptr);
             }
-            if (\count($matches) == 1) {
+            if (count($matches) == 1) {
                 $matchpos = $matches[0];
                 // Check for repeaters - if so $matchpos++
                 if (isset($this->OTLdata[$matchpos + 1]['uni']) && ($this->OTLdata[$matchpos + 1]['uni'] == 0xe2f || $this->OTLdata[$matchpos + 1]['uni'] == 0xe46 || $this->OTLdata[$matchpos + 1]['uni'] == 0xec6)) {
@@ -3258,11 +3258,11 @@ class Otl
             } else {
                 // Multiple matches
                 $secondmatch = \false;
-                for ($m = \count($matches) - 1; $m >= 0; $m--) {
+                for ($m = count($matches) - 1; $m >= 0; $m--) {
                     //for ($m=0;$m<count($matches);$m++) {
                     $firstmatch = $matches[$m];
                     $matches2 = $this->checkwordmatch($dict, $firstmatch + 1);
-                    if (\count($matches2)) {
+                    if (count($matches2)) {
                         // Set end of word marker in OTLdata at matchpos
                         $this->OTLdata[$firstmatch]['wordend'] = \true;
                         $ptr = $firstmatch + 1;
@@ -3273,8 +3273,8 @@ class Otl
                 }
                 if (!$secondmatch) {
                     // Set end of word marker in OTLdata at end of longest first match
-                    $this->OTLdata[$matches[\count($matches) - 1]]['wordend'] = \true;
-                    $ptr = $matches[\count($matches) - 1] + 1;
+                    $this->OTLdata[$matches[count($matches) - 1]]['wordend'] = \true;
+                    $ptr = $matches[count($matches) - 1] + 1;
                     // Move past any ASCII characters
                     while (isset($this->OTLdata[$ptr]['uni']) && $this->OTLdata[$ptr]['uni'] >> 8 == 0) {
                         $ptr++;
@@ -3301,33 +3301,33 @@ class Otl
         $ok = \true;
         $matches = [];
         while ($ok) {
-            $x = \ord($dict[$dictptr]);
+            $x = ord($dict[$dictptr]);
             $c = $this->OTLdata[$ptr]['uni'] & 0xff;
             if ($x == static::_DICT_INTERMEDIATE_MATCH) {
                 //echo "DICT_INTERMEDIATE_MATCH: ".dechex($c).'<br />';
                 // Do not match if next character in text is a Mark
-                if (isset($this->OTLdata[$ptr]['uni']) && \strpos($this->GlyphClassMarks, $this->OTLdata[$ptr]['hex']) === \false) {
+                if (isset($this->OTLdata[$ptr]['uni']) && strpos($this->GlyphClassMarks, $this->OTLdata[$ptr]['hex']) === \false) {
                     $matches[] = $ptr - 1;
                 }
                 $dictptr++;
             } elseif ($x == static::_DICT_FINAL_MATCH) {
                 //echo "DICT_FINAL_MATCH: ".dechex($c).'<br />';
                 // Do not match if next character in text is a Mark
-                if (isset($this->OTLdata[$ptr]['uni']) && \strpos($this->GlyphClassMarks, $this->OTLdata[$ptr]['hex']) === \false) {
+                if (isset($this->OTLdata[$ptr]['uni']) && strpos($this->GlyphClassMarks, $this->OTLdata[$ptr]['hex']) === \false) {
                     $matches[] = $ptr - 1;
                 }
                 return $matches;
             } elseif ($x == static::_DICT_NODE_TYPE_LINEAR) {
                 //echo "DICT_NODE_TYPE_LINEAR: ".dechex($c).'<br />';
                 $dictptr++;
-                $m = \ord($dict[$dictptr]);
+                $m = ord($dict[$dictptr]);
                 if ($c == $m) {
                     $ptr++;
-                    if ($ptr > \count($this->OTLdata) - 1) {
-                        $next = \ord($dict[$dictptr + 1]);
+                    if ($ptr > count($this->OTLdata) - 1) {
+                        $next = ord($dict[$dictptr + 1]);
                         if ($next == static::_DICT_INTERMEDIATE_MATCH || $next == static::_DICT_FINAL_MATCH) {
                             // Do not match if next character in text is a Mark
-                            if (isset($this->OTLdata[$ptr]['uni']) && \strpos($this->GlyphClassMarks, $this->OTLdata[$ptr]['hex']) === \false) {
+                            if (isset($this->OTLdata[$ptr]['uni']) && strpos($this->GlyphClassMarks, $this->OTLdata[$ptr]['hex']) === \false) {
                                 $matches[] = $ptr - 1;
                             }
                         }
@@ -3342,13 +3342,13 @@ class Otl
             } elseif ($x == static::_DICT_NODE_TYPE_SPLIT) {
                 //echo "DICT_NODE_TYPE_SPLIT ON ".dechex($d).": ".dechex($c).'<br />';
                 $dictptr++;
-                $d = \ord($dict[$dictptr]);
+                $d = ord($dict[$dictptr]);
                 if ($c < $d) {
                     $dictptr += 5;
                 } else {
                     $dictptr++;
                     // Unsigned long 32-bit offset
-                    $offset = \ord($dict[$dictptr]) * 16777216 + (\ord($dict[$dictptr + 1]) << 16) + (\ord($dict[$dictptr + 2]) << 8) + \ord($dict[$dictptr + 3]);
+                    $offset = ord($dict[$dictptr]) * 16777216 + (ord($dict[$dictptr + 1]) << 16) + (ord($dict[$dictptr + 2]) << 8) + ord($dict[$dictptr + 3]);
                     $dictptr = $offset;
                 }
             } else {
@@ -3373,7 +3373,7 @@ class Otl
             }
             $ptr = 0;
             // Test each glyph sequentially
-            while ($ptr < \count($this->OTLdata)) {
+            while ($ptr < count($this->OTLdata)) {
                 // whilst there is another glyph ..0064
                 $currGlyph = $this->OTLdata[$ptr]['hex'];
                 $currGID = $this->OTLdata[$ptr]['uni'];
@@ -3414,8 +3414,8 @@ class Otl
     {
         // If current glyph is a mark with a defined width, any XAdvance is considered to REPLACE the character Advance Width
         // Test case <div style="font-family:myanmartext">&#x1004;&#x103a;&#x1039;&#x1000;&#x1039;&#x1000;&#x103b;&#x103c;&#x103d;&#x1031;&#x102d;</div>
-        if (\strpos($this->GlyphClassMarks, $this->OTLdata[$basepos]['hex']) !== \false) {
-            $cw = \round($this->mpdf->_getCharWidth($this->mpdf->CurrentFont['cw'], $this->OTLdata[$basepos]['uni']) * $this->mpdf->CurrentFont['unitsPerEm'] / 1000);
+        if (strpos($this->GlyphClassMarks, $this->OTLdata[$basepos]['hex']) !== \false) {
+            $cw = round($this->mpdf->_getCharWidth($this->mpdf->CurrentFont['cw'], $this->OTLdata[$basepos]['uni']) * $this->mpdf->CurrentFont['unitsPerEm'] / 1000);
             // convert back to font design units
         } else {
             $cw = 0;
@@ -3464,10 +3464,10 @@ class Otl
     {
         // NB Not all fonts have all marks specified in GlyphClassMarks
         // If the current glyph is not a base (but a mark) then ignore this, and apply to the current position
-        if (\strpos($this->GlyphClassMarks, $this->OTLdata[$pos]['hex']) !== \false) {
+        if (strpos($this->GlyphClassMarks, $this->OTLdata[$pos]['hex']) !== \false) {
             return $pos;
         }
-        while (isset($this->OTLdata[$pos + 1]['hex']) && \strpos($this->GlyphClassMarks, $this->OTLdata[$pos + 1]['hex']) !== \false) {
+        while (isset($this->OTLdata[$pos + 1]['hex']) && strpos($this->GlyphClassMarks, $this->OTLdata[$pos + 1]['hex']) !== \false) {
             $pos++;
         }
         return $pos;
@@ -3534,7 +3534,7 @@ class Otl
                             $FirstGlyph = $this->OTLdata[$ptr]['uni'];
                             $checkpos = $ptr;
                             $checkpos++;
-                            while (isset($this->OTLdata[$checkpos]) && \strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
+                            while (isset($this->OTLdata[$checkpos]) && strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
                                 $checkpos++;
                             }
                             if (isset($this->OTLdata[$checkpos]) && $this->OTLdata[$checkpos]['uni'] == $SecondGlyph) {
@@ -3580,7 +3580,7 @@ class Otl
                 $FirstGlyph = $this->OTLdata[$ptr]['uni'];
                 $checkpos = $ptr;
                 $checkpos++;
-                while (isset($this->OTLdata[$checkpos]) && \strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
+                while (isset($this->OTLdata[$checkpos]) && strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
                     $checkpos++;
                 }
                 if (isset($this->OTLdata[$checkpos])) {
@@ -3590,14 +3590,14 @@ class Otl
                 }
                 $SecondGlyph = $this->OTLdata[$matchedpos]['uni'];
                 for ($i = 0; $i < $Class1Count; $i++) {
-                    if (isset($Class1[$i]) && \count($Class1[$i])) {
-                        $FirstClassPos = \array_search($FirstGlyph, $Class1[$i]);
+                    if (isset($Class1[$i]) && count($Class1[$i])) {
+                        $FirstClassPos = array_search($FirstGlyph, $Class1[$i]);
                         if ($FirstClassPos === \false) {
                             continue;
                         } else {
                             for ($j = 0; $j < $Class2Count; $j++) {
-                                if (isset($Class2[$j]) && \count($Class2[$j])) {
-                                    $SecondClassPos = \array_search($SecondGlyph, $Class2[$j]);
+                                if (isset($Class2[$j]) && count($Class2[$j])) {
+                                    $SecondClassPos = array_search($SecondGlyph, $Class2[$j]);
                                     if ($SecondClassPos === \false) {
                                         continue;
                                     }
@@ -3630,7 +3630,7 @@ class Otl
         } elseif ($Type == 3) {
             $this->skip(4);
             // Need default XAdvance for glyph
-            $pdfWidth = $this->mpdf->_getCharWidth($this->mpdf->CurrentFont['cw'], \hexdec($currGlyph));
+            $pdfWidth = $this->mpdf->_getCharWidth($this->mpdf->CurrentFont['cw'], hexdec($currGlyph));
             // DON'T convert back to design units
             $CPos = $LuCoverage[$currGID];
             $this->skip($CPos * 4);
@@ -3640,7 +3640,7 @@ class Otl
                 $EntryAnchor += $subtable_offset;
                 list($x, $y) = $this->_getAnchorTable($EntryAnchor);
                 if ($dir == 'RTL') {
-                    if (\round($pdfWidth) == \round($x * 1000 / $this->mpdf->CurrentFont['unitsPerEm'])) {
+                    if (round($pdfWidth) == round($x * 1000 / $this->mpdf->CurrentFont['unitsPerEm'])) {
                         $x = 0;
                     } else {
                         $x = $x - $pdfWidth * $this->mpdf->CurrentFont['unitsPerEm'] / 1000;
@@ -3652,7 +3652,7 @@ class Otl
                 $ExitAnchor += $subtable_offset;
                 list($x, $y) = $this->_getAnchorTable($ExitAnchor);
                 if ($dir == 'LTR') {
-                    if (\round($pdfWidth) == \round($x * 1000 / $this->mpdf->CurrentFont['unitsPerEm'])) {
+                    if (round($pdfWidth) == round($x * 1000 / $this->mpdf->CurrentFont['unitsPerEm'])) {
                         $x = 0;
                     } else {
                         $x = $x - $pdfWidth * $this->mpdf->CurrentFont['unitsPerEm'] / 1000;
@@ -3675,7 +3675,7 @@ class Otl
             $BaseArray = $subtable_offset + $this->read_ushort();
             // Offset to BaseArray table
             $this->seek($BaseCoverage);
-            $BaseGlyphs = \implode('|', $this->_getCoverage());
+            $BaseGlyphs = implode('|', $this->_getCoverage());
             $checkpos = $ptr;
             $checkpos--;
             // ZZZ93
@@ -3685,14 +3685,14 @@ class Otl
             // This Fix blocks the GPOS rule if the "mark" is not actually classified as a mark in the GlyphClasses of GDEF
             // but only in Indic old-spec.
             // Test cases: &#xca8;&#xccd;&#xca8;&#xcc1; and &#xc95;&#xccd;&#xcb0;&#xccc;
-            if ($this->shaper == 'I' && $is_old_spec && \strpos($this->GlyphClassMarks, $this->OTLdata[$ptr]['hex']) === \false) {
+            if ($this->shaper == 'I' && $is_old_spec && strpos($this->GlyphClassMarks, $this->OTLdata[$ptr]['hex']) === \false) {
                 return;
             }
             // "To identify the base glyph that combines with a mark, the text-processing client must look backward in the glyph string from the mark to the preceding base glyph."
-            while (isset($this->OTLdata[$checkpos]) && \strpos($this->GlyphClassMarks, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            while (isset($this->OTLdata[$checkpos]) && strpos($this->GlyphClassMarks, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $checkpos--;
             }
-            if (isset($this->OTLdata[$checkpos]) && \strpos($BaseGlyphs, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            if (isset($this->OTLdata[$checkpos]) && strpos($BaseGlyphs, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $matchedpos = $checkpos;
             } else {
                 $matchedpos = \false;
@@ -3706,7 +3706,7 @@ class Otl
                 // Get the relevant BaseRecord
                 $this->seek($BaseArray);
                 $BaseCount = $this->read_ushort();
-                $BasePos = \strpos($BaseGlyphs, $this->OTLdata[$matchedpos]['hex']) / 6;
+                $BasePos = strpos($BaseGlyphs, $this->OTLdata[$matchedpos]['hex']) / 6;
                 // Move to the BaseRecord we want
                 $nSkip = 2 * $BasePos * $ClassCount;
                 $this->skip($nSkip);
@@ -3751,14 +3751,14 @@ class Otl
             $LigatureArray = $subtable_offset + $this->read_ushort();
             // Offset to LigatureArray table
             $this->seek($LigatureCoverage);
-            $LigatureGlyphs = \implode('|', $this->_getCoverage());
+            $LigatureGlyphs = implode('|', $this->_getCoverage());
             $checkpos = $ptr;
             $checkpos--;
             // "To position a combining mark using a MarkToLigature attachment subtable, the text-processing client must work backward from the mark to the preceding ligature glyph."
-            while (isset($this->OTLdata[$checkpos]) && \strpos($this->GlyphClassMarks, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            while (isset($this->OTLdata[$checkpos]) && strpos($this->GlyphClassMarks, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $checkpos--;
             }
-            if (isset($this->OTLdata[$checkpos]) && \strpos($LigatureGlyphs, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            if (isset($this->OTLdata[$checkpos]) && strpos($LigatureGlyphs, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $matchedpos = $checkpos;
             } else {
                 $matchedpos = \false;
@@ -3772,7 +3772,7 @@ class Otl
                 // Get the relevant LigatureRecord
                 $this->seek($LigatureArray);
                 $LigatureCount = $this->read_ushort();
-                $LigaturePos = \strpos($LigatureGlyphs, $this->OTLdata[$matchedpos]['hex']) / 6;
+                $LigaturePos = strpos($LigatureGlyphs, $this->OTLdata[$matchedpos]['hex']) / 6;
                 // Move to the LigatureAttach table Record we want
                 $nSkip = 2 * $LigaturePos;
                 $this->skip($nSkip);
@@ -3842,13 +3842,13 @@ class Otl
             $Mark2Array = $subtable_offset + $this->read_ushort();
             // Offset to Mark2Array table
             $this->seek($Mark2Coverage);
-            $Mark2Glyphs = \implode('|', $this->_getCoverage());
+            $Mark2Glyphs = implode('|', $this->_getCoverage());
             $checkpos = $ptr;
             $checkpos--;
-            while (isset($this->OTLdata[$checkpos]) && \strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            while (isset($this->OTLdata[$checkpos]) && strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $checkpos--;
             }
-            if (isset($this->OTLdata[$checkpos]) && \strpos($Mark2Glyphs, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            if (isset($this->OTLdata[$checkpos]) && strpos($Mark2Glyphs, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $matchedpos = $checkpos;
             } else {
                 $matchedpos = \false;
@@ -3862,7 +3862,7 @@ class Otl
                 // Get the relevant Mark2Record
                 $this->seek($Mark2Array);
                 $Mark2Count = $this->read_ushort();
-                $Mark2Pos = \strpos($Mark2Glyphs, $this->OTLdata[$matchedpos]['hex']) / 6;
+                $Mark2Pos = strpos($Mark2Glyphs, $this->OTLdata[$matchedpos]['hex']) / 6;
                 // Move to the Mark2Record we want
                 $nSkip = 2 * $Mark2Pos * $ClassCount;
                 $this->skip($nSkip);
@@ -3893,18 +3893,15 @@ class Otl
                 }
                 // However IF Mark2 (first in logical order, i.e. being attached to) is not associated with a base, carry on
                 // This happens in Indic when the Mark being attached to e.g. [Halant Ma lig] -> MatraU,  [U+0B4D + U+B2E as E0F5]-> U+0B41 become E135
-                if (!\defined("OMIT_OTL_FIX_1") || OMIT_OTL_FIX_1 != 1) {
+                if (!defined("OMIT_OTL_FIX_1") || OMIT_OTL_FIX_1 != 1) {
                     /* OTL_FIX_1 */
                     if (isset($this->assocMarks[$matchedpos]) && ($prevLig != $thisLig || $prevComp != $thisComp)) {
                         return 0;
                     }
-                } else {
-                    /* Original code */
-                    if ($prevLig != $thisLig || $prevComp != $thisComp) {
-                        return 0;
-                    }
+                } else if ($prevLig != $thisLig || $prevComp != $thisComp) {
+                    return 0;
                 }
-                if (!\defined("OMIT_OTL_FIX_2") || OMIT_OTL_FIX_2 != 1) {
+                if (!defined("OMIT_OTL_FIX_2") || OMIT_OTL_FIX_2 != 1) {
                     /* OTL_FIX_2 */
                     if (!isset($this->OTLdata[$matchedpos]['GPOSinfo']['BaseWidth']) || !$this->OTLdata[$matchedpos]['GPOSinfo']['BaseWidth']) {
                         $this->OTLdata[$ptr]['GPOSinfo']['BaseWidth'] = $Mark2Width;
@@ -3980,8 +3977,8 @@ class Otl
                             }
                             // Class 0 contains all the glyphs NOT in the other classes
                             $class0excl = [];
-                            for ($gc = 1; $gc <= \count($InputClasses); $gc++) {
-                                if (\is_array($InputClasses[$gc])) {
+                            for ($gc = 1; $gc <= count($InputClasses); $gc++) {
+                                if (is_array($InputClasses[$gc])) {
                                     $class0excl = $class0excl + $InputClasses[$gc];
                                 }
                             }
@@ -4016,7 +4013,7 @@ class Otl
                                         }
                                     }
                                 }
-                                if (!\defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
+                                if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
                                     return $shift;
                                 } else {
                                     return $InputGlyphCount;
@@ -4102,8 +4099,8 @@ class Otl
                             }
                             // Class 0 contains all the glyphs NOT in the other classes
                             $class0excl = [];
-                            for ($gc = 1; $gc <= \count($InputClasses); $gc++) {
-                                if (isset($InputClasses[$gc]) && \is_array($InputClasses[$gc])) {
+                            for ($gc = 1; $gc <= count($InputClasses); $gc++) {
+                                if (isset($InputClasses[$gc]) && is_array($InputClasses[$gc])) {
                                     $class0excl = $class0excl + $InputClasses[$gc];
                                 }
                             }
@@ -4122,8 +4119,8 @@ class Otl
                             }
                             // Class 0 contains all the glyphs NOT in the other classes
                             $bclass0excl = [];
-                            for ($gc = 1; $gc <= \count($BacktrackClasses); $gc++) {
-                                if (isset($BacktrackClasses[$gc]) && \is_array($BacktrackClasses[$gc])) {
+                            for ($gc = 1; $gc <= count($BacktrackClasses); $gc++) {
+                                if (isset($BacktrackClasses[$gc]) && is_array($BacktrackClasses[$gc])) {
                                     $bclass0excl = $bclass0excl + $BacktrackClasses[$gc];
                                 }
                             }
@@ -4142,8 +4139,8 @@ class Otl
                             }
                             // Class 0 contains all the glyphs NOT in the other classes
                             $lclass0excl = [];
-                            for ($gc = 1; $gc <= \count($LookaheadClasses); $gc++) {
-                                if (isset($LookaheadClasses[$gc]) && \is_array($LookaheadClasses[$gc])) {
+                            for ($gc = 1; $gc <= count($LookaheadClasses); $gc++) {
+                                if (isset($LookaheadClasses[$gc]) && is_array($LookaheadClasses[$gc])) {
                                     $lclass0excl = $lclass0excl + $LookaheadClasses[$gc];
                                 }
                             }
@@ -4179,7 +4176,7 @@ class Otl
                                         }
                                     }
                                 }
-                                if (!\defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
+                                if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
                                     return $shift;
                                 } else {
                                     return $InputGlyphCount;
@@ -4213,19 +4210,19 @@ class Otl
                 for ($b = 0; $b < $BacktrackGlyphCount; $b++) {
                     $this->seek($CoverageBacktrackOffset[$b]);
                     $glyphs = $this->_getCoverage();
-                    $CoverageBacktrackGlyphs[$b] = \implode("|", $glyphs);
+                    $CoverageBacktrackGlyphs[$b] = implode("|", $glyphs);
                 }
                 $CoverageInputGlyphs = [];
                 for ($b = 0; $b < $InputGlyphCount; $b++) {
                     $this->seek($CoverageInputOffset[$b]);
                     $glyphs = $this->_getCoverage();
-                    $CoverageInputGlyphs[$b] = \implode("|", $glyphs);
+                    $CoverageInputGlyphs[$b] = implode("|", $glyphs);
                 }
                 $CoverageLookaheadGlyphs = [];
                 for ($b = 0; $b < $LookaheadGlyphCount; $b++) {
                     $this->seek($CoverageLookaheadOffset[$b]);
                     $glyphs = $this->_getCoverage();
-                    $CoverageLookaheadGlyphs[$b] = \implode("|", $glyphs);
+                    $CoverageLookaheadGlyphs[$b] = implode("|", $glyphs);
                 }
                 $matched = $this->checkContextMatchMultiple($CoverageInputGlyphs, $CoverageBacktrackGlyphs, $CoverageLookaheadGlyphs, $ignore, $ptr);
                 if ($matched) {
@@ -4281,9 +4278,9 @@ class Otl
         $current_syllable = isset($this->OTLdata[$ptr]['syllable']) ? $this->OTLdata[$ptr]['syllable'] : 0;
         // BACKTRACK
         $checkpos = $ptr;
-        for ($i = 0; $i < \count($Backtrack); $i++) {
+        for ($i = 0; $i < count($Backtrack); $i++) {
             $checkpos--;
-            while (isset($this->OTLdata[$checkpos]) && \strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            while (isset($this->OTLdata[$checkpos]) && strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $checkpos--;
             }
             // If outside scope of current syllable - return no match
@@ -4296,9 +4293,9 @@ class Otl
         // INPUT
         $matched = [0 => $ptr];
         $checkpos = $ptr;
-        for ($i = 1; $i < \count($Input); $i++) {
+        for ($i = 1; $i < count($Input); $i++) {
             $checkpos++;
-            while (isset($this->OTLdata[$checkpos]) && \strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            while (isset($this->OTLdata[$checkpos]) && strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $checkpos++;
             }
             // If outside scope of current syllable - return no match
@@ -4311,9 +4308,9 @@ class Otl
             }
         }
         // LOOKAHEAD
-        for ($i = 0; $i < \count($Lookahead); $i++) {
+        for ($i = 0; $i < count($Lookahead); $i++) {
             $checkpos++;
-            while (isset($this->OTLdata[$checkpos]) && \strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            while (isset($this->OTLdata[$checkpos]) && strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $checkpos++;
             }
             // If outside scope of current syllable - return no match
@@ -4335,52 +4332,52 @@ class Otl
         $current_syllable = isset($this->OTLdata[$ptr]['syllable']) ? $this->OTLdata[$ptr]['syllable'] : 0;
         // BACKTRACK
         $checkpos = $ptr;
-        for ($i = 0; $i < \count($Backtrack); $i++) {
+        for ($i = 0; $i < count($Backtrack); $i++) {
             $checkpos--;
-            while (isset($this->OTLdata[$checkpos]) && \strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            while (isset($this->OTLdata[$checkpos]) && strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $checkpos--;
             }
             // If outside scope of current syllable - return no match
             if ($this->restrictToSyllable && isset($this->OTLdata[$checkpos]['syllable']) && $this->OTLdata[$checkpos]['syllable'] != $current_syllable) {
                 return \false;
-            } elseif (!$Backtrack[$i] && isset($this->OTLdata[$checkpos]) && \strpos($bclass0excl, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            } elseif (!$Backtrack[$i] && isset($this->OTLdata[$checkpos]) && strpos($bclass0excl, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 return \false;
-            } elseif (!isset($this->OTLdata[$checkpos]) || \strpos($Backtrack[$i], $this->OTLdata[$checkpos]['hex']) === \false) {
+            } elseif (!isset($this->OTLdata[$checkpos]) || strpos($Backtrack[$i], $this->OTLdata[$checkpos]['hex']) === \false) {
                 return \false;
             }
         }
         // INPUT
         $matched = [0 => $ptr];
         $checkpos = $ptr;
-        for ($i = 1; $i < \count($Input); $i++) {
+        for ($i = 1; $i < count($Input); $i++) {
             // Start at 1 - already matched the first InputGlyph
             $checkpos++;
-            while (isset($this->OTLdata[$checkpos]) && \strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            while (isset($this->OTLdata[$checkpos]) && strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $checkpos++;
             }
             // If outside scope of current syllable - return no match
             if ($this->restrictToSyllable && isset($this->OTLdata[$checkpos]['syllable']) && $this->OTLdata[$checkpos]['syllable'] != $current_syllable) {
                 return \false;
-            } elseif (!$Input[$i] && isset($this->OTLdata[$checkpos]) && \strpos($class0excl, $this->OTLdata[$checkpos]['hex']) === \false) {
+            } elseif (!$Input[$i] && isset($this->OTLdata[$checkpos]) && strpos($class0excl, $this->OTLdata[$checkpos]['hex']) === \false) {
                 $matched[] = $checkpos;
-            } elseif (isset($this->OTLdata[$checkpos]) && \strpos($Input[$i], $this->OTLdata[$checkpos]['hex']) !== \false) {
+            } elseif (isset($this->OTLdata[$checkpos]) && strpos($Input[$i], $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $matched[] = $checkpos;
             } else {
                 return \false;
             }
         }
         // LOOKAHEAD
-        for ($i = 0; $i < \count($Lookahead); $i++) {
+        for ($i = 0; $i < count($Lookahead); $i++) {
             $checkpos++;
-            while (isset($this->OTLdata[$checkpos]) && \strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            while (isset($this->OTLdata[$checkpos]) && strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $checkpos++;
             }
             // If outside scope of current syllable - return no match
             if ($this->restrictToSyllable && isset($this->OTLdata[$checkpos]['syllable']) && $this->OTLdata[$checkpos]['syllable'] != $current_syllable) {
                 return \false;
-            } elseif (!$Lookahead[$i] && isset($this->OTLdata[$checkpos]) && \strpos($lclass0excl, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            } elseif (!$Lookahead[$i] && isset($this->OTLdata[$checkpos]) && strpos($lclass0excl, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 return \false;
-            } elseif (!isset($this->OTLdata[$checkpos]) || \strpos($Lookahead[$i], $this->OTLdata[$checkpos]['hex']) === \false) {
+            } elseif (!isset($this->OTLdata[$checkpos]) || strpos($Lookahead[$i], $this->OTLdata[$checkpos]['hex']) === \false) {
                 return \false;
             }
         }
@@ -4396,9 +4393,9 @@ class Otl
         $current_syllable = isset($this->OTLdata[$ptr]['syllable']) ? $this->OTLdata[$ptr]['syllable'] : 0;
         // BACKTRACK
         $checkpos = $ptr;
-        for ($i = 0; $i < \count($Backtrack); $i++) {
+        for ($i = 0; $i < count($Backtrack); $i++) {
             $checkpos--;
-            while (isset($this->OTLdata[$checkpos]) && \strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            while (isset($this->OTLdata[$checkpos]) && strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $checkpos--;
             }
             // If outside scope of current syllable - return no match
@@ -4413,10 +4410,10 @@ class Otl
         // INPUT
         $matched = [0 => $ptr];
         $checkpos = $ptr;
-        for ($i = 1; $i < \count($Input); $i++) {
+        for ($i = 1; $i < count($Input); $i++) {
             // Start at 1 - already matched the first InputGlyph
             $checkpos++;
-            while (isset($this->OTLdata[$checkpos]) && \strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            while (isset($this->OTLdata[$checkpos]) && strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $checkpos++;
             }
             // If outside scope of current syllable - return no match
@@ -4431,9 +4428,9 @@ class Otl
             }
         }
         // LOOKAHEAD
-        for ($i = 0; $i < \count($Lookahead); $i++) {
+        for ($i = 0; $i < count($Lookahead); $i++) {
             $checkpos++;
-            while (isset($this->OTLdata[$checkpos]) && \strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
+            while (isset($this->OTLdata[$checkpos]) && strpos($ignore, $this->OTLdata[$checkpos]['hex']) !== \false) {
                 $checkpos++;
             }
             // If outside scope of current syllable - return no match
@@ -4478,7 +4475,7 @@ class Otl
                     }
                 }
             }
-            \ksort($GlyphByClass);
+            ksort($GlyphByClass);
             $this->LuDataCache[$this->fontkey][$offset] = $GlyphByClass;
         }
         return $GlyphByClass;
@@ -4609,25 +4606,25 @@ class Otl
     {
         $ignore = \false;
         // Flag & 0x0008 = Ignore Marks - (unless already done with MarkAttachmentType)
-        if ($flag & 0x8 && ($flag & 0xff00) == 0 && \strpos($this->GlyphClassMarks, $glyph)) {
+        if ($flag & 0x8 && ($flag & 0xff00) == 0 && strpos($this->GlyphClassMarks, $glyph)) {
             $ignore = \true;
         }
-        if ($flag & 0x4 && \strpos($this->GlyphClassLigatures, $glyph)) {
+        if ($flag & 0x4 && strpos($this->GlyphClassLigatures, $glyph)) {
             $ignore = \true;
         }
-        if ($flag & 0x2 && \strpos($this->GlyphClassBases, $glyph)) {
+        if ($flag & 0x2 && strpos($this->GlyphClassBases, $glyph)) {
             $ignore = \true;
         }
         // Flag & 0xFF?? = MarkAttachmentType
         if ($flag & 0xff00) {
             // "a lookup must ignore any mark glyphs that are not in the specified mark attachment class"
             // $this->MarkAttachmentType is already adjusted for this i.e. contains all Marks except those in the MarkAttachmentClassDef table
-            if (\strpos($this->MarkAttachmentType[$flag >> 8], $glyph)) {
+            if (strpos($this->MarkAttachmentType[$flag >> 8], $glyph)) {
                 $ignore = \true;
             }
         }
         // Flag & 0x0010 = UseMarkFilteringSet
-        if ($flag & 0x10 && \strpos($this->MarkGlyphSets[$MarkFilteringSet], $glyph)) {
+        if ($flag & 0x10 && strpos($this->MarkGlyphSets[$MarkFilteringSet], $glyph)) {
             $ignore = \true;
         }
         return $ignore;
@@ -4669,7 +4666,7 @@ class Otl
         $pel = 0;
         // paragraph embedding level
         $maxlevel = 0;
-        $numchars = \count($chunkOTLdata['char_data']);
+        $numchars = count($chunkOTLdata['char_data']);
         // Set the initial paragraph embedding level
         if ($dir == 'rtl') {
             $pel = 1;
@@ -4718,7 +4715,7 @@ class Otl
                 if ($next_level < 62) {
                     $remember[] = ['num' => 8238, 'cel' => $cel, 'dos' => $dos];
                     $cel = $next_level;
-                    $dos = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R;
+                    $dos = Ucdn::BIDI_CLASS_R;
                 }
             } elseif ($chunkOTLdata['char_data'][$i]['uni'] == 8237) {
                 // LRO
@@ -4729,15 +4726,15 @@ class Otl
                 if ($next_level < 62) {
                     $remember[] = ['num' => 8237, 'cel' => $cel, 'dos' => $dos];
                     $cel = $next_level;
-                    $dos = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
+                    $dos = Ucdn::BIDI_CLASS_L;
                 }
             } elseif ($chunkOTLdata['char_data'][$i]['uni'] == 8236) {
                 // PDF
                 // X7. With each PDF, determine the matching embedding or override code. If there was a valid matching code, restore (pop) the last remembered (pushed) embedding level and directional override.
-                if (\count($remember)) {
-                    $last = \count($remember) - 1;
+                if (count($remember)) {
+                    $last = count($remember) - 1;
                     if ($remember[$last]['num'] == 8235 || $remember[$last]['num'] == 8234 || $remember[$last]['num'] == 8238 || $remember[$last]['num'] == 8237) {
-                        $match = \array_pop($remember);
+                        $match = array_pop($remember);
                         $cel = $match['cel'];
                         $dos = $match['dos'];
                     }
@@ -4766,7 +4763,7 @@ class Otl
                 $chardata[] = ['char' => $chunkOTLdata['char_data'][$i]['uni'], 'level' => $cel, 'type' => $chardir, 'group' => $chunkOTLdata['group'][$i], 'GPOSinfo' => $gpos];
             }
         }
-        $numchars = \count($chardata);
+        $numchars = count($chardata);
         // X8. All explicit directional embeddings and overrides are completely terminated at the end of each paragraph.
         // Paragraph separators are not included in the embedding.
         // X9. Remove all RLE, LRE, RLO, LRO, and PDF codes.
@@ -4791,15 +4788,15 @@ class Otl
             } else {
                 $right = $chardata[$i + 1]['level'];
             }
-            $chardata[$i]['sor'] = \max($left, $level) % 2 ? \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R : \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
-            $chardata[$i]['eor'] = \max($right, $level) % 2 ? \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R : \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
+            $chardata[$i]['sor'] = max($left, $level) % 2 ? Ucdn::BIDI_CLASS_R : Ucdn::BIDI_CLASS_L;
+            $chardata[$i]['eor'] = max($right, $level) % 2 ? Ucdn::BIDI_CLASS_R : Ucdn::BIDI_CLASS_L;
         }
         // 3.3.3 Resolving Weak Types
         // Weak types are now resolved one level run at a time. At level run boundaries where the type of the character on the other side of the boundary is required, the type assigned to sor or eor is used.
         // Nonspacing marks are now resolved based on the previous characters.
         // W1. Examine each nonspacing mark (NSM) in the level run, and change the type of the NSM to the type of the previous character. If the NSM is at the start of the level run, it will get the type of sor.
         for ($i = 0; $i < $numchars; ++$i) {
-            if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_NSM) {
+            if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_NSM) {
                 if ($i == 0 || $chardata[$i]['level'] != $chardata[$i - 1]['level']) {
                     $chardata[$i]['type'] = $chardata[$i]['sor'];
                 } else {
@@ -4811,14 +4808,14 @@ class Otl
         $prevlevel = -1;
         $levcount = 0;
         for ($i = 0; $i < $numchars; ++$i) {
-            if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN) {
+            if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_EN) {
                 $found = \false;
                 for ($j = $levcount; $j >= 0; $j--) {
-                    if ($chardata[$j]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AL) {
-                        $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN;
+                    if ($chardata[$j]['type'] == Ucdn::BIDI_CLASS_AL) {
+                        $chardata[$i]['type'] = Ucdn::BIDI_CLASS_AN;
                         $found = \true;
                         break;
-                    } elseif ($chardata[$j]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L || $chardata[$j]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R) {
+                    } elseif ($chardata[$j]['type'] == Ucdn::BIDI_CLASS_L || $chardata[$j]['type'] == Ucdn::BIDI_CLASS_R) {
                         $found = \true;
                         break;
                     }
@@ -4833,34 +4830,34 @@ class Otl
         }
         // W3. Change all ALs to R.
         for ($i = 0; $i < $numchars; ++$i) {
-            if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AL) {
-                $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R;
+            if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_AL) {
+                $chardata[$i]['type'] = Ucdn::BIDI_CLASS_R;
             }
         }
         // W4. A single European separator between two European numbers changes to a European number. A single common separator between two numbers of the same type changes to that type.
         for ($i = 1; $i < $numchars; ++$i) {
             if ($i + 1 < $numchars && $chardata[$i]['level'] == $chardata[$i + 1]['level'] && $chardata[$i]['level'] == $chardata[$i - 1]['level']) {
-                if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ES && $chardata[$i - 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN && $chardata[$i + 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN) {
-                    $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN;
-                } elseif ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_CS && $chardata[$i - 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN && $chardata[$i + 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN) {
-                    $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN;
-                } elseif ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_CS && $chardata[$i - 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN && $chardata[$i + 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN) {
-                    $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN;
+                if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ES && $chardata[$i - 1]['type'] == Ucdn::BIDI_CLASS_EN && $chardata[$i + 1]['type'] == Ucdn::BIDI_CLASS_EN) {
+                    $chardata[$i]['type'] = Ucdn::BIDI_CLASS_EN;
+                } elseif ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_CS && $chardata[$i - 1]['type'] == Ucdn::BIDI_CLASS_EN && $chardata[$i + 1]['type'] == Ucdn::BIDI_CLASS_EN) {
+                    $chardata[$i]['type'] = Ucdn::BIDI_CLASS_EN;
+                } elseif ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_CS && $chardata[$i - 1]['type'] == Ucdn::BIDI_CLASS_AN && $chardata[$i + 1]['type'] == Ucdn::BIDI_CLASS_AN) {
+                    $chardata[$i]['type'] = Ucdn::BIDI_CLASS_AN;
                 }
             }
         }
         // W5. A sequence of European terminators adjacent to European numbers changes to all European numbers.
         for ($i = 0; $i < $numchars; ++$i) {
-            if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ET) {
-                if ($i > 0 && $chardata[$i - 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN && $chardata[$i]['level'] == $chardata[$i - 1]['level']) {
-                    $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN;
+            if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ET) {
+                if ($i > 0 && $chardata[$i - 1]['type'] == Ucdn::BIDI_CLASS_EN && $chardata[$i]['level'] == $chardata[$i - 1]['level']) {
+                    $chardata[$i]['type'] = Ucdn::BIDI_CLASS_EN;
                 } else {
                     $j = $i + 1;
                     while ($j < $numchars && $chardata[$j]['level'] == $chardata[$i]['level']) {
-                        if ($chardata[$j]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN) {
-                            $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN;
+                        if ($chardata[$j]['type'] == Ucdn::BIDI_CLASS_EN) {
+                            $chardata[$i]['type'] = Ucdn::BIDI_CLASS_EN;
                             break;
-                        } elseif ($chardata[$j]['type'] != \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ET) {
+                        } elseif ($chardata[$j]['type'] != Ucdn::BIDI_CLASS_ET) {
                             break;
                         }
                         ++$j;
@@ -4870,30 +4867,30 @@ class Otl
         }
         // W6. Otherwise, separators and terminators change to Other Neutral.
         for ($i = 0; $i < $numchars; ++$i) {
-            if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ET || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ES || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_CS) {
-                $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ON;
+            if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ET || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_ES || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_CS) {
+                $chardata[$i]['type'] = Ucdn::BIDI_CLASS_ON;
             }
         }
         //W7. Search backward from each instance of a European number until the first strong type (R, L, or sor) is found. If an L is found, then change the type of the European number to L.
         for ($i = 0; $i < $numchars; ++$i) {
-            if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN) {
+            if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_EN) {
                 if ($i == 0) {
                     // Start of Level run
-                    if ($chardata[$i]['sor'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L) {
+                    if ($chardata[$i]['sor'] == Ucdn::BIDI_CLASS_L) {
                         $chardata[$i]['type'] = $chardata[$i]['sor'];
                     }
                 } else {
                     for ($j = $i - 1; $j >= 0; $j--) {
                         if ($chardata[$j]['level'] != $chardata[$i]['level']) {
                             // Level run boundary
-                            if ($chardata[$j + 1]['sor'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L) {
+                            if ($chardata[$j + 1]['sor'] == Ucdn::BIDI_CLASS_L) {
                                 $chardata[$i]['type'] = $chardata[$j + 1]['sor'];
                             }
                             break;
-                        } elseif ($chardata[$j]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L) {
-                            $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
+                        } elseif ($chardata[$j]['type'] == Ucdn::BIDI_CLASS_L) {
+                            $chardata[$i]['type'] = Ucdn::BIDI_CLASS_L;
                             break;
-                        } elseif ($chardata[$j]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R) {
+                        } elseif ($chardata[$j]['type'] == Ucdn::BIDI_CLASS_R) {
                             break;
                         }
                     }
@@ -4902,7 +4899,7 @@ class Otl
         }
         // N1. A sequence of neutrals takes the direction of the surrounding strong text if the text on both sides has the same direction. European and Arabic numbers act as if they were R in terms of their influence on neutrals. Start-of-level-run (sor) and end-of-level-run (eor) are used at level run boundaries.
         for ($i = 0; $i < $numchars; ++$i) {
-            if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ON || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_WS) {
+            if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ON || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_WS) {
                 $left = -1;
                 // LEFT
                 if ($i == 0) {
@@ -4911,16 +4908,16 @@ class Otl
                 } elseif ($chardata[$i - 1]['level'] != $chardata[$i]['level']) {
                     // run boundary
                     $left = $chardata[$i]['sor'];
-                } elseif ($chardata[$i - 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L) {
-                    $left = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
-                } elseif ($chardata[$i - 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R || $chardata[$i - 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN || $chardata[$i - 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN) {
-                    $left = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R;
+                } elseif ($chardata[$i - 1]['type'] == Ucdn::BIDI_CLASS_L) {
+                    $left = Ucdn::BIDI_CLASS_L;
+                } elseif ($chardata[$i - 1]['type'] == Ucdn::BIDI_CLASS_R || $chardata[$i - 1]['type'] == Ucdn::BIDI_CLASS_EN || $chardata[$i - 1]['type'] == Ucdn::BIDI_CLASS_AN) {
+                    $left = Ucdn::BIDI_CLASS_R;
                 }
                 // RIGHT
                 $right = -1;
                 $j = $i;
                 // move to the right of any following neutrals OR hit a run boundary
-                while (($chardata[$j]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ON || $chardata[$j]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_WS) && $j <= $numchars - 1) {
+                while (($chardata[$j]['type'] == Ucdn::BIDI_CLASS_ON || $chardata[$j]['type'] == Ucdn::BIDI_CLASS_WS) && $j <= $numchars - 1) {
                     if ($j == $numchars - 1) {
                         // last char
                         $right = $chardata[$j]['eor'];
@@ -4929,11 +4926,11 @@ class Otl
                         // run boundary
                         $right = $chardata[$j]['eor'];
                         break;
-                    } elseif ($chardata[$j + 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L) {
-                        $right = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
+                    } elseif ($chardata[$j + 1]['type'] == Ucdn::BIDI_CLASS_L) {
+                        $right = Ucdn::BIDI_CLASS_L;
                         break;
-                    } elseif ($chardata[$j + 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R || $chardata[$j + 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN || $chardata[$j + 1]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN) {
-                        $right = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R;
+                    } elseif ($chardata[$j + 1]['type'] == Ucdn::BIDI_CLASS_R || $chardata[$j + 1]['type'] == Ucdn::BIDI_CLASS_EN || $chardata[$j + 1]['type'] == Ucdn::BIDI_CLASS_AN) {
+                        $right = Ucdn::BIDI_CLASS_R;
                         break;
                     }
                     $j++;
@@ -4947,8 +4944,8 @@ class Otl
         }
         // N2. Any remaining neutrals take the embedding direction
         for ($i = 0; $i < $numchars; ++$i) {
-            if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ON || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_WS) {
-                $chardata[$i]['type'] = $chardata[$i]['level'] % 2 ? \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R : \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
+            if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ON || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_WS) {
+                $chardata[$i]['type'] = $chardata[$i]['level'] % 2 ? Ucdn::BIDI_CLASS_R : Ucdn::BIDI_CLASS_L;
                 $chardata[$i]['orig_type'] = $chardata[$i]['type'];
                 // Need to store the original 'WS' for reference in L1 below
             }
@@ -4958,17 +4955,15 @@ class Otl
         for ($i = 0; $i < $numchars; ++$i) {
             $odd = $chardata[$i]['level'] % 2;
             if ($odd) {
-                if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN) {
+                if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_L || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_AN || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_EN) {
                     $chardata[$i]['level'] += 1;
                 }
-            } else {
-                if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R) {
-                    $chardata[$i]['level'] += 1;
-                } elseif ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN) {
-                    $chardata[$i]['level'] += 2;
-                }
+            } else if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_R) {
+                $chardata[$i]['level'] += 1;
+            } elseif ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_AN || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_EN) {
+                $chardata[$i]['level'] += 2;
             }
-            $maxlevel = \max($chardata[$i]['level'], $maxlevel);
+            $maxlevel = max($chardata[$i]['level'], $maxlevel);
         }
         // NB
         //  Separate into lines at this point************
@@ -4981,7 +4976,7 @@ class Otl
         //  The types of characters used here are the original types, not those modified by the previous phase cf N1 and N2*******
         //  Because a Paragraph Separator breaks lines, there will be at most one per line, at the end of that line.
         for ($i = $numchars - 1; $i > 0; $i--) {
-            if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_WS || isset($chardata[$i]['orig_type']) && $chardata[$i]['orig_type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_WS) {
+            if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_WS || isset($chardata[$i]['orig_type']) && $chardata[$i]['orig_type'] == Ucdn::BIDI_CLASS_WS) {
                 $chardata[$i]['level'] = $pel;
             } else {
                 break;
@@ -4996,14 +4991,14 @@ class Otl
                 if ($chardata[$i]['level'] >= $j) {
                     $onlevel = \true;
                     // L4. A character is depicted by a mirrored glyph if and only if (a) the resolved directionality of that character is R, and (b) the Bidi_Mirrored property value of that character is true.
-                    if (isset(\WPDeskFIVendor\Mpdf\Ucdn::$mirror_pairs[$chardata[$i]['char']]) && $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R) {
-                        $chardata[$i]['char'] = \WPDeskFIVendor\Mpdf\Ucdn::$mirror_pairs[$chardata[$i]['char']];
+                    if (isset(Ucdn::$mirror_pairs[$chardata[$i]['char']]) && $chardata[$i]['type'] == Ucdn::BIDI_CLASS_R) {
+                        $chardata[$i]['char'] = Ucdn::$mirror_pairs[$chardata[$i]['char']];
                     }
                     $revarr[] = $chardata[$i];
                 } else {
                     if ($onlevel) {
-                        $revarr = \array_reverse($revarr);
-                        $ordarray = \array_merge($ordarray, $revarr);
+                        $revarr = array_reverse($revarr);
+                        $ordarray = array_merge($ordarray, $revarr);
                         $revarr = [];
                         $onlevel = \false;
                     }
@@ -5011,8 +5006,8 @@ class Otl
                 }
             }
             if ($onlevel) {
-                $revarr = \array_reverse($revarr);
-                $ordarray = \array_merge($ordarray, $revarr);
+                $revarr = array_reverse($revarr);
+                $ordarray = array_merge($ordarray, $revarr);
             }
             $chardata = $ordarray;
         }
@@ -5022,15 +5017,15 @@ class Otl
         $cctr = 0;
         $rtl_content = 0x0;
         foreach ($chardata as $cd) {
-            $e .= \WPDeskFIVendor\Mpdf\Utils\UtfString::code2utf($cd['char']);
+            $e .= UtfString::code2utf($cd['char']);
             $group .= $cd['group'];
-            if ($useGPOS && \is_array($cd['GPOSinfo'])) {
+            if ($useGPOS && is_array($cd['GPOSinfo'])) {
                 $GPOS[$cctr] = $cd['GPOSinfo'];
                 $GPOS[$cctr]['wDir'] = $cd['level'] % 2 ? 'RTL' : 'LTR';
             }
-            if ($cd['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L) {
+            if ($cd['type'] == Ucdn::BIDI_CLASS_L) {
                 $rtl_content |= 1;
-            } elseif ($cd['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R) {
+            } elseif ($cd['type'] == Ucdn::BIDI_CLASS_R) {
                 $rtl_content |= 2;
             }
             $cctr++;
@@ -5069,10 +5064,10 @@ class Otl
         // direction isolate counter
         // Process each character iteratively, applying rules X2 through X9. Only embedding levels from 0 to 61 are valid in this phase.
         // In the resolution of levels in rules I1 and I2, the maximum embedding level of 62 can be reached.
-        $numchunks = \count($para);
+        $numchunks = count($para);
         for ($nc = 0; $nc < $numchunks; $nc++) {
             $chunkOTLdata =& $para[$nc][18];
-            $numchars = \count($chunkOTLdata['char_data']);
+            $numchars = count($chunkOTLdata['char_data']);
             for ($i = 0; $i < $numchars; ++$i) {
                 if ($chunkOTLdata['char_data'][$i]['uni'] == 8235) {
                     // RLE
@@ -5107,7 +5102,7 @@ class Otl
                     if ($next_level < 62) {
                         $remember[] = ['num' => 8238, 'cel' => $cel, 'dos' => $dos];
                         $cel = $next_level;
-                        $dos = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R;
+                        $dos = Ucdn::BIDI_CLASS_R;
                         $controlchars = \true;
                     }
                 } elseif ($chunkOTLdata['char_data'][$i]['uni'] == 8237) {
@@ -5119,16 +5114,16 @@ class Otl
                     if ($next_level < 62) {
                         $remember[] = ['num' => 8237, 'cel' => $cel, 'dos' => $dos];
                         $cel = $next_level;
-                        $dos = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
+                        $dos = Ucdn::BIDI_CLASS_L;
                         $controlchars = \true;
                     }
                 } elseif ($chunkOTLdata['char_data'][$i]['uni'] == 8236) {
                     // PDF
                     // X7. With each PDF, determine the matching embedding or override code. If there was a valid matching code, restore (pop) the last remembered (pushed) embedding level and directional override.
-                    if (\count($remember)) {
-                        $last = \count($remember) - 1;
+                    if (count($remember)) {
+                        $last = count($remember) - 1;
                         if ($remember[$last]['num'] == 8235 || $remember[$last]['num'] == 8234 || $remember[$last]['num'] == 8238 || $remember[$last]['num'] == 8237) {
-                            $match = \array_pop($remember);
+                            $match = array_pop($remember);
                             $cel = $match['cel'];
                             $dos = $match['dos'];
                         }
@@ -5154,10 +5149,10 @@ class Otl
                         $lvl = 0;
                         $nc2 = $nc;
                         $i2 = $i;
-                        while (!($nc2 == $numchunks - 1 && $i2 == \count($para[$nc2][18]['char_data']) - 1)) {
+                        while (!($nc2 == $numchunks - 1 && $i2 == count($para[$nc2][18]['char_data']) - 1)) {
                             // while not at end of last chunk
                             $i2++;
-                            if ($i2 >= \count($para[$nc2][18]['char_data'])) {
+                            if ($i2 >= count($para[$nc2][18]['char_data'])) {
                                 $nc2++;
                                 $i2 = 0;
                             }
@@ -5174,7 +5169,7 @@ class Otl
                                     break;
                                 }
                             }
-                            if ($para[$nc2][18]['char_data'][$i2]['bidi_class'] === \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L || $para[$nc2][18]['char_data'][$i2]['bidi_class'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AL || $para[$nc2][18]['char_data'][$i2]['bidi_class'] === \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R) {
+                            if ($para[$nc2][18]['char_data'][$i2]['bidi_class'] === Ucdn::BIDI_CLASS_L || $para[$nc2][18]['char_data'][$i2]['bidi_class'] == Ucdn::BIDI_CLASS_AL || $para[$nc2][18]['char_data'][$i2]['bidi_class'] === Ucdn::BIDI_CLASS_R) {
                                 $fsi = $para[$nc2][18]['char_data'][$i2]['bidi_class'];
                                 break;
                             }
@@ -5182,17 +5177,17 @@ class Otl
                         // if fsi not found, fsi is same as paragraph embedding level
                         if (!$fsi && $fsi !== 0) {
                             if ($pel == 1) {
-                                $fsi = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R;
+                                $fsi = Ucdn::BIDI_CLASS_R;
                             } else {
-                                $fsi = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
+                                $fsi = Ucdn::BIDI_CLASS_L;
                             }
                         }
                     }
-                    if ($chunkOTLdata['char_data'][$i]['uni'] == 8294 || $fsi === \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L) {
+                    if ($chunkOTLdata['char_data'][$i]['uni'] == 8294 || $fsi === Ucdn::BIDI_CLASS_L) {
                         // LRI or FSI-L
                         //  Compute the least even embedding level greater than the embedding level of the last entry on the directional status stack.
                         $next_level = $cel + 2 - $cel % 2;
-                    } elseif ($chunkOTLdata['char_data'][$i]['uni'] == 8295 || $fsi == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R || $fsi == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AL) {
+                    } elseif ($chunkOTLdata['char_data'][$i]['uni'] == 8295 || $fsi == Ucdn::BIDI_CLASS_R || $fsi == Ucdn::BIDI_CLASS_AL) {
                         // RLI or FSI-R
                         //  Compute the least odd embedding level greater than the embedding level of the last entry on the directional status stack.
                         $next_level = $cel + $cel % 2 + 1;
@@ -5209,16 +5204,16 @@ class Otl
                     // PDI
                     // X6a. With each PDI, perform the following steps:
                     //  Pop the last entry from the directional status stack and decrement the isolate count by one.
-                    while (\count($remember)) {
-                        $last = \count($remember) - 1;
+                    while (count($remember)) {
+                        $last = count($remember) - 1;
                         if ($remember[$last]['num'] == 8294 || $remember[$last]['num'] == 8295 || $remember[$last]['num'] == 8296) {
-                            $match = \array_pop($remember);
+                            $match = array_pop($remember);
                             $cel = $match['cel'];
                             $dos = $match['dos'];
                             $diid = $match['diid'];
                             break;
                         } elseif ($remember[$last]['num'] == 8235 || $remember[$last]['num'] == 8234 || $remember[$last]['num'] == 8238 || $remember[$last]['num'] == 8237) {
-                            $match = \array_pop($remember);
+                            $match = array_pop($remember);
                         }
                     }
                     //  In all cases, set the PDI’s level to the embedding level of the last entry on the directional status stack left after the steps above.
@@ -5246,7 +5241,7 @@ class Otl
                         $chardir = $dos;
                     } else {
                         $chardir = $chunkOTLdata['char_data'][$i]['bidi_class'];
-                        if ($chardir == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R || $chardir == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AL) {
+                        if ($chardir == Ucdn::BIDI_CLASS_R || $chardir == Ucdn::BIDI_CLASS_AL) {
                             $strongrtl = \true;
                         }
                     }
@@ -5264,20 +5259,20 @@ class Otl
                 $this->removeChar($para[$nc][0], $para[$nc][18], "‬");
                 $this->removeChar($para[$nc][0], $para[$nc][18], "‭");
                 $this->removeChar($para[$nc][0], $para[$nc][18], "‮");
-                \preg_replace("/\\x{202a}-\\x{202e}/u", '', $para[$nc][0]);
+                preg_replace("/\\x{202a}-\\x{202e}/u", '', $para[$nc][0]);
             }
         }
         // Remove any blank chunks made by removing directional codes
-        $numchunks = \count($para);
+        $numchunks = count($para);
         for ($nc = $numchunks - 1; $nc >= 0; $nc--) {
-            if (\count($para[$nc][18]['char_data']) == 0) {
-                \array_splice($para, $nc, 1);
+            if (count($para[$nc][18]['char_data']) == 0) {
+                array_splice($para, $nc, 1);
             }
         }
         if ($dir != 'rtl' && !$strongrtl && !$controlchars) {
             return;
         }
-        $numchunks = \count($para);
+        $numchunks = count($para);
         // X10. Determine the start-of-sequence (sor) and end-of-sequence (eor) types, either L or R, for each isolating run sequence. These depend on the higher of the two levels on either side of the sequence boundary:
         // For sor, compare the level of the first character in the sequence with the level of the character preceding it in the paragraph or if there is none, with the paragraph embedding level.
         // For eor, compare the level of the last character in the sequence with the level of the character following it in the paragraph or if there is none, with the paragraph embedding level.
@@ -5288,7 +5283,7 @@ class Otl
             $firstchar = \true;
             for ($nc = 0; $nc < $numchunks; $nc++) {
                 $chardata =& $para[$nc][18]['char_data'];
-                $numchars = \count($chardata);
+                $numchars = count($chardata);
                 for ($i = 0; $i < $numchars; ++$i) {
                     if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
                         continue;
@@ -5297,10 +5292,10 @@ class Otl
                     $right = $postlevel;
                     $nc2 = $nc;
                     $i2 = $i;
-                    while (!($nc2 == $numchunks - 1 && $i2 == \count($para[$nc2][18]['char_data']) - 1)) {
+                    while (!($nc2 == $numchunks - 1 && $i2 == count($para[$nc2][18]['char_data']) - 1)) {
                         // while not at end of last chunk
                         $i2++;
-                        if ($i2 >= \count($para[$nc2][18]['char_data'])) {
+                        if ($i2 >= count($para[$nc2][18]['char_data'])) {
                             $nc2++;
                             $i2 = 0;
                         }
@@ -5311,10 +5306,10 @@ class Otl
                     }
                     $level = $chardata[$i]['level'];
                     if ($firstchar || $level != $prelevel) {
-                        $chardata[$i]['sor'] = \max($prelevel, $level) % 2 ? \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R : \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
+                        $chardata[$i]['sor'] = max($prelevel, $level) % 2 ? Ucdn::BIDI_CLASS_R : Ucdn::BIDI_CLASS_L;
                     }
                     if ($nc == $numchunks - 1 && $i == $numchars - 1 || $level != $right) {
-                        $chardata[$i]['eor'] = \max($right, $level) % 2 ? \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R : \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
+                        $chardata[$i]['eor'] = max($right, $level) % 2 ? Ucdn::BIDI_CLASS_R : Ucdn::BIDI_CLASS_L;
                     }
                     $prelevel = $level;
                     $firstchar = \false;
@@ -5329,13 +5324,13 @@ class Otl
             $prevtype = 0;
             for ($nc = 0; $nc < $numchunks; $nc++) {
                 $chardata =& $para[$nc][18]['char_data'];
-                $numchars = \count($chardata);
+                $numchars = count($chardata);
                 for ($i = 0; $i < $numchars; ++$i) {
                     if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
                         continue;
                     }
                     // Ignore characters in a different isolate run
-                    if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_NSM) {
+                    if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_NSM) {
                         if (isset($chardata[$i]['sor'])) {
                             $chardata[$i]['type'] = $chardata[$i]['sor'];
                         } else {
@@ -5351,7 +5346,7 @@ class Otl
             $laststrongtype = -1;
             for ($nc = 0; $nc < $numchunks; $nc++) {
                 $chardata =& $para[$nc][18]['char_data'];
-                $numchars = \count($chardata);
+                $numchars = count($chardata);
                 for ($i = 0; $i < $numchars; ++$i) {
                     if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
                         continue;
@@ -5360,10 +5355,10 @@ class Otl
                     if (isset($chardata[$i]['sor'])) {
                         $laststrongtype = $chardata[$i]['sor'];
                     }
-                    if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN && $laststrongtype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AL) {
-                        $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN;
+                    if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_EN && $laststrongtype == Ucdn::BIDI_CLASS_AL) {
+                        $chardata[$i]['type'] = Ucdn::BIDI_CLASS_AN;
                     }
-                    if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AL) {
+                    if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_L || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_R || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_AL) {
                         $laststrongtype = $chardata[$i]['type'];
                     }
                 }
@@ -5372,10 +5367,10 @@ class Otl
         // W3. Change all ALs to R.
         for ($nc = 0; $nc < $numchunks; $nc++) {
             $chardata =& $para[$nc][18]['char_data'];
-            $numchars = \count($chardata);
+            $numchars = count($chardata);
             for ($i = 0; $i < $numchars; ++$i) {
-                if (isset($chardata[$i]['type']) && $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AL) {
-                    $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R;
+                if (isset($chardata[$i]['type']) && $chardata[$i]['type'] == Ucdn::BIDI_CLASS_AL) {
+                    $chardata[$i]['type'] = Ucdn::BIDI_CLASS_R;
                 }
             }
         }
@@ -5385,7 +5380,7 @@ class Otl
             $nexttype = -1;
             for ($nc = 0; $nc < $numchunks; $nc++) {
                 $chardata =& $para[$nc][18]['char_data'];
-                $numchars = \count($chardata);
+                $numchars = count($chardata);
                 for ($i = 0; $i < $numchars; ++$i) {
                     if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
                         continue;
@@ -5395,10 +5390,10 @@ class Otl
                     $nexttype = -1;
                     $nc2 = $nc;
                     $i2 = $i;
-                    while (!($nc2 == $numchunks - 1 && $i2 == \count($para[$nc2][18]['char_data']) - 1)) {
+                    while (!($nc2 == $numchunks - 1 && $i2 == count($para[$nc2][18]['char_data']) - 1)) {
                         // while not at end of last chunk
                         $i2++;
-                        if ($i2 >= \count($para[$nc2][18]['char_data'])) {
+                        if ($i2 >= count($para[$nc2][18]['char_data'])) {
                             $nc2++;
                             $i2 = 0;
                         }
@@ -5408,12 +5403,12 @@ class Otl
                         }
                     }
                     if (!isset($chardata[$i]['sor']) && !isset($chardata[$i]['eor'])) {
-                        if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ES && $prevtype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN && $nexttype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN) {
-                            $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN;
-                        } elseif ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_CS && $prevtype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN && $nexttype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN) {
-                            $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN;
-                        } elseif ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_CS && $prevtype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN && $nexttype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN) {
-                            $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN;
+                        if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ES && $prevtype == Ucdn::BIDI_CLASS_EN && $nexttype == Ucdn::BIDI_CLASS_EN) {
+                            $chardata[$i]['type'] = Ucdn::BIDI_CLASS_EN;
+                        } elseif ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_CS && $prevtype == Ucdn::BIDI_CLASS_EN && $nexttype == Ucdn::BIDI_CLASS_EN) {
+                            $chardata[$i]['type'] = Ucdn::BIDI_CLASS_EN;
+                        } elseif ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_CS && $prevtype == Ucdn::BIDI_CLASS_AN && $nexttype == Ucdn::BIDI_CLASS_AN) {
+                            $chardata[$i]['type'] = Ucdn::BIDI_CLASS_AN;
                         }
                     }
                     $prevtype = $chardata[$i]['type'];
@@ -5426,7 +5421,7 @@ class Otl
             $nexttype = -1;
             for ($nc = 0; $nc < $numchunks; $nc++) {
                 $chardata =& $para[$nc][18]['char_data'];
-                $numchars = \count($chardata);
+                $numchars = count($chardata);
                 for ($i = 0; $i < $numchars; ++$i) {
                     if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
                         continue;
@@ -5435,17 +5430,17 @@ class Otl
                     if (isset($chardata[$i]['sor'])) {
                         $prevtype = $chardata[$i]['sor'];
                     }
-                    if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ET) {
-                        if ($prevtype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN) {
-                            $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN;
+                    if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ET) {
+                        if ($prevtype == Ucdn::BIDI_CLASS_EN) {
+                            $chardata[$i]['type'] = Ucdn::BIDI_CLASS_EN;
                         } elseif (!isset($chardata[$i]['eor'])) {
                             $nexttype = -1;
                             $nc2 = $nc;
                             $i2 = $i;
-                            while (!($nc2 == $numchunks - 1 && $i2 == \count($para[$nc2][18]['char_data']) - 1)) {
+                            while (!($nc2 == $numchunks - 1 && $i2 == count($para[$nc2][18]['char_data']) - 1)) {
                                 // while not at end of last chunk
                                 $i2++;
-                                if ($i2 >= \count($para[$nc2][18]['char_data'])) {
+                                if ($i2 >= count($para[$nc2][18]['char_data'])) {
                                     $nc2++;
                                     $i2 = 0;
                                 }
@@ -5456,10 +5451,10 @@ class Otl
                                 if (isset($para[$nc2][18]['char_data'][$i2]['sor'])) {
                                     break;
                                 }
-                                if ($nexttype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN) {
-                                    $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN;
+                                if ($nexttype == Ucdn::BIDI_CLASS_EN) {
+                                    $chardata[$i]['type'] = Ucdn::BIDI_CLASS_EN;
                                     break;
-                                } elseif ($nexttype != \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ET) {
+                                } elseif ($nexttype != Ucdn::BIDI_CLASS_ET) {
                                     break;
                                 }
                             }
@@ -5472,10 +5467,10 @@ class Otl
         // W6. Otherwise, separators and terminators change to Other Neutral.
         for ($nc = 0; $nc < $numchunks; $nc++) {
             $chardata =& $para[$nc][18]['char_data'];
-            $numchars = \count($chardata);
+            $numchars = count($chardata);
             for ($i = 0; $i < $numchars; ++$i) {
-                if (isset($chardata[$i]['type']) && ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ET || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ES || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_CS)) {
-                    $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ON;
+                if (isset($chardata[$i]['type']) && ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ET || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_ES || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_CS)) {
+                    $chardata[$i]['type'] = Ucdn::BIDI_CLASS_ON;
                 }
             }
         }
@@ -5484,7 +5479,7 @@ class Otl
             $laststrongtype = -1;
             for ($nc = 0; $nc < $numchunks; $nc++) {
                 $chardata =& $para[$nc][18]['char_data'];
-                $numchars = \count($chardata);
+                $numchars = count($chardata);
                 for ($i = 0; $i < $numchars; ++$i) {
                     if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
                         continue;
@@ -5493,10 +5488,10 @@ class Otl
                     if (isset($chardata[$i]['sor'])) {
                         $laststrongtype = $chardata[$i]['sor'];
                     }
-                    if (isset($chardata[$i]['type']) && $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN && $laststrongtype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L) {
-                        $chardata[$i]['type'] = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
+                    if (isset($chardata[$i]['type']) && $chardata[$i]['type'] == Ucdn::BIDI_CLASS_EN && $laststrongtype == Ucdn::BIDI_CLASS_L) {
+                        $chardata[$i]['type'] = Ucdn::BIDI_CLASS_L;
                     }
-                    if (isset($chardata[$i]['type']) && ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AL)) {
+                    if (isset($chardata[$i]['type']) && ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_L || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_R || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_AL)) {
                         $laststrongtype = $chardata[$i]['type'];
                     }
                 }
@@ -5507,7 +5502,7 @@ class Otl
             $laststrongtype = -1;
             for ($nc = 0; $nc < $numchunks; $nc++) {
                 $chardata =& $para[$nc][18]['char_data'];
-                $numchars = \count($chardata);
+                $numchars = count($chardata);
                 for ($i = 0; $i < $numchars; ++$i) {
                     if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
                         continue;
@@ -5516,13 +5511,13 @@ class Otl
                     if (isset($chardata[$i]['sor'])) {
                         $laststrongtype = $chardata[$i]['sor'];
                     }
-                    if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ON || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_WS) {
+                    if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ON || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_WS) {
                         $left = -1;
                         // LEFT
-                        if ($laststrongtype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R || $laststrongtype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN || $laststrongtype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN) {
-                            $left = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R;
-                        } elseif ($laststrongtype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L) {
-                            $left = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
+                        if ($laststrongtype == Ucdn::BIDI_CLASS_R || $laststrongtype == Ucdn::BIDI_CLASS_EN || $laststrongtype == Ucdn::BIDI_CLASS_AN) {
+                            $left = Ucdn::BIDI_CLASS_R;
+                        } elseif ($laststrongtype == Ucdn::BIDI_CLASS_L) {
+                            $left = Ucdn::BIDI_CLASS_L;
                         }
                         // RIGHT
                         $right = -1;
@@ -5533,10 +5528,10 @@ class Otl
                             $nexttype = -1;
                             $nc2 = $nc;
                             $i2 = $i;
-                            while (!($nc2 == $numchunks - 1 && $i2 == \count($para[$nc2][18]['char_data']) - 1)) {
+                            while (!($nc2 == $numchunks - 1 && $i2 == count($para[$nc2][18]['char_data']) - 1)) {
                                 // while not at end of last chunk
                                 $i2++;
-                                if ($i2 >= \count($para[$nc2][18]['char_data'])) {
+                                if ($i2 >= count($para[$nc2][18]['char_data'])) {
                                     $nc2++;
                                     $i2 = 0;
                                 }
@@ -5544,11 +5539,11 @@ class Otl
                                     continue;
                                 }
                                 $nexttype = $para[$nc2][18]['char_data'][$i2]['type'];
-                                if ($nexttype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R || $nexttype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN || $nexttype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN) {
-                                    $right = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R;
+                                if ($nexttype == Ucdn::BIDI_CLASS_R || $nexttype == Ucdn::BIDI_CLASS_EN || $nexttype == Ucdn::BIDI_CLASS_AN) {
+                                    $right = Ucdn::BIDI_CLASS_R;
                                     break;
-                                } elseif ($nexttype == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L) {
-                                    $right = \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
+                                } elseif ($nexttype == Ucdn::BIDI_CLASS_L) {
+                                    $right = Ucdn::BIDI_CLASS_L;
                                     break;
                                 } elseif (isset($para[$nc2][18]['char_data'][$i2]['eor'])) {
                                     $right = $para[$nc2][18]['char_data'][$i2]['eor'];
@@ -5561,7 +5556,7 @@ class Otl
                             // Need to store the original 'WS' for reference in L1 below
                             $chardata[$i]['type'] = $left;
                         }
-                    } elseif ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN) {
+                    } elseif ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_L || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_R || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_EN || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_AN) {
                         $laststrongtype = $chardata[$i]['type'];
                     }
                 }
@@ -5570,12 +5565,12 @@ class Otl
         // N2. Any remaining neutrals take the embedding direction
         for ($nc = 0; $nc < $numchunks; $nc++) {
             $chardata =& $para[$nc][18]['char_data'];
-            $numchars = \count($chardata);
+            $numchars = count($chardata);
             for ($i = 0; $i < $numchars; ++$i) {
-                if (isset($chardata[$i]['type']) && ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_ON || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_WS)) {
+                if (isset($chardata[$i]['type']) && ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ON || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_WS)) {
                     $chardata[$i]['orig_type'] = $chardata[$i]['type'];
                     // Need to store the original 'WS' for reference in L1 below
-                    $chardata[$i]['type'] = $chardata[$i]['level'] % 2 ? \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R : \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L;
+                    $chardata[$i]['type'] = $chardata[$i]['level'] % 2 ? Ucdn::BIDI_CLASS_R : Ucdn::BIDI_CLASS_L;
                 }
             }
         }
@@ -5583,38 +5578,36 @@ class Otl
         // I2. For all characters with an odd (right-to-left) embedding direction, those of type L, EN or AN go up one level.
         for ($nc = 0; $nc < $numchunks; $nc++) {
             $chardata =& $para[$nc][18]['char_data'];
-            $numchars = \count($chardata);
+            $numchars = count($chardata);
             for ($i = 0; $i < $numchars; ++$i) {
                 if (isset($chardata[$i]['level'])) {
                     $odd = $chardata[$i]['level'] % 2;
                     if ($odd) {
-                        if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_L || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN) {
+                        if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_L || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_AN || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_EN) {
                             $chardata[$i]['level'] += 1;
                         }
-                    } else {
-                        if ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R) {
-                            $chardata[$i]['level'] += 1;
-                        } elseif ($chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_AN || $chardata[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_EN) {
-                            $chardata[$i]['level'] += 2;
-                        }
+                    } else if ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_R) {
+                        $chardata[$i]['level'] += 1;
+                    } elseif ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_AN || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_EN) {
+                        $chardata[$i]['level'] += 2;
                     }
                 }
             }
         }
         // Remove Isolate formatters
-        $numchunks = \count($para);
+        $numchunks = count($para);
         if ($controlchars) {
             for ($nc = 0; $nc < $numchunks; $nc++) {
                 $this->removeChar($para[$nc][0], $para[$nc][18], "⁦");
                 $this->removeChar($para[$nc][0], $para[$nc][18], "⁧");
                 $this->removeChar($para[$nc][0], $para[$nc][18], "⁨");
                 $this->removeChar($para[$nc][0], $para[$nc][18], "⁩");
-                \preg_replace("/\\x{2066}-\\x{2069}/u", '', $para[$nc][0]);
+                preg_replace("/\\x{2066}-\\x{2069}/u", '', $para[$nc][0]);
             }
             // Remove any blank chunks made by removing directional codes
             for ($nc = $numchunks - 1; $nc >= 0; $nc--) {
-                if (\count($para[$nc][18]['char_data']) == 0) {
-                    \array_splice($para, $nc, 1);
+                if (count($para[$nc][18]['char_data']) == 0) {
+                    array_splice($para, $nc, 1);
                 }
             }
         }
@@ -5626,10 +5619,10 @@ class Otl
     {
         $bidiData = [];
         // First combine into one array (and get the highest level in use)
-        $numchunks = \count($content);
+        $numchunks = count($content);
         $maxlevel = 0;
         for ($nc = 0; $nc < $numchunks; $nc++) {
-            $numchars = isset($cOTLdata[$nc]['char_data']) ? \count($cOTLdata[$nc]['char_data']) : 0;
+            $numchars = isset($cOTLdata[$nc]['char_data']) ? count($cOTLdata[$nc]['char_data']) : 0;
             for ($i = 0; $i < $numchars; ++$i) {
                 $carac = [];
                 if (isset($cOTLdata[$nc]['GPOSinfo'][$i])) {
@@ -5648,14 +5641,14 @@ class Otl
                 $carac['group'] = $cOTLdata[$nc]['group'][$i];
                 $carac['chunkid'] = $chunkorder[$nc];
                 // gives font id and/or object ID
-                $maxlevel = \max(isset($carac['level']) ? $carac['level'] : 0, $maxlevel);
+                $maxlevel = max(isset($carac['level']) ? $carac['level'] : 0, $maxlevel);
                 $bidiData[] = $carac;
             }
         }
         if ($maxlevel == 0) {
             return;
         }
-        $numchars = \count($bidiData);
+        $numchars = count($bidiData);
         // L1. On each line, reset the embedding level of the following characters to the paragraph embedding level:
         //  1. Segment separators (Tab) 'S',
         //  2. Paragraph separators 'B',
@@ -5670,7 +5663,7 @@ class Otl
             $pel = 0;
         }
         for ($i = $numchars - 1; $i > 0; $i--) {
-            if ($bidiData[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_WS || isset($bidiData[$i]['orig_type']) && $bidiData[$i]['orig_type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_WS) {
+            if ($bidiData[$i]['type'] == Ucdn::BIDI_CLASS_WS || isset($bidiData[$i]['orig_type']) && $bidiData[$i]['orig_type'] == Ucdn::BIDI_CLASS_WS) {
                 $bidiData[$i]['level'] = $pel;
             } else {
                 break;
@@ -5685,14 +5678,14 @@ class Otl
                 if ($bidiData[$i]['level'] >= $j) {
                     $onlevel = \true;
                     // L4. A character is depicted by a mirrored glyph if and only if (a) the resolved directionality of that character is R, and (b) the Bidi_Mirrored property value of that character is true.
-                    if (isset(\WPDeskFIVendor\Mpdf\Ucdn::$mirror_pairs[$bidiData[$i]['uni']]) && $bidiData[$i]['type'] == \WPDeskFIVendor\Mpdf\Ucdn::BIDI_CLASS_R) {
-                        $bidiData[$i]['uni'] = \WPDeskFIVendor\Mpdf\Ucdn::$mirror_pairs[$bidiData[$i]['uni']];
+                    if (isset(Ucdn::$mirror_pairs[$bidiData[$i]['uni']]) && $bidiData[$i]['type'] == Ucdn::BIDI_CLASS_R) {
+                        $bidiData[$i]['uni'] = Ucdn::$mirror_pairs[$bidiData[$i]['uni']];
                     }
                     $revarr[] = $bidiData[$i];
                 } else {
                     if ($onlevel) {
-                        $revarr = \array_reverse($revarr);
-                        $ordarray = \array_merge($ordarray, $revarr);
+                        $revarr = array_reverse($revarr);
+                        $ordarray = array_merge($ordarray, $revarr);
                         $revarr = [];
                         $onlevel = \false;
                     }
@@ -5700,8 +5693,8 @@ class Otl
                 }
             }
             if ($onlevel) {
-                $revarr = \array_reverse($revarr);
-                $ordarray = \array_merge($ordarray, $revarr);
+                $revarr = array_reverse($revarr);
+                $ordarray = array_merge($ordarray, $revarr);
             }
             $bidiData = $ordarray;
         }
@@ -5721,7 +5714,7 @@ class Otl
             }
             if ($carac['uni'] != 0xfffc) {
                 // Object replacement character (65532)
-                $content[$nc] .= \WPDeskFIVendor\Mpdf\Utils\UtfString::code2utf($carac['uni']);
+                $content[$nc] .= UtfString::code2utf($carac['uni']);
                 $cOTLdata[$nc]['group'] .= $carac['group'];
                 if (!empty($carac['GPOSinfo'])) {
                     if (isset($carac['GPOSinfo'])) {
@@ -5740,8 +5733,8 @@ class Otl
             $OTLrestartpos = $OTLcutoffpos;
         }
         $newOTLdata = ['GPOSinfo' => [], 'char_data' => []];
-        $newOTLdata['group'] = \substr($cOTLdata['group'], $OTLrestartpos);
-        $cOTLdata['group'] = \substr($cOTLdata['group'], 0, $OTLcutoffpos);
+        $newOTLdata['group'] = substr($cOTLdata['group'], $OTLrestartpos);
+        $cOTLdata['group'] = substr($cOTLdata['group'], 0, $OTLcutoffpos);
         if (isset($cOTLdata['GPOSinfo']) && $cOTLdata['GPOSinfo']) {
             foreach ($cOTLdata['GPOSinfo'] as $k => $val) {
                 if ($k >= $OTLrestartpos) {
@@ -5754,22 +5747,22 @@ class Otl
             }
         }
         if (isset($cOTLdata['char_data'])) {
-            $newOTLdata['char_data'] = \array_slice($cOTLdata['char_data'], $OTLrestartpos);
-            \array_splice($cOTLdata['char_data'], $OTLcutoffpos);
+            $newOTLdata['char_data'] = array_slice($cOTLdata['char_data'], $OTLrestartpos);
+            array_splice($cOTLdata['char_data'], $OTLcutoffpos);
         }
         // Not necessary - easier to debug
         if (isset($cOTLdata['GPOSinfo'])) {
-            \ksort($cOTLdata['GPOSinfo']);
+            ksort($cOTLdata['GPOSinfo']);
         }
         if (isset($newOTLdata['GPOSinfo'])) {
-            \ksort($newOTLdata['GPOSinfo']);
+            ksort($newOTLdata['GPOSinfo']);
         }
         return $newOTLdata;
     }
     public function sliceOTLdata($OTLdata, $pos, $len)
     {
         $newOTLdata = ['GPOSinfo' => [], 'char_data' => []];
-        $newOTLdata['group'] = \substr($OTLdata['group'], $pos, $len);
+        $newOTLdata['group'] = substr($OTLdata['group'], $pos, $len);
         if ($OTLdata['GPOSinfo']) {
             foreach ($OTLdata['GPOSinfo'] as $k => $val) {
                 if ($k >= $pos && $k < $pos + $len) {
@@ -5778,11 +5771,11 @@ class Otl
             }
         }
         if (isset($OTLdata['char_data'])) {
-            $newOTLdata['char_data'] = \array_slice($OTLdata['char_data'], $pos, $len);
+            $newOTLdata['char_data'] = array_slice($OTLdata['char_data'], $pos, $len);
         }
         // Not necessary - easier to debug
         if ($newOTLdata['GPOSinfo']) {
-            \ksort($newOTLdata['GPOSinfo']);
+            ksort($newOTLdata['GPOSinfo']);
         }
         return $newOTLdata;
     }
@@ -5791,10 +5784,10 @@ class Otl
      */
     public function removeChar(&$txt, &$cOTLdata, $char)
     {
-        while (\mb_strpos($txt, $char, 0, $this->mpdf->mb_enc) !== \false) {
-            $pos = \mb_strpos($txt, $char, 0, $this->mpdf->mb_enc);
+        while (mb_strpos($txt, $char, 0, $this->mpdf->mb_enc) !== \false) {
+            $pos = mb_strpos($txt, $char, 0, $this->mpdf->mb_enc);
             $newGPOSinfo = [];
-            $cOTLdata['group'] = \substr_replace($cOTLdata['group'], '', $pos, 1);
+            $cOTLdata['group'] = substr_replace($cOTLdata['group'], '', $pos, 1);
             if ($cOTLdata['GPOSinfo']) {
                 foreach ($cOTLdata['GPOSinfo'] as $k => $val) {
                     if ($k > $pos) {
@@ -5806,9 +5799,9 @@ class Otl
                 $cOTLdata['GPOSinfo'] = $newGPOSinfo;
             }
             if (isset($cOTLdata['char_data'])) {
-                \array_splice($cOTLdata['char_data'], $pos, 1);
+                array_splice($cOTLdata['char_data'], $pos, 1);
             }
-            $txt = \preg_replace("/" . $char . "/", '', $txt, 1);
+            $txt = preg_replace("/" . $char . "/", '', $txt, 1);
         }
     }
     /**
@@ -5816,19 +5809,19 @@ class Otl
      */
     public function replaceSpace(&$txt, &$cOTLdata)
     {
-        $char = \chr(194) . \chr(160);
+        $char = chr(194) . chr(160);
         // NBSP
-        while (\mb_strpos($txt, $char, 0, $this->mpdf->mb_enc) !== \false) {
-            $pos = \mb_strpos($txt, $char, 0, $this->mpdf->mb_enc);
+        while (mb_strpos($txt, $char, 0, $this->mpdf->mb_enc) !== \false) {
+            $pos = mb_strpos($txt, $char, 0, $this->mpdf->mb_enc);
             if ($cOTLdata['char_data'][$pos]['uni'] == 160) {
                 $cOTLdata['char_data'][$pos]['uni'] = 32;
             }
-            $txt = \preg_replace("/" . $char . "/", ' ', $txt, 1);
+            $txt = preg_replace("/" . $char . "/", ' ', $txt, 1);
         }
     }
     public function trimOTLdata(&$cOTLdata, $Left = \true, $Right = \true)
     {
-        $len = !\is_array($cOTLdata) || $cOTLdata['char_data'] === null ? 0 : \count($cOTLdata['char_data']);
+        $len = !is_array($cOTLdata) || $cOTLdata['char_data'] === null ? 0 : count($cOTLdata['char_data']);
         $nLeft = 0;
         $nRight = 0;
         for ($i = 0; $i < $len; $i++) {
@@ -5847,7 +5840,7 @@ class Otl
         }
         // Trim Right
         if ($Right && $nRight) {
-            $cOTLdata['group'] = \substr($cOTLdata['group'], 0, \strlen($cOTLdata['group']) - $nRight);
+            $cOTLdata['group'] = substr($cOTLdata['group'], 0, strlen($cOTLdata['group']) - $nRight);
             if ($cOTLdata['GPOSinfo']) {
                 foreach ($cOTLdata['GPOSinfo'] as $k => $val) {
                     if ($k >= $len - $nRight) {
@@ -5857,13 +5850,13 @@ class Otl
             }
             if (isset($cOTLdata['char_data'])) {
                 for ($i = 0; $i < $nRight; $i++) {
-                    \array_pop($cOTLdata['char_data']);
+                    array_pop($cOTLdata['char_data']);
                 }
             }
         }
         // Trim Left
         if ($Left && $nLeft) {
-            $cOTLdata['group'] = \substr($cOTLdata['group'], $nLeft);
+            $cOTLdata['group'] = substr($cOTLdata['group'], $nLeft);
             if ($cOTLdata['GPOSinfo']) {
                 $newPOSinfo = [];
                 foreach ($cOTLdata['GPOSinfo'] as $k => $val) {
@@ -5875,7 +5868,7 @@ class Otl
             }
             if (isset($cOTLdata['char_data'])) {
                 for ($i = 0; $i < $nLeft; $i++) {
-                    \array_shift($cOTLdata['char_data']);
+                    array_shift($cOTLdata['char_data']);
                 }
             }
         }
@@ -5885,11 +5878,11 @@ class Otl
     ////////////////////////////////////////////////////////////////
     private function glyphToChar($gid)
     {
-        return (\ord($this->glyphIDtoUni[$gid * 3]) << 16) + (\ord($this->glyphIDtoUni[$gid * 3 + 1]) << 8) + \ord($this->glyphIDtoUni[$gid * 3 + 2]);
+        return (ord($this->glyphIDtoUni[$gid * 3]) << 16) + (ord($this->glyphIDtoUni[$gid * 3 + 1]) << 8) + ord($this->glyphIDtoUni[$gid * 3 + 2]);
     }
     private function unicode_hex($unicode_dec)
     {
-        return \str_pad(\strtoupper(\dechex($unicode_dec)), 5, '0', \STR_PAD_LEFT);
+        return str_pad(strtoupper(dechex($unicode_dec)), 5, '0', \STR_PAD_LEFT);
     }
     private function seek($pos)
     {
@@ -5901,7 +5894,7 @@ class Otl
     }
     private function read_short()
     {
-        $a = (\ord($this->ttfOTLdata[$this->_pos]) << 8) + \ord($this->ttfOTLdata[$this->_pos + 1]);
+        $a = (ord($this->ttfOTLdata[$this->_pos]) << 8) + ord($this->ttfOTLdata[$this->_pos + 1]);
         if ($a & 1 << 15) {
             $a = $a - (1 << 16);
         }
@@ -5910,7 +5903,7 @@ class Otl
     }
     private function read_ushort()
     {
-        $a = (\ord($this->ttfOTLdata[$this->_pos]) << 8) + \ord($this->ttfOTLdata[$this->_pos + 1]);
+        $a = (ord($this->ttfOTLdata[$this->_pos]) << 8) + ord($this->ttfOTLdata[$this->_pos + 1]);
         $this->_pos += 2;
         return $a;
     }
@@ -6047,26 +6040,24 @@ class Otl
         		  8 128 0x0080  GSUB/GPOS - All other scripts (including all RTL scripts, complex scripts with shapers etc)
          NB If change for RTL - cf. function magic_reverse_dir in mpdf.php to update
         */
-        if ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_LATIN) {
+        if ($scriptblock == Ucdn::SCRIPT_LATIN) {
             if (!($useOTL & 0x1)) {
                 return ['', \false];
             }
-        } elseif ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_CYRILLIC) {
+        } elseif ($scriptblock == Ucdn::SCRIPT_CYRILLIC) {
             if (!($useOTL & 0x2)) {
                 return ['', \false];
             }
-        } elseif ($scriptblock == \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_GREEK) {
+        } elseif ($scriptblock == Ucdn::SCRIPT_GREEK) {
             if (!($useOTL & 0x4)) {
                 return ['', \false];
             }
-        } elseif ($scriptblock >= \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_HIRAGANA && $scriptblock <= \WPDeskFIVendor\Mpdf\Ucdn::SCRIPT_YI) {
+        } elseif ($scriptblock >= Ucdn::SCRIPT_HIRAGANA && $scriptblock <= Ucdn::SCRIPT_YI) {
             if (!($useOTL & 0x8)) {
                 return ['', \false];
             }
-        } else {
-            if (!($useOTL & 0x80)) {
-                return ['', \false];
-            }
+        } else if (!($useOTL & 0x80)) {
+            return ['', \false];
         }
         //  If availabletags includes scripttag - choose
         if (isset($ScriptLang[$scripttag])) {
@@ -6150,28 +6141,28 @@ class Otl
         if ($available == '') {
             return '';
         }
-        $tags = \preg_split('/-/', $ietf);
+        $tags = preg_split('/-/', $ietf);
         $lang = '';
         $country = '';
         $script = '';
-        $lang = \strtolower($tags[0]);
+        $lang = strtolower($tags[0]);
         if (isset($tags[1]) && $tags[1]) {
-            if (\strlen($tags[1]) == 2) {
-                $country = \strtolower($tags[1]);
+            if (strlen($tags[1]) == 2) {
+                $country = strtolower($tags[1]);
             }
         }
         if (isset($tags[2]) && $tags[2]) {
-            $country = \strtolower($tags[2]);
+            $country = strtolower($tags[2]);
         }
-        if ($lang != '' && isset(\WPDeskFIVendor\Mpdf\Ucdn::$ot_languages[$lang])) {
-            $langsys = \WPDeskFIVendor\Mpdf\Ucdn::$ot_languages[$lang];
-        } elseif ($lang != '' && $country != '' && isset(\WPDeskFIVendor\Mpdf\Ucdn::$ot_languages[$lang . '' . $country])) {
-            $langsys = \WPDeskFIVendor\Mpdf\Ucdn::$ot_languages[$lang . '' . $country];
+        if ($lang != '' && isset(Ucdn::$ot_languages[$lang])) {
+            $langsys = Ucdn::$ot_languages[$lang];
+        } elseif ($lang != '' && $country != '' && isset(Ucdn::$ot_languages[$lang . '' . $country])) {
+            $langsys = Ucdn::$ot_languages[$lang . '' . $country];
         } else {
             $langsys = "DFLT";
         }
-        if (\strpos($available, $langsys) === \false) {
-            if (\strpos($available, "DFLT") !== \false) {
+        if (strpos($available, $langsys) === \false) {
+            if (strpos($available, "DFLT") !== \false) {
                 return "DFLT";
             } else {
                 return '';
@@ -6185,7 +6176,7 @@ class Otl
         echo $GPOSSUB . ' LookupID #' . $lookupID . ' Subtable#' . $subtable . ' Type: ' . $Type . ' Format: ' . $Format . '<br />';
         echo '<div style="font-family:monospace">';
         echo 'Glyph position: ' . $ptr . ' Current Glyph: ' . $currGlyph . '<br />';
-        for ($i = 0; $i < \count($this->OTLdata); $i++) {
+        for ($i = 0; $i < count($this->OTLdata); $i++) {
             if ($i == $ptr) {
                 echo '<b>';
             }
@@ -6195,21 +6186,21 @@ class Otl
             }
         }
         echo '<br />';
-        for ($i = 0; $i < \count($this->OTLdata); $i++) {
+        for ($i = 0; $i < count($this->OTLdata); $i++) {
             if ($i == $ptr) {
                 echo '<b>';
             }
-            echo \str_pad($this->OTLdata[$i]['uni'], 5) . ' ';
+            echo str_pad($this->OTLdata[$i]['uni'], 5) . ' ';
             if ($i == $ptr) {
                 echo '</b>';
             }
         }
         echo '<br />';
         if ($GPOSSUB == 'GPOS') {
-            for ($i = 0; $i < \count($this->OTLdata); $i++) {
+            for ($i = 0; $i < count($this->OTLdata); $i++) {
                 if (!empty($this->OTLdata[$i]['GPOSinfo'])) {
                     echo $this->OTLdata[$i]['hex'] . ' &#x' . $this->OTLdata[$i]['hex'] . '; ';
-                    \print_r($this->OTLdata[$i]['GPOSinfo']);
+                    print_r($this->OTLdata[$i]['GPOSinfo']);
                     echo ' ';
                 }
             }

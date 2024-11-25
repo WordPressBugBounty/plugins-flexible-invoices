@@ -195,7 +195,7 @@ echo \esc_html($document->get_notes());
 	<?php 
 global $post;
 $is_order = (int) \get_post_meta($post->ID, '_wc_order_id', \true);
-if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active() && $is_order) {
+if (WooCommerce::is_active() && $is_order) {
     ?>
 		<div class="form-field lonely">
 			<label>

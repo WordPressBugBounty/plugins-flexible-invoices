@@ -8,7 +8,7 @@ use WPDeskFIVendor\WPDesk\Forms\Field\Header;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Settings\Fields
  */
-class SubEndField extends \WPDeskFIVendor\WPDesk\Forms\Field\Header
+class SubEndField extends Header
 {
     public function __construct()
     {

@@ -12,7 +12,7 @@ namespace WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts;
  *
  * @package WPDesk\Library\WPDeskOrder\Abstracts
  */
-final class ProductOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\OrderItem
+final class ProductOrderItem extends OrderItem
 {
     /**
      * @var string
@@ -60,7 +60,7 @@ final class ProductOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\
     /**
      * @return string
      */
-    public function get_width() : string
+    public function get_width(): string
     {
         return $this->width;
     }
@@ -74,7 +74,7 @@ final class ProductOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\
     /**
      * @return string
      */
-    public function get_height() : string
+    public function get_height(): string
     {
         return $this->height;
     }
@@ -88,7 +88,7 @@ final class ProductOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\
     /**
      * @return string
      */
-    public function get_weight() : string
+    public function get_weight(): string
     {
         return $this->weight;
     }
@@ -102,7 +102,7 @@ final class ProductOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\
     /**
      * @return int
      */
-    public function get_product_id() : int
+    public function get_product_id(): int
     {
         return $this->product_id;
     }
@@ -116,7 +116,7 @@ final class ProductOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\
     /**
      * @return string
      */
-    public function get_sku() : string
+    public function get_sku(): string
     {
         return $this->sku;
     }
@@ -130,7 +130,7 @@ final class ProductOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\
     /**
      * @return array
      */
-    public function get_attributes() : array
+    public function get_attributes(): array
     {
         return $this->attributes;
     }
@@ -144,7 +144,7 @@ final class ProductOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\
     /**
      * @return array
      */
-    public function get_children() : array
+    public function get_children(): array
     {
         return $this->children;
     }
@@ -158,7 +158,7 @@ final class ProductOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\
     /**
      * @return int
      */
-    public function get_variation_id() : int
+    public function get_variation_id(): int
     {
         return $this->variation_id;
     }

@@ -8,7 +8,7 @@ use WPDeskFIVendor\WPDesk\Forms\Field\BasicField;
  *
  * @package WPDesk\FIT\Settings\Fields
  */
-class SelectImageField extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
+class SelectImageField extends BasicField
 {
     public function get_template_name()
     {

@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\WPDesk\PluginBuilder\Plugin;
 
-interface HookablePluginDependant extends \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+interface HookablePluginDependant extends Hookable
 {
     /**
      * Set Plugin.
@@ -11,7 +11,7 @@ interface HookablePluginDependant extends \WPDeskFIVendor\WPDesk\PluginBuilder\P
      *
      * @return null
      */
-    public function set_plugin(\WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\AbstractPlugin $plugin);
+    public function set_plugin(AbstractPlugin $plugin);
     /**
      * Get plugin.
      *

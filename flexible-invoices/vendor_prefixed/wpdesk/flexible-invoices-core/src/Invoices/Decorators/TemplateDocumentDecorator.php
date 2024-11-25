@@ -7,14 +7,14 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Decorators;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Decorators
  */
-class TemplateDocumentDecorator extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Decorators\DocumentDecorator
+class TemplateDocumentDecorator extends DocumentDecorator
 {
     /**
      * Returns array of totals [ total_net_sum, total_tax_sum, total_gross_sum ].
      *
      * @return array
      */
-    public function get_totals() : array
+    public function get_totals(): array
     {
         $net_amount = 0;
         $tax_amount = 0;
@@ -29,7 +29,7 @@ class TemplateDocumentDecorator extends \WPDeskFIVendor\WPDesk\Library\FlexibleI
     /**
      * @return array
      */
-    public function get_items_as_money() : array
+    public function get_items_as_money(): array
     {
         $items = $this->document->get_items();
         foreach ($items as &$item) {
@@ -45,7 +45,7 @@ class TemplateDocumentDecorator extends \WPDeskFIVendor\WPDesk\Library\FlexibleI
      *
      * @return array
      */
-    public function get_totals_by_taxes() : array
+    public function get_totals_by_taxes(): array
     {
         $tax_types = [];
         foreach ($this->get_items() as $item) {
@@ -65,11 +65,11 @@ class TemplateDocumentDecorator extends \WPDeskFIVendor\WPDesk\Library\FlexibleI
      *
      * @return array
      */
-    public function array_to_string_as_money(array $data) : array
+    public function array_to_string_as_money(array $data): array
     {
         $new_data = [];
         foreach ($data as $key => $value) {
-            if (!\is_array($value)) {
+            if (!is_array($value)) {
                 $new_data[$key] = $this->currency_helper->string_as_money($value);
             } else {
                 $new_data[$key] = $this->array_to_string_as_money($value);

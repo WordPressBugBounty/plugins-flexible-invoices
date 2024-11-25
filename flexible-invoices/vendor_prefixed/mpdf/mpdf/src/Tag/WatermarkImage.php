@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class WatermarkImage extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class WatermarkImage extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -17,16 +17,16 @@ class WatermarkImage extends \WPDeskFIVendor\Mpdf\Tag\Tag
         $size = 'D';
         if (!empty($attr['SIZE'])) {
             $size = $attr['SIZE'];
-            if (\strpos($size, ',')) {
-                $size = \explode(',', $size);
+            if (strpos($size, ',')) {
+                $size = explode(',', $size);
             }
         }
         $pos = 'P';
         if (!empty($attr['POSITION'])) {
             // mPDF 5.7.2
             $pos = $attr['POSITION'];
-            if (\strpos($pos, ',')) {
-                $pos = \explode(',', $pos);
+            if (strpos($pos, ',')) {
+                $pos = explode(',', $pos);
             }
         }
         $this->mpdf->SetWatermarkImage($src, $alpha, $size, $pos);

@@ -11,7 +11,7 @@ class FontFileFinder
     }
     public function setDirectories($directories)
     {
-        if (!\is_array($directories)) {
+        if (!is_array($directories)) {
             $directories = [$directories];
         }
         $this->directories = $directories;
@@ -20,10 +20,10 @@ class FontFileFinder
     {
         foreach ($this->directories as $directory) {
             $filename = $directory . '/' . $name;
-            if (\file_exists($filename)) {
+            if (file_exists($filename)) {
                 return $filename;
             }
         }
-        throw new \WPDeskFIVendor\Mpdf\MpdfException(\sprintf('Cannot find TTF TrueType font file "%s" in configured font directories.', $name));
+        throw new \WPDeskFIVendor\Mpdf\MpdfException(sprintf('Cannot find TTF TrueType font file "%s" in configured font directories.', $name));
     }
 }

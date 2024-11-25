@@ -8,7 +8,7 @@ use WPDeskFIVendor\WPDesk\Forms\Field\BasicField;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Settings\Fields
  */
-class FICheckboxField extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
+class FICheckboxField extends BasicField
 {
     const VALUE_TRUE = 'on';
     // Backward compatibility.

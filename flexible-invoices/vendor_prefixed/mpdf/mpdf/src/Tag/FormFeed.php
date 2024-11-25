@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class FormFeed extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class FormFeed extends Tag
 {
     public $toc_id;
     public function open($attr, &$ahtml, &$ihtml)
@@ -10,8 +10,8 @@ class FormFeed extends \WPDeskFIVendor\Mpdf\Tag\Tag
         $tag = $this->getTagName();
         if (isset($attr['SHEET-SIZE'])) {
             // Convert to same types as accepted in initial mPDF() A4, A4-L, or array(w,h)
-            $prop = \preg_split('/\\s+/', \trim($attr['SHEET-SIZE']));
-            if (\count($prop) == 2) {
+            $prop = preg_split('/\s+/', trim($attr['SHEET-SIZE']));
+            if (count($prop) == 2) {
                 $newformat = [$this->sizeConverter->convert($prop[0]), $this->sizeConverter->convert($prop[1])];
             } else {
                 $newformat = $attr['SHEET-SIZE'];
@@ -59,29 +59,29 @@ class FormFeed extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $efname = $attr['EVEN-FOOTER-NAME'];
         }
         $ohvalue = $ehvalue = $ofvalue = $efvalue = 0;
-        if (isset($attr['ODD-HEADER-VALUE']) && ($attr['ODD-HEADER-VALUE'] == '1' || \strtoupper($attr['ODD-HEADER-VALUE']) === 'ON')) {
+        if (isset($attr['ODD-HEADER-VALUE']) && ($attr['ODD-HEADER-VALUE'] == '1' || strtoupper($attr['ODD-HEADER-VALUE']) === 'ON')) {
             $ohvalue = 1;
-        } elseif (isset($attr['ODD-HEADER-VALUE']) && ($attr['ODD-HEADER-VALUE'] == '-1' || \strtoupper($attr['ODD-HEADER-VALUE']) === 'OFF')) {
+        } elseif (isset($attr['ODD-HEADER-VALUE']) && ($attr['ODD-HEADER-VALUE'] == '-1' || strtoupper($attr['ODD-HEADER-VALUE']) === 'OFF')) {
             $ohvalue = -1;
         }
-        if (isset($attr['EVEN-HEADER-VALUE']) && ($attr['EVEN-HEADER-VALUE'] == '1' || \strtoupper($attr['EVEN-HEADER-VALUE']) === 'ON')) {
+        if (isset($attr['EVEN-HEADER-VALUE']) && ($attr['EVEN-HEADER-VALUE'] == '1' || strtoupper($attr['EVEN-HEADER-VALUE']) === 'ON')) {
             $ehvalue = 1;
-        } elseif (isset($attr['EVEN-HEADER-VALUE']) && ($attr['EVEN-HEADER-VALUE'] == '-1' || \strtoupper($attr['EVEN-HEADER-VALUE']) === 'OFF')) {
+        } elseif (isset($attr['EVEN-HEADER-VALUE']) && ($attr['EVEN-HEADER-VALUE'] == '-1' || strtoupper($attr['EVEN-HEADER-VALUE']) === 'OFF')) {
             $ehvalue = -1;
         }
-        if (isset($attr['ODD-FOOTER-VALUE']) && ($attr['ODD-FOOTER-VALUE'] == '1' || \strtoupper($attr['ODD-FOOTER-VALUE']) === 'ON')) {
+        if (isset($attr['ODD-FOOTER-VALUE']) && ($attr['ODD-FOOTER-VALUE'] == '1' || strtoupper($attr['ODD-FOOTER-VALUE']) === 'ON')) {
             $ofvalue = 1;
-        } elseif (isset($attr['ODD-FOOTER-VALUE']) && ($attr['ODD-FOOTER-VALUE'] == '-1' || \strtoupper($attr['ODD-FOOTER-VALUE']) === 'OFF')) {
+        } elseif (isset($attr['ODD-FOOTER-VALUE']) && ($attr['ODD-FOOTER-VALUE'] == '-1' || strtoupper($attr['ODD-FOOTER-VALUE']) === 'OFF')) {
             $ofvalue = -1;
         }
-        if (isset($attr['EVEN-FOOTER-VALUE']) && ($attr['EVEN-FOOTER-VALUE'] == '1' || \strtoupper($attr['EVEN-FOOTER-VALUE']) === 'ON')) {
+        if (isset($attr['EVEN-FOOTER-VALUE']) && ($attr['EVEN-FOOTER-VALUE'] == '1' || strtoupper($attr['EVEN-FOOTER-VALUE']) === 'ON')) {
             $efvalue = 1;
-        } elseif (isset($attr['EVEN-FOOTER-VALUE']) && ($attr['EVEN-FOOTER-VALUE'] == '-1' || \strtoupper($attr['EVEN-FOOTER-VALUE']) === 'OFF')) {
+        } elseif (isset($attr['EVEN-FOOTER-VALUE']) && ($attr['EVEN-FOOTER-VALUE'] == '-1' || strtoupper($attr['EVEN-FOOTER-VALUE']) === 'OFF')) {
             $efvalue = -1;
         }
-        if (isset($attr['ORIENTATION']) && (\strtoupper($attr['ORIENTATION']) === 'L' || \strtoupper($attr['ORIENTATION']) === 'LANDSCAPE')) {
+        if (isset($attr['ORIENTATION']) && (strtoupper($attr['ORIENTATION']) === 'L' || strtoupper($attr['ORIENTATION']) === 'LANDSCAPE')) {
             $orient = 'L';
-        } elseif (isset($attr['ORIENTATION']) && (\strtoupper($attr['ORIENTATION']) === 'P' || \strtoupper($attr['ORIENTATION']) === 'PORTRAIT')) {
+        } elseif (isset($attr['ORIENTATION']) && (strtoupper($attr['ORIENTATION']) === 'P' || strtoupper($attr['ORIENTATION']) === 'PORTRAIT')) {
             $orient = 'P';
         } else {
             $orient = $this->mpdf->CurOrientation;
@@ -98,8 +98,8 @@ class FormFeed extends \WPDeskFIVendor\Mpdf\Tag\Tag
         // can be overridden by PAGE-BREAK-TYPE
         $startpage = $this->mpdf->page;
         if (isset($attr['PAGE-BREAK-TYPE'])) {
-            if (\strtolower($attr['PAGE-BREAK-TYPE']) === 'cloneall' || \strtolower($attr['PAGE-BREAK-TYPE']) === 'clonebycss' || \strtolower($attr['PAGE-BREAK-TYPE']) === 'slice') {
-                $pagebreaktype = \strtolower($attr['PAGE-BREAK-TYPE']);
+            if (strtolower($attr['PAGE-BREAK-TYPE']) === 'cloneall' || strtolower($attr['PAGE-BREAK-TYPE']) === 'clonebycss' || strtolower($attr['PAGE-BREAK-TYPE']) === 'slice') {
+                $pagebreaktype = strtolower($attr['PAGE-BREAK-TYPE']);
             }
         }
         if ($tag === 'TOCPAGEBREAK') {
@@ -128,7 +128,7 @@ class FormFeed extends \WPDeskFIVendor\Mpdf\Tag\Tag
         if ($tag === 'TOCPAGEBREAK') {
             $type = 'NEXT-ODD';
         } elseif (isset($attr['TYPE'])) {
-            $type = \strtoupper($attr['TYPE']);
+            $type = strtoupper($attr['TYPE']);
         }
         if ($type === 'E' || $type === 'EVEN') {
             $this->mpdf->AddPage($orient, 'E', $resetpagenum, $pagenumstyle, $suppress, $mgl, $mgr, $mgt, $mgb, $mgh, $mgf, $ohname, $ehname, $ofname, $efname, $ohvalue, $ehvalue, $ofvalue, $efvalue, $pagesel, $newformat);

@@ -26,7 +26,7 @@ use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Integration
  */
-class SaveDocument implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+class SaveDocument implements Hookable
 {
     /**
      * @var DocumentFactory
@@ -55,7 +55,7 @@ class SaveDocument implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
      * @param LoggerInterface  $logger
      * @param string           $plugin_version
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory $document_factory, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings $settings, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy $strategy, \WPDeskFIVendor\Psr\Log\LoggerInterface $logger, string $plugin_version)
+    public function __construct(DocumentFactory $document_factory, Settings $settings, SettingsStrategy $strategy, LoggerInterface $logger, string $plugin_version)
     {
         $this->document_factory = $document_factory;
         $this->settings = $settings;
@@ -68,7 +68,7 @@ class SaveDocument implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
      */
     public function hooks()
     {
-        \add_action('save_post', [$this, 'save_custom_fields_action'], 2, 2);
+        add_action('save_post', [$this, 'save_custom_fields_action'], 2, 2);
     }
     /**
      * @param int     $post_id
@@ -81,26 +81,26 @@ class SaveDocument implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
         if (!isset($_POST['flexible_invoices_nonce'])) {
             return \false;
         }
-        if (!\wp_verify_nonce(\wp_unslash(\sanitize_key($_POST['flexible_invoices_nonce'])), 'flexible_invoices_nonce')) {
+        if (!wp_verify_nonce(wp_unslash(sanitize_key($_POST['flexible_invoices_nonce'])), 'flexible_invoices_nonce')) {
             return \false;
         }
-        if (\defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        if (defined('DOING_AUTOSAVE') && \DOING_AUTOSAVE) {
             return \false;
         }
         if ($post->post_status === 'auto-draft') {
             return \false;
         }
         try {
-            $type = $_REQUEST['document_type'] ?? \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Invoice::DOCUMENT_TYPE;
+            $type = $_REQUEST['document_type'] ?? Invoice::DOCUMENT_TYPE;
             $creators = $this->document_factory->get_creators();
             if (isset($creators[$type])) {
                 $this->document_factory->set_document_type($type);
             } else {
-                throw new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentExceptions\UnknownDocumentTypeException('Unknown document type: ' . $type);
+                throw new UnknownDocumentTypeException('Unknown document type: ' . $type);
             }
-            $creator = $this->document_factory->get_document_creator($post_id, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory::POST_SOURCE);
+            $creator = $this->document_factory->get_document_creator($post_id, DataSourceFactory::POST_SOURCE);
             $this->save($creator);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error($e->getMessage());
         }
         return $post_id;
@@ -112,14 +112,14 @@ class SaveDocument implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
      * @return int
      * @throws RuntimeException Throw exception for mutex lock.
      */
-    public function save(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCreator $document_creator, $should_insert_post = \false)
+    public function save(DocumentCreator $document_creator, $should_insert_post = \false)
     {
         $document_id = 0;
         try {
-            $document = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Decorators\PostMetaDocumentDecorator($document_creator->get_document(), $this->strategy);
-            $mutex = new \WPDeskFIVendor\WPDesk\Mutex\WordpressMySQLLockMutex('_fiw_mutex', 30);
+            $document = new PostMetaDocumentDecorator($document_creator->get_document(), $this->strategy);
+            $mutex = new WordpressMySQLLockMutex('_fiw_mutex', 30);
             if (!$mutex->acquireLock()) {
-                throw new \RuntimeException('Cannot acquire lock');
+                throw new RuntimeException('Cannot acquire lock');
             }
             try {
                 $numbering = $document_creator->get_document_numbering($document);
@@ -127,13 +127,13 @@ class SaveDocument implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
                 if ($should_insert_post) {
                     $document_id = $this->should_insert_post($formatted_number);
                     if ($document_id === 0) {
-                        throw new \RuntimeException('Cannot insert Invoice post');
+                        throw new RuntimeException('Cannot insert Invoice post');
                     }
                     $document->set_id($document_id);
                 } else {
                     $document_id = $document->get_id();
                 }
-                $meta = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\MetaPostContainer($document_id);
+                $meta = new MetaPostContainer($document_id);
                 if (empty($meta->get('_formatted_number'))) {
                     $numbering->increase_number();
                 }
@@ -151,9 +151,9 @@ class SaveDocument implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
             $this->save_client_meta($meta, $document->get_customer_as_array());
             $meta->set('_recipient', $document->get_recipient_as_array());
             $meta->set('_owner', $document->get_seller_as_array());
-            $meta->set('_total_price', \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\CalculateTotals::calculate_total_gross($document->get_items()));
-            $meta->set('_total_net', \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\CalculateTotals::calculate_total_net($document->get_items()));
-            $meta->set('_total_tax', \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\CalculateTotals::calculate_total_vat($document->get_items()));
+            $meta->set('_total_price', CalculateTotals::calculate_total_gross($document->get_items()));
+            $meta->set('_total_net', CalculateTotals::calculate_total_net($document->get_items()));
+            $meta->set('_total_tax', CalculateTotals::calculate_total_vat($document->get_items()));
             $meta->set('_total_paid', $document->get_total_paid());
             $meta->set('_discount', $document->get_discount());
             $meta->set('_currency', $document->get_currency());
@@ -161,13 +161,13 @@ class SaveDocument implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
             $meta->set('_payment_status', $document->get_payment_status());
             $meta->set('_payment_method', $document->get_payment_method());
             $meta->set('_payment_method_name', $document->get_payment_method_name());
-            $meta->set('_notes', \sanitize_textarea_field($document->get_notes()));
-            $meta->set('wpml_user_lang', \sanitize_text_field($document->get_user_lang()));
+            $meta->set('_notes', sanitize_textarea_field($document->get_notes()));
+            $meta->set('wpml_user_lang', sanitize_text_field($document->get_user_lang()));
             $meta->set('_add_order_id', $document->get_show_order_number());
             $meta->set('_wc_order_id', $document->get_order_id());
             $meta->set('_version', $this->plugin_version);
             $this->save_tax_items($meta, $document->get_items());
-            \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\EmailStatus::save($document);
+            EmailStatus::save($document);
             $document_creator->custom_meta($document, $meta)->save();
             /**
              * Fires after document save.
@@ -178,8 +178,8 @@ class SaveDocument implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
              *
              * @since 3.0.0
              */
-            \do_action('fi/core/document/save', $document, $meta, $document_id);
-        } catch (\Exception $e) {
+            do_action('fi/core/document/save', $document, $meta, $document_id);
+        } catch (Exception $e) {
             $this->logger->error($e->getMessage());
         }
         return $document_id;
@@ -189,10 +189,10 @@ class SaveDocument implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
      *
      * @return int
      */
-    private function should_insert_post($title) : int
+    private function should_insert_post($title): int
     {
-        $invoice_post = ['post_title' => $title, 'post_content' => '', 'post_status' => 'publish', 'post_type' => \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType::POST_TYPE_NAME, 'post_date' => \current_time('mysql')];
-        return (int) \wp_insert_post($invoice_post);
+        $invoice_post = ['post_title' => $title, 'post_content' => '', 'post_status' => 'publish', 'post_type' => RegisterPostType::POST_TYPE_NAME, 'post_date' => current_time('mysql')];
+        return (int) wp_insert_post($invoice_post);
     }
     /**
      * @param MetaPostContainer $meta
@@ -200,16 +200,16 @@ class SaveDocument implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
      *
      * @return void
      */
-    private function save_client_meta(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\MetaPostContainer $meta, array $customer)
+    private function save_client_meta(MetaPostContainer $meta, array $customer)
     {
         foreach ($customer as $key => $value) {
             if ($key === 'nip') {
-                $meta->set('_client_vat_number', \sanitize_text_field($value));
+                $meta->set('_client_vat_number', sanitize_text_field($value));
             } else {
-                $meta->set('_client_' . \sanitize_key($key), \sanitize_text_field($value));
+                $meta->set('_client_' . sanitize_key($key), sanitize_text_field($value));
             }
         }
-        $meta->set('_client_filter_field', \sanitize_text_field($customer['name']));
+        $meta->set('_client_filter_field', sanitize_text_field($customer['name']));
         $meta->set('_client', $customer);
     }
     /**
@@ -218,7 +218,7 @@ class SaveDocument implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
      *
      * @return void
      */
-    private function save_tax_items(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\MetaPostContainer $meta, array $products)
+    private function save_tax_items(MetaPostContainer $meta, array $products)
     {
         if (!empty($products)) {
             $total_taxes = $this->create_tax_totals($products);
@@ -236,7 +236,7 @@ class SaveDocument implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
      *
      * @return array
      */
-    private function create_tax_totals(array $products) : array
+    private function create_tax_totals(array $products): array
     {
         $tax_types = [];
         foreach ($products as $product) {

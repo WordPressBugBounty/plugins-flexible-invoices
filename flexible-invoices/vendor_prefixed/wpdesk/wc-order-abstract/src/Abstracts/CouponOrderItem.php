@@ -12,7 +12,7 @@ namespace WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts;
  *
  * @package WPDesk\Library\WPDeskOrder\Abstracts
  */
-final class CouponOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\OrderItem
+final class CouponOrderItem extends OrderItem
 {
     /**
      * @var string
@@ -32,7 +32,7 @@ final class CouponOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\A
     /**
      * @return string
      */
-    public function get_coupon_code() : string
+    public function get_coupon_code(): string
     {
         return $this->coupon_code;
     }

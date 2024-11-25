@@ -39,8 +39,8 @@ class Rm4Scc extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WP
         // 3 = pos 2, length 1
         // 4 = pos 2, length 2
         $barmode = ['0' => [3, 3, 2, 2], '1' => [3, 4, 1, 2], '2' => [3, 4, 2, 1], '3' => [4, 3, 1, 2], '4' => [4, 3, 2, 1], '5' => [4, 4, 1, 1], '6' => [3, 1, 4, 2], '7' => [3, 2, 3, 2], '8' => [3, 2, 4, 1], '9' => [4, 1, 3, 2], 'A' => [4, 1, 4, 1], 'B' => [4, 2, 3, 1], 'C' => [3, 1, 2, 4], 'D' => [3, 2, 1, 4], 'E' => [3, 2, 2, 3], 'F' => [4, 1, 1, 4], 'G' => [4, 1, 2, 3], 'H' => [4, 2, 1, 3], 'I' => [1, 3, 4, 2], 'J' => [1, 4, 3, 2], 'K' => [1, 4, 4, 1], 'L' => [2, 3, 3, 2], 'M' => [2, 3, 4, 1], 'N' => [2, 4, 3, 1], 'O' => [1, 3, 2, 4], 'P' => [1, 4, 1, 4], 'Q' => [1, 4, 2, 3], 'R' => [2, 3, 1, 4], 'S' => [2, 3, 2, 3], 'T' => [2, 4, 1, 3], 'U' => [1, 1, 4, 4], 'V' => [1, 2, 3, 4], 'W' => [1, 2, 4, 3], 'X' => [2, 1, 3, 4], 'Y' => [2, 1, 4, 3], 'Z' => [2, 2, 3, 3]];
-        $code = \strtoupper($code);
-        $len = \strlen($code);
+        $code = strtoupper($code);
+        $len = strlen($code);
         $bararray = ['code' => $code, 'maxw' => 0, 'maxh' => $daft['F'], 'bcode' => []];
         if ($notkix) {
             // table for checksum calculation (row,col)
@@ -53,7 +53,7 @@ class Rm4Scc extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WP
             }
             $row %= 6;
             $col %= 6;
-            $chk = \array_keys($checktable, [$row, $col]);
+            $chk = array_keys($checktable, [$row, $col]);
             $code .= $chk[0];
             $bararray['checkdigit'] = $chk[0];
             ++$len;

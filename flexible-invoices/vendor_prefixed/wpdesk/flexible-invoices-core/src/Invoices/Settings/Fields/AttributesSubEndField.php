@@ -7,7 +7,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Settings\Fields
  */
-class AttributesSubEndField extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields\SubEndField
+class AttributesSubEndField extends SubEndField
 {
     /**
      * @return string

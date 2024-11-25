@@ -17,33 +17,33 @@ class Translator
     private static $force_lang;
     public static function reset_translations()
     {
-        \delete_option('flexible-invoices-register-strings');
-        \delete_option('flexible-invoices-register-woocommerce-strings');
-        \delete_option('flexible-invoices-load-translations');
-        \delete_option('flexible-invoices-load-woocommerce-translations');
+        delete_option('flexible-invoices-register-strings');
+        delete_option('flexible-invoices-register-woocommerce-strings');
+        delete_option('flexible-invoices-load-translations');
+        delete_option('flexible-invoices-load-woocommerce-translations');
     }
-    public static function init(\WPDeskFIVendor\WPDesk_Plugin_Info $plugin_info)
+    public static function init(WPDesk_Plugin_Info $plugin_info)
     {
         self::$plugin_info = $plugin_info;
         self::$text_domain = $plugin_info->get_text_domain();
-        \add_action('wp_loaded', [__CLASS__, 'init_wpml']);
+        add_action('wp_loaded', [__CLASS__, 'init_wpml']);
     }
     public static function is_function_exists($name)
     {
-        return \function_exists($name);
+        return function_exists($name);
     }
     public static function switch_lang($lang)
     {
         if (self::is_function_exists('icl_get_languages')) {
-            if (\array_key_exists($lang, icl_get_languages())) {
-                \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::wpml_switch_language_hook($lang);
+            if (array_key_exists($lang, icl_get_languages())) {
+                Hooks::wpml_switch_language_hook($lang);
             }
         }
     }
     public static function init_wpml()
     {
-        if (!\wp_doing_ajax() && !\defined('DOING_CRON') && \is_admin()) {
-            if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active()) {
+        if (!wp_doing_ajax() && !defined('DOING_CRON') && is_admin()) {
+            if (WooCommerce::is_active()) {
                 self::register_woocommerce_strings();
             }
             self::register_strings();
@@ -54,22 +54,22 @@ class Translator
     public static function register_strings()
     {
         if (self::is_function_exists('icl_register_string')) {
-            if (empty(\get_option('flexible-invoices-register-strings'))) {
+            if (empty(get_option('flexible-invoices-register-strings'))) {
                 foreach (self::STRINGS as $string) {
                     icl_register_string(self::$text_domain, self::$text_domain . ' - ' . $string, $string, \false, self::DEFAULT_LANG);
                 }
-                \update_option('flexible-invoices-register-strings', 1);
+                update_option('flexible-invoices-register-strings', 1);
             }
         }
     }
     public static function register_woocommerce_strings()
     {
         if (self::is_function_exists('icl_register_string')) {
-            if (empty(\get_option('flexible-invoices-register-woocommerce-strings'))) {
+            if (empty(get_option('flexible-invoices-register-woocommerce-strings'))) {
                 foreach (self::STRINGS_WOO as $string) {
                     icl_register_string(self::$text_domain, self::$text_domain . ' - ' . $string, $string, \false, self::DEFAULT_LANG);
                 }
-                \update_option('flexible-invoices-register-woocommerce-strings', 1);
+                update_option('flexible-invoices-register-woocommerce-strings', 1);
             }
         }
     }
@@ -79,7 +79,7 @@ class Translator
             global $sitepress;
             if (self::is_wpml_active()) {
                 foreach (self::FIELDS as $meta_key => $meta_val) {
-                    $value = \get_option($meta_key, \__($meta_val, self::$text_domain));
+                    $value = get_option($meta_key, __($meta_val, self::$text_domain));
                     icl_register_string(self::$text_domain, $meta_key, $value, \true, $sitepress->get_default_language());
                 }
             }
@@ -87,11 +87,11 @@ class Translator
     }
     public static function load_translations()
     {
-        $load = (int) \get_option('flexible-invoices-load-translations', 0);
-        if ($load < 2 && !empty(\get_option('flexible-invoices-register-strings'))) {
+        $load = (int) get_option('flexible-invoices-load-translations', 0);
+        if ($load < 2 && !empty(get_option('flexible-invoices-register-strings'))) {
             self::load_translation_domain(self::$text_domain, self::FIELDS);
             $load++;
-            \update_option('flexible-invoices-load-translations', $load);
+            update_option('flexible-invoices-load-translations', $load);
         }
     }
     private static function load_translation_domain($text_domain, $fields)
@@ -100,7 +100,7 @@ class Translator
             $loaded_mo = self::load_mo_translations($text_domain);
             foreach (icl_get_string_translations() as $string_id => $icl_string) {
                 if ($icl_string['context'] === $text_domain) {
-                    if (\array_key_exists($icl_string['name'], $fields)) {
+                    if (array_key_exists($icl_string['name'], $fields)) {
                         self::translate_registered_meta_string($loaded_mo, $text_domain, $string_id, $icl_string, $fields);
                     } else {
                         self::translate_registered_string($loaded_mo, $text_domain, $string_id, $icl_string);
@@ -117,9 +117,9 @@ class Translator
         $name = !empty($name) ? $name : $textdomain . ' - ' . $string;
         if (self::is_wpml_active()) {
             $current_lang = self::get_translate_lang();
-            $translated = \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::wpml_translate_single_string_filter($string, $textdomain, $name, $current_lang);
+            $translated = Hooks::wpml_translate_single_string_filter($string, $textdomain, $name, $current_lang);
         } else {
-            $translated = \__($string, $textdomain);
+            $translated = __($string, $textdomain);
         }
         return $translated;
     }
@@ -127,15 +127,15 @@ class Translator
     {
         global $sitepress;
         $textdomain = empty($textdomain) ? self::$text_domain : $textdomain;
-        $string = \get_option($meta, $default);
+        $string = get_option($meta, $default);
         if (self::is_wpml_active()) {
             $active_lang = self::get_active_lang();
             $current_lang = self::get_translate_lang();
-            \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::wpml_switch_language_hook($sitepress->get_default_language());
-            $translated = \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::wpml_translate_single_string_filter($string, $textdomain, $meta, $current_lang);
-            \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::wpml_switch_language_hook($active_lang);
+            Hooks::wpml_switch_language_hook($sitepress->get_default_language());
+            $translated = Hooks::wpml_translate_single_string_filter($string, $textdomain, $meta, $current_lang);
+            Hooks::wpml_switch_language_hook($active_lang);
         } else {
-            $translated = \__($string, $textdomain);
+            $translated = __($string, $textdomain);
         }
         return $translated;
     }
@@ -152,13 +152,13 @@ class Translator
         global $sitepress;
         $textdomain = empty($textdomain) ? self::$text_domain : $textdomain;
         $string = '';
-        if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Translator::is_default_language()) {
+        if (Translator::is_default_language()) {
             $string = '<input value="' . $value . '" id="' . $id . '" name="' . $name . '" class="' . $class . '" type="text" />';
         } else {
             $translated_value = $value;
             if (self::is_wpml_active()) {
                 $current_lang = $sitepress->get_current_language();
-                $translated_value = \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::wpml_translate_single_string_filter($value, $textdomain, $id, $current_lang);
+                $translated_value = Hooks::wpml_translate_single_string_filter($value, $textdomain, $id, $current_lang);
             }
             $string = '<input value= "' . $translated_value . '" id="' . $id . '" name="" class="' . $class . '" type="text" disabled />';
             $string .= '<input value= "' . $value . '" name="' . $name . '" type="hidden" />';
@@ -170,13 +170,13 @@ class Translator
         global $sitepress;
         $textdomain = empty($textdomain) ? self::$text_domain : $textdomain;
         $string = '';
-        if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Translator::is_default_language()) {
+        if (Translator::is_default_language()) {
             $string = '<textarea id="' . $id . '" name="' . $name . '" class="' . $class . '">' . $value . '</textarea>';
         } else {
             $translated_value = $value;
             if (self::is_wpml_active()) {
                 $current_lang = $sitepress->get_current_language();
-                $translated_value = \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::wpml_translate_single_string_filter($value, $textdomain, $id, $current_lang);
+                $translated_value = Hooks::wpml_translate_single_string_filter($value, $textdomain, $id, $current_lang);
             }
             $string = '<textarea id="' . $id . '" class="' . $class . '" disabled>' . $translated_value . '</textarea>';
             $string .= '<textarea name="' . $name . '" class="hidden" readonly>' . $value . '</textarea>';
@@ -186,7 +186,7 @@ class Translator
     public static function is_wpml_active()
     {
         global $sitepress;
-        return \is_a($sitepress, 'SitePress');
+        return is_a($sitepress, 'WPDeskFIVendor\SitePress');
     }
     public static function get_active_lang()
     {
@@ -194,12 +194,12 @@ class Translator
             global $sitepress;
             return $sitepress->get_current_language();
         }
-        return \get_bloginfo('language');
+        return get_bloginfo('language');
     }
     public static function set_translate_lang($lang)
     {
         if (self::is_function_exists('icl_get_languages')) {
-            if (\array_key_exists($lang, icl_get_languages())) {
+            if (array_key_exists($lang, icl_get_languages())) {
                 self::$force_lang = $lang;
             }
         }
@@ -220,9 +220,9 @@ class Translator
             $plugin_dir = self::$plugin_info->get_plugin_dir();
         } elseif (self::$text_domain === $textdomain) {
             if (self::is_plugin_active('flexible-invoices-woocommerce/flexible-invoices-woocommerce.php')) {
-                $plugin_file = WP_PLUGIN_DIR . '/flexible-invoices-woocommerce/flexible-invoices-woocommerce.php';
-                if (\file_exists($plugin_file)) {
-                    $plugin_dir = \plugin_dir_path($plugin_file);
+                $plugin_file = \WP_PLUGIN_DIR . '/flexible-invoices-woocommerce/flexible-invoices-woocommerce.php';
+                if (file_exists($plugin_file)) {
+                    $plugin_dir = plugin_dir_path($plugin_file);
                 }
             }
         }
@@ -230,7 +230,7 @@ class Translator
             foreach (self::SUPPORTED_LANGS as $lang_key => $locale) {
                 unset($l10n[$textdomain]);
                 $path = $plugin_dir . '/lang/' . $textdomain . '-' . $locale . '.mo';
-                \load_textdomain($textdomain, $path);
+                load_textdomain($textdomain, $path);
                 if (isset($loaded_mo[$lang_key]) && $l10n[$textdomain]) {
                     $loaded_mo[$lang_key] = $l10n[$textdomain];
                 }
@@ -241,14 +241,14 @@ class Translator
     private static function translate_registered_string($loaded_mo, $textdomain, $string_id, $icl_string)
     {
         global $l10n;
-        $translator_id = \current_user_can('manage_options') && \get_current_user_id() > 0 ? \get_current_user_id() : null;
+        $translator_id = current_user_can('manage_options') && get_current_user_id() > 0 ? get_current_user_id() : null;
         $backup = $l10n[$textdomain];
         if (!empty($loaded_mo) && $textdomain === $icl_string['context']) {
             foreach ($loaded_mo as $lang_key => $lang_array) {
                 unset($l10n[$textdomain]);
                 $l10n[$textdomain] = $lang_array;
-                $icl_st_complete = \__($icl_string['value'] ?? '', $textdomain) != $icl_string['value'] ? ICL_TM_COMPLETE : ICL_TM_NOT_TRANSLATED;
-                icl_add_string_translation($string_id, $lang_key, \stripslashes(\__($icl_string['value'] ?? '', $textdomain)), $icl_st_complete, $translator_id);
+                $icl_st_complete = __($icl_string['value'] ?? '', $textdomain) != $icl_string['value'] ? ICL_TM_COMPLETE : ICL_TM_NOT_TRANSLATED;
+                icl_add_string_translation($string_id, $lang_key, stripslashes(__($icl_string['value'] ?? '', $textdomain)), $icl_st_complete, $translator_id);
             }
         }
         $l10n[$textdomain] = $backup;
@@ -257,7 +257,7 @@ class Translator
     {
         global $l10n;
         global $sitepress;
-        $translator_id = \current_user_can('manage_options') && \get_current_user_id() > 0 ? \get_current_user_id() : null;
+        $translator_id = current_user_can('manage_options') && get_current_user_id() > 0 ? get_current_user_id() : null;
         $backup = $l10n[$textdomain];
         if (!empty($loaded_mo) && $textdomain === $icl_string['context']) {
             $is_en_lang = $sitepress->get_default_language() === self::DEFAULT_LANG;
@@ -265,12 +265,12 @@ class Translator
                 if (\false === $is_en_lang && $sitepress->get_default_language() !== $lang_key) {
                     unset($l10n[$textdomain]);
                     $l10n[$textdomain] = $lang_array;
-                    $icl_st_complete = \__($icl_string['value'], $textdomain) != $icl_string['value'] ? ICL_TM_COMPLETE : ICL_TM_NOT_TRANSLATED;
-                    icl_add_string_translation($string_id, $lang_key, \stripslashes(\__($icl_string['value'], $textdomain)), $icl_st_complete, $translator_id);
+                    $icl_st_complete = __($icl_string['value'], $textdomain) != $icl_string['value'] ? ICL_TM_COMPLETE : ICL_TM_NOT_TRANSLATED;
+                    icl_add_string_translation($string_id, $lang_key, stripslashes(__($icl_string['value'], $textdomain)), $icl_st_complete, $translator_id);
                 }
             }
             if (\false === $is_en_lang) {
-                icl_add_string_translation($string_id, self::DEFAULT_LANG, \stripslashes($fields[$icl_string['name']]), ICL_TM_COMPLETE, $translator_id);
+                icl_add_string_translation($string_id, self::DEFAULT_LANG, stripslashes($fields[$icl_string['name']]), ICL_TM_COMPLETE, $translator_id);
             }
         }
         $l10n[$textdomain] = $backup;
@@ -278,10 +278,10 @@ class Translator
     private static function is_plugin_active($plugin)
     {
         if (self::is_function_exists('is_plugin_active_for_network')) {
-            if (\is_plugin_active_for_network($plugin)) {
+            if (is_plugin_active_for_network($plugin)) {
                 return \true;
             }
         }
-        return \in_array($plugin, (array) \get_option('active_plugins', []), \true);
+        return in_array($plugin, (array) get_option('active_plugins', []), \true);
     }
 }

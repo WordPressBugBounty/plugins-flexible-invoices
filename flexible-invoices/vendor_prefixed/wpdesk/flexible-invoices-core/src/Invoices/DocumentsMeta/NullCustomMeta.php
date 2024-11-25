@@ -7,7 +7,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\DocumentsMeta;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Creators
  */
-class NullCustomMeta extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\DocumentsMeta\DocumentCustomMeta
+class NullCustomMeta extends DocumentCustomMeta
 {
     /**
      * @return void

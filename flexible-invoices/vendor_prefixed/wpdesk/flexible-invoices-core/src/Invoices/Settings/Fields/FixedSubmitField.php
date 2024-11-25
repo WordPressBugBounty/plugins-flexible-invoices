@@ -3,7 +3,7 @@
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields;
 
 use WPDeskFIVendor\WPDesk\Forms\Field\BasicField;
-class FixedSubmitField extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
+class FixedSubmitField extends BasicField
 {
     public function get_template_name()
     {

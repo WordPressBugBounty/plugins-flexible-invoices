@@ -18,21 +18,21 @@ class Wmf
      * @var array
      */
     private $gdiObjectArray;
-    public function __construct(\WPDeskFIVendor\Mpdf\Mpdf $mpdf, \WPDeskFIVendor\Mpdf\Color\ColorConverter $colorConverter)
+    public function __construct(Mpdf $mpdf, ColorConverter $colorConverter)
     {
         $this->mpdf = $mpdf;
         $this->colorConverter = $colorConverter;
     }
     function _getWMFimage($data)
     {
-        $k = \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+        $k = Mpdf::SCALE;
         $this->gdiObjectArray = [];
-        $a = \unpack('stest', "\x01\x00");
+        $a = unpack('stest', "\x01\x00");
         if ($a['test'] != 1) {
             return [0, 'Error parsing WMF image - Big-endian architecture not supported'];
         }
         // check for Aldus placeable metafile header
-        $key = \unpack('Lmagic', \substr($data, 0, 4));
+        $key = unpack('Lmagic', substr($data, 0, 4));
         $p = 18;
         // WMF header
         if ($key['magic'] == (int) 0x9ac6cdd7) {
@@ -49,15 +49,15 @@ class Wmf
         $nullBrush = \false;
         $endRecord = \false;
         $wmfdata = '';
-        while ($p < \strlen($data) && !$endRecord) {
-            $recordInfo = \unpack('Lsize/Sfunc', \substr($data, $p, 6));
+        while ($p < strlen($data) && !$endRecord) {
+            $recordInfo = unpack('Lsize/Sfunc', substr($data, $p, 6));
             $p += 6;
             // size of record given in WORDs (= 2 bytes)
             $size = $recordInfo['size'];
             // func is number of GDI function
             $func = $recordInfo['func'];
             if ($size > 3) {
-                $parms = \substr($data, $p, 2 * ($size - 3));
+                $parms = substr($data, $p, 2 * ($size - 3));
                 $p += 2 * ($size - 3);
             }
             switch ($func) {
@@ -66,7 +66,7 @@ class Wmf
                     // do not allow window origin to be changed
                     // after drawing has begun
                     if (!$wmfdata) {
-                        $wo = \array_reverse(\unpack('s2', $parms));
+                        $wo = array_reverse(unpack('s2', $parms));
                     }
                     break;
                 case 0x20c:
@@ -74,18 +74,18 @@ class Wmf
                     // do not allow window extent to be changed
                     // after drawing has begun
                     if (!$wmfdata) {
-                        $we = \array_reverse(\unpack('s2', $parms));
+                        $we = array_reverse(unpack('s2', $parms));
                     }
                     break;
                 case 0x2fc:
                     // CreateBrushIndirect
-                    $brush = \unpack('sstyle/Cr/Cg/Cb/Ca/Shatch', $parms);
+                    $brush = unpack('sstyle/Cr/Cg/Cb/Ca/Shatch', $parms);
                     $brush['type'] = 'B';
                     $this->_AddGDIObject($brush);
                     break;
                 case 0x2fa:
                     // CreatePenIndirect
-                    $pen = \unpack('Sstyle/swidth/sdummy/Cr/Cg/Cb/Ca', $parms);
+                    $pen = unpack('Sstyle/swidth/sdummy/Cr/Cg/Cb/Ca', $parms);
                     // convert width from twips to user unit
                     $pen['width'] /= 20 * $k;
                     $pen['type'] = 'P';
@@ -113,18 +113,18 @@ class Wmf
                     break;
                 case 0x106:
                     // SetPolyFillMode
-                    $polyFillMode = \unpack('smode', $parms);
+                    $polyFillMode = unpack('smode', $parms);
                     $polyFillMode = $polyFillMode['mode'];
                     break;
                 case 0x1f0:
                     // DeleteObject
-                    $idx = \unpack('Sidx', $parms);
+                    $idx = unpack('Sidx', $parms);
                     $idx = $idx['idx'];
                     $this->_DeleteGDIObject($idx);
                     break;
                 case 0x12d:
                     // SelectObject
-                    $idx = \unpack('Sidx', $parms);
+                    $idx = unpack('Sidx', $parms);
                     $idx = $idx['idx'];
                     $obj = $this->_GetGDIObject($idx);
                     switch ($obj['type']) {
@@ -167,13 +167,13 @@ class Wmf
                             }
                             if (!$nullPen) {
                                 $wmfdata .= $this->mpdf->SetDColor($this->colorConverter->convert('rgb(' . $obj['r'] . ',' . $obj['g'] . ',' . $obj['b'] . ')', $this->mpdf->PDFAXwarnings), \true) . "\n";
-                                $wmfdata .= \sprintf("%.3F w\n", $obj['width'] * $k);
+                                $wmfdata .= sprintf("%.3F w\n", $obj['width'] * $k);
                             }
                             if (!empty($dashArray)) {
                                 $s = '[';
-                                for ($i = 0; $i < \count($dashArray); $i++) {
+                                for ($i = 0; $i < count($dashArray); $i++) {
                                     $s .= $dashArray[$i] * $k;
-                                    if ($i != \count($dashArray) - 1) {
+                                    if ($i != count($dashArray) - 1) {
                                         $s .= ' ';
                                     }
                                 }
@@ -187,7 +187,7 @@ class Wmf
                 // Polyline
                 case 0x324:
                     // Polygon
-                    $coords = \unpack('s' . ($size - 3), $parms);
+                    $coords = unpack('s' . ($size - 3), $parms);
                     $numpoints = $coords[1];
                     for ($i = $numpoints; $i > 0; $i--) {
                         $px = $coords[2 * $i];
@@ -225,7 +225,7 @@ class Wmf
                     break;
                 case 0x538:
                     // PolyPolygon
-                    $coords = \unpack('s' . ($size - 3), $parms);
+                    $coords = unpack('s' . ($size - 3), $parms);
                     $numpolygons = $coords[1];
                     $adjustment = $numpolygons;
                     for ($j = 1; $j <= $numpolygons; $j++) {

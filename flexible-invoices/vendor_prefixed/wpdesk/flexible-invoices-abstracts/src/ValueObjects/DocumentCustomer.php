@@ -8,7 +8,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Custome
  *
  * @package WPDesk\Library\FlexibleInvoicesAbstracts\ValueObjects
  */
-class DocumentCustomer implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Customer
+class DocumentCustomer implements Customer
 {
     /**
      * @var int

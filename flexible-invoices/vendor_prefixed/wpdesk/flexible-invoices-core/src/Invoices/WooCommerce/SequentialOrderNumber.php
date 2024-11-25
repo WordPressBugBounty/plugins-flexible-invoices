@@ -7,7 +7,7 @@ use WC_Order;
 use WP_Post;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
-class SequentialOrderNumber implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+class SequentialOrderNumber implements Hookable
 {
     /**
      * Meta name for order number.
@@ -22,7 +22,7 @@ class SequentialOrderNumber implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plug
     /**
      * @param Settings $settings
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings $settings)
+    public function __construct(Settings $settings)
     {
         $this->settings = $settings;
     }
@@ -33,16 +33,16 @@ class SequentialOrderNumber implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plug
     {
         if ('yes' === $this->settings->get('woocommerce_sequential_orders')) {
             $function = 'option_inspire_invoices_start_invoice_number';
-            \add_filter('option_inspire_invoices_order_start_invoice_number', [$this, $function], 10, 2);
-            \add_filter('option_inspire_invoices_correction_start_invoice_number', [$this, $function], 10, 2);
-            \add_filter('option_inspire_invoices_proforma_start_invoice_number', [$this, $function], 10, 2);
-            \add_action('woocommerce_new_order', [$this, 'set_order_num_action'], 10, 2);
-            \add_action('wp_insert_post', [$this, 'set_order_num_action'], 10, 2);
-            \add_action('woocommerce_process_shop_order_meta', [$this, 'set_order_num_action'], 10, 2);
-            \add_filter('woocommerce_order_number', [$this, 'order_number_filter'], 10, 2);
-            \add_filter('woocommerce_shop_order_search_fields', [$this, 'search_using_order_number_filter']);
-            \add_action('init', [$this, 'reinstall_numbering'], 200);
-            \add_action('init', [$this, 'install_numbering'], 220);
+            add_filter('option_inspire_invoices_order_start_invoice_number', [$this, $function], 10, 2);
+            add_filter('option_inspire_invoices_correction_start_invoice_number', [$this, $function], 10, 2);
+            add_filter('option_inspire_invoices_proforma_start_invoice_number', [$this, $function], 10, 2);
+            add_action('woocommerce_new_order', [$this, 'set_order_num_action'], 10, 2);
+            add_action('wp_insert_post', [$this, 'set_order_num_action'], 10, 2);
+            add_action('woocommerce_process_shop_order_meta', [$this, 'set_order_num_action'], 10, 2);
+            add_filter('woocommerce_order_number', [$this, 'order_number_filter'], 10, 2);
+            add_filter('woocommerce_shop_order_search_fields', [$this, 'search_using_order_number_filter']);
+            add_action('init', [$this, 'reinstall_numbering'], 200);
+            add_action('init', [$this, 'install_numbering'], 220);
         }
     }
     /**
@@ -51,7 +51,7 @@ class SequentialOrderNumber implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plug
      * @return array
      * @internal You should not use this directly from another application
      */
-    public function search_using_order_number_filter(array $search_fields) : array
+    public function search_using_order_number_filter(array $search_fields): array
     {
         $search_fields[] = '_order_number';
         return $search_fields;
@@ -65,7 +65,7 @@ class SequentialOrderNumber implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plug
      * @return string
      * @internal You should not use this directly from another application
      */
-    public function order_number_filter(string $order_number, \WC_Order $order) : string
+    public function order_number_filter(string $order_number, WC_Order $order): string
     {
         $replaced_num = $order->get_meta(self::META_NAME_ORDER_NUMBER);
         if (!empty($replaced_num)) {
@@ -80,14 +80,14 @@ class SequentialOrderNumber implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plug
      * @return string
      * @internal You should not use this directly from another application
      */
-    public function option_inspire_invoices_start_invoice_number($value, string $option) : string
+    public function option_inspire_invoices_start_invoice_number($value, string $option): string
     {
         global $wpdb;
         //phpcs:disable
         $wpdb->query($wpdb->prepare("UPDATE {$wpdb->options} SET option_value = option_value WHERE option_name = %s", $option));
         $row = $wpdb->get_row($wpdb->prepare("SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1", $option));
         //phpcs:enable
-        if (\is_object($row)) {
+        if (is_object($row)) {
             $value = $row->option_value;
         }
         return $value;
@@ -103,7 +103,7 @@ class SequentialOrderNumber implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plug
      */
     public function set_order_num_action($post_id, $post_or_order)
     {
-        if ($post_or_order instanceof \WP_Post && ('shop_order' !== $post_or_order->post_type || 'auto-draft' === $post_or_order->post_status)) {
+        if ($post_or_order instanceof WP_Post && ('shop_order' !== $post_or_order->post_type || 'auto-draft' === $post_or_order->post_status)) {
             return;
         }
         $order = \wc_get_order($post_id);
@@ -151,7 +151,7 @@ class SequentialOrderNumber implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plug
     }
     private function is_hpos_active()
     {
-        if (\class_exists('\\Automattic\\WooCommerce\\Utilities\\OrderUtil')) {
+        if (\class_exists('\Automattic\WooCommerce\Utilities\OrderUtil')) {
             return \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
         }
         return \false;
@@ -162,9 +162,9 @@ class SequentialOrderNumber implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plug
     public function install_numbering()
     {
         $namespace = $this->is_hpos_active() ? self::NEW_NAMESPACE : self::OLD_NAMESPACE;
-        if (!\get_option($namespace)) {
-            $orders = \wc_get_orders(['numberposts' => '10', 'nopaging' => \true]);
-            if (\is_array($orders)) {
+        if (!get_option($namespace)) {
+            $orders = wc_get_orders(['numberposts' => '10', 'nopaging' => \true]);
+            if (is_array($orders)) {
                 foreach ($orders as $order) {
                     if ($order->get_meta(self::META_NAME_ORDER_NUMBER) === '') {
                         $order->add_meta_data(self::META_NAME_ORDER_NUMBER, $order->get_id());
@@ -172,7 +172,7 @@ class SequentialOrderNumber implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plug
                     }
                 }
             }
-            \update_option($namespace, 1);
+            update_option($namespace, 1);
         }
     }
     /**
@@ -183,9 +183,9 @@ class SequentialOrderNumber implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plug
     public function reinstall_numbering()
     {
         $namespace = $this->is_hpos_active() ? self::NEW_NAMESPACE : self::OLD_NAMESPACE;
-        if (!\get_option($namespace . '_reinstall_numbering')) {
-            \delete_option($namespace);
-            \update_option($namespace . '_reinstall_numbering', 'yes');
+        if (!get_option($namespace . '_reinstall_numbering')) {
+            delete_option($namespace);
+            update_option($namespace . '_reinstall_numbering', 'yes');
         }
     }
 }

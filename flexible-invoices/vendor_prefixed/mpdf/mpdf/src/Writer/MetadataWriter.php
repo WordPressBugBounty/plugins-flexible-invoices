@@ -31,7 +31,7 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
      * @var \Psr\Log\LoggerInterface
      */
     private $logger;
-    public function __construct(\WPDeskFIVendor\Mpdf\Mpdf $mpdf, \WPDeskFIVendor\Mpdf\Writer\BaseWriter $writer, \WPDeskFIVendor\Mpdf\Form $form, \WPDeskFIVendor\Mpdf\Pdf\Protection $protection, \WPDeskFIVendor\Psr\Log\LoggerInterface $logger)
+    public function __construct(Mpdf $mpdf, BaseWriter $writer, Form $form, Protection $protection, LoggerInterface $logger)
     {
         $this->mpdf = $mpdf;
         $this->writer = $writer;
@@ -43,14 +43,14 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     {
         $this->writer->object();
         $this->mpdf->MetadataRoot = $this->mpdf->n;
-        $Producer = 'mPDF' . ($this->mpdf->exposeVersion ? ' ' . \WPDeskFIVendor\Mpdf\Mpdf::VERSION : '');
-        $z = \date('O');
+        $Producer = 'mPDF' . ($this->mpdf->exposeVersion ? ' ' . Mpdf::VERSION : '');
+        $z = date('O');
         // +0200
-        $offset = \substr($z, 0, 3) . ':' . \substr($z, 3, 2);
-        $CreationDate = \date('Y-m-d\\TH:i:s') . $offset;
+        $offset = substr($z, 0, 3) . ':' . substr($z, 3, 2);
+        $CreationDate = date('Y-m-d\TH:i:s') . $offset;
         // 2006-03-10T10:47:26-05:00 2006-06-19T09:05:17Z
-        $uuid = \sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', \random_int(0, 0xffff), \random_int(0, 0xffff), \random_int(0, 0xffff), \random_int(0, 0xfff) | 0x4000, \random_int(0, 0x3fff) | 0x8000, \random_int(0, 0xffff), \random_int(0, 0xffff), \random_int(0, 0xffff));
-        $m = '<?xpacket begin="' . \chr(239) . \chr(187) . \chr(191) . '" id="W5M0MpCehiHzreSzNTczkc9d"?>' . "\n";
+        $uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', random_int(0, 0xffff), random_int(0, 0xffff), random_int(0, 0xffff), random_int(0, 0xfff) | 0x4000, random_int(0, 0x3fff) | 0x8000, random_int(0, 0xffff), random_int(0, 0xffff), random_int(0, 0xffff));
+        $m = '<?xpacket begin="' . chr(239) . chr(187) . chr(191) . '" id="W5M0MpCehiHzreSzNTczkc9d"?>' . "\n";
         // begin = FEFF BOM
         $m .= ' <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="3.1-701">' . "\n";
         $m .= '  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">' . "\n";
@@ -107,10 +107,10 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         if ($this->mpdf->PDFX) {
             $m .= '   <rdf:Description rdf:about="uuid:' . $uuid . '" xmlns:pdfx="http://ns.adobe.com/pdfx/1.3/" pdfx:Apag_PDFX_Checkup="1.3" pdfx:GTS_PDFXConformance="PDF/X-1a:2003" pdfx:GTS_PDFXVersion="PDF/X-1:2003"/>' . "\n";
         } elseif ($this->mpdf->PDFA) {
-            if (\strpos($this->mpdf->PDFAversion, '-') === \false) {
-                throw new \WPDeskFIVendor\Mpdf\MpdfException(\sprintf('PDFA version (%s) is not valid. (Use: 1-B, 3-B, etc.)', $this->mpdf->PDFAversion));
+            if (strpos($this->mpdf->PDFAversion, '-') === \false) {
+                throw new \WPDeskFIVendor\Mpdf\MpdfException(sprintf('PDFA version (%s) is not valid. (Use: 1-B, 3-B, etc.)', $this->mpdf->PDFAversion));
             }
-            list($part, $conformance) = \explode('-', \strtoupper($this->mpdf->PDFAversion));
+            list($part, $conformance) = explode('-', strtoupper($this->mpdf->PDFAversion));
             $m .= '   <rdf:Description rdf:about="uuid:' . $uuid . '" xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/" >' . "\n";
             $m .= '    <pdfaid:part>' . $part . '</pdfaid:part>' . "\n";
             $m .= '    <pdfaid:conformance>' . $conformance . '</pdfaid:conformance>' . "\n";
@@ -124,11 +124,11 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         $m .= '   </rdf:Description>' . "\n";
         $m .= '  </rdf:RDF>' . "\n";
         $m .= ' </x:xmpmeta>' . "\n";
-        $m .= \str_repeat(\str_repeat(' ', 100) . "\n", 20);
+        $m .= str_repeat(str_repeat(' ', 100) . "\n", 20);
         // 2-4kB whitespace padding required
         $m .= '<?xpacket end="w"?>';
         // "r" read only
-        $this->writer->write('<</Type/Metadata/Subtype/XML/Length ' . \strlen($m) . '>>');
+        $this->writer->write('<</Type/Metadata/Subtype/XML/Length ' . strlen($m) . '>>');
         $this->writer->stream($m);
         $this->writer->write('endobj');
     }
@@ -153,7 +153,7 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         foreach ($this->mpdf->customProperties as $key => $value) {
             $this->writer->write('/' . $key . ' ' . $this->writer->utf16BigEndianTextString($value));
         }
-        $now = \WPDeskFIVendor\Mpdf\Utils\PdfDate::format(\time());
+        $now = PdfDate::format(time());
         $this->writer->write('/CreationDate ' . $this->writer->string('D:' . $now));
         $this->writer->write('/ModDate ' . $this->writer->string('D:' . $now));
         if ($this->mpdf->PDFX) {
@@ -166,7 +166,7 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         $this->writer->object();
         $this->mpdf->OutputIntentRoot = $this->mpdf->n;
         $this->writer->write('<</Type /OutputIntent');
-        $ICCProfile = \str_replace('_', ' ', \basename($this->mpdf->ICCProfile, '.icc'));
+        $ICCProfile = str_replace('_', ' ', basename($this->mpdf->ICCProfile, '.icc'));
         if ($this->mpdf->PDFA) {
             $this->writer->write('/S /GTS_PDFA1');
             if ($this->mpdf->ICCProfile) {
@@ -201,15 +201,15 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         }
         $this->writer->object();
         if ($this->mpdf->ICCProfile) {
-            if (!\file_exists($this->mpdf->ICCProfile)) {
-                throw new \WPDeskFIVendor\Mpdf\MpdfException(\sprintf('Unable to find ICC profile "%s"', $this->mpdf->ICCProfile));
+            if (!file_exists($this->mpdf->ICCProfile)) {
+                throw new \WPDeskFIVendor\Mpdf\MpdfException(sprintf('Unable to find ICC profile "%s"', $this->mpdf->ICCProfile));
             }
-            $s = \file_get_contents($this->mpdf->ICCProfile);
+            $s = file_get_contents($this->mpdf->ICCProfile);
         } else {
-            $s = \file_get_contents(__DIR__ . '/../../data/iccprofiles/sRGB_IEC61966-2-1.icc');
+            $s = file_get_contents(__DIR__ . '/../../data/iccprofiles/sRGB_IEC61966-2-1.icc');
         }
         if ($this->mpdf->compress) {
-            $s = \gzcompress($s);
+            $s = gzcompress($s);
         }
         $this->writer->write('<<');
         if ($this->mpdf->PDFX || $this->mpdf->PDFA && $this->mpdf->restrictColorSpace === 3) {
@@ -220,13 +220,13 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         if ($this->mpdf->compress) {
             $this->writer->write('/Filter /FlateDecode ');
         }
-        $this->writer->write('/Length ' . \strlen($s) . '>>');
+        $this->writer->write('/Length ' . strlen($s) . '>>');
         $this->writer->stream($s);
         $this->writer->write('endobj');
     }
     public function writeAssociatedFiles()
     {
-        if (!\function_exists('gzcompress')) {
+        if (!function_exists('gzcompress')) {
             throw new \WPDeskFIVendor\Mpdf\MpdfException('ext-zlib is required for compression of associated files');
         }
         // for each file, we create the spec object + the stream object
@@ -252,25 +252,25 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             $this->writer->write('endobj');
             $fileContent = null;
             if (isset($file['path'])) {
-                $fileContent = @\file_get_contents($file['path']);
+                $fileContent = @file_get_contents($file['path']);
             } elseif (isset($file['content'])) {
                 $fileContent = $file['content'];
             }
             if (!$fileContent) {
-                throw new \WPDeskFIVendor\Mpdf\MpdfException(\sprintf('Cannot access associated file - %s', $file['path']));
+                throw new \WPDeskFIVendor\Mpdf\MpdfException(sprintf('Cannot access associated file - %s', $file['path']));
             }
-            $filestream = \gzcompress($fileContent);
+            $filestream = gzcompress($fileContent);
             $this->writer->object();
             $this->writer->write('<</Type /EmbeddedFile');
             if ($file['mime']) {
                 $this->writer->write('/Subtype /' . $this->writer->escapeSlashes($file['mime']));
             }
-            $this->writer->write('/Length ' . \strlen($filestream));
+            $this->writer->write('/Length ' . strlen($filestream));
             $this->writer->write('/Filter /FlateDecode');
             if (isset($file['path'])) {
-                $this->writer->write('/Params <</ModDate ' . $this->writer->string('D:' . \WPDeskFIVendor\Mpdf\Utils\PdfDate::format(\filemtime($file['path']))) . ' >>');
+                $this->writer->write('/Params <</ModDate ' . $this->writer->string('D:' . PdfDate::format(filemtime($file['path']))) . ' >>');
             } else {
-                $this->writer->write('/Params <</ModDate ' . $this->writer->string('D:' . \WPDeskFIVendor\Mpdf\Utils\PdfDate::format(\time())) . ' >>');
+                $this->writer->write('/Params <</ModDate ' . $this->writer->string('D:' . PdfDate::format(time())) . ' >>');
             }
             $this->writer->write('>>');
             $this->writer->stream($filestream);
@@ -282,7 +282,7 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         foreach ($this->mpdf->associatedFiles as $file) {
             $refs[] = '' . $file['_root'] . ' 0 R';
         }
-        $this->writer->write('[' . \implode(' ', $refs) . ']');
+        $this->writer->write('[' . implode(' ', $refs) . ']');
         $this->writer->write('endobj');
         $this->mpdf->associatedFilesRoot = $this->mpdf->n;
     }
@@ -296,7 +296,7 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             $this->writer->write('/OpenAction [3 0 R /FitH null]');
         } elseif ($this->mpdf->ZoomMode === 'real') {
             $this->writer->write('/OpenAction [3 0 R /XYZ null null 1]');
-        } elseif (!\is_string($this->mpdf->ZoomMode)) {
+        } elseif (!is_string($this->mpdf->ZoomMode)) {
             $this->writer->write('/OpenAction [3 0 R /XYZ null null ' . $this->mpdf->ZoomMode / 100 . ']');
         } elseif ($this->mpdf->ZoomMode === 'none') {
             // do not write any zoom mode / OpenAction
@@ -319,12 +319,12 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             }
         }
         // Bookmarks
-        if (\count($this->mpdf->BMoutlines) > 0) {
+        if (count($this->mpdf->BMoutlines) > 0) {
             $this->writer->write('/Outlines ' . $this->mpdf->OutlineRoot . ' 0 R');
             $this->writer->write('/PageMode /UseOutlines');
         }
         // Fullscreen
-        if (\is_int(\strpos($this->mpdf->DisplayPreferences, 'FullScreen'))) {
+        if (is_int(strpos($this->mpdf->DisplayPreferences, 'FullScreen'))) {
             $this->writer->write('/PageMode /FullScreen');
         }
         // Metadata
@@ -342,10 +342,10 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             foreach ($this->mpdf->associatedFiles as $file) {
                 $names[] = $this->writer->string($file['name']) . ' ' . $file['_root'] . ' 0 R';
             }
-            $this->writer->write('/Names << /EmbeddedFiles << /Names [' . \implode(' ', $names) . '] >> >>');
+            $this->writer->write('/Names << /EmbeddedFiles << /Names [' . implode(' ', $names) . '] >> >>');
         }
         // Forms
-        if (\count($this->form->forms) > 0) {
+        if (count($this->form->forms) > 0) {
             $this->form->_putFormsCatalog();
         }
         if ($this->mpdf->js !== null) {
@@ -353,26 +353,26 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         }
         if ($this->mpdf->DisplayPreferences || $this->mpdf->directionality === 'rtl' || $this->mpdf->mirrorMargins) {
             $this->writer->write('/ViewerPreferences<<');
-            if (\is_int(\strpos($this->mpdf->DisplayPreferences, 'HideMenubar'))) {
+            if (is_int(strpos($this->mpdf->DisplayPreferences, 'HideMenubar'))) {
                 $this->writer->write('/HideMenubar true');
             }
-            if (\is_int(\strpos($this->mpdf->DisplayPreferences, 'HideToolbar'))) {
+            if (is_int(strpos($this->mpdf->DisplayPreferences, 'HideToolbar'))) {
                 $this->writer->write('/HideToolbar true');
             }
-            if (\is_int(\strpos($this->mpdf->DisplayPreferences, 'HideWindowUI'))) {
+            if (is_int(strpos($this->mpdf->DisplayPreferences, 'HideWindowUI'))) {
                 $this->writer->write('/HideWindowUI true');
             }
-            if (\is_int(\strpos($this->mpdf->DisplayPreferences, 'DisplayDocTitle'))) {
+            if (is_int(strpos($this->mpdf->DisplayPreferences, 'DisplayDocTitle'))) {
                 $this->writer->write('/DisplayDocTitle true');
             }
-            if (\is_int(\strpos($this->mpdf->DisplayPreferences, 'CenterWindow'))) {
+            if (is_int(strpos($this->mpdf->DisplayPreferences, 'CenterWindow'))) {
                 $this->writer->write('/CenterWindow true');
             }
-            if (\is_int(\strpos($this->mpdf->DisplayPreferences, 'FitWindow'))) {
+            if (is_int(strpos($this->mpdf->DisplayPreferences, 'FitWindow'))) {
                 $this->writer->write('/FitWindow true');
             }
             // PrintScaling is PDF 1.6 spec.
-            if (!$this->mpdf->PDFA && !$this->mpdf->PDFX && \is_int(\strpos($this->mpdf->DisplayPreferences, 'NoPrintScaling'))) {
+            if (!$this->mpdf->PDFA && !$this->mpdf->PDFX && is_int(strpos($this->mpdf->DisplayPreferences, 'NoPrintScaling'))) {
                 $this->writer->write('/PrintScaling /None');
             }
             if ($this->mpdf->directionality === 'rtl') {
@@ -386,10 +386,10 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             }
             $this->writer->write('>>');
         }
-        if ($this->mpdf->open_layer_pane && ($this->mpdf->hasOC || \count($this->mpdf->layers))) {
+        if ($this->mpdf->open_layer_pane && ($this->mpdf->hasOC || count($this->mpdf->layers))) {
             $this->writer->write('/PageMode /UseOC');
         }
-        if ($this->mpdf->hasOC || \count($this->mpdf->layers)) {
+        if ($this->mpdf->hasOC || count($this->mpdf->layers)) {
             $p = $v = $h = $l = $loff = $lall = $as = '';
             if ($this->mpdf->hasOC) {
                 if (($this->mpdf->hasOC & 1) === 1) {
@@ -403,9 +403,9 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 }
                 $as = "<</Event /Print /OCGs [{$p} {$v} {$h}] /Category [/Print]>> <</Event /View /OCGs [{$p} {$v} {$h}] /Category [/View]>>";
             }
-            if (\count($this->mpdf->layers)) {
+            if (count($this->mpdf->layers)) {
                 foreach ($this->mpdf->layers as $k => $layer) {
-                    if (isset($this->mpdf->layerDetails[$k]) && \strtolower($this->mpdf->layerDetails[$k]['state']) === 'hidden') {
+                    if (isset($this->mpdf->layerDetails[$k]) && strtolower($this->mpdf->layerDetails[$k]['state']) === 'hidden') {
                         $loff .= $layer['n'] . ' 0 R ';
                     } else {
                         $l .= $layer['n'] . ' 0 R ';
@@ -428,20 +428,20 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     {
         $nb = $this->mpdf->page;
         for ($n = 1; $n <= $nb; $n++) {
-            if (isset($this->mpdf->PageLinks[$n]) || isset($this->mpdf->PageAnnots[$n]) || \count($this->form->forms) > 0) {
-                $wPt = $this->mpdf->pageDim[$n]['w'] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
-                $hPt = $this->mpdf->pageDim[$n]['h'] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+            if (isset($this->mpdf->PageLinks[$n]) || isset($this->mpdf->PageAnnots[$n]) || count($this->form->forms) > 0) {
+                $wPt = $this->mpdf->pageDim[$n]['w'] * Mpdf::SCALE;
+                $hPt = $this->mpdf->pageDim[$n]['h'] * Mpdf::SCALE;
                 // Links
                 if (isset($this->mpdf->PageLinks[$n])) {
                     foreach ($this->mpdf->PageLinks[$n] as $key => $pl) {
                         $this->writer->object();
                         $annot = '';
-                        $rect = \sprintf('%.3F %.3F %.3F %.3F', $pl[0], $pl[1], $pl[0] + $pl[2], $pl[1] - $pl[3]);
+                        $rect = sprintf('%.3F %.3F %.3F %.3F', $pl[0], $pl[1], $pl[0] + $pl[2], $pl[1] - $pl[3]);
                         $annot .= '<</Type /Annot /Subtype /Link /Rect [' . $rect . ']';
                         // Removed as causing undesired effects in Chrome PDF viewer https://github.com/mpdf/mpdf/issues/283
                         // $annot .= ' /Contents ' . $this->writer->utf16BigEndianTextString($pl[4]);
-                        $annot .= ' /NM ' . $this->writer->string(\sprintf('%04u-%04u', $n, $key));
-                        $annot .= ' /M ' . $this->writer->string('D:' . \date('YmdHis'));
+                        $annot .= ' /NM ' . $this->writer->string(sprintf('%04u-%04u', $n, $key));
+                        $annot .= ' /M ' . $this->writer->string('D:' . date('YmdHis'));
                         $annot .= ' /Border [0 0 0]';
                         // Use this (instead of /Border) to specify border around link
                         // $annot .= ' /BS <</W 1';	// Width on points; 0 = no line
@@ -452,23 +452,23 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                         if ($this->mpdf->PDFA || $this->mpdf->PDFX) {
                             $annot .= ' /F 28';
                         }
-                        if (\strpos($pl[4], '@') === 0) {
-                            $p = \substr($pl[4], 1);
+                        if (strpos($pl[4], '@') === 0) {
+                            $p = substr($pl[4], 1);
                             // $h=isset($this->mpdf->OrientationChanges[$p]) ? $wPt : $hPt;
-                            $htarg = $this->mpdf->pageDim[$p]['h'] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
-                            $annot .= \sprintf(' /Dest [%d 0 R /XYZ 0 %.3F null]>>', 1 + 2 * $p, $htarg);
-                        } elseif (\is_string($pl[4])) {
+                            $htarg = $this->mpdf->pageDim[$p]['h'] * Mpdf::SCALE;
+                            $annot .= sprintf(' /Dest [%d 0 R /XYZ 0 %.3F null]>>', 1 + 2 * $p, $htarg);
+                        } elseif (is_string($pl[4])) {
                             $annot .= ' /A <</S /URI /URI ' . $this->writer->string($pl[4]) . '>> >>';
                         } else {
                             $l = $this->mpdf->links[$pl[4]];
                             // may not be set if #link points to non-existent target
                             if (isset($this->mpdf->pageDim[$l[0]]['h'])) {
-                                $htarg = $this->mpdf->pageDim[$l[0]]['h'] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+                                $htarg = $this->mpdf->pageDim[$l[0]]['h'] * Mpdf::SCALE;
                             } else {
-                                $htarg = $this->mpdf->h * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+                                $htarg = $this->mpdf->h * Mpdf::SCALE;
                             }
                             // doesn't really matter
-                            $annot .= \sprintf(' /Dest [%d 0 R /XYZ 0 %.3F null]>>', 1 + 2 * $l[0], $htarg - $l[1] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE);
+                            $annot .= sprintf(' /Dest [%d 0 R /XYZ 0 %.3F null]>>', 1 + 2 * $l[0], $htarg - $l[1] * Mpdf::SCALE);
                         }
                         $this->writer->write($annot);
                         $this->writer->write('endobj');
@@ -484,15 +484,15 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                         }
                         $this->writer->object();
                         $annot = '';
-                        $pl['opt'] = \array_change_key_case($pl['opt'], \CASE_LOWER);
+                        $pl['opt'] = array_change_key_case($pl['opt'], \CASE_LOWER);
                         $x = $pl['x'];
                         if ($this->mpdf->annotMargin != 0 || $x == 0 || $x < 0) {
                             // Odd page, intentional non-strict comparison
-                            $x = $wPt / \WPDeskFIVendor\Mpdf\Mpdf::SCALE - $this->mpdf->annotMargin;
+                            $x = $wPt / Mpdf::SCALE - $this->mpdf->annotMargin;
                         }
                         $w = $h = 0;
-                        $a = $x * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
-                        $b = $hPt - $pl['y'] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+                        $a = $x * Mpdf::SCALE;
+                        $b = $hPt - $pl['y'] * Mpdf::SCALE;
                         $annot .= '<</Type /Annot ';
                         if ($fileAttachment) {
                             $annot .= '/Subtype /FileAttachment ';
@@ -512,8 +512,8 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                             }
                             // PushPin
                             $f = $pl['opt']['file'];
-                            $f = \preg_replace('/^.*\\//', '', $f);
-                            $f = \preg_replace('/[^a-zA-Z0-9._]/', '', $f);
+                            $f = preg_replace('/^.*\//', '', $f);
+                            $f = preg_replace('/[^a-zA-Z0-9._]/', '', $f);
                             $annot .= '/FS <</Type /Filespec /F (' . $f . ')';
                             $annot .= '/EF <</F ' . ($this->mpdf->n + 1) . ' 0 R>>';
                             $annot .= '>>';
@@ -523,13 +523,13 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                             $h = 20;
                             // mPDF 6
                         }
-                        $rect = \sprintf('%.3F %.3F %.3F %.3F', $a, $b - $h, $a + $w, $b);
+                        $rect = sprintf('%.3F %.3F %.3F %.3F', $a, $b - $h, $a + $w, $b);
                         $annot .= ' /Rect [' . $rect . ']';
                         // contents = description of file in free text
                         $annot .= ' /Contents ' . $this->writer->utf16BigEndianTextString($pl['txt']);
-                        $annot .= ' /NM ' . $this->writer->string(\sprintf('%04u-%04u', $n, 2000 + $key));
-                        $annot .= ' /M ' . $this->writer->string('D:' . \date('YmdHis'));
-                        $annot .= ' /CreationDate ' . $this->writer->string('D:' . \date('YmdHis'));
+                        $annot .= ' /NM ' . $this->writer->string(sprintf('%04u-%04u', $n, 2000 + $key));
+                        $annot .= ' /M ' . $this->writer->string('D:' . date('YmdHis'));
+                        $annot .= ' /CreationDate ' . $this->writer->string('D:' . date('YmdHis'));
                         $annot .= ' /Border [0 0 0]';
                         if ($this->mpdf->PDFA || $this->mpdf->PDFX) {
                             $annot .= ' /F 28';
@@ -541,11 +541,11 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                         if (isset($pl['opt']['c']) && $pl['opt']['c']) {
                             $col = $pl['opt']['c'];
                             if ($col[0] == 3 || $col[0] == 5) {
-                                $annotcolor .= \sprintf('%.3F %.3F %.3F', \ord($col[1]) / 255, \ord($col[2]) / 255, \ord($col[3]) / 255);
+                                $annotcolor .= sprintf('%.3F %.3F %.3F', ord($col[1]) / 255, ord($col[2]) / 255, ord($col[3]) / 255);
                             } elseif ($col[0] == 1) {
-                                $annotcolor .= \sprintf('%.3F', \ord($col[1]) / 255);
+                                $annotcolor .= sprintf('%.3F', ord($col[1]) / 255);
                             } elseif ($col[0] == 4 || $col[0] == 6) {
-                                $annotcolor .= \sprintf('%.3F %.3F %.3F %.3F', \ord($col[1]) / 100, \ord($col[2]) / 100, \ord($col[3]) / 100, \ord($col[4]) / 100);
+                                $annotcolor .= sprintf('%.3F %.3F %.3F %.3F', ord($col[1]) / 100, ord($col[2]) / 100, ord($col[3]) / 100, ord($col[4]) / 100);
                             } else {
                                 $annotcolor .= '1 1 0';
                             }
@@ -556,7 +556,7 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                         $annot .= $annotcolor;
                         // Usually Author
                         // Use as Title for fileattachment
-                        if (isset($pl['opt']['t']) && \is_string($pl['opt']['t'])) {
+                        if (isset($pl['opt']['t']) && is_string($pl['opt']['t'])) {
                             $annot .= ' /T ' . $this->writer->utf16BigEndianTextString($pl['opt']['t']);
                         }
                         if ($fileAttachment) {
@@ -564,7 +564,7 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                         } else {
                             $iconsapp = ['Comment', 'Help', 'Insert', 'Key', 'NewParagraph', 'Note', 'Paragraph'];
                         }
-                        if (isset($pl['opt']['icon']) && \in_array($pl['opt']['icon'], $iconsapp)) {
+                        if (isset($pl['opt']['icon']) && in_array($pl['opt']['icon'], $iconsapp)) {
                             $annot .= ' /Name /' . $pl['opt']['icon'];
                         } elseif ($fileAttachment) {
                             $annot .= ' /Name /PushPin';
@@ -588,14 +588,14 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                         $this->writer->write($annot);
                         $this->writer->write('endobj');
                         if ($fileAttachment) {
-                            $file = @\file_get_contents($pl['opt']['file']);
+                            $file = @file_get_contents($pl['opt']['file']);
                             if (!$file) {
                                 throw new \WPDeskFIVendor\Mpdf\MpdfException('mPDF Error: Cannot access file attachment - ' . $pl['opt']['file']);
                             }
-                            $filestream = \gzcompress($file);
+                            $filestream = gzcompress($file);
                             $this->writer->object();
                             $this->writer->write('<</Type /EmbeddedFile');
-                            $this->writer->write('/Length ' . \strlen($filestream));
+                            $this->writer->write('/Length ' . strlen($filestream));
                             $this->writer->write('/Filter /FlateDecode');
                             $this->writer->write('>>');
                             $this->writer->stream($filestream);
@@ -603,29 +603,29 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                         } elseif (!empty($pl['opt']['popup'])) {
                             $this->writer->object();
                             $annot = '';
-                            if (\is_array($pl['opt']['popup']) && isset($pl['opt']['popup'][0])) {
-                                $x = $pl['opt']['popup'][0] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+                            if (is_array($pl['opt']['popup']) && isset($pl['opt']['popup'][0])) {
+                                $x = $pl['opt']['popup'][0] * Mpdf::SCALE;
                             } else {
-                                $x = $pl['x'] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+                                $x = $pl['x'] * Mpdf::SCALE;
                             }
-                            if (\is_array($pl['opt']['popup']) && isset($pl['opt']['popup'][1])) {
-                                $y = $hPt - $pl['opt']['popup'][1] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+                            if (is_array($pl['opt']['popup']) && isset($pl['opt']['popup'][1])) {
+                                $y = $hPt - $pl['opt']['popup'][1] * Mpdf::SCALE;
                             } else {
-                                $y = $hPt - $pl['y'] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+                                $y = $hPt - $pl['y'] * Mpdf::SCALE;
                             }
-                            if (\is_array($pl['opt']['popup']) && isset($pl['opt']['popup'][2])) {
-                                $w = $pl['opt']['popup'][2] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+                            if (is_array($pl['opt']['popup']) && isset($pl['opt']['popup'][2])) {
+                                $w = $pl['opt']['popup'][2] * Mpdf::SCALE;
                             } else {
                                 $w = 180;
                             }
-                            if (\is_array($pl['opt']['popup']) && isset($pl['opt']['popup'][3])) {
-                                $h = $pl['opt']['popup'][3] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+                            if (is_array($pl['opt']['popup']) && isset($pl['opt']['popup'][3])) {
+                                $h = $pl['opt']['popup'][3] * Mpdf::SCALE;
                             } else {
                                 $h = 120;
                             }
-                            $rect = \sprintf('%.3F %.3F %.3F %.3F', $x, $y - $h, $x + $w, $y);
+                            $rect = sprintf('%.3F %.3F %.3F %.3F', $x, $y - $h, $x + $w, $y);
                             $annot .= '<</Type /Annot /Subtype /Popup /Rect [' . $rect . ']';
-                            $annot .= ' /M ' . $this->writer->string('D:' . \date('YmdHis'));
+                            $annot .= ' /M ' . $this->writer->string('D:' . date('YmdHis'));
                             if ($this->mpdf->PDFA || $this->mpdf->PDFX) {
                                 $annot .= ' /F 28';
                             }
@@ -637,14 +637,14 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                     }
                 }
                 // Active Forms
-                if (\count($this->form->forms) > 0) {
+                if (count($this->form->forms) > 0) {
                     $this->form->_putFormItems($n, $hPt);
                 }
             }
         }
         // Active Forms - Radio Button Group entries
         // Output Radio Button Group form entries (radio_on_obj_id already determined)
-        if (\count($this->form->form_radio_groups)) {
+        if (count($this->form->form_radio_groups)) {
             $this->form->_putRadioItems($n);
         }
     }
@@ -672,26 +672,26 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             $this->writer->write('/Encrypt ' . $this->mpdf->enc_obj_id . ' 0 R');
             $this->writer->write('/ID [<' . $this->protection->getUniqid() . '> <' . $this->protection->getUniqid() . '>]');
         } else {
-            $uniqid = \md5(\time() . $this->mpdf->buffer);
+            $uniqid = md5(time() . $this->mpdf->buffer);
             $this->writer->write('/ID [<' . $uniqid . '> <' . $uniqid . '>]');
         }
     }
-    public function setLogger(\WPDeskFIVendor\Psr\Log\LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
     private function getVersionString()
     {
-        $return = \WPDeskFIVendor\Mpdf\Mpdf::VERSION;
+        $return = Mpdf::VERSION;
         $headFile = __DIR__ . '/../../.git/HEAD';
-        if (\file_exists($headFile)) {
-            $ref = \file($headFile);
-            $path = \explode('/', $ref[0], 3);
-            $branch = isset($path[2]) ? \trim($path[2]) : '';
+        if (file_exists($headFile)) {
+            $ref = file($headFile);
+            $path = explode('/', $ref[0], 3);
+            $branch = isset($path[2]) ? trim($path[2]) : '';
             $revFile = __DIR__ . '/../../.git/refs/heads/' . $branch;
-            if ($branch && \file_exists($revFile)) {
-                $rev = \file($revFile);
-                $rev = \substr($rev[0], 0, 7);
+            if ($branch && file_exists($revFile)) {
+                $rev = file($revFile);
+                $rev = substr($rev[0], 0, 7);
                 $return .= ' (' . $rev . ')';
             }
         }

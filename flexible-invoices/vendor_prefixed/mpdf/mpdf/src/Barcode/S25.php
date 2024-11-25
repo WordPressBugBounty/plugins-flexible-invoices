@@ -40,17 +40,17 @@ class S25 extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WPDes
             $checkdigit = $this->checksum($code);
             $code .= $checkdigit;
         }
-        if (\strlen($code) % 2 != 0) {
+        if (strlen($code) % 2 != 0) {
             // add leading zero if code-length is odd
             $code = '0' . $code;
         }
         $seq = '11011010';
-        $clen = \strlen($code);
+        $clen = strlen($code);
         for ($i = 0; $i < $clen; ++$i) {
             $digit = $code[$i];
             if (!isset($chr[$digit])) {
                 // invalid character
-                throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid character "%s" in S25 barcode value "%s"', $digit, $code));
+                throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid character "%s" in S25 barcode value "%s"', $digit, $code));
             }
             $seq .= $chr[$digit];
         }
@@ -68,7 +68,7 @@ class S25 extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WPDes
      */
     private function checksum($code)
     {
-        $len = \strlen($code);
+        $len = strlen($code);
         $sum = 0;
         for ($i = 0; $i < $len; $i += 2) {
             $sum += $code[$i];

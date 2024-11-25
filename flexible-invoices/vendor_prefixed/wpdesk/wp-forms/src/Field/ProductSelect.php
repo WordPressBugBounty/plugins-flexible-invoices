@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\WPDesk\Forms\Field;
 
-class ProductSelect extends \WPDeskFIVendor\WPDesk\Forms\Field\SelectField
+class ProductSelect extends SelectField
 {
     public function __construct()
     {

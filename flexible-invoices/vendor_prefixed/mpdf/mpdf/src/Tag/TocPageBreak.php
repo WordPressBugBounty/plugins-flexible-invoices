@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class TocPageBreak extends \WPDeskFIVendor\Mpdf\Tag\FormFeed
+class TocPageBreak extends FormFeed
 {
     public function open($attr, &$ahtml, &$ihtml)
     {

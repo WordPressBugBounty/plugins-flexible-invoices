@@ -60,7 +60,7 @@ final class Totals
     /**
      * @return float
      */
-    public function get_qty() : float
+    public function get_qty(): float
     {
         return $this->qty;
     }
@@ -74,7 +74,7 @@ final class Totals
     /**
      * @return float
      */
-    public function get_net_price() : float
+    public function get_net_price(): float
     {
         return $this->net_price;
     }
@@ -88,7 +88,7 @@ final class Totals
     /**
      * @return float
      */
-    public function get_net_price_r() : float
+    public function get_net_price_r(): float
     {
         return $this->net_price_r;
     }
@@ -102,7 +102,7 @@ final class Totals
     /**
      * @return float
      */
-    public function get_vat_price() : float
+    public function get_vat_price(): float
     {
         return $this->vat_price;
     }
@@ -116,7 +116,7 @@ final class Totals
     /**
      * @return float
      */
-    public function get_vat_price_r() : float
+    public function get_vat_price_r(): float
     {
         return $this->vat_price_r;
     }
@@ -130,7 +130,7 @@ final class Totals
     /**
      * @return float
      */
-    public function get_gross_price() : float
+    public function get_gross_price(): float
     {
         return $this->gross_price;
     }
@@ -144,7 +144,7 @@ final class Totals
     /**
      * @return float
      */
-    public function get_gross_price_r() : float
+    public function get_gross_price_r(): float
     {
         return $this->gross_price_r;
     }
@@ -158,7 +158,7 @@ final class Totals
     /**
      * @return string
      */
-    public function get_currency_slug() : string
+    public function get_currency_slug(): string
     {
         return $this->currency_slug;
     }
@@ -172,7 +172,7 @@ final class Totals
     /**
      * @return string
      */
-    public function get_currency_symbol() : string
+    public function get_currency_symbol(): string
     {
         return $this->currency_symbol;
     }

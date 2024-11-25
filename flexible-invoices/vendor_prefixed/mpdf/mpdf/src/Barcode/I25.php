@@ -43,29 +43,29 @@ class I25 extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WPDes
             $checkdigit = $this->checksum($code);
             $code .= $checkdigit;
         }
-        if (\strlen($code) % 2 != 0) {
+        if (strlen($code) % 2 != 0) {
             // add leading zero if code-length is odd
             $code = '0' . $code;
         }
         // add start and stop codes
-        $code = 'AA' . \strtolower($code) . 'ZA';
+        $code = 'AA' . strtolower($code) . 'ZA';
         $bararray = ['code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => []];
         $k = 0;
-        $clen = \strlen($code);
+        $clen = strlen($code);
         for ($i = 0; $i < $clen; $i = $i + 2) {
             $charBar = $code[$i];
             $charSpace = $code[$i + 1];
             if (!isset($chr[$charBar]) or !isset($chr[$charSpace])) {
                 // invalid character
-                throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid I25 barcode value "%s"', $code));
+                throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid I25 barcode value "%s"', $code));
             }
             // create a bar-space sequence
             $seq = '';
-            $chrlen = \strlen($chr[$charBar]);
+            $chrlen = strlen($chr[$charBar]);
             for ($s = 0; $s < $chrlen; $s++) {
                 $seq .= $chr[$charBar][$s] . $chr[$charSpace][$s];
             }
-            $seqlen = \strlen($seq);
+            $seqlen = strlen($seq);
             for ($j = 0; $j < $seqlen; ++$j) {
                 if ($j % 2 == 0) {
                     $t = \true;
@@ -96,7 +96,7 @@ class I25 extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WPDes
      */
     private function checksum($code)
     {
-        $len = \strlen($code);
+        $len = strlen($code);
         $sum = 0;
         for ($i = 0; $i < $len; $i += 2) {
             $sum += $code[$i];

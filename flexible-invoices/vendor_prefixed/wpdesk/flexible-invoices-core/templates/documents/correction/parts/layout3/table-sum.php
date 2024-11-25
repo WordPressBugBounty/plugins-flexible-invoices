@@ -13,7 +13,7 @@ $table_sum_styles = 'width:300px;text-align:' . \WPDeskFIVendor\WPDesk\Library\F
 echo \esc_attr($col1_styles);
 ?>">
 			<?php 
-echo \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::template_exchange_vertical_filter($correction, $products, $client);
+echo Hooks::template_exchange_vertical_filter($correction, $products, $client);
 ?>
 			<?php 
 require \dirname(__DIR__, 2) . '/parts/footer.php';

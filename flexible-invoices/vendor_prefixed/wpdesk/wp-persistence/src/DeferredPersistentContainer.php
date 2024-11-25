@@ -7,7 +7,7 @@ namespace WPDeskFIVendor\WPDesk\Persistence;
  *
  * @package WPDesk\Persistence
  */
-interface DeferredPersistentContainer extends \WPDeskFIVendor\WPDesk\Persistence\PersistentContainer
+interface DeferredPersistentContainer extends PersistentContainer
 {
     /**
      * Save changed data.
@@ -20,7 +20,7 @@ interface DeferredPersistentContainer extends \WPDeskFIVendor\WPDesk\Persistence
      *
      * @return bool
      */
-    public function is_changed() : bool;
+    public function is_changed(): bool;
     /**
      * Reset data to last saved values. If remote repository is used the data can be retrived from it.
      *

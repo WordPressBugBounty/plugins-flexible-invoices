@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class Toc extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class Toc extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {

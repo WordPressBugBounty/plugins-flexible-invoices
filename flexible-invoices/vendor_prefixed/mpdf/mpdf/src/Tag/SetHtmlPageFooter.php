@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class SetHtmlPageFooter extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class SetHtmlPageFooter extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -18,11 +18,11 @@ class SetHtmlPageFooter extends \WPDeskFIVendor\Mpdf\Tag\Tag
         if (!empty($attr['PAGE'])) {
             // O|odd|even|E|ALL|[blank]
             $side = 'odd';
-            if (\strtoupper($attr['PAGE']) === 'O' || \strtoupper($attr['PAGE']) === 'ODD') {
+            if (strtoupper($attr['PAGE']) === 'O' || strtoupper($attr['PAGE']) === 'ODD') {
                 $side = 'odd';
-            } elseif (\strtoupper($attr['PAGE']) === 'E' || \strtoupper($attr['PAGE']) === 'EVEN') {
+            } elseif (strtoupper($attr['PAGE']) === 'E' || strtoupper($attr['PAGE']) === 'EVEN') {
                 $side = 'even';
-            } elseif (\strtoupper($attr['PAGE']) === 'ALL') {
+            } elseif (strtoupper($attr['PAGE']) === 'ALL') {
                 $side = 'both';
             }
         } else {
@@ -31,9 +31,9 @@ class SetHtmlPageFooter extends \WPDeskFIVendor\Mpdf\Tag\Tag
         if (!empty($attr['VALUE'])) {
             // -1|1|on|off
             $set = 1;
-            if ($attr['VALUE'] == '1' || \strtoupper($attr['VALUE']) === 'ON') {
+            if ($attr['VALUE'] == '1' || strtoupper($attr['VALUE']) === 'ON') {
                 $set = 1;
-            } elseif ($attr['VALUE'] == '-1' || \strtoupper($attr['VALUE']) === 'OFF') {
+            } elseif ($attr['VALUE'] == '-1' || strtoupper($attr['VALUE']) === 'OFF') {
                 $set = 0;
             }
         } else {

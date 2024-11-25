@@ -14,46 +14,46 @@ abstract class DateFromToMetaQuery
      *
      * @return bool
      */
-    protected function validate_date($date = null) : bool
+    protected function validate_date($date = null): bool
     {
         if (!$date) {
             return \false;
         }
-        $month = (int) \date('m', \strtotime($date));
-        $day = (int) \date('d', \strtotime($date));
-        $year = (int) \date('Y', \strtotime($date));
-        return \checkdate($month, $day, $year);
+        $month = (int) date('m', strtotime($date));
+        $day = (int) date('d', strtotime($date));
+        $year = (int) date('Y', strtotime($date));
+        return checkdate($month, $day, $year);
     }
     /**
      * @param string|null $date
      *
      * @return int
      */
-    protected function get_start_date($date = null) : int
+    protected function get_start_date($date = null): int
     {
         if ($this->validate_date($date)) {
-            return \strtotime($date . ' 00:00:00');
+            return strtotime($date . ' 00:00:00');
         }
-        return \strtotime(\date('Y-m-d 00:00:00', \strtotime('-30 days')));
+        return strtotime(date('Y-m-d 00:00:00', strtotime('-30 days')));
     }
     /**
      * @param string|null $date
      *
      * @return int
      */
-    protected function get_end_date($date = null) : int
+    protected function get_end_date($date = null): int
     {
         if ($this->validate_date($date)) {
-            return \strtotime($date . ' 23:59:59');
+            return strtotime($date . ' 23:59:59');
         }
-        return \strtotime(\date('Y-m-d 23:59:59'));
+        return strtotime(date('Y-m-d 23:59:59'));
     }
     /**
      * @param array $post_data
      *
      * @return array
      */
-    protected function get_meta_query(array $post_data) : array
+    protected function get_meta_query(array $post_data): array
     {
         $filter_date_from = $this->get_start_date($post_data['start_date']);
         $filter_date_to = $this->get_end_date($post_data['end_date']);

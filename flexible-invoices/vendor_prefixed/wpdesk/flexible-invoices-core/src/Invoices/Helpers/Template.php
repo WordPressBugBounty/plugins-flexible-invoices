@@ -12,12 +12,12 @@ class Template
      *
      * @return mixed|string
      */
-    public static function rtl_align(string $direction) : string
+    public static function rtl_align(string $direction): string
     {
-        if ($direction === 'left' && \is_rtl()) {
+        if ($direction === 'left' && is_rtl()) {
             return 'right';
         }
-        if ($direction === 'right' && \is_rtl()) {
+        if ($direction === 'right' && is_rtl()) {
             return 'left';
         }
         return $direction;

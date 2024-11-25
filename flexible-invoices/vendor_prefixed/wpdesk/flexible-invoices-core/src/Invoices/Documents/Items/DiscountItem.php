@@ -9,7 +9,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Documents\Items
  */
-class DiscountItem extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\DocumentItem
+class DiscountItem extends DocumentItem
 {
     const TYPE = 'discount';
 }

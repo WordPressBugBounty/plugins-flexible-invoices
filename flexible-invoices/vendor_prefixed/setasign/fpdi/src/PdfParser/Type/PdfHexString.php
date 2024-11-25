@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\Type;
@@ -13,7 +13,7 @@ use WPDeskFIVendor\setasign\Fpdi\PdfParser\StreamReader;
 /**
  * Class representing a hexadecimal encoded PDF string object
  */
-class PdfHexString extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
+class PdfHexString extends PdfType
 {
     /**
      * Parses a hexadecimal string object from the stream reader.
@@ -21,7 +21,7 @@ class PdfHexString extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
      * @param StreamReader $streamReader
      * @return false|self
      */
-    public static function parse(\WPDeskFIVendor\setasign\Fpdi\PdfParser\StreamReader $streamReader)
+    public static function parse(StreamReader $streamReader)
     {
         $bufferOffset = $streamReader->getOffset();
         while (\true) {
@@ -62,6 +62,6 @@ class PdfHexString extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
      */
     public static function ensure($hexString)
     {
-        return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::ensureType(self::class, $hexString, 'Hex string value expected.');
+        return PdfType::ensureType(self::class, $hexString, 'Hex string value expected.');
     }
 }

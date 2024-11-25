@@ -2,6 +2,6 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class Footer extends \WPDeskFIVendor\Mpdf\Tag\BlockTag
+class Footer extends BlockTag
 {
 }

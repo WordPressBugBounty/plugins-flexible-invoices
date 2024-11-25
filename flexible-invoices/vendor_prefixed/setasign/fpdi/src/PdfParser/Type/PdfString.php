@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\Type;
@@ -13,7 +13,7 @@ use WPDeskFIVendor\setasign\Fpdi\PdfParser\StreamReader;
 /**
  * Class representing a PDF string object
  */
-class PdfString extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
+class PdfString extends PdfType
 {
     /**
      * Parses a string object from the stream reader.
@@ -21,7 +21,7 @@ class PdfString extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
      * @param StreamReader $streamReader
      * @return self
      */
-    public static function parse(\WPDeskFIVendor\setasign\Fpdi\PdfParser\StreamReader $streamReader)
+    public static function parse(StreamReader $streamReader)
     {
         $pos = $startPos = $streamReader->getOffset();
         $openBrackets = 1;
@@ -67,7 +67,7 @@ class PdfString extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
      */
     public static function ensure($string)
     {
-        return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::ensureType(self::class, $string, 'String value expected.');
+        return PdfType::ensureType(self::class, $string, 'String value expected.');
     }
     /**
      * Escapes sequences in a string according to the PDF specification.
@@ -80,7 +80,7 @@ class PdfString extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
         // Still a bit faster, than direct replacing
         if (\strpos($s, '\\') !== \false || \strpos($s, ')') !== \false || \strpos($s, '(') !== \false || \strpos($s, "\r") !== \false || \strpos($s, "\n") !== \false || \strpos($s, "\t") !== \false || \strpos($s, "\x08") !== \false || \strpos($s, "\f") !== \false) {
             // is faster than strtr(...)
-            return \str_replace(['\\', ')', '(', "\r", "\n", "\t", "\x08", "\f"], ['\\\\', '\\)', '\\(', '\\r', '\\n', '\\t', '\\b', '\\f'], $s);
+            return \str_replace(['\\', ')', '(', "\r", "\n", "\t", "\x08", "\f"], ['\\\\', '\)', '\(', '\r', '\n', '\t', '\b', '\f'], $s);
         }
         return $s;
     }

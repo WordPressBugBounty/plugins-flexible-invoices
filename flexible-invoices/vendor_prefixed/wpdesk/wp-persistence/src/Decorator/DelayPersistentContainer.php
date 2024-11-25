@@ -11,7 +11,7 @@ use WPDeskFIVendor\WPDesk\Persistence\PersistentContainer;
  *
  * @package WPDesk\Persistence
  */
-class DelayPersistentContainer implements \WPDeskFIVendor\WPDesk\Persistence\DeferredPersistentContainer
+class DelayPersistentContainer implements DeferredPersistentContainer
 {
     use FallbackFromGetTrait;
     /**
@@ -32,7 +32,7 @@ class DelayPersistentContainer implements \WPDeskFIVendor\WPDesk\Persistence\Def
      * @var bool[]
      */
     protected $changed = [];
-    public function __construct(\WPDeskFIVendor\WPDesk\Persistence\PersistentContainer $container)
+    public function __construct(PersistentContainer $container)
     {
         $this->container = $container;
     }
@@ -42,11 +42,11 @@ class DelayPersistentContainer implements \WPDeskFIVendor\WPDesk\Persistence\Def
             if (isset($this->internal_data[$id])) {
                 return $this->internal_data[$id];
             }
-            throw new \WPDeskFIVendor\WPDesk\Persistence\ElementNotExistsException(\sprintf('Element %s not exists!', $id));
+            throw new ElementNotExistsException(sprintf('Element %s not exists!', $id));
         }
         return $this->container->get($id);
     }
-    public function has($id) : bool
+    public function has($id): bool
     {
         if (isset($this->changed[$id]) && $this->changed[$id]) {
             return isset($this->internal_data[$id]);
@@ -60,7 +60,7 @@ class DelayPersistentContainer implements \WPDeskFIVendor\WPDesk\Persistence\Def
         }
         $this->reset();
     }
-    public function is_changed() : bool
+    public function is_changed(): bool
     {
         return !empty($this->changed);
     }

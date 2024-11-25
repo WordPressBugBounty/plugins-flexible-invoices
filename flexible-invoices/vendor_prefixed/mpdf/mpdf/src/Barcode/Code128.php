@@ -35,7 +35,7 @@ class Code128 extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \W
      */
     protected function init($code, $type, $ean)
     {
-        $code = \WPDeskFIVendor\Mpdf\Utils\UtfString::strcode2utf($code);
+        $code = UtfString::strcode2utf($code);
         // mPDF 5.7.1 Allows e.g. <barcode code="5432&#013;1068" type="C128A" />
         $chr = [
             '212222',
@@ -254,105 +254,102 @@ class Code128 extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \W
             /* STOP */
             '200000',
         ];
-        switch (\strtoupper($type)) {
+        switch (strtoupper($type)) {
             case 'RAW':
                 $newCode = '';
                 $startid = \false;
-                foreach (\explode(" ", $code) as $v) {
-                    if (\is_numeric($v) && \round($v, 0) == $v) {
+                foreach (explode(" ", $code) as $v) {
+                    if (is_numeric($v) && round($v, 0) == $v) {
                         if ($v >= 0 && $v <= 105) {
                             if ($startid === \false) {
                                 $startid = $v;
                             } else {
-                                $newCode .= \chr($v);
+                                $newCode .= chr($v);
                             }
                         } else {
-                            throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid CODE128RAW barcode value "%s". 0-105 needed', $code));
+                            throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid CODE128RAW barcode value "%s". 0-105 needed', $code));
                         }
-                    } else {
-                        //double spaces generates empty $v any other is not allowed
-                        if ($v != '') {
-                            throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid CODE128RAW barcode value "%s". 0-105 needed', $code));
-                        }
+                    } else if ($v != '') {
+                        throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid CODE128RAW barcode value "%s". 0-105 needed', $code));
                     }
                 }
                 if ($startid < 103 || $startid > 105) {
-                    throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid CODE128RAW startid value "%s". Must be 103, 104 or 105 (for A, B or C)', $startid));
+                    throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid CODE128RAW startid value "%s". Must be 103, 104 or 105 (for A, B or C)', $startid));
                 }
                 $keys = '';
                 for ($i = 0; $i <= 105; ++$i) {
-                    $keys .= \chr($i);
+                    $keys .= chr($i);
                 }
                 $code = $newCode;
                 break;
             case 'A':
                 $startid = 103;
-                $keys = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_';
+                $keys = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_';
                 for ($i = 0; $i < 32; ++$i) {
-                    $keys .= \chr($i);
+                    $keys .= chr($i);
                 }
                 break;
             case 'B':
                 $startid = 104;
-                $keys = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~' . \chr(127);
+                $keys = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~' . chr(127);
                 break;
             case 'C':
                 $startid = 105;
                 $keys = '';
-                if (\strlen($code) % 2 != 0) {
+                if (strlen($code) % 2 != 0) {
                     // The length of barcode value must be even ($code). You must pad the number with zeros
                     throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException('Invalid CODE128C barcode value');
                 }
                 for ($i = 0; $i <= 99; ++$i) {
-                    $keys .= \chr($i);
+                    $keys .= chr($i);
                 }
                 $newCode = '';
-                $hclen = \strlen($code) / 2;
+                $hclen = strlen($code) / 2;
                 for ($i = 0; $i < $hclen; ++$i) {
                     if ($code[2 * $i] < "0" || $code[2 * $i] > "9" || $code[2 * $i + 1] < "0" || $code[2 * $i + 1] > "9") {
-                        throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid character "%s" in CODE128C barcode value "%s"', $code[$i], $code));
+                        throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid character "%s" in CODE128C barcode value "%s"', $code[$i], $code));
                     }
-                    $newCode .= \chr((int) ($code[2 * $i] . $code[2 * $i + 1]));
+                    $newCode .= chr((int) ($code[2 * $i] . $code[2 * $i + 1]));
                 }
                 $code = $newCode;
                 break;
             default:
-                throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid CODE128 barcode type "%s"', $type));
+                throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid CODE128 barcode type "%s"', $type));
         }
         // calculate check character
         $sum = $startid;
         // Add FNC 1 - which identifies it as EAN-128
         if ($ean) {
-            $code = \chr(102) . $code;
+            $code = chr(102) . $code;
         }
-        $clen = \strlen($code);
+        $clen = strlen($code);
         for ($i = 0; $i < $clen; ++$i) {
             if ($ean && $i == 0) {
                 $sum += 102;
             } else {
-                if (\strpos($keys, $code[$i]) === \false) {
-                    throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid character "%s" in CODE128%s barcode value "%s"', $code[$i], $type, $code));
+                if (strpos($keys, $code[$i]) === \false) {
+                    throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid character "%s" in CODE128%s barcode value "%s"', $code[$i], $type, $code));
                 }
-                $sum += \strpos($keys, $code[$i]) * ($i + 1);
+                $sum += strpos($keys, $code[$i]) * ($i + 1);
             }
         }
         $check = $sum % 103;
         $checkdigit = $check;
         // add start, check and stop codes
-        $code = \chr($startid) . $code . \chr($check) . \chr(106) . \chr(107);
+        $code = chr($startid) . $code . chr($check) . chr(106) . chr(107);
         $bararray = ['code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => []];
         $k = 0;
-        $len = \strlen($code);
+        $len = strlen($code);
         for ($i = 0; $i < $len; ++$i) {
-            $ck = \strpos($keys, $code[$i]);
+            $ck = strpos($keys, $code[$i]);
             if ($i == 0 || ($ean && $i == 1) | $i > $len - 4) {
-                $char_num = \ord($code[$i]);
+                $char_num = ord($code[$i]);
                 $seq = $chr[$char_num];
             } elseif ($ck >= 0 && isset($chr[$ck])) {
                 $seq = $chr[$ck];
             } else {
                 // invalid character
-                throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid character "%s" in CODE128C barcode value "%s"', $code[$i], $code));
+                throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid character "%s" in CODE128C barcode value "%s"', $code[$i], $code));
             }
             for ($j = 0; $j < 6; ++$j) {
                 if ($j % 2 == 0) {

@@ -19,7 +19,7 @@ class ConditionalLogic
     /**
      * @param Settings $settings
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings $settings)
+    public function __construct(Settings $settings)
     {
         $this->settings = $settings;
     }
@@ -29,7 +29,7 @@ class ConditionalLogic
      *
      * @return bool
      */
-    public function is_invoice_ask(\WC_Order $order, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\Creator $creator) : bool
+    public function is_invoice_ask(WC_Order $order, Creator $creator): bool
     {
         $settings = $this->settings;
         $has_invoice_ask_field = $this->settings->get('woocommerce_add_invoice_ask_field') === 'yes';
@@ -44,7 +44,7 @@ class ConditionalLogic
          *
          * @since 3.8.2
          */
-        return \apply_filters('fi/core/is_invoice_ask', $is_invoice_ask, $creator, $settings);
+        return apply_filters('fi/core/is_invoice_ask', $is_invoice_ask, $creator, $settings);
     }
     /**
      * @param WC_Order $order
@@ -52,7 +52,7 @@ class ConditionalLogic
      *
      * @return bool
      */
-    public function is_zero_invoice_ask(\WC_Order $order, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\Creator $creator) : bool
+    public function is_zero_invoice_ask(WC_Order $order, Creator $creator): bool
     {
         $settings = $this->settings;
         $zero_invoice = $this->settings->get('woocommerce_zero_invoice') === 'yes';
@@ -66,14 +66,14 @@ class ConditionalLogic
          *
          * @since 3.8.2
          */
-        return \apply_filters('fi/core/is_zero_invoice_ask', $is_zero_invoice_ask, $creator, $settings);
+        return apply_filters('fi/core/is_zero_invoice_ask', $is_zero_invoice_ask, $creator, $settings);
     }
     /**
      * This setting is saved from FIS. The default is always true.
      *
      * @return bool
      */
-    public function should_send_email_to_customer() : bool
+    public function should_send_email_to_customer(): bool
     {
         return $this->settings->get('enable_sending_to_customer', 'yes') === 'yes';
     }
@@ -82,7 +82,7 @@ class ConditionalLogic
      *
      * @return bool
      */
-    public function is_cod(\WC_Order $order) : bool
+    public function is_cod(WC_Order $order): bool
     {
         $payment_method = $order->get_payment_method();
         $order_status = $order->get_status();

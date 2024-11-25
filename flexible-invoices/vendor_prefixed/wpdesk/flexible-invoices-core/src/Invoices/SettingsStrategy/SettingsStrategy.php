@@ -14,19 +14,19 @@ interface SettingsStrategy
      *
      * @return array
      */
-    public function get_taxes() : array;
+    public function get_taxes(): array;
     /**
      * Get payment statuses.
      *
      * @return array
      */
-    public function get_payment_statuses() : array;
+    public function get_payment_statuses(): array;
     /**
      * Get payment methods.
      *
      * @return array
      */
-    public function get_payment_methods() : array;
+    public function get_payment_methods(): array;
     /**
      * Get single tax value from settings.
      *
@@ -34,11 +34,11 @@ interface SettingsStrategy
      *
      * @return array
      */
-    public function get_tax_value(string $value) : array;
+    public function get_tax_value(string $value): array;
     /**
      * Order statuses in needed when WooCommerce active, otherwise return only one option for document settings.
      *
      * @return array
      */
-    public function get_order_statuses() : array;
+    public function get_order_statuses(): array;
 }

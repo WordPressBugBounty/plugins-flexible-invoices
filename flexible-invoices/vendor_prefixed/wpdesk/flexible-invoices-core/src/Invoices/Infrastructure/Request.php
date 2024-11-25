@@ -15,14 +15,14 @@ class Request
     private $parameters;
     public function __construct()
     {
-        $this->parameters = ['METHOD' => \strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET'), 'GET' => $_GET, 'POST' => $_POST, 'FILES' => $_FILES, 'COOKIE' => $_COOKIE, 'SERVER' => $_SERVER, 'SESSION' => $_SESSION ?? [], 'INPUT' => \file_get_contents("php://input")];
+        $this->parameters = ['METHOD' => strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET'), 'GET' => $_GET, 'POST' => $_POST, 'FILES' => $_FILES, 'COOKIE' => $_COOKIE, 'SERVER' => $_SERVER, 'SESSION' => $_SESSION ?? [], 'INPUT' => file_get_contents("php://input")];
     }
     /**
      * @param $param
      *
      * @return DataType
      */
-    public function param($param) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Infrastructure\DataType
+    public function param($param): DataType
     {
         return $this->get_param_from_array($param);
     }
@@ -31,7 +31,7 @@ class Request
      *
      * @return bool
      */
-    public function param_exists($param) : bool
+    public function param_exists($param): bool
     {
         return $this->get_param_from_array($param)->has();
     }
@@ -40,13 +40,13 @@ class Request
      *
      * @return DataType
      */
-    private function get_param_from_array(string $param) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Infrastructure\DataType
+    private function get_param_from_array(string $param): DataType
     {
-        $keys = \explode('.', $param);
+        $keys = explode('.', $param);
         $parameters = $this->parameters;
         foreach ($keys as $key) {
-            $parameters = \array_change_key_case($parameters, \CASE_UPPER);
-            $key = \strtoupper($key);
+            $parameters = array_change_key_case($parameters, \CASE_UPPER);
+            $key = strtoupper($key);
             if (isset($parameters[$key])) {
                 $parameters = $parameters[$key];
             } else {
@@ -54,6 +54,6 @@ class Request
                 break;
             }
         }
-        return new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Infrastructure\DataType($parameters);
+        return new DataType($parameters);
     }
 }

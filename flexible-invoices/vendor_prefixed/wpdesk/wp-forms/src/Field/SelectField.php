@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\WPDesk\Forms\Field;
 
-class SelectField extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
+class SelectField extends BasicField
 {
     public function get_template_name()
     {

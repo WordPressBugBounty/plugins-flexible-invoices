@@ -8,6 +8,6 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\GeneratePDF;
  *
  * This class exists only for backward compatibility.
  */
-class PDF extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\GeneratePDF
+class PDF extends GeneratePDF
 {
 }

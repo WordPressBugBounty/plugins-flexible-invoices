@@ -10,7 +10,7 @@ class DecToOther
      * @var \Mpdf\Mpdf
      */
     private $mpdf;
-    public function __construct(\WPDeskFIVendor\Mpdf\Mpdf $mpdf)
+    public function __construct(Mpdf $mpdf)
     {
         $this->mpdf = $mpdf;
     }
@@ -20,10 +20,10 @@ class DecToOther
         // From docPageNum: font is not set, so no check
         $nstr = (string) $num;
         $rnum = '';
-        $len = \strlen($nstr);
+        $len = strlen($nstr);
         for ($i = 0; $i < $len; $i++) {
             if (!$check || $this->mpdf->_charDefined($this->mpdf->CurrentFont['cw'], $cp + (int) $nstr[$i])) {
-                $rnum .= \WPDeskFIVendor\Mpdf\Utils\UtfString::code2utf($cp + (int) $nstr[$i]);
+                $rnum .= UtfString::code2utf($cp + (int) $nstr[$i]);
             } else {
                 $rnum .= $nstr[$i];
             }

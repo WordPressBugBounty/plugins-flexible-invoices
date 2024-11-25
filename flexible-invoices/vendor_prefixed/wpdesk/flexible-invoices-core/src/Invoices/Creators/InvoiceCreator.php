@@ -11,14 +11,14 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Email\EmailInvoice;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Creators
  */
-class InvoiceCreator extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\AbstractDocumentCreator
+class InvoiceCreator extends AbstractDocumentCreator
 {
     /**
      * @return string
      */
-    public function get_type() : string
+    public function get_type(): string
     {
-        return \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Invoice::DOCUMENT_TYPE;
+        return Invoice::DOCUMENT_TYPE;
     }
     /**
      * @param int    $document_id
@@ -28,13 +28,13 @@ class InvoiceCreator extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore
      */
     public function create_document_from_source($document_id, $source_type)
     {
-        $this->assign_data_from_source(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Invoice(), $document_id, $source_type);
+        $this->assign_data_from_source(new Invoice(), $document_id, $source_type);
     }
     /**
      * @return DocumentEmail
      */
-    public function get_email_class() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Email\DocumentEmail
+    public function get_email_class(): DocumentEmail
     {
-        return new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Email\EmailInvoice();
+        return new EmailInvoice();
     }
 }

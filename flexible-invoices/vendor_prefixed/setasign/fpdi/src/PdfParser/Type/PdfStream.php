@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\Type;
@@ -22,19 +22,22 @@ use WPDeskFIVendor\setasign\FpdiPdfParser\PdfParser\Filter\Predictor;
 /**
  * Class representing a PDF stream object
  */
-class PdfStream extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
+class PdfStream extends PdfType
 {
     /**
      * Parses a stream from a stream reader.
      *
      * @param PdfDictionary $dictionary
      * @param StreamReader $reader
-     * @param PdfParser $parser Optional to keep backwards compatibility
+     * @param PdfParser|null $parser Optional to keep backwards compatibility
      * @return self
      * @throws PdfTypeException
      */
-    public static function parse(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary $dictionary, \WPDeskFIVendor\setasign\Fpdi\PdfParser\StreamReader $reader, \WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParser $parser = null)
+    public static function parse(PdfDictionary $dictionary, StreamReader $reader, $parser = null)
     {
+        if ($parser !== null && !$parser instanceof PdfParser) {
+            throw new \InvalidArgumentException('$parser must be an instance of PdfParser or null');
+        }
         $v = new self();
         $v->value = $dictionary;
         $v->reader = $reader;
@@ -48,7 +51,7 @@ class PdfStream extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
             }
         }
         if ($firstByte === \false) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException('Unable to parse stream data. No newline after the stream keyword found.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException::NO_NEWLINE_AFTER_STREAM_KEYWORD);
+            throw new PdfTypeException('Unable to parse stream data. No newline after the stream keyword found.', PdfTypeException::NO_NEWLINE_AFTER_STREAM_KEYWORD);
         }
         $sndByte = $reader->getByte($offset);
         if ($sndByte === "\n" && $firstByte !== "\n") {
@@ -66,7 +69,7 @@ class PdfStream extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
      * @param string $stream
      * @return self
      */
-    public static function create(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary $dictionary, $stream)
+    public static function create(PdfDictionary $dictionary, $stream)
     {
         $v = new self();
         $v->value = $dictionary;
@@ -82,7 +85,7 @@ class PdfStream extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
      */
     public static function ensure($stream)
     {
-        return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::ensureType(self::class, $stream, 'Stream value expected.');
+        return PdfType::ensureType(self::class, $stream, 'Stream value expected.');
     }
     /**
      * The stream or its byte-offset position.
@@ -114,24 +117,24 @@ class PdfStream extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
     public function getStream($cache = \false)
     {
         if (\is_int($this->stream)) {
-            $length = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($this->value, 'Length');
+            $length = PdfDictionary::get($this->value, 'Length');
             if ($this->parser !== null) {
-                $length = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve($length, $this->parser);
+                $length = PdfType::resolve($length, $this->parser);
             }
-            if (!$length instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric || $length->value === 0) {
+            if (!$length instanceof PdfNumeric || $length->value === 0) {
                 $this->reader->reset($this->stream, 100000);
                 $buffer = $this->extractStream();
             } else {
                 $this->reader->reset($this->stream, $length->value);
                 $buffer = $this->reader->getBuffer(\false);
                 if ($this->parser !== null) {
-                    $this->reader->reset($this->stream + \strlen($buffer));
+                    $this->reader->reset($this->stream + strlen($buffer));
                     $this->parser->getTokenizer()->clearStack();
                     $token = $this->parser->readValue();
-                    if ($token === \false || !$token instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfToken || $token->value !== 'endstream') {
+                    if ($token === \false || !$token instanceof PdfToken || $token->value !== 'endstream') {
                         $this->reader->reset($this->stream, 100000);
                         $buffer = $this->extractStream();
-                        $this->reader->reset($this->stream + \strlen($buffer));
+                        $this->reader->reset($this->stream + strlen($buffer));
                     }
                 }
             }
@@ -156,7 +159,7 @@ class PdfStream extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
             $length = \strpos($buffer, 'endstream');
             if ($length === \false) {
                 if (!$this->reader->increaseLength(100000)) {
-                    throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException('Cannot extract stream.');
+                    throw new PdfTypeException('Cannot extract stream.');
                 }
                 continue;
             }
@@ -178,7 +181,7 @@ class PdfStream extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
         // There are streams in the wild, which have only white signs in them but need to be parsed manually due
         // to a problem encountered before (e.g. Length === 0). We should set them to empty streams to avoid problems
         // in further processing (e.g. applying of filters).
-        if (\trim($buffer) === '') {
+        if (trim($buffer) === '') {
             $buffer = '';
         }
         return $buffer;
@@ -191,11 +194,11 @@ class PdfStream extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
      */
     public function getFilters()
     {
-        $filters = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($this->value, 'Filter');
-        if ($filters instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNull) {
+        $filters = PdfDictionary::get($this->value, 'Filter');
+        if ($filters instanceof PdfNull) {
             return [];
         }
-        if ($filters instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfArray) {
+        if ($filters instanceof PdfArray) {
             $filters = $filters->value;
         } else {
             $filters = [$filters];
@@ -216,19 +219,19 @@ class PdfStream extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
         if ($filters === []) {
             return $stream;
         }
-        $decodeParams = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($this->value, 'DecodeParms');
-        if ($decodeParams instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfArray) {
+        $decodeParams = PdfDictionary::get($this->value, 'DecodeParms');
+        if ($decodeParams instanceof PdfArray) {
             $decodeParams = $decodeParams->value;
         } else {
             $decodeParams = [$decodeParams];
         }
         foreach ($filters as $key => $filter) {
-            if (!$filter instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfName) {
+            if (!$filter instanceof PdfName) {
                 continue;
             }
             $decodeParam = null;
             if (isset($decodeParams[$key])) {
-                $decodeParam = $decodeParams[$key] instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary ? $decodeParams[$key] : null;
+                $decodeParam = $decodeParams[$key] instanceof PdfDictionary ? $decodeParams[$key] : null;
             }
             switch ($filter->value) {
                 case 'FlateDecode':
@@ -236,47 +239,47 @@ class PdfStream extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
                 case 'LZWDecode':
                 case 'LZW':
                     if (\strpos($filter->value, 'LZW') === 0) {
-                        $filterObject = new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\Lzw();
+                        $filterObject = new Lzw();
                     } else {
-                        $filterObject = new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\Flate();
+                        $filterObject = new Flate();
                     }
                     $stream = $filterObject->decode($stream);
-                    if ($decodeParam instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary) {
-                        $predictor = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($decodeParam, 'Predictor', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create(1));
+                    if ($decodeParam instanceof PdfDictionary) {
+                        $predictor = PdfDictionary::get($decodeParam, 'Predictor', PdfNumeric::create(1));
                         if ($predictor->value !== 1) {
-                            if (!\class_exists(\WPDeskFIVendor\setasign\FpdiPdfParser\PdfParser\Filter\Predictor::class)) {
-                                throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParserException('This PDF document makes use of features which are only implemented in the ' . 'commercial "FPDI PDF-Parser" add-on (see https://www.setasign.com/fpdi-pdf-' . 'parser).', \WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParserException::IMPLEMENTED_IN_FPDI_PDF_PARSER);
+                            if (!\class_exists(Predictor::class)) {
+                                throw new PdfParserException('This PDF document makes use of features which are only implemented in the ' . 'commercial "FPDI PDF-Parser" add-on (see https://www.setasign.com/fpdi-pdf-' . 'parser).', PdfParserException::IMPLEMENTED_IN_FPDI_PDF_PARSER);
                             }
-                            $colors = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($decodeParam, 'Colors', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create(1));
-                            $bitsPerComponent = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($decodeParam, 'BitsPerComponent', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create(8));
-                            $columns = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($decodeParam, 'Columns', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create(1));
-                            $filterObject = new \WPDeskFIVendor\setasign\FpdiPdfParser\PdfParser\Filter\Predictor($predictor->value, $colors->value, $bitsPerComponent->value, $columns->value);
+                            $colors = PdfDictionary::get($decodeParam, 'Colors', PdfNumeric::create(1));
+                            $bitsPerComponent = PdfDictionary::get($decodeParam, 'BitsPerComponent', PdfNumeric::create(8));
+                            $columns = PdfDictionary::get($decodeParam, 'Columns', PdfNumeric::create(1));
+                            $filterObject = new Predictor($predictor->value, $colors->value, $bitsPerComponent->value, $columns->value);
                             $stream = $filterObject->decode($stream);
                         }
                     }
                     break;
                 case 'ASCII85Decode':
                 case 'A85':
-                    $filterObject = new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\Ascii85();
+                    $filterObject = new Ascii85();
                     $stream = $filterObject->decode($stream);
                     break;
                 case 'ASCIIHexDecode':
                 case 'AHx':
-                    $filterObject = new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\AsciiHex();
+                    $filterObject = new AsciiHex();
                     $stream = $filterObject->decode($stream);
                     break;
                 case 'Crypt':
-                    if (!$decodeParam instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary) {
+                    if (!$decodeParam instanceof PdfDictionary) {
                         break;
                     }
                     // Filter is "Identity"
-                    $name = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($decodeParam, 'Name');
-                    if (!$name instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfName || $name->value !== 'Identity') {
+                    $name = PdfDictionary::get($decodeParam, 'Name');
+                    if (!$name instanceof PdfName || $name->value !== 'Identity') {
                         break;
                     }
-                    throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\FilterException('Support for Crypt filters other than "Identity" is not implemented.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\FilterException::UNSUPPORTED_FILTER);
+                    throw new FilterException('Support for Crypt filters other than "Identity" is not implemented.', FilterException::UNSUPPORTED_FILTER);
                 default:
-                    throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\FilterException(\sprintf('Unsupported filter "%s".', $filter->value), \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\FilterException::UNSUPPORTED_FILTER);
+                    throw new FilterException(\sprintf('Unsupported filter "%s".', $filter->value), FilterException::UNSUPPORTED_FILTER);
             }
         }
         return $stream;

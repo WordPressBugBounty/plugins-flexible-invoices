@@ -6,10 +6,10 @@ class NumericString
 {
     public static function containsPercentChar($string)
     {
-        return \strstr($string, '%');
+        return strstr($string, '%');
     }
     public static function removePercentChar($string)
     {
-        return \str_replace('%', '', $string);
+        return str_replace('%', '', $string);
     }
 }

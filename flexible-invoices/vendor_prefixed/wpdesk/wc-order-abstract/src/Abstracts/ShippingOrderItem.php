@@ -12,7 +12,7 @@ namespace WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts;
  *
  * @package WPDesk\Library\WPDeskOrder\Abstracts
  */
-final class ShippingOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\OrderItem
+final class ShippingOrderItem extends OrderItem
 {
     /**
      * @var string
@@ -36,7 +36,7 @@ final class ShippingOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder
     /**
      * @return string
      */
-    public function get_method_id() : string
+    public function get_method_id(): string
     {
         return $this->method_id;
     }
@@ -50,7 +50,7 @@ final class ShippingOrderItem extends \WPDeskFIVendor\WPDesk\Library\WPDeskOrder
     /**
      * @return string
      */
-    public function get_method_title() : string
+    public function get_method_title(): string
     {
         return $this->method_title;
     }

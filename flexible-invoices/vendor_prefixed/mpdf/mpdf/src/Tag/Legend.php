@@ -3,7 +3,7 @@
 namespace WPDeskFIVendor\Mpdf\Tag;
 
 use WPDeskFIVendor\Mpdf\Mpdf;
-class Legend extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class Legend extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -15,13 +15,13 @@ class Legend extends \WPDeskFIVendor\Mpdf\Tag\Tag
     }
     public function close(&$ahtml, &$ihtml)
     {
-        if (\count($this->mpdf->textbuffer) && !$this->mpdf->tableLevel) {
-            $leg = $this->mpdf->textbuffer[\count($this->mpdf->textbuffer) - 1];
-            unset($this->mpdf->textbuffer[\count($this->mpdf->textbuffer) - 1]);
-            $this->mpdf->textbuffer = \array_values($this->mpdf->textbuffer);
+        if (count($this->mpdf->textbuffer) && !$this->mpdf->tableLevel) {
+            $leg = $this->mpdf->textbuffer[count($this->mpdf->textbuffer) - 1];
+            unset($this->mpdf->textbuffer[count($this->mpdf->textbuffer) - 1]);
+            $this->mpdf->textbuffer = array_values($this->mpdf->textbuffer);
             $this->mpdf->blk[$this->mpdf->blklvl]['border_legend'] = $leg;
-            $this->mpdf->blk[$this->mpdf->blklvl]['margin_top'] += $leg[11] / 2 / \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
-            $this->mpdf->blk[$this->mpdf->blklvl]['padding_top'] += $leg[11] / 2 / \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+            $this->mpdf->blk[$this->mpdf->blklvl]['margin_top'] += $leg[11] / 2 / Mpdf::SCALE;
+            $this->mpdf->blk[$this->mpdf->blklvl]['padding_top'] += $leg[11] / 2 / Mpdf::SCALE;
         }
         if (isset($this->mpdf->InlineProperties['LEGEND'])) {
             $this->mpdf->restoreInlineProperties($this->mpdf->InlineProperties['LEGEND']);

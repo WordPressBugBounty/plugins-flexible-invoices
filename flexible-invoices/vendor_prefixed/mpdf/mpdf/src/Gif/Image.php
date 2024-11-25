@@ -32,15 +32,15 @@ class Image
         unset($this->m_nTrans);
         unset($this->m_lpComm);
         unset($this->m_data);
-        $this->m_gih = new \WPDeskFIVendor\Mpdf\Gif\ImageHeader();
-        $this->m_lzw = new \WPDeskFIVendor\Mpdf\Gif\Lzw();
+        $this->m_gih = new ImageHeader();
+        $this->m_lzw = new Lzw();
     }
     function load($data, &$datLen)
     {
         $datLen = 0;
         while (\true) {
-            $b = \ord($data[0]);
-            $data = \substr($data, 1);
+            $b = ord($data[0]);
+            $data = substr($data, 1);
             $datLen++;
             switch ($b) {
                 case 0x21:
@@ -58,14 +58,14 @@ class Image
                     if (!$this->m_gih->load($data, $len)) {
                         return \false;
                     }
-                    $data = \substr($data, $len);
+                    $data = substr($data, $len);
                     $datLen += $len;
                     // ALLOC BUFFER
                     $len = 0;
-                    if (!($this->m_data = $this->m_lzw->deCompress($data, $len))) {
+                    if (!$this->m_data = $this->m_lzw->deCompress($data, $len)) {
                         return \false;
                     }
-                    $data = \substr($data, $len);
+                    $data = substr($data, $len);
                     $datLen += $len;
                     if ($this->m_gih->m_bInterlace) {
                         $this->deInterlace();
@@ -82,22 +82,22 @@ class Image
     function skipExt(&$data, &$extLen)
     {
         $extLen = 0;
-        $b = \ord($data[0]);
-        $data = \substr($data, 1);
+        $b = ord($data[0]);
+        $data = substr($data, 1);
         $extLen++;
         switch ($b) {
             case 0xf9:
                 // Graphic Control
-                $b = \ord($data[1]);
+                $b = ord($data[1]);
                 $this->m_disp = ($b & 0x1c) >> 2;
                 $this->m_bUser = $b & 0x2 ? \true : \false;
                 $this->m_bTrans = $b & 0x1 ? \true : \false;
-                $this->m_nDelay = $this->w2i(\substr($data, 2, 2));
-                $this->m_nTrans = \ord($data[4]);
+                $this->m_nDelay = $this->w2i(substr($data, 2, 2));
+                $this->m_nTrans = ord($data[4]);
                 break;
             case 0xfe:
                 // Comment
-                $this->m_lpComm = \substr($data, 1, \ord($data[0]));
+                $this->m_lpComm = substr($data, 1, ord($data[0]));
                 break;
             case 0x1:
                 // Plain text
@@ -107,21 +107,21 @@ class Image
                 break;
         }
         // SKIP DEFAULT AS DEFS MAY CHANGE
-        $b = \ord($data[0]);
-        $data = \substr($data, 1);
+        $b = ord($data[0]);
+        $data = substr($data, 1);
         $extLen++;
         while ($b > 0) {
-            $data = \substr($data, $b);
+            $data = substr($data, $b);
             $extLen += $b;
-            $b = \ord($data[0]);
-            $data = \substr($data, 1);
+            $b = ord($data[0]);
+            $data = substr($data, 1);
             $extLen++;
         }
         return \true;
     }
     function w2i($str)
     {
-        return \ord(\substr($str, 0, 1)) + (\ord(\substr($str, 1, 1)) << 8);
+        return ord(substr($str, 0, 1)) + (ord(substr($str, 1, 1)) << 8);
     }
     function deInterlace()
     {
@@ -146,9 +146,9 @@ class Image
                     break;
             }
             for (; $y < $this->m_gih->m_nHeight; $y += $s) {
-                $lne = \substr($this->m_data, 0, $this->m_gih->m_nWidth);
-                $this->m_data = \substr($this->m_data, $this->m_gih->m_nWidth);
-                $data = \substr($data, 0, $y * $this->m_gih->m_nWidth) . $lne . \substr($data, ($y + 1) * $this->m_gih->m_nWidth);
+                $lne = substr($this->m_data, 0, $this->m_gih->m_nWidth);
+                $this->m_data = substr($this->m_data, $this->m_gih->m_nWidth);
+                $data = substr($data, 0, $y * $this->m_gih->m_nWidth) . $lne . substr($data, ($y + 1) * $this->m_gih->m_nWidth);
             }
         }
         $this->m_data = $data;

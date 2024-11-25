@@ -9,7 +9,7 @@ use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
  *
  * @package WPDesk\WooCommerceFakturownia\Email
  */
-class RegisterEmails implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+class RegisterEmails implements Hookable
 {
     /**
      * @var DocumentFactory
@@ -18,7 +18,7 @@ class RegisterEmails implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hook
     /**
      * @param DocumentFactory $document_factory
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory $document_factory)
+    public function __construct(DocumentFactory $document_factory)
     {
         $this->document_factory = $document_factory;
     }
@@ -27,7 +27,7 @@ class RegisterEmails implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hook
      */
     public function hooks()
     {
-        \add_filter('woocommerce_email_classes', [$this, 'register_emails'], 11);
+        add_filter('woocommerce_email_classes', [$this, 'register_emails'], 11);
     }
     /**
      * Register emails in WooCommerce.
@@ -36,12 +36,12 @@ class RegisterEmails implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hook
      *
      * @return array
      */
-    public function register_emails(array $emails) : array
+    public function register_emails(array $emails): array
     {
         foreach ($this->document_factory->get_creators() as $creator) {
             $emails['fi_' . $creator->get_type()] = $creator->get_email_class();
         }
-        $emails['fi_invoice_manual'] = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Email\EmailManualInvoice();
+        $emails['fi_invoice_manual'] = new EmailManualInvoice();
         return $emails;
     }
 }

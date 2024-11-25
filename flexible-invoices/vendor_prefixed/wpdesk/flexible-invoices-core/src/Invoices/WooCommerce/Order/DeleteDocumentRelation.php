@@ -13,7 +13,7 @@ use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\WooCommerce
  */
-class DeleteDocumentRelation implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+class DeleteDocumentRelation implements Hookable
 {
     /**
      * @var DocumentFactory
@@ -22,7 +22,7 @@ class DeleteDocumentRelation implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plu
     /**
      * @param DocumentFactory $document_factory
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory $document_factory)
+    public function __construct(DocumentFactory $document_factory)
     {
         $this->document_factory = $document_factory;
     }
@@ -31,7 +31,7 @@ class DeleteDocumentRelation implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plu
      */
     public function hooks()
     {
-        \add_action('before_delete_post', [$this, 'remove_order_relation']);
+        add_action('before_delete_post', [$this, 'remove_order_relation']);
     }
     /**
      * When document are deleting remove relation for order.
@@ -45,10 +45,10 @@ class DeleteDocumentRelation implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plu
         global $post_type;
         $document = $this->document_factory->get_document_creator($id);
         $type = '_' . $document->get_type();
-        if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType::POST_TYPE_NAME === $post_type) {
-            $is_correction = (int) \get_post_meta($id, $type, \true) === 1;
-            $order_id = \get_post_meta($id, '_wc_order_id', \true);
-            $order = \wc_get_order($order_id);
+        if (RegisterPostType::POST_TYPE_NAME === $post_type) {
+            $is_correction = (int) get_post_meta($id, $type, \true) === 1;
+            $order_id = get_post_meta($id, '_wc_order_id', \true);
+            $order = wc_get_order($order_id);
             if (!$order) {
                 return;
             }

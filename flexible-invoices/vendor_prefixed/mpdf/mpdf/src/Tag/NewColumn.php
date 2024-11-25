@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class NewColumn extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class NewColumn extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {

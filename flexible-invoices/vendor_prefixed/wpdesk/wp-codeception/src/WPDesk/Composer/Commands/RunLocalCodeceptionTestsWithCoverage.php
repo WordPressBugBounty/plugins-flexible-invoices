@@ -12,7 +12,7 @@ use WPDeskFIVendor\Symfony\Component\Yaml\Yaml;
  *
  * @package WPDesk\Composer\Codeception\Commands
  */
-class RunLocalCodeceptionTestsWithCoverage extends \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\RunCodeceptionTests
+class RunLocalCodeceptionTestsWithCoverage extends RunCodeceptionTests
 {
     use LocalCodeceptionTrait;
     /**
@@ -21,7 +21,7 @@ class RunLocalCodeceptionTestsWithCoverage extends \WPDeskFIVendor\WPDesk\Compos
     protected function configure()
     {
         parent::configure();
-        $this->setName('run-local-codeception-tests-with-coverage')->setDescription('Run local codeception tests.')->setDefinition(array(new \WPDeskFIVendor\Symfony\Component\Console\Input\InputArgument(self::SINGLE, \WPDeskFIVendor\Symfony\Component\Console\Input\InputArgument::OPTIONAL, 'Name of Single test to run.', ' ')));
+        $this->setName('run-local-codeception-tests-with-coverage')->setDescription('Run local codeception tests.')->setDefinition(array(new InputArgument(self::SINGLE, InputArgument::OPTIONAL, 'Name of Single test to run.', ' ')));
     }
     /**
      * Execute command.
@@ -31,7 +31,7 @@ class RunLocalCodeceptionTestsWithCoverage extends \WPDeskFIVendor\WPDesk\Compos
      *
      * @return int 0 if everything went fine, or an error code
      */
-    protected function execute(\WPDeskFIVendor\Symfony\Component\Console\Input\InputInterface $input, \WPDeskFIVendor\Symfony\Component\Console\Output\OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $configuration = $this->getWpDeskConfiguration();
         $this->prepareWpConfig($output, $configuration);

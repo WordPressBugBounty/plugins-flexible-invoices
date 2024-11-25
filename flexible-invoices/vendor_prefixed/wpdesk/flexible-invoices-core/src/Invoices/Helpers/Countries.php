@@ -14,10 +14,10 @@ class Countries
      *
      * @return string
      */
-    public static function get_country_label(string $slug) : string
+    public static function get_country_label(string $slug): string
     {
-        if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active() && \strlen($slug) <= 3) {
-            $countries = \WC()->countries->get_countries();
+        if (WooCommerce::is_active() && strlen($slug) <= 3) {
+            $countries = WC()->countries->get_countries();
             if (isset($countries)) {
                 return $countries[$slug] ?? $slug;
             }
@@ -30,10 +30,10 @@ class Countries
      *
      * @return string
      */
-    public static function get_country_state_label(string $slug, string $country) : string
+    public static function get_country_state_label(string $slug, string $country): string
     {
-        if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active() && \strlen($slug) <= 3) {
-            $states = \WC()->countries->get_states($country);
+        if (WooCommerce::is_active() && strlen($slug) <= 3) {
+            $states = WC()->countries->get_states($country);
             if (isset($states)) {
                 return $states[$slug] ?? $slug;
             }
@@ -47,13 +47,13 @@ class Countries
      *
      * @return string
      */
-    public static function generate_states_select(string $name, string $value = '', string $country = '') : string
+    public static function generate_states_select(string $name, string $value = '', string $country = ''): string
     {
-        if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active()) {
-            $states = \WC()->countries->get_states($country);
+        if (WooCommerce::is_active()) {
+            $states = WC()->countries->get_states($country);
             $output = '<select class="state-select2 medium hs-beacon-search" name="' . $name . '" id="customer_state" >';
             foreach ($states as $state_code => $state_name) {
-                $output .= '<option ' . \selected($state_code, $value) . ' value="' . $state_code . '">' . $state_name . '</option>' . \PHP_EOL;
+                $output .= '<option ' . selected($state_code, $value) . ' value="' . $state_code . '">' . $state_name . '</option>' . \PHP_EOL;
             }
             $output .= '</select>' . \PHP_EOL;
         } else {
@@ -66,11 +66,11 @@ class Countries
      *
      * @return array
      */
-    public static function get_states() : array
+    public static function get_states(): array
     {
         $states = [];
-        if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active()) {
-            $countries_states = \WC()->countries->get_states();
+        if (WooCommerce::is_active()) {
+            $countries_states = WC()->countries->get_states();
             foreach ($countries_states as $country_id => $country_states) {
                 if (!empty($country_states)) {
                     $states[$country_id] = $country_states;

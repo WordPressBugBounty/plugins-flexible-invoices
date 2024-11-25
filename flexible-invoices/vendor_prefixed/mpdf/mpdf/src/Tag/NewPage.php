@@ -2,6 +2,6 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class NewPage extends \WPDeskFIVendor\Mpdf\Tag\FormFeed
+class NewPage extends FormFeed
 {
 }

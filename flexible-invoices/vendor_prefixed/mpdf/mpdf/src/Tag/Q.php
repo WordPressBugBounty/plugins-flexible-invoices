@@ -2,6 +2,6 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class Q extends \WPDeskFIVendor\Mpdf\Tag\InlineTag
+class Q extends InlineTag
 {
 }

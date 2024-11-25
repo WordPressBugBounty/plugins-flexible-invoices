@@ -8,7 +8,7 @@ namespace WPDeskFIVendor;
 if (!\defined('ABSPATH')) {
     exit;
 }
-// Exit if accessed directly
+// Exit if accessed directly 
 ?>
 
 <?php 
@@ -43,7 +43,7 @@ if (isset($download_url) && isset($document_name)) {
 	</thead>
 	<tbody>
 	<?php 
-echo \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Email\BaseEmail::get_email_order_items($order);
+echo WPDesk\Library\FlexibleInvoicesCore\Email\BaseEmail::get_email_order_items($order);
 ?>
 	</tbody>
 	<tfoot>

@@ -25,18 +25,18 @@ class OrderTotals
      *
      * @param OrderItems $order_items
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\WPDeskOrder\OrderItems $order_items)
+    public function __construct(OrderItems $order_items)
     {
         $this->order_items = $order_items->get_items();
     }
     /**
      * @return Totals
      */
-    public function get_totals() : \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\Totals
+    public function get_totals(): Totals
     {
-        $totals = new \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\Totals();
+        $totals = new Totals();
         $total_net = $total_vat = $total_qty = $total_gross = 0;
-        if (\count($this->order_items) > 0) {
+        if (count($this->order_items) > 0) {
             foreach ($this->order_items as $item) {
                 $total_net += $item->get_net_price();
                 $total_vat += $item->get_vat_price();
@@ -48,11 +48,11 @@ class OrderTotals
             $totals->set_currency_slug($currency_slug);
             $totals->set_currency_symbol($currency_symbol);
             $totals->set_net_price($total_net);
-            $totals->set_net_price_r(\WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Price::get_rounded_price($totals->get_net_price()));
+            $totals->set_net_price_r(Price::get_rounded_price($totals->get_net_price()));
             $totals->set_gross_price($total_gross);
-            $totals->set_gross_price_r(\WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Price::get_rounded_price($totals->get_gross_price()));
+            $totals->set_gross_price_r(Price::get_rounded_price($totals->get_gross_price()));
             $totals->set_vat_price($total_vat);
-            $totals->set_vat_price_r(\WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Price::get_rounded_price($totals->get_vat_price()));
+            $totals->set_vat_price_r(Price::get_rounded_price($totals->get_vat_price()));
             $totals->set_qty($total_qty);
         }
         return $totals;

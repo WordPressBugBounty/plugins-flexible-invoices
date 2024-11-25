@@ -25,7 +25,7 @@ use WPDeskFIVendor\WPDesk_Plugin_Info;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore
  */
-class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+class InvoicesIntegration implements Hookable
 {
     const VAT_NUMBER_FIELD_ID = 'vat_number';
     const PLUGIN_NAME = 'flexible-invoices-woocommerce';
@@ -90,12 +90,12 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
      * @param WPDesk_Plugin_Info $plugin_info
      * @param LoggerInterface    $logger
      */
-    public function __construct(\WPDeskFIVendor\WPDesk_Plugin_Info $plugin_info, \WPDeskFIVendor\Psr\Log\LoggerInterface $logger)
+    public function __construct(WPDesk_Plugin_Info $plugin_info, LoggerInterface $logger)
     {
-        $this->library_info = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\LibraryInfo($plugin_info);
+        $this->library_info = new LibraryInfo($plugin_info);
         $this->set_is_super();
         $this->logger = $logger;
-        $this->settings = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings();
+        $this->settings = new Settings();
         $this->set_renderer();
         $this->set_strategy();
         $this->set_source_factory();
@@ -111,21 +111,21 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
      */
     public function set_documents_creators()
     {
-        $this->add_creator(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\InvoiceCreator($this->get_source_factory(), \__('Issue Invoice', 'flexible-invoices'), \__('Invoice', 'flexible-invoices')));
+        $this->add_creator(new InvoiceCreator($this->get_source_factory(), __('Issue Invoice', 'flexible-invoices'), __('Invoice', 'flexible-invoices')));
     }
     /**
      * Is pro version.
      *
      * @return bool
      */
-    public static final function is_pro() : bool
+    final public static function is_pro(): bool
     {
         return self::$is_super;
     }
     /**
      * @return Settings
      */
-    public function get_settings() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings
+    public function get_settings(): Settings
     {
         return $this->settings;
     }
@@ -134,12 +134,12 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
      */
     public function set_library_url($plugin)
     {
-        self::$plugin_url = \trailingslashit($plugin);
+        self::$plugin_url = trailingslashit($plugin);
     }
     /**
      * @return LoggerInterface
      */
-    public function get_logger() : \WPDeskFIVendor\Psr\Log\LoggerInterface
+    public function get_logger(): LoggerInterface
     {
         return $this->logger;
     }
@@ -148,16 +148,16 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
      */
     private function set_renderer()
     {
-        $resolver = new \WPDeskFIVendor\WPDesk\View\Resolver\ChainResolver();
-        $resolver->appendResolver(new \WPDeskFIVendor\WPDesk\View\Resolver\DirResolver(\get_stylesheet_directory() . '/flexible-invoices/'));
-        $resolver->appendResolver(new \WPDeskFIVendor\WPDesk\View\Resolver\DirResolver($this->library_info->get_plugin_dir() . 'templates/'));
-        $resolver->appendResolver(new \WPDeskFIVendor\WPDesk\View\Resolver\DirResolver($this->library_info->get_template_dir()));
-        $this->renderer = new \WPDeskFIVendor\WPDesk\View\Renderer\SimplePhpRenderer($resolver);
+        $resolver = new ChainResolver();
+        $resolver->appendResolver(new DirResolver(get_stylesheet_directory() . '/flexible-invoices/'));
+        $resolver->appendResolver(new DirResolver($this->library_info->get_plugin_dir() . 'templates/'));
+        $resolver->appendResolver(new DirResolver($this->library_info->get_template_dir()));
+        $this->renderer = new SimplePhpRenderer($resolver);
     }
     /**
      * @return Renderer
      */
-    public function get_renderer() : \WPDeskFIVendor\WPDesk\View\Renderer\Renderer
+    public function get_renderer(): Renderer
     {
         return $this->renderer;
     }
@@ -166,30 +166,30 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
      */
     protected function set_strategy()
     {
-        if (!\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active()) {
-            $this->strategy = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsWordpressStrategy($this->settings);
+        if (!Helpers\WooCommerce::is_active()) {
+            $this->strategy = new SettingsStrategy\SettingsWordpressStrategy($this->settings);
         } else {
-            $this->strategy = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsWoocommerceStrategy($this->settings);
+            $this->strategy = new SettingsStrategy\SettingsWoocommerceStrategy($this->settings);
         }
     }
     /**
      * @return SettingsStrategy\SettingsStrategy
      */
-    public function get_strategy() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy
+    public function get_strategy(): SettingsStrategy\SettingsStrategy
     {
         return $this->strategy;
     }
     /**
      * @param DocumentCreator $creator
      */
-    public function add_creator(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCreator $creator)
+    public function add_creator(DocumentCreator $creator)
     {
         $this->creators[] = $creator;
     }
     /**
      * @return DocumentCreator[]
      */
-    public function get_creators() : array
+    public function get_creators(): array
     {
         return $this->creators;
     }
@@ -198,12 +198,12 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
      */
     private function set_source_factory()
     {
-        $this->data_factory = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory($this->settings);
+        $this->data_factory = new DataSourceFactory($this->settings);
     }
     /**
      * @return DataSourceFactory
      */
-    public function get_source_factory() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory
+    public function get_source_factory(): DataSourceFactory
     {
         return $this->data_factory;
     }
@@ -212,16 +212,16 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
      */
     private function set_document_factory()
     {
-        $creator_container = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\CreatorContainer();
+        $creator_container = new Integration\CreatorContainer();
         foreach ($this->get_creators() as $creator) {
             $creator_container->add_creator($creator);
         }
-        $this->document_factory = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory($creator_container);
+        $this->document_factory = new Integration\DocumentFactory($creator_container);
     }
     /**
      * @return Integration\DocumentFactory
      */
-    public function get_document_factory() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory
+    public function get_document_factory(): Integration\DocumentFactory
     {
         return $this->document_factory;
     }
@@ -230,18 +230,18 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
      */
     private function set_pdf_writer()
     {
-        $this->pdf = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\PDF($this->library_info, $this->renderer, $this->document_factory, $this->strategy);
+        $this->pdf = new PDF($this->library_info, $this->renderer, $this->document_factory, $this->strategy);
     }
     /**
      * @return PDF
      */
-    public function get_pdf_writer() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\PDF
+    public function get_pdf_writer(): PDF
     {
         return $this->pdf;
     }
     private function set_is_super()
     {
-        $plugin_slug = \trim(\dirname($this->library_info->get_plugin_info()->get_plugin_file_name()), '/ ');
+        $plugin_slug = trim(dirname($this->library_info->get_plugin_info()->get_plugin_file_name()), '/ ');
         if ($plugin_slug === self::PLUGIN_NAME) {
             self::$is_super = \true;
         }
@@ -249,7 +249,7 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
     /**
      * @return bool
      */
-    public static final function is_super() : bool
+    final public static function is_super(): bool
     {
         return self::$is_super;
     }
@@ -258,12 +258,12 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
      */
     private function set_document_saver()
     {
-        $this->save_document = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\SaveDocument($this->document_factory, $this->settings, $this->strategy, $this->logger, $this->library_info->get_plugin_version());
+        $this->save_document = new Integration\SaveDocument($this->document_factory, $this->settings, $this->strategy, $this->logger, $this->library_info->get_plugin_version());
     }
     /**
      * @return Integration\SaveDocument
      */
-    public function get_document_saver() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\SaveDocument
+    public function get_document_saver(): Integration\SaveDocument
     {
         return $this->save_document;
     }
@@ -279,7 +279,7 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
         $library_info = $this->library_info;
         $logger = $this->get_logger();
         $pdf = $this->get_pdf_writer();
-        $external_plugin_access = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\ExternalPluginsAccess($library_info->get_plugin_info()->get_version(), $document_factory, $document_saver, $strategy, $settings, $library_info, $logger, $this->renderer, $pdf);
+        $external_plugin_access = new Integration\ExternalPluginsAccess($library_info->get_plugin_info()->get_version(), $document_factory, $document_saver, $strategy, $settings, $library_info, $logger, $this->renderer, $pdf);
         /**
          * Hook for integrate with external plugins.
          *
@@ -287,7 +287,7 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
          *
          * @since 3.0.0
          */
-        \do_action('fi/core/initialized', $external_plugin_access);
+        do_action('fi/core/initialized', $external_plugin_access);
     }
     /**
      * Fire hooks.
@@ -295,35 +295,35 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
     public function hooks()
     {
         $this->wordpress_integration_hooks();
-        if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active()) {
+        if (Helpers\WooCommerce::is_active()) {
             $this->woocommerce_integration_hooks();
         }
         $this->hooks_on_hookable_objects();
-        \add_action('init', [$this, 'fire_external_integration_actions']);
+        add_action('init', [$this, 'fire_external_integration_actions']);
     }
     /**
      * Register WordPress hooks.
      */
     private function wordpress_integration_hooks()
     {
-        $capabilities = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\PostTypeCapabilities($this->settings);
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\DefaultSettings());
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Assets($this->library_info->get_assets_url()));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\SettingsForm($this->strategy, $this->library_info->get_template_dir(), $this->library_info->get_assets_url()));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType($capabilities));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterMetaBoxes($this->strategy, $this->document_factory, $this->renderer, $this->settings));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\PostTypeColumns($this->strategy, $this->document_factory));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Dashboard($this->document_factory, $this->strategy, $capabilities, $this->renderer, $this->settings));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\BulkActions());
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\User());
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\FindProducts($this->settings));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\DuplicatesNotice());
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Reports\GenerateReport($this->get_settings(), $this->document_factory, $this->renderer, $this->library_info));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Reports\ReportsMenuPage($this->library_info->get_template_dir()));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Download\DownloadMenuPage($this->library_info->get_template_dir()));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Download\BatchDocumentsDownload($this->get_pdf_writer(), $this->document_factory));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\SearchCustomer());
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Beacon\BeaconLoader($this->library_info));
+        $capabilities = new WordPress\PostTypeCapabilities($this->settings);
+        $this->add_hookable(new WordPress\DefaultSettings());
+        $this->add_hookable(new WordPress\Assets($this->library_info->get_assets_url()));
+        $this->add_hookable(new SettingsForm($this->strategy, $this->library_info->get_template_dir(), $this->library_info->get_assets_url()));
+        $this->add_hookable(new WordPress\RegisterPostType($capabilities));
+        $this->add_hookable(new WordPress\RegisterMetaBoxes($this->strategy, $this->document_factory, $this->renderer, $this->settings));
+        $this->add_hookable(new WordPress\PostTypeColumns($this->strategy, $this->document_factory));
+        $this->add_hookable(new WordPress\Dashboard($this->document_factory, $this->strategy, $capabilities, $this->renderer, $this->settings));
+        $this->add_hookable(new WordPress\BulkActions());
+        $this->add_hookable(new WordPress\User());
+        $this->add_hookable(new WordPress\FindProducts($this->settings));
+        $this->add_hookable(new WordPress\DuplicatesNotice());
+        $this->add_hookable(new WordPress\Reports\GenerateReport($this->get_settings(), $this->document_factory, $this->renderer, $this->library_info));
+        $this->add_hookable(new WordPress\Reports\ReportsMenuPage($this->library_info->get_template_dir()));
+        $this->add_hookable(new WordPress\Download\DownloadMenuPage($this->library_info->get_template_dir()));
+        $this->add_hookable(new WordPress\Download\BatchDocumentsDownload($this->get_pdf_writer(), $this->document_factory));
+        $this->add_hookable(new WordPress\SearchCustomer());
+        $this->add_hookable(new BeaconLoader($this->library_info));
         $this->add_hookable($this->save_document);
         $this->add_hookable($this->get_pdf_writer());
     }
@@ -332,22 +332,22 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
      */
     private function woocommerce_integration_hooks()
     {
-        $order_note = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\OrderNote();
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\CheckoutAssets($this->settings, $this->library_info->get_assets_url()));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\MyAccount($this->document_factory, $this->renderer));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\CreateDocumentForOrder($this->document_factory, $this->settings, $this->save_document, $this->renderer, $this->get_pdf_writer()));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\DocumentPostMeta());
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Order\FormattedOrderMeta());
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Order\DeleteDocumentRelation($this->document_factory));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Order\RegisterMetaBox($this->document_factory));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Taxes());
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Subscriptions());
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\SequentialOrderNumber($this->settings));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\OrderPaymentUrl($this->settings));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Email\RegisterEmails($this->document_factory));
+        $order_note = new OrderNote();
+        $this->add_hookable(new WooCommerce\CheckoutAssets($this->settings, $this->library_info->get_assets_url()));
+        $this->add_hookable(new WooCommerce\MyAccount($this->document_factory, $this->renderer));
+        $this->add_hookable(new WooCommerce\CreateDocumentForOrder($this->document_factory, $this->settings, $this->save_document, $this->renderer, $this->get_pdf_writer()));
+        $this->add_hookable(new WooCommerce\DocumentPostMeta());
+        $this->add_hookable(new WooCommerce\Order\FormattedOrderMeta());
+        $this->add_hookable(new WooCommerce\Order\DeleteDocumentRelation($this->document_factory));
+        $this->add_hookable(new WooCommerce\Order\RegisterMetaBox($this->document_factory));
+        $this->add_hookable(new WooCommerce\Taxes());
+        $this->add_hookable(new WooCommerce\Subscriptions());
+        $this->add_hookable(new WooCommerce\SequentialOrderNumber($this->settings));
+        $this->add_hookable(new WooCommerce\OrderPaymentUrl($this->settings));
+        $this->add_hookable(new Email\RegisterEmails($this->document_factory));
         $this->add_hookable($order_note);
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Email\EmailIntegration($this->document_factory, $this->get_pdf_writer(), $order_note));
-        $this->add_hookable(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Checkout($this->settings));
+        $this->add_hookable(new Email\EmailIntegration($this->document_factory, $this->get_pdf_writer(), $order_note));
+        $this->add_hookable(new WooCommerce\Checkout($this->settings));
         $this->add_checkout_fields();
     }
     /**
@@ -356,11 +356,11 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
     private function add_checkout_fields()
     {
         if ($this->settings->get('woocommerce_add_nip_field') === 'yes') {
-            $vat_number_field = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields\VatNumber(
+            $vat_number_field = new VatNumber(
                 self::VAT_NUMBER_FIELD_ID,
-                \__($this->settings->get('woocommerce_nip_label'), 'flexible-invoices'),
+                __($this->settings->get('woocommerce_nip_label'), 'flexible-invoices'),
                 //phpcs:ignore
-                \__($this->settings->get('woocommerce_nip_placeholder', ''), 'flexible-invoices')
+                __($this->settings->get('woocommerce_nip_placeholder', ''), 'flexible-invoices')
             );
             if ($this->settings->get('woocommerce_nip_required') === 'yes') {
                 $vat_number_field->set_required();
@@ -368,7 +368,7 @@ class InvoicesIntegration implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin
             $this->add_hookable($vat_number_field);
         }
         if ($this->settings->get('woocommerce_add_invoice_ask_field') === 'yes') {
-            $invoice_ask = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields\InvoiceAsk('invoice_ask', \__('I want an invoice', 'flexible-invoices'));
+            $invoice_ask = new InvoiceAsk('invoice_ask', __('I want an invoice', 'flexible-invoices'));
             $this->add_hookable($invoice_ask);
         }
     }

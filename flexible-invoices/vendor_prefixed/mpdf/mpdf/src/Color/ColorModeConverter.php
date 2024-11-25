@@ -12,7 +12,7 @@ class ColorModeConverter
     public function rgb2gray($c)
     {
         if (isset($c[4])) {
-            return [1, $c[1] * 0.21 + $c[2] * 0.71 + $c[3] * 0.07000000000000001, \ord(1), $c[4]];
+            return [1, $c[1] * 0.21 + $c[2] * 0.71 + $c[3] * 0.07000000000000001, ord(1), $c[4]];
         }
         return [1, $c[1] * 0.21 + $c[2] * 0.71 + $c[3] * 0.07000000000000001];
     }
@@ -36,7 +36,7 @@ class ColorModeConverter
         $cyan = 1 - $c[1] / 255;
         $magenta = 1 - $c[2] / 255;
         $yellow = 1 - $c[3] / 255;
-        $min = \min($cyan, $magenta, $yellow);
+        $min = min($cyan, $magenta, $yellow);
         if ($min == 1) {
             if ($c[0] == 5) {
                 return [6, 100, 100, 100, 100, $c[4]];
@@ -80,8 +80,8 @@ class ColorModeConverter
     public function rgb2hsl($r, $g, $b)
     {
         $h = 0;
-        $min = \min($r, $g, $b);
-        $max = \max($r, $g, $b);
+        $min = min($r, $g, $b);
+        $max = max($r, $g, $b);
         $diff = $max - $min;
         $l = ($max + $min) / 2;
         if ($diff == 0) {
@@ -135,9 +135,9 @@ class ColorModeConverter
                 $tmp = $l + $s - $s * $l;
             }
             $tmp2 = 2 * $l - $tmp;
-            $r = \round(255 * $this->hue2rgb($tmp2, $tmp, $h + 1 / 3));
-            $g = \round(255 * $this->hue2rgb($tmp2, $tmp, $h));
-            $b = \round(255 * $this->hue2rgb($tmp2, $tmp, $h - 1 / 3));
+            $r = round(255 * $this->hue2rgb($tmp2, $tmp, $h + 1 / 3));
+            $g = round(255 * $this->hue2rgb($tmp2, $tmp, $h));
+            $b = round(255 * $this->hue2rgb($tmp2, $tmp, $h - 1 / 3));
         }
         return [$r, $g, $b];
     }

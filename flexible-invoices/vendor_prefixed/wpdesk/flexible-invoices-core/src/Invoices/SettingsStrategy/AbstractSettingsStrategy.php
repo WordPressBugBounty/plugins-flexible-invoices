@@ -6,7 +6,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 /**
  * @package WPDesk\Library\FlexibleInvoicesCore\Strategy
  */
-abstract class AbstractSettingsStrategy implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy
+abstract class AbstractSettingsStrategy implements SettingsStrategy
 {
     /**
      * @var array
@@ -31,19 +31,19 @@ abstract class AbstractSettingsStrategy implements \WPDeskFIVendor\WPDesk\Librar
     /**
      * @param Settings $settings
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings $settings)
+    public function __construct(Settings $settings)
     {
         $this->settings = $settings;
     }
     /**
      * Get currencies from option
      */
-    public function get_currencies() : array
+    public function get_currencies(): array
     {
         if ($this->settings->has('currency')) {
             $currencies_options = $this->settings->get('currency');
             $currencies = [];
-            if (\is_array($currencies_options)) {
+            if (is_array($currencies_options)) {
                 foreach ($currencies_options as $currency) {
                     $currencies[$currency['currency']] = $currency['currency'];
                 }
@@ -55,7 +55,7 @@ abstract class AbstractSettingsStrategy implements \WPDeskFIVendor\WPDesk\Librar
     /**
      * Get taxes from option
      */
-    public function get_taxes() : array
+    public function get_taxes(): array
     {
         $taxes = $this->settings->get('tax');
         $tax_rates = [];
@@ -73,8 +73,8 @@ abstract class AbstractSettingsStrategy implements \WPDeskFIVendor\WPDesk\Librar
          *
          * @since 1.3.0
          */
-        $rates = (array) \apply_filters('inspire_invoices_vat_types', $tax_rates);
-        if (empty($rates) || !\is_array($rates)) {
+        $rates = (array) apply_filters('inspire_invoices_vat_types', $tax_rates);
+        if (empty($rates) || !is_array($rates)) {
             return [['index' => 0, 'rate' => 0, 'name' => '0%']];
         }
         return $rates;
@@ -82,27 +82,27 @@ abstract class AbstractSettingsStrategy implements \WPDeskFIVendor\WPDesk\Librar
     /**
      * @return string
      */
-    private function get_default_payment_methods() : string
+    private function get_default_payment_methods(): string
     {
-        $payment_methods = ['bank-transfer' => \esc_html__('Bank transfer', 'flexible-invoices'), 'cash' => \esc_html__('Cash', 'flexible-invoices'), 'other' => \esc_html__('Other', 'flexible-invoices')];
-        return \implode("\n", $payment_methods);
+        $payment_methods = ['bank-transfer' => esc_html__('Bank transfer', 'flexible-invoices'), 'cash' => esc_html__('Cash', 'flexible-invoices'), 'other' => esc_html__('Other', 'flexible-invoices')];
+        return implode("\n", $payment_methods);
     }
     /**
      * @return array
      */
-    public function get_payment_methods() : array
+    public function get_payment_methods(): array
     {
-        $payment_methods_option = \explode("\n", $this->settings->get('payment_methods', $this->get_default_payment_methods()));
+        $payment_methods_option = explode("\n", $this->settings->get('payment_methods', $this->get_default_payment_methods()));
         $payment_methods = [];
         foreach ($payment_methods_option as $payment_method) {
-            $payment_methods[\sanitize_title($payment_method)] = $payment_method;
+            $payment_methods[sanitize_title($payment_method)] = $payment_method;
         }
         return ['standard' => $payment_methods];
     }
     /**
      * @return array
      */
-    public function get_payment_statuses() : array
+    public function get_payment_statuses(): array
     {
         /**
          * Filters payment statuses.
@@ -113,14 +113,14 @@ abstract class AbstractSettingsStrategy implements \WPDeskFIVendor\WPDesk\Librar
          *
          * @since    1.3.0
          */
-        return (array) \apply_filters('inspire_invoices_payment_statuses', ['topay' => \esc_html__('Due', 'flexible-invoices'), 'paid' => \esc_html__('Paid', 'flexible-invoices')]);
+        return (array) apply_filters('inspire_invoices_payment_statuses', ['topay' => esc_html__('Due', 'flexible-invoices'), 'paid' => esc_html__('Paid', 'flexible-invoices')]);
     }
     /**
      * @param string $value
      *
      * @return array
      */
-    public function get_tax_value(string $value) : array
+    public function get_tax_value(string $value): array
     {
         foreach ($this->get_taxes() as $tax) {
             if ((string) $tax['rate'] === $value) {
@@ -132,7 +132,7 @@ abstract class AbstractSettingsStrategy implements \WPDeskFIVendor\WPDesk\Librar
     /**
      * @return Settings
      */
-    public function get_settings() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings
+    public function get_settings(): Settings
     {
         return $this->settings;
     }

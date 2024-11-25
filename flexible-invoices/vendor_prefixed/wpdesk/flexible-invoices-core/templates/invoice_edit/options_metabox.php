@@ -61,7 +61,7 @@ echo \esc_attr($document->get_date_of_pay());
 
 	<div class="actions">
 		<?php 
-echo \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Links::download_email_links($document);
+echo Links::download_email_links($document);
 ?>
 	</div>
 

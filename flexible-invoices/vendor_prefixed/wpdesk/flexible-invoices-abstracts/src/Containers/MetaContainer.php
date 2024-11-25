@@ -6,7 +6,7 @@ use WPDeskFIVendor\WPDesk\Persistence\PersistentContainer;
 /**
  * Meta container interface for .
  */
-interface MetaContainer extends \WPDeskFIVendor\WPDesk\Persistence\PersistentContainer
+interface MetaContainer extends PersistentContainer
 {
     /**
      * @param string $name

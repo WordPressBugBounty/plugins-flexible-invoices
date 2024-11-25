@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\Type;
@@ -15,7 +15,7 @@ use WPDeskFIVendor\setasign\Fpdi\PdfParser\Tokenizer;
 /**
  * Class representing a PDF dictionary object
  */
-class PdfDictionary extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
+class PdfDictionary extends PdfType
 {
     /**
      * Parses a dictionary of the passed tokenizer, stream-reader and parser.
@@ -26,7 +26,7 @@ class PdfDictionary extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
      * @return bool|self
      * @throws PdfTypeException
      */
-    public static function parse(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Tokenizer $tokenizer, \WPDeskFIVendor\setasign\Fpdi\PdfParser\StreamReader $streamReader, \WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParser $parser)
+    public static function parse(Tokenizer $tokenizer, StreamReader $streamReader, PdfParser $parser)
     {
         $entries = [];
         while (\true) {
@@ -40,7 +40,7 @@ class PdfDictionary extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
                 return \false;
             }
             // ensure the first value to be a Name object
-            if (!$key instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfName) {
+            if (!$key instanceof PdfName) {
                 $lastToken = null;
                 // ignore all other entries and search for the closing brackets
                 while (($token = $tokenizer->getNextToken()) !== '>' && $token !== \false && $lastToken !== '>') {
@@ -55,11 +55,11 @@ class PdfDictionary extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
             if ($value === \false) {
                 return \false;
             }
-            if ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNull) {
+            if ($value instanceof PdfNull) {
                 continue;
             }
             // catch missing value
-            if ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfToken && $value->value === '>' && $streamReader->getByte() === '>') {
+            if ($value instanceof PdfToken && $value->value === '>' && $streamReader->getByte() === '>') {
                 $streamReader->addOffset(1);
                 break;
             }
@@ -90,13 +90,16 @@ class PdfDictionary extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
      * @return PdfNull|PdfType
      * @throws PdfTypeException
      */
-    public static function get($dictionary, $key, \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType $default = null)
+    public static function get($dictionary, $key, $default = null)
     {
+        if ($default !== null && !$default instanceof PdfType) {
+            throw new \InvalidArgumentException('Default value must be an instance of PdfType or null');
+        }
         $dictionary = self::ensure($dictionary);
         if (isset($dictionary->value[$key])) {
             return $dictionary->value[$key];
         }
-        return $default === null ? new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNull() : $default;
+        return $default === null ? new PdfNull() : $default;
     }
     /**
      * Ensures that the passed value is a PdfDictionary instance.
@@ -107,6 +110,6 @@ class PdfDictionary extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
      */
     public static function ensure($dictionary)
     {
-        return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::ensureType(self::class, $dictionary, 'Dictionary value expected.');
+        return PdfType::ensureType(self::class, $dictionary, 'Dictionary value expected.');
     }
 }

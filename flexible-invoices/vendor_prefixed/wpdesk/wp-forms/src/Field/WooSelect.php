@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\WPDesk\Forms\Field;
 
-class WooSelect extends \WPDeskFIVendor\WPDesk\Forms\Field\SelectField
+class WooSelect extends SelectField
 {
     public function __construct()
     {

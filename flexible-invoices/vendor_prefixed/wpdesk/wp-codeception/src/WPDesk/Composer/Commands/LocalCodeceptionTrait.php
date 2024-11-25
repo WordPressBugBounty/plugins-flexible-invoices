@@ -15,17 +15,17 @@ trait LocalCodeceptionTrait
     private function getWpDeskConfiguration()
     {
         try {
-            $wpdesk_configuration = \WPDeskFIVendor\Symfony\Component\Yaml\Yaml::parseFile(\getcwd() . '/tests/codeception/wpdesk.yml');
-        } catch (\WPDeskFIVendor\Symfony\Component\Yaml\Exception\ParseException $e) {
+            $wpdesk_configuration = Yaml::parseFile(getcwd() . '/tests/codeception/wpdesk.yml');
+        } catch (ParseException $e) {
             $wpdesk_configuration = array();
         }
-        return \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\Configuration::createFromEnvAndConfiguration($wpdesk_configuration);
+        return Configuration::createFromEnvAndConfiguration($wpdesk_configuration);
     }
     /**
      * @param OutputInterface $output
      * @param Configuration   $configuration
      */
-    private function prepareWpConfig(\WPDeskFIVendor\Symfony\Component\Console\Output\OutputInterface $output, \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\Configuration $configuration)
+    private function prepareWpConfig(OutputInterface $output, Configuration $configuration)
     {
         $apache_document_root = $configuration->getApacheDocumentRoot();
         $this->executeWpCliAndOutput('config set WP_DEBUG true --raw', $output, $apache_document_root);
@@ -49,16 +49,16 @@ trait LocalCodeceptionTrait
      */
     private function replace_in_file($filename, $string_to_replace, $replace_with)
     {
-        $content = \file_get_contents($filename);
-        $content_chunks = \explode($string_to_replace, $content);
-        $content = \implode($replace_with, $content_chunks);
-        \file_put_contents($filename, $content);
+        $content = file_get_contents($filename);
+        $content_chunks = explode($string_to_replace, $content);
+        $content = implode($replace_with, $content_chunks);
+        file_put_contents($filename, $content);
     }
     /**
      * @param OutputInterface $output
      * @param Configuration   $configuration
      */
-    private function activatePlugins(\WPDeskFIVendor\Symfony\Component\Console\Output\OutputInterface $output, \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\Configuration $configuration)
+    private function activatePlugins(OutputInterface $output, Configuration $configuration)
     {
         $this->executeWpCliAndOutput('plugin deactivate --all', $output, $configuration->getApacheDocumentRoot());
         $plugins = '';
@@ -88,7 +88,7 @@ trait LocalCodeceptionTrait
     private function prepareLocalPluginDir($plugin, $local_plugins_dir = \false)
     {
         if (!$local_plugins_dir) {
-            $local_plugins_dir = \dirname(\getcwd());
+            $local_plugins_dir = dirname(getcwd());
         }
         return $this->trailingslashit($local_plugins_dir) . $plugin;
     }
@@ -99,14 +99,14 @@ trait LocalCodeceptionTrait
      */
     private function trailingslashit($string)
     {
-        return \rtrim($string, '/\\') . '/';
+        return rtrim($string, '/\\') . '/';
     }
     /**
      * @param string          $command
      * @param OutputInterface $output
      * @param string          $apache_document_root
      */
-    private function executeWpCliAndOutput($command, \WPDeskFIVendor\Symfony\Component\Console\Output\OutputInterface $output, $apache_document_root)
+    private function executeWpCliAndOutput($command, OutputInterface $output, $apache_document_root)
     {
         $output->write("WPCLI: {$command}\n");
         $wp = "wp";
@@ -119,13 +119,13 @@ trait LocalCodeceptionTrait
      * @param Configuration   $configuration
      * @param bool            $coverage
      */
-    private function installPlugin(string $plugin_dir, \WPDeskFIVendor\Symfony\Component\Console\Output\OutputInterface $output, \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\Configuration $configuration, bool $coverage = \true)
+    private function installPlugin(string $plugin_dir, OutputInterface $output, Configuration $configuration, bool $coverage = \true)
     {
-        $source = $this->preparePathForRsync(\getcwd() . '/*', $configuration::isWindows());
+        $source = $this->preparePathForRsync(getcwd() . '/*', $configuration::isWindows());
         $target = $this->preparePathForRsync($this->prepareTargetDir($plugin_dir, $configuration) . '/', $configuration::isWindows());
         $rsync = 'rsync -av ' . $source . ' ' . $target . ' --exclude=node_modules --exclude=.git --exclude=.idea --exclude=vendor --exclude=vendor_prefixed --exclude=tests/wordpress ';
         $this->execAndOutput($rsync, $output);
-        \copy(\getcwd() . '/.env.testing', $this->prepareTargetDir($plugin_dir, $configuration) . '/.env.testing');
+        copy(getcwd() . '/.env.testing', $this->prepareTargetDir($plugin_dir, $configuration) . '/.env.testing');
         if (!$coverage) {
             $this->execAndOutput('composer install --working-dir=' . $configuration->getApacheDocumentRoot() . '/wp-content/plugins/' . $plugin_dir, $output);
             $this->execAndOutput('composer install --no-dev --working-dir=' . $configuration->getApacheDocumentRoot() . '/wp-content/plugins/' . $plugin_dir, $output);
@@ -143,8 +143,8 @@ trait LocalCodeceptionTrait
     {
         if ($is_windows) {
             $path = '/cygdrive/' . $path;
-            $path = \str_replace(':', '', $path);
-            $path = \str_replace('\\', '/', $path);
+            $path = str_replace(':', '', $path);
+            $path = str_replace('\\', '/', $path);
         }
         return $path;
     }
@@ -154,7 +154,7 @@ trait LocalCodeceptionTrait
      *
      * @return string
      */
-    private function prepareTargetDir($plugin_slug, \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\Configuration $configuration)
+    private function prepareTargetDir($plugin_slug, Configuration $configuration)
     {
         return $configuration->getApacheDocumentRoot() . '/wp-content/plugins/' . $plugin_slug;
     }
@@ -162,12 +162,12 @@ trait LocalCodeceptionTrait
      * @param Configuration $configuration
      * @param OutputInterface $output
      */
-    private function prepareCommonWpWcConfiguration(\WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\Configuration $configuration, \WPDeskFIVendor\Symfony\Component\Console\Output\OutputInterface $output)
+    private function prepareCommonWpWcConfiguration(Configuration $configuration, OutputInterface $output)
     {
         $this->executeWpCliAndOutput('db reset --yes', $output, $configuration->getApacheDocumentRoot());
         $this->executeWpCliAndOutput('core install --url=' . $configuration->getWptestsIp() . ' --title=Woo-tests --admin_user=admin --admin_password=admin --admin_email=grola@seostudio.pl --skip-email', $output, $configuration->getApacheDocumentRoot());
         $commands = array('theme activate storefront-wpdesk-tests', 'plugin activate woocommerce');
-        $commands = \array_merge($commands, $this->prepareWcOptionsCommands(), $this->prepareTaxes(), $this->prepareShippingMethods(), $this->prepareWooCommercePages(), $this->prepareCustomer(), $this->prepareDisableRESTApiPermissions(), $this->prepareCreateProductsCommands(), $this->revertCartAndCheckoutToOldVersion($configuration->getApacheDocumentRoot()), $configuration->getPrepareDatabase());
+        $commands = array_merge($commands, $this->prepareWcOptionsCommands(), $this->prepareTaxes(), $this->prepareShippingMethods(), $this->prepareWooCommercePages(), $this->prepareCustomer(), $this->prepareDisableRESTApiPermissions(), $this->prepareCreateProductsCommands(), $this->revertCartAndCheckoutToOldVersion($configuration->getApacheDocumentRoot()), $configuration->getPrepareDatabase());
         foreach ($commands as $command) {
             $this->executeWpCliAndOutput($command, $output, $configuration->getApacheDocumentRoot());
         }
@@ -177,7 +177,7 @@ trait LocalCodeceptionTrait
      */
     private function prepareWcOptionsCommands()
     {
-        return array('option update woocommerce_admin_notices \'{}\'', 'option update storefront_nux_dismissed 1', 'option set woocommerce_store_address "al. Jana Pawła 12"', 'option set woocommerce_store_address_2 ""', 'option set woocommerce_store_city "Warszawa"', 'option set woocommerce_default_country "PL"', 'option set woocommerce_store_postalcode "22-100"', 'option set woocommerce_currency "PLN"', 'option set woocommerce_currency_pos "right_space"', 'option set woocommerce_product_type "physical"', 'option set woocommerce_allow_tracking "no"', 'option set --format=json woocommerce_stripe_settings \'{"enabled":"no","create_account":false,"email":false}\'', 'option set --format=json woocommerce_ppec_paypal_settings \'{"reroute_requests":false,"email":false}\'', 'option set --format=json woocommerce_cheque_settings \'{"enabled":"no"}\'', 'option set --format=json woocommerce_bacs_settings \'{"enabled":"no"}\'', 'option set --format=json woocommerce_cod_settings \'{"enabled":"yes"}\'', 'option set --format=json woocommerce_onboarding_profile \'{"skipped":true}\'', 'option set --format=json wc-admin-onboarding-profiler-reminder \'{"skipped":true}\'', 'option get  woocommerce_onboarding_profile', 'option set woocommerce_task_list_hidden "yes"', 'option set woocommerce_task_list_hidden "yes"', 'option set woocommerce_show_marketplace_suggestions "no"');
+        return array('option delete woocommerce_admin_notices', 'option update storefront_nux_dismissed 1', 'option set woocommerce_store_address "al. Jana Pawła 12"', 'option set woocommerce_store_address_2 ""', 'option set woocommerce_store_city "Warszawa"', 'option set woocommerce_default_country "PL"', 'option set woocommerce_store_postalcode "22-100"', 'option set woocommerce_currency "PLN"', 'option set woocommerce_currency_pos "right_space"', 'option set woocommerce_product_type "physical"', 'option set woocommerce_allow_tracking "no"', 'option set --format=json woocommerce_stripe_settings \'{"enabled":"no","create_account":false,"email":false}\'', 'option set --format=json woocommerce_ppec_paypal_settings \'{"reroute_requests":false,"email":false}\'', 'option set --format=json woocommerce_cheque_settings \'{"enabled":"no"}\'', 'option set --format=json woocommerce_bacs_settings \'{"enabled":"no"}\'', 'option set --format=json woocommerce_cod_settings \'{"enabled":"yes"}\'', 'option set --format=json woocommerce_onboarding_profile \'{"skipped":true}\'', 'option set --format=json wc-admin-onboarding-profiler-reminder \'{"skipped":true}\'', 'option get  woocommerce_onboarding_profile', 'option set woocommerce_task_list_hidden "yes"', 'option set woocommerce_task_list_hidden "yes"', 'option set woocommerce_show_marketplace_suggestions "no"');
     }
     /**
      * @return string[]
@@ -245,7 +245,7 @@ trait LocalCodeceptionTrait
      *
      * @throws \Composer\Downloader\FilesystemException
      */
-    private function prepareLocalCodeceptionTests(\WPDeskFIVendor\Symfony\Component\Console\Input\InputInterface $input, \WPDeskFIVendor\Symfony\Component\Console\Output\OutputInterface $output, bool $coverage = \false)
+    private function prepareLocalCodeceptionTests(InputInterface $input, OutputInterface $output, bool $coverage = \false)
     {
         $configuration = $this->getWpDeskConfiguration();
         $this->installPlugin($configuration->getPluginDir(), $output, $configuration, $coverage);
@@ -266,12 +266,12 @@ trait LocalCodeceptionTrait
     private function copyThemeFiles(array $theme_files, $theme_folder)
     {
         foreach ($theme_files as $theme_file) {
-            if (!\copy($theme_file, $this->trailingslashit($theme_folder) . \basename($theme_file))) {
-                throw new \WPDeskFIVendor\Composer\Downloader\FilesystemException('Error copying theme file: ' . $theme_file);
+            if (!copy($theme_file, $this->trailingslashit($theme_folder) . basename($theme_file))) {
+                throw new FilesystemException('Error copying theme file: ' . $theme_file);
             }
         }
     }
-    private function revertCartAndCheckoutToOldVersion(string $apache_document_root) : array
+    private function revertCartAndCheckoutToOldVersion(string $apache_document_root): array
     {
         return ['post update $(wp post list --field="ID" --post_type="page" --name="checkout" --allow-root --path=' . $apache_document_root . ') --post_content="[woocommerce_checkout]"', 'post update $(wp post list --field="ID" --post_type="page" --name="cart" --allow-root --path=' . $apache_document_root . ') --post_content="[woocommerce_cart]"'];
     }

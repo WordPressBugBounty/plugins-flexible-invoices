@@ -11,7 +11,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\ProductIt
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\ShippingItem;
 class CreateDocumentItem
 {
-    const ITEM_TYPES = [\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\ProductItem::TYPE, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\ShippingItem::TYPE, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\DiscountItem::TYPE, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\FeeItem::TYPE];
+    const ITEM_TYPES = [ProductItem::TYPE, ShippingItem::TYPE, DiscountItem::TYPE, FeeItem::TYPE];
     /**
      * @var string
      */
@@ -21,17 +21,17 @@ class CreateDocumentItem
      */
     public function __construct(string $type)
     {
-        if (!\in_array($type, self::ITEM_TYPES, \true)) {
-            throw new \Exception('Unknown item type! Choose from: ' . \implode(', ', self::ITEM_TYPES));
+        if (!in_array($type, self::ITEM_TYPES, \true)) {
+            throw new Exception('Unknown item type! Choose from: ' . implode(', ', self::ITEM_TYPES));
         }
         $this->type = $type;
     }
     /**
      * @return Item
      */
-    private function get_item_type() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\Item
+    private function get_item_type(): Item
     {
-        return (new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\ItemFactory($this->type))->get_item();
+        return (new ItemFactory($this->type))->get_item();
     }
     /**
      * @param float $net_price
@@ -40,7 +40,7 @@ class CreateDocumentItem
      *
      * @return Item
      */
-    public function net_price(float $net_price, float $vat_rate, int $qty = 1) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\Item
+    public function net_price(float $net_price, float $vat_rate, int $qty = 1): Item
     {
         $item = $this->get_item_type();
         $item->set_qty($qty);
@@ -59,7 +59,7 @@ class CreateDocumentItem
      *
      * @return Item
      */
-    public function gross_price(float $gross_price, float $vat_rate, int $qty = 1) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\Item
+    public function gross_price(float $gross_price, float $vat_rate, int $qty = 1): Item
     {
         $item = $this->get_item_type();
         $item->set_qty($qty);

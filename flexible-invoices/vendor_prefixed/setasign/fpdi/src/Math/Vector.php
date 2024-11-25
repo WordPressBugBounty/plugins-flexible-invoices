@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\Math;
@@ -49,7 +49,7 @@ class Vector
      * @param Matrix $matrix
      * @return Vector
      */
-    public function multiplyWithMatrix(\WPDeskFIVendor\setasign\Fpdi\Math\Matrix $matrix)
+    public function multiplyWithMatrix(Matrix $matrix)
     {
         list($a, $b, $c, $d, $e, $f) = $matrix->getValues();
         $x = $a * $this->x + $c * $this->y + $e;

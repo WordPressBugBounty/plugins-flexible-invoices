@@ -15,7 +15,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Translator;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Data
  */
-abstract class AbstractDataSource implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\SourceData
+abstract class AbstractDataSource implements SourceData
 {
     const ORDER_PAYMENT_PAID_STATUS = 'paid';
     const ORDER_PAYMENT_TO_PAY_STATUS = 'topay';
@@ -144,11 +144,11 @@ abstract class AbstractDataSource implements \WPDeskFIVendor\WPDesk\Library\Flex
      * @param Settings $settings
      * @param string   $document_type
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings $settings, string $document_type)
+    public function __construct(Settings $settings, string $document_type)
     {
         $this->settings = $settings;
         $this->document_type = $document_type;
-        $this->set_wpml_user_lang(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Translator::get_active_lang());
+        $this->set_wpml_user_lang(Translator::get_active_lang());
     }
     /**
      * @param string $value
@@ -160,168 +160,168 @@ abstract class AbstractDataSource implements \WPDeskFIVendor\WPDesk\Library\Flex
     /**
      * @return string
      */
-    public function get_document_type() : string
+    public function get_document_type(): string
     {
         return $this->document_type;
     }
     /**
      * @return int
      */
-    public function get_number() : int
+    public function get_number(): int
     {
         return $this->number;
     }
     /**
      * @return string
      */
-    public function get_formatted_number() : string
+    public function get_formatted_number(): string
     {
         return $this->formatted_number;
     }
     /**
      * @return string
      */
-    public function get_currency() : string
+    public function get_currency(): string
     {
         return $this->currency;
     }
     /**
      * @return string
      */
-    public function get_currency_symbol() : string
+    public function get_currency_symbol(): string
     {
         return $this->currency;
     }
     /**
      * @return string
      */
-    public function get_payment_method() : string
+    public function get_payment_method(): string
     {
         return $this->payment_method;
     }
     /**
      * @return string
      */
-    public function get_payment_method_name() : string
+    public function get_payment_method_name(): string
     {
         return $this->payment_method_name;
     }
     /**
      * @return string
      */
-    public function get_notes() : string
+    public function get_notes(): string
     {
         return $this->settings->get($this->get_document_type() . '_notes', '');
     }
     /**
      * @return string
      */
-    public function get_user_lang() : string
+    public function get_user_lang(): string
     {
         return $this->user_lang;
     }
     /**
      * @return int
      */
-    public function get_id() : int
+    public function get_id(): int
     {
         return $this->id;
     }
     /**
      * @return int
      */
-    public function get_order_id() : int
+    public function get_order_id(): int
     {
         return $this->order_id;
     }
     /**
      * @return float
      */
-    public function get_total_paid() : float
+    public function get_total_paid(): float
     {
         return $this->total_paid;
     }
     /**
      * @return string
      */
-    public function get_payment_status() : string
+    public function get_payment_status(): string
     {
         return $this->payment_status;
     }
     /**
      * @return int
      */
-    public function get_date_of_sale() : int
+    public function get_date_of_sale(): int
     {
         return $this->date_of_sale;
     }
     /**
      * @return int
      */
-    public function get_date_of_issue() : int
+    public function get_date_of_issue(): int
     {
         return $this->date_of_issue;
     }
     /**
      * @return int
      */
-    public function get_date_of_pay() : int
+    public function get_date_of_pay(): int
     {
         return $this->date_of_pay;
     }
     /**
      * @return int
      */
-    public function get_date_of_paid() : int
+    public function get_date_of_paid(): int
     {
         return $this->paid_date;
     }
     /**
      * @return float
      */
-    public function get_total_tax() : float
+    public function get_total_tax(): float
     {
         return $this->total_tax;
     }
     /**
      * @return float
      */
-    public function get_total_net() : float
+    public function get_total_net(): float
     {
         return $this->total_net;
     }
     /**
      * @return float
      */
-    public function get_total_gross() : float
+    public function get_total_gross(): float
     {
         return $this->total_gross;
     }
     /**
      * @return float
      */
-    public function get_tax() : float
+    public function get_tax(): float
     {
         return $this->tax;
     }
     /**
      * @return float
      */
-    public function get_discount() : float
+    public function get_discount(): float
     {
         return $this->discount;
     }
     /**
      * @return string
      */
-    public function get_customer_filter_field() : string
+    public function get_customer_filter_field(): string
     {
         return $this->customer_filtered_name;
     }
     /**
      * @return Customer
      */
-    public function get_customer() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Customer
+    public function get_customer(): Customer
     {
         $id = $this->customer['id'] ?? '';
         $name = $this->customer['name'] ?? '';
@@ -334,12 +334,12 @@ abstract class AbstractDataSource implements \WPDeskFIVendor\WPDesk\Library\Flex
         $phone = $this->customer['phone'] ?? '';
         $email = $this->customer['email'] ?? '';
         $state = $this->customer['state'] ?? '';
-        return new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\ValueObjects\DocumentCustomer($id, $name, $street, $postcode, $city, $vat_number, $country, $phone, $email, 'individual', $street2, $state);
+        return new DocumentCustomer($id, $name, $street, $postcode, $city, $vat_number, $country, $phone, $email, 'individual', $street2, $state);
     }
     /**
      * @return Recipient
      */
-    public function get_recipient() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Recipient
+    public function get_recipient(): Recipient
     {
         $name = $this->recipient['name'] ?? '';
         $street = $this->recipient['street'] ?? '';
@@ -351,12 +351,12 @@ abstract class AbstractDataSource implements \WPDeskFIVendor\WPDesk\Library\Flex
         $phone = $this->recipient['phone'] ?? '';
         $email = $this->recipient['email'] ?? '';
         $state = $this->recipient['state'] ?? '';
-        return new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\ValueObjects\DocumentRecipient($name, $street, $postcode, $city, $vat_number, $country, $phone, $email, $street2, $state);
+        return new DocumentRecipient($name, $street, $postcode, $city, $vat_number, $country, $phone, $email, $street2, $state);
     }
     /**
      * @return Seller
      */
-    public function get_seller() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Seller
+    public function get_seller(): Seller
     {
         $name = $this->settings->has('company_name') ? $this->settings->get('company_name') : '';
         $address = $this->settings->has('company_address') ? $this->settings->get('company_address') : '';
@@ -365,33 +365,33 @@ abstract class AbstractDataSource implements \WPDeskFIVendor\WPDesk\Library\Flex
         $bank_account = $this->settings->has('account_number') ? $this->settings->get('account_number') : '';
         $logo = $this->settings->has('company_logo') ? $this->settings->get('company_logo') : '';
         $signature_user = $this->settings->has('signature_user') ? $this->settings->get('signature_user') : '';
-        return new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\ValueObjects\DocumentSeller(0, $logo, $name, $address, $nip, $bank_name, $bank_account, $signature_user);
+        return new DocumentSeller(0, $logo, $name, $address, $nip, $bank_name, $bank_account, $signature_user);
     }
     /**
      * @return array
      */
-    public function get_items() : array
+    public function get_items(): array
     {
         return $this->items;
     }
     /**
      * @return int
      */
-    public function get_show_order_number() : int
+    public function get_show_order_number(): int
     {
         return 0;
     }
     /**
      * @return int
      */
-    public function get_corrected_id() : int
+    public function get_corrected_id(): int
     {
         return $this->corrected_id;
     }
     /**
      * @return int
      */
-    public function get_is_correction() : int
+    public function get_is_correction(): int
     {
         return 0;
     }

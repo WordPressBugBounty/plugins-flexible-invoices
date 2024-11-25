@@ -21,10 +21,10 @@ class PdfDate
      */
     public static function format($date)
     {
-        $z = \date('O');
+        $z = date('O');
         // +0200
-        $offset = \substr($z, 0, 3) . "'" . \substr($z, 3, 2) . "'";
+        $offset = substr($z, 0, 3) . "'" . substr($z, 3, 2) . "'";
         // +02'00'
-        return \date('YmdHis', $date) . $offset;
+        return date('YmdHis', $date) . $offset;
     }
 }

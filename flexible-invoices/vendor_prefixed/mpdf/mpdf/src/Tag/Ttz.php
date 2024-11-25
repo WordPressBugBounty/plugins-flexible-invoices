@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class Ttz extends \WPDeskFIVendor\Mpdf\Tag\SubstituteTag
+class Ttz extends SubstituteTag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {

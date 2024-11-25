@@ -6,19 +6,19 @@ class LanguageToFont implements \WPDeskFIVendor\Mpdf\Language\LanguageToFontInte
 {
     public function getLanguageOptions($llcc, $adobeCJK)
     {
-        $tags = \explode('-', $llcc);
-        $lang = \strtolower($tags[0]);
+        $tags = explode('-', $llcc);
+        $lang = strtolower($tags[0]);
         $country = '';
         $script = '';
         if (!empty($tags[1])) {
-            if (\strlen($tags[1]) === 4) {
-                $script = \strtolower($tags[1]);
+            if (strlen($tags[1]) === 4) {
+                $script = strtolower($tags[1]);
             } else {
-                $country = \strtolower($tags[1]);
+                $country = strtolower($tags[1]);
             }
         }
         if (!empty($tags[2])) {
-            $country = \strtolower($tags[2]);
+            $country = strtolower($tags[2]);
         }
         $unifont = '';
         $coreSuitable = \false;

@@ -30,7 +30,7 @@ echo \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Template::rtl_a
 ?>;"><?php 
 \esc_html_e('Due', 'flexible-invoices');
 ?>: <strong><?php 
-echo $helper->string_as_money(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\CalculateTotals::calculate_due_price($invoice->get_total_gross(), $invoice->get_total_paid()));
+echo $helper->string_as_money(CalculateTotals::calculate_due_price($invoice->get_total_gross(), $invoice->get_total_paid()));
 ?></strong></td>
 	</tr>
 	</tbody>

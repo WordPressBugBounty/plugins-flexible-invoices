@@ -14,7 +14,7 @@ class PageFormat
      */
     public static function getSizeFromName($name)
     {
-        $format = \strtoupper($name);
+        $format = strtoupper($name);
         $formats = [
             '4A0' => [4767.87, 6740.79],
             '2A0' => [3370.39, 4767.87],
@@ -76,7 +76,7 @@ class PageFormat
             'ROYAL' => [433.7, 663.3],
         ];
         if (!isset($formats[$format])) {
-            throw new \WPDeskFIVendor\Mpdf\MpdfException(\sprintf('Unknown page format %s', $format));
+            throw new \WPDeskFIVendor\Mpdf\MpdfException(sprintf('Unknown page format %s', $format));
         }
         return $formats[$format];
     }

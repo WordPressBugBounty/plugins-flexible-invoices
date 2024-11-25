@@ -30,14 +30,14 @@ use WPDeskFIVendor\Monolog\Logger;
  *
  * @author Paul Statezny <paulstatezny@gmail.com>
  */
-class RollbarHandler extends \WPDeskFIVendor\Monolog\Handler\AbstractProcessingHandler
+class RollbarHandler extends AbstractProcessingHandler
 {
     /**
      * @var RollbarLogger
      */
     protected $rollbarLogger;
     /** @var string[] */
-    protected $levelMap = [\WPDeskFIVendor\Monolog\Logger::DEBUG => 'debug', \WPDeskFIVendor\Monolog\Logger::INFO => 'info', \WPDeskFIVendor\Monolog\Logger::NOTICE => 'info', \WPDeskFIVendor\Monolog\Logger::WARNING => 'warning', \WPDeskFIVendor\Monolog\Logger::ERROR => 'error', \WPDeskFIVendor\Monolog\Logger::CRITICAL => 'critical', \WPDeskFIVendor\Monolog\Logger::ALERT => 'critical', \WPDeskFIVendor\Monolog\Logger::EMERGENCY => 'critical'];
+    protected $levelMap = [Logger::DEBUG => 'debug', Logger::INFO => 'info', Logger::NOTICE => 'info', Logger::WARNING => 'warning', Logger::ERROR => 'error', Logger::CRITICAL => 'critical', Logger::ALERT => 'critical', Logger::EMERGENCY => 'critical'];
     /**
      * Records whether any log records have been added since the last flush of the rollbar notifier
      *
@@ -49,7 +49,7 @@ class RollbarHandler extends \WPDeskFIVendor\Monolog\Handler\AbstractProcessingH
     /**
      * @param RollbarLogger $rollbarLogger RollbarLogger object constructed with valid token
      */
-    public function __construct(\WPDeskFIVendor\Rollbar\RollbarLogger $rollbarLogger, $level = \WPDeskFIVendor\Monolog\Logger::ERROR, bool $bubble = \true)
+    public function __construct(RollbarLogger $rollbarLogger, $level = Logger::ERROR, bool $bubble = \true)
     {
         $this->rollbarLogger = $rollbarLogger;
         parent::__construct($level, $bubble);
@@ -57,16 +57,16 @@ class RollbarHandler extends \WPDeskFIVendor\Monolog\Handler\AbstractProcessingH
     /**
      * {@inheritDoc}
      */
-    protected function write(array $record) : void
+    protected function write(array $record): void
     {
         if (!$this->initialized) {
             // __destructor() doesn't get called on Fatal errors
-            \register_shutdown_function(array($this, 'close'));
+            register_shutdown_function(array($this, 'close'));
             $this->initialized = \true;
         }
         $context = $record['context'];
-        $context = \array_merge($context, $record['extra'], ['level' => $this->levelMap[$record['level']], 'monolog_level' => $record['level_name'], 'channel' => $record['channel'], 'datetime' => $record['datetime']->format('U')]);
-        if (isset($context['exception']) && $context['exception'] instanceof \Throwable) {
+        $context = array_merge($context, $record['extra'], ['level' => $this->levelMap[$record['level']], 'monolog_level' => $record['level_name'], 'channel' => $record['channel'], 'datetime' => $record['datetime']->format('U')]);
+        if (isset($context['exception']) && $context['exception'] instanceof Throwable) {
             $exception = $context['exception'];
             unset($context['exception']);
             $toLog = $exception;
@@ -77,7 +77,7 @@ class RollbarHandler extends \WPDeskFIVendor\Monolog\Handler\AbstractProcessingH
         $this->rollbarLogger->log($context['level'], $toLog, $context);
         $this->hasRecords = \true;
     }
-    public function flush() : void
+    public function flush(): void
     {
         if ($this->hasRecords) {
             $this->rollbarLogger->flush();
@@ -87,7 +87,7 @@ class RollbarHandler extends \WPDeskFIVendor\Monolog\Handler\AbstractProcessingH
     /**
      * {@inheritDoc}
      */
-    public function close() : void
+    public function close(): void
     {
         $this->flush();
     }

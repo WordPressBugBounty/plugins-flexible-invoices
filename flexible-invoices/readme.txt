@@ -3,9 +3,9 @@ Contributors: wpdesk,piotrpo,marcinkolanko
 Donate link: https://www.wpdesk.net/flexible-invoices-woocommerce/
 Tags: invoice, eu vat, woocommerce pdf invoices, vat invoice, woocommerce invoices
 Requires at least: 6.0
-Tested up to: 6.6
-Requires PHP: 7.3
-Stable tag: 5.7.9
+Tested up to: 6.7
+Requires PHP: 7.4
+Stable tag: 5.7.10
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -175,6 +175,8 @@ We provide limited support for the free version in the [plugin Support Forum](ht
 
 This option is available in the PRO version. You may read about the PRO feature in the article about [issuing correction invoice for WooCommerce orders](https://flexibleinvoices.com/blog/woocommerce-invoice-corrections/).
 
+Also, you can look at how to generate [manual correction invoices](https://flexibleinvoices.com/blog/manual-invoice-corrections-in-woocommerce/) in PRO.
+
 = Is the plugin compliant with EU law? =
 
 Yes. The plugin is compatible with EU law (EU vat, VAT number field, vat exemption, reverse charge, VAT validation in the VIES database, OSS support, currency exchange table on the WooCommerce invoice). You may read more about the plugin's PRO features in the [Flexible Invoices for WooCommerce following the EU law article!](https://flexibleinvoices.com/blog/flexible-invoices-woocommerce-following-the-eu-law/)
@@ -298,6 +300,10 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 64. Send PDF invoices automatically for additional email recipients (PRO add-on).
 
 == Changelog ==
+
+= 5.7.10 - 2024-11-26 =
+* Updated required PHP version
+* Added support for WordPress 6.7
 
 = 5.7.9 - 2024-08-07 =
 * Added support for WooCommerce 9.2

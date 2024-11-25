@@ -29,7 +29,7 @@ class OrderFormattedData
     /**
      * @param WC_Order $order
      */
-    public function __construct(\WC_Order $order)
+    public function __construct(WC_Order $order)
     {
         $this->order = $order;
     }
@@ -38,21 +38,21 @@ class OrderFormattedData
      *
      * @return OrderItems
      */
-    public function get_order_items($types = []) : \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\OrderItems
+    public function get_order_items($types = []): OrderItems
     {
-        $this->order_items = new \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\OrderItems($this->order, $types);
+        $this->order_items = new OrderItems($this->order, $types);
         return $this->order_items;
     }
     /**
      * @return Abstracts\Totals
      * @throws Exception Throw exception if formatted_order_items is not initialized.
      */
-    public function get_order_totals() : \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\Totals
+    public function get_order_totals(): Abstracts\Totals
     {
         if (!$this->order_items) {
-            throw new \Exception('Fire formatted_order_items() first');
+            throw new Exception('Fire formatted_order_items() first');
         }
-        return (new \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\OrderTotals($this->order_items))->get_totals();
+        return (new OrderTotals($this->order_items))->get_totals();
     }
     /**
      * @param string $type
@@ -60,14 +60,14 @@ class OrderFormattedData
      *
      * @return Abstracts\Customer
      */
-    public function get_customer($type = 'billing', string $vat_field_key = '') : \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\Customer
+    public function get_customer($type = 'billing', string $vat_field_key = ''): Abstracts\Customer
     {
-        return (new \WPDeskFIVendor\WPDesk\Library\WPDeskOrder\OrderCustomer($this->order, $vat_field_key))->get($type);
+        return (new OrderCustomer($this->order, $vat_field_key))->get($type);
     }
     /**
      * @return WC_Order
      */
-    public function get_order() : \WC_Order
+    public function get_order(): WC_Order
     {
         return $this->order;
     }

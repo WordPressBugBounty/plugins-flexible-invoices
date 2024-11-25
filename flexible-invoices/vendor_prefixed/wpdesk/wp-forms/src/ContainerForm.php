@@ -24,5 +24,5 @@ interface ContainerForm
      *
      * @return void
      */
-    public function put_data(\WPDeskFIVendor\WPDesk\Persistence\PersistentContainer $container);
+    public function put_data(PersistentContainer $container);
 }

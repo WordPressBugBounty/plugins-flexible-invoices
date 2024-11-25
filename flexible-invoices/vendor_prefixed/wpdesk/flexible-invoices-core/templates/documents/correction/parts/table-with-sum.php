@@ -298,23 +298,23 @@ if (!$discountEmpty) {
 		<td class="number"><?php 
 echo $currency_helper->string_as_money($total_net_price);
 ?></td><?php 
-// suma "Total net price"
+// suma "Total net price" 
 ?>
 		<?php 
 if (!$hideVat) {
     ?>
 			<td class="number">X</td><?php 
-    // tu zawsze X
+    // tu zawsze X 
     ?>
 			<td class="number"><?php 
     echo $currency_helper->string_as_money($total_tax_amount);
     ?></td><?php 
-    // suma "Tax amount"
+    // suma "Tax amount" 
     ?>
 			<td class="number"><?php 
     echo $currency_helper->string_as_money($total_gross_price);
     ?></td><?php 
-    // suma "Total gross price"
+    // suma "Total gross price" 
     ?>
 		<?php 
 }
@@ -322,7 +322,7 @@ if (!$hideVat) {
 	</tr>
 
 	<?php 
-// poniższe sekcje to rozbicie podatków wg stawek
+// poniższe sekcje to rozbicie podatków wg stawek 
 ?>
 
 	<?php 
@@ -357,22 +357,22 @@ if (!$hideVat) {
 				<td class="number"><?php 
         echo $currency_helper->string_as_money($price);
         ?></td><?php 
-        // suma "Total net price" dla danej stawki podatkowej
+        // suma "Total net price" dla danej stawki podatkowej 
         ?>
 				<td class="number"><?php 
         echo $taxType;
         ?></td><?php 
-        //tu stawka podatkowa
+        //tu stawka podatkowa 
         ?>
 				<td class="number"><?php 
         echo $currency_helper->string_as_money($total_tax_tax_amount[$taxType]);
         ?></td><?php 
-        // suma "Tax amount" dla danej stawki podatkowej
+        // suma "Tax amount" dla danej stawki podatkowej 
         ?>
 				<td class="number"><?php 
         echo $currency_helper->string_as_money($total_tax_gross_price[$taxType]);
         ?></td><?php 
-        // suma "Total gross price" dla danej stawki podatkowej
+        // suma "Total gross price" dla danej stawki podatkowej 
         ?>
 			</tr>
 		<?php 

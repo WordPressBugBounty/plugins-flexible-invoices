@@ -3,7 +3,7 @@
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields;
 
 use WPDeskFIVendor\WPDesk\Forms\Field\BasicField;
-class TableGroupedFields extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
+class TableGroupedFields extends BasicField
 {
     /**
      * @var array
@@ -39,7 +39,7 @@ class TableGroupedFields extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
      */
     public function get_items()
     {
-        return isset($this->meta['items']) && \is_array($this->meta['items']) ? $this->meta['items'] : [];
+        return isset($this->meta['items']) && is_array($this->meta['items']) ? $this->meta['items'] : [];
     }
     /**
      * @return string

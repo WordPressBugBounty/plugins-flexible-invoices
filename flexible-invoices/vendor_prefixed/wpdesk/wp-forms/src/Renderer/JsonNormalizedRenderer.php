@@ -9,7 +9,7 @@ use WPDeskFIVendor\WPDesk\Forms\FieldRenderer;
  *
  * @package WPDesk\Forms\Renderer
  */
-class JsonNormalizedRenderer implements \WPDeskFIVendor\WPDesk\Forms\FieldRenderer
+class JsonNormalizedRenderer implements FieldRenderer
 {
     /**
      * @param FieldProvider $provider
@@ -18,7 +18,7 @@ class JsonNormalizedRenderer implements \WPDeskFIVendor\WPDesk\Forms\FieldRender
      *
      * @return array Normalized fields with data.
      */
-    public function render_fields(\WPDeskFIVendor\WPDesk\Forms\FieldProvider $provider, array $fields_data, $name_prefix = '')
+    public function render_fields(FieldProvider $provider, array $fields_data, $name_prefix = '')
     {
         $rendered_fields = [];
         foreach ($provider->get_fields() as $field) {
@@ -49,7 +49,7 @@ class JsonNormalizedRenderer implements \WPDeskFIVendor\WPDesk\Forms\FieldRender
                     $rendered['data'][] = ['name' => $data_name, 'value' => $data_value];
                 }
             }
-            if (\json_encode($rendered) !== \false) {
+            if (json_encode($rendered) !== \false) {
                 $rendered_fields[] = $rendered;
             }
         }

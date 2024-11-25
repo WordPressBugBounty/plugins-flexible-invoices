@@ -10,7 +10,7 @@ use WPDeskFIVendor\Psr\Http\Message\RequestInterface;
  *
  * Example: the target host name can not be resolved or the connection failed.
  */
-interface NetworkExceptionInterface extends \WPDeskFIVendor\Psr\Http\Client\ClientExceptionInterface
+interface NetworkExceptionInterface extends ClientExceptionInterface
 {
     /**
      * Returns the request.
@@ -19,5 +19,5 @@ interface NetworkExceptionInterface extends \WPDeskFIVendor\Psr\Http\Client\Clie
      *
      * @return RequestInterface
      */
-    public function getRequest() : \WPDeskFIVendor\Psr\Http\Message\RequestInterface;
+    public function getRequest(): RequestInterface;
 }

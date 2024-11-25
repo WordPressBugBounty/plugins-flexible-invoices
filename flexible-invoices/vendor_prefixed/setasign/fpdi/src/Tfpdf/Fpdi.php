@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\Tfpdf;
@@ -16,7 +16,7 @@ use WPDeskFIVendor\setasign\Fpdi\FpdiTrait;
  *
  * This class let you import pages of existing PDF documents into a reusable structure for tFPDF.
  */
-class Fpdi extends \WPDeskFIVendor\setasign\Fpdi\Tfpdf\FpdfTpl
+class Fpdi extends FpdfTpl
 {
     use FpdiTrait;
     use FpdfTrait;
@@ -25,5 +25,5 @@ class Fpdi extends \WPDeskFIVendor\setasign\Fpdi\Tfpdf\FpdfTpl
      *
      * @string
      */
-    const VERSION = '2.6.0';
+    const VERSION = '2.6.1';
 }

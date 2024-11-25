@@ -18,6 +18,6 @@ class CommandProvider implements \WPDeskFIVendor\Composer\Plugin\Capability\Comm
 {
     public function getCommands()
     {
-        return [new \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\CreateCodeceptionTests(), new \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\RunCodeceptionTests(), new \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\RunLocalCodeceptionTests(), new \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\RunLocalCodeceptionTestsWithCoverage(), new \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\PrepareCodeceptionDb(), new \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\PrepareWordpressForCodeception(), new \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\PrepareLocalCodeceptionTests(), new \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\PrepareLocalCodeceptionTestsWithCoverage(), new \WPDeskFIVendor\WPDesk\Composer\Codeception\Commands\PrepareParallelCodeceptionTests()];
+        return [new CreateCodeceptionTests(), new RunCodeceptionTests(), new RunLocalCodeceptionTests(), new RunLocalCodeceptionTestsWithCoverage(), new PrepareCodeceptionDb(), new PrepareWordpressForCodeception(), new PrepareLocalCodeceptionTests(), new PrepareLocalCodeceptionTestsWithCoverage(), new PrepareParallelCodeceptionTests()];
     }
 }

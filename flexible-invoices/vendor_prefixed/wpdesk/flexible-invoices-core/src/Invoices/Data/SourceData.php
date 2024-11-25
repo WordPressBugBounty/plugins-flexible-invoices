@@ -15,121 +15,121 @@ interface SourceData
     /**
      * @return string
      */
-    public function get_document_type() : string;
+    public function get_document_type(): string;
     /**
      * @return array
      */
-    public function get_items() : array;
+    public function get_items(): array;
     /**
      * @return Seller
      */
-    public function get_seller() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Seller;
+    public function get_seller(): Seller;
     /**
      * @return Customer
      */
-    public function get_customer() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Customer;
+    public function get_customer(): Customer;
     /**
      * @return Recipient
      */
-    public function get_recipient() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Recipient;
+    public function get_recipient(): Recipient;
     /**
      * @return string
      */
-    public function get_formatted_number() : string;
+    public function get_formatted_number(): string;
     /**
      * @return string
      */
-    public function get_currency() : string;
+    public function get_currency(): string;
     /**
      * @return string
      */
-    public function get_currency_symbol() : string;
+    public function get_currency_symbol(): string;
     /**
      * @return string
      */
-    public function get_payment_method() : string;
+    public function get_payment_method(): string;
     /**
      * @return string
      */
-    public function get_payment_method_name() : string;
+    public function get_payment_method_name(): string;
     /**
      * @return string
      */
-    public function get_notes() : string;
+    public function get_notes(): string;
     /**
      * @return string
      */
-    public function get_user_lang() : string;
+    public function get_user_lang(): string;
     /**
      * @return int
      */
-    public function get_id() : int;
+    public function get_id(): int;
     /**
      * @return int
      */
-    public function get_order_id() : int;
+    public function get_order_id(): int;
     /**
      * @return float
      */
-    public function get_total_paid() : float;
+    public function get_total_paid(): float;
     /**
      * @return string
      */
-    public function get_payment_status() : string;
+    public function get_payment_status(): string;
     /**
      * @return int
      */
-    public function get_number() : int;
+    public function get_number(): int;
     /**
      * @return int
      */
-    public function get_date_of_sale() : int;
+    public function get_date_of_sale(): int;
     /**
      * @return int
      */
-    public function get_date_of_issue() : int;
+    public function get_date_of_issue(): int;
     /**
      * @return int
      */
-    public function get_date_of_pay() : int;
+    public function get_date_of_pay(): int;
     /**
      * @return int
      */
-    public function get_date_of_paid() : int;
+    public function get_date_of_paid(): int;
     /**
      * @return float
      */
-    public function get_total_tax() : float;
+    public function get_total_tax(): float;
     /**
      * @return float
      */
-    public function get_total_net() : float;
+    public function get_total_net(): float;
     /**
      * @return float
      */
-    public function get_total_gross() : float;
+    public function get_total_gross(): float;
     /**
      * @return float
      */
-    public function get_tax() : float;
+    public function get_tax(): float;
     /**
      * @return float
      */
-    public function get_discount() : float;
+    public function get_discount(): float;
     /**
      * @return string
      */
-    public function get_customer_filter_field() : string;
+    public function get_customer_filter_field(): string;
     /**
      * @return int
      */
-    public function get_show_order_number() : int;
+    public function get_show_order_number(): int;
     /**
      * @return int
      */
-    public function get_is_correction() : int;
+    public function get_is_correction(): int;
     /**
      * @return int
      */
-    public function get_corrected_id() : int;
+    public function get_corrected_id(): int;
 }

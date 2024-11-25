@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter;
@@ -12,7 +12,7 @@ namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter;
 /**
  * Class for handling ASCII base-85 encoded data
  */
-class Ascii85 implements \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\FilterInterface
+class Ascii85 implements FilterInterface
 {
     /**
      * Decode ASCII85 encoded string.
@@ -26,7 +26,7 @@ class Ascii85 implements \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\FilterIn
         $out = '';
         $state = 0;
         $chn = null;
-        $data = \preg_replace('/\\s/', '', $data);
+        $data = \preg_replace('/\s/', '', $data);
         $l = \strlen($data);
         /** @noinspection ForeachInvariantsInspection */
         for ($k = 0; $k < $l; ++$k) {
@@ -45,7 +45,7 @@ class Ascii85 implements \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\FilterIn
                 continue;
             }
             if ($ch < 33 || $ch > 117) {
-                throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\Ascii85Exception('Illegal character found while ASCII85 decode.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\Ascii85Exception::ILLEGAL_CHAR_FOUND);
+                throw new Ascii85Exception('Illegal character found while ASCII85 decode.', Ascii85Exception::ILLEGAL_CHAR_FOUND);
             }
             $chn[$state] = $ch - 33;
             /* ! */
@@ -61,7 +61,7 @@ class Ascii85 implements \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\FilterIn
             }
         }
         if ($state === 1) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\Ascii85Exception('Illegal length while ASCII85 decode.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\Ascii85Exception::ILLEGAL_LENGTH);
+            throw new Ascii85Exception('Illegal length while ASCII85 decode.', Ascii85Exception::ILLEGAL_LENGTH);
         }
         if ($state === 2) {
             $r = $chn[0] * 85 * 85 * 85 * 85 + ($chn[1] + 1) * 85 * 85 * 85;

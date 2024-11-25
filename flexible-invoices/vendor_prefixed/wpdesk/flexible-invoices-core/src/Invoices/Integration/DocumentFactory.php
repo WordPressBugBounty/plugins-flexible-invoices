@@ -28,15 +28,15 @@ class DocumentFactory
     /**
      * @param CreatorContainer $creators_factory
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\CreatorContainer $creators_factory)
+    public function __construct(CreatorContainer $creators_factory)
     {
         $this->creators = $creators_factory->get_creators();
-        $this->meta_type = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentMetaType($this->creators);
+        $this->meta_type = new DocumentMetaType($this->creators);
     }
     /**
      * @return DocumentCreator[]
      */
-    public function get_creators() : array
+    public function get_creators(): array
     {
         return $this->creators;
     }
@@ -55,7 +55,7 @@ class DocumentFactory
      *
      * @throws UnknownDocumentTypeException
      */
-    public function get_document_creator(int $document_id, string $source_type = \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory::META_SOURCE) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCreator
+    public function get_document_creator(int $document_id, string $source_type = DataSourceFactory::META_SOURCE): DocumentCreator
     {
         foreach ($this->creators as $document_creator) {
             $creator = clone $document_creator;
@@ -65,7 +65,7 @@ class DocumentFactory
                 return $creator;
             }
         }
-        return $this->get_creator($document_id, $source_type, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Invoice::DOCUMENT_TYPE);
+        return $this->get_creator($document_id, $source_type, Invoice::DOCUMENT_TYPE);
     }
     /**
      * @param int    $document_id
@@ -73,10 +73,10 @@ class DocumentFactory
      *
      * @return DocumentCreator
      */
-    private function create_default_creator(int $document_id, string $source_type) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCreator
+    private function create_default_creator(int $document_id, string $source_type): DocumentCreator
     {
-        $this->creators[\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Invoice::DOCUMENT_TYPE]->create_document_from_source($document_id, $source_type);
-        return $this->creators[\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Invoice::DOCUMENT_TYPE];
+        $this->creators[Invoice::DOCUMENT_TYPE]->create_document_from_source($document_id, $source_type);
+        return $this->creators[Invoice::DOCUMENT_TYPE];
     }
     /**
      * @param int    $document_id
@@ -84,7 +84,7 @@ class DocumentFactory
      *
      * @return DocumentCreator
      */
-    public function get_creator(int $document_id, string $source_type, string $creator_type) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCreator
+    public function get_creator(int $document_id, string $source_type, string $creator_type): DocumentCreator
     {
         $this->creators[$creator_type]->create_document_from_source($document_id, $source_type);
         return $this->creators[$creator_type];

@@ -19,7 +19,7 @@ use WPDeskFIVendor\WPDesk\View\Resolver\DirResolver;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Integration
  */
-class ReportsMenuPage implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+class ReportsMenuPage implements Hookable
 {
     /**
      * @var string;
@@ -44,9 +44,9 @@ class ReportsMenuPage implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hoo
      */
     public function hooks()
     {
-        if (!\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Plugin::is_active(self::REPORTS_PLUGIN_SLUG)) {
-            \add_action('admin_menu', function () {
-                \add_submenu_page(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType::POST_TYPE_MENU_URL, $this->get_tab_name(), $this->get_tab_name(), 'manage_options', self::MENU_SLUG, [$this, 'render_page_action'], 10);
+        if (!Plugin::is_active(self::REPORTS_PLUGIN_SLUG)) {
+            add_action('admin_menu', function () {
+                add_submenu_page(RegisterPostType::POST_TYPE_MENU_URL, $this->get_tab_name(), $this->get_tab_name(), 'manage_options', self::MENU_SLUG, [$this, 'render_page_action'], 10);
             });
         }
     }
@@ -55,10 +55,10 @@ class ReportsMenuPage implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hoo
      */
     private function get_renderer()
     {
-        $resolver = new \WPDeskFIVendor\WPDesk\View\Resolver\ChainResolver();
-        $resolver->appendResolver(new \WPDeskFIVendor\WPDesk\View\Resolver\DirResolver($this->template_dir . 'settings'));
-        $resolver->appendResolver(new \WPDeskFIVendor\WPDesk\Forms\Resolver\DefaultFormFieldResolver());
-        return new \WPDeskFIVendor\WPDesk\View\Renderer\SimplePhpRenderer($resolver);
+        $resolver = new ChainResolver();
+        $resolver->appendResolver(new DirResolver($this->template_dir . 'settings'));
+        $resolver->appendResolver(new DefaultFormFieldResolver());
+        return new SimplePhpRenderer($resolver);
     }
     /**
      * @return void
@@ -67,11 +67,11 @@ class ReportsMenuPage implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hoo
     {
         $renderer = $this->get_renderer();
         $url = 'https://docs.flexibleinvoices.com/article/818-reports?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=reports-free';
-        if (\get_locale() === 'pl_PL') {
+        if (get_locale() === 'pl_PL') {
             $url = 'https://www.wpdesk.pl/docs/faktury-woocommerce-docs/?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=reports-free#raporty';
         }
-        $docs_description = \sprintf('%2$s%1$s%3$s', \sprintf(\esc_html__('Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-invoices'), '<a href="' . $url . '" target="_blank" style="color: #4BB04E; font-weight: 700;">', '</a>'), '<strong>', '</strong>');
-        $content = '<div class="wrap"><h1 class="wp-heading-inline">' . \esc_html__('Reports', 'flexible-invoices') . '</h1>';
+        $docs_description = sprintf('%2$s%1$s%3$s', sprintf(esc_html__('Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-invoices'), '<a href="' . $url . '" target="_blank" style="color: #4BB04E; font-weight: 700;">', '</a>'), '<strong>', '</strong>');
+        $content = '<div class="wrap"><h1 class="wp-heading-inline">' . esc_html__('Reports', 'flexible-invoices') . '</h1>';
         $content .= '<div class="support-url-wrapper">' . $docs_description . '</div>';
         $content .= '<hr class="wp-header-end">';
         $content .= $renderer->render('form-start', ['form' => $this, 'method' => 'POST', 'action' => '']);
@@ -86,7 +86,7 @@ class ReportsMenuPage implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hoo
      *
      * @return string
      */
-    public function render_fields(\WPDeskFIVendor\WPDesk\View\Renderer\Renderer $renderer) : string
+    public function render_fields(Renderer $renderer): string
     {
         $content = '';
         foreach ($this->get_fields() as $field) {
@@ -97,10 +97,10 @@ class ReportsMenuPage implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hoo
     /**
      * @return array
      */
-    private function get_currencies() : array
+    private function get_currencies(): array
     {
         $currencies_options = [];
-        $currencies = \get_option('inspire_invoices_currency', []);
+        $currencies = get_option('inspire_invoices_currency', []);
         foreach ($currencies as $currency) {
             $currencies_options[$currency['currency']] = $currency['currency'];
         }
@@ -109,43 +109,43 @@ class ReportsMenuPage implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hoo
     /**
      * @return array|Field[]
      */
-    protected function get_fields() : array
+    protected function get_fields(): array
     {
-        return [(new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields\GroupedFields())->set_name('grouped_field')->set_grouped_fields([(new \WPDeskFIVendor\WPDesk\Forms\Field\DateField())->set_name('start_date')->set_label(\esc_html__('From:', 'flexible-invoices'))->add_class('medium-text hs-beacon-search')->set_default_value(\date('Y-m-d', \strtotime('NOW - 1 months')))->set_attribute('data-beacon_search', 'Reports'), (new \WPDeskFIVendor\WPDesk\Forms\Field\DateField())->set_name('end_date')->set_label(\esc_html__('To:', 'flexible-invoices'))->add_class('medium-text hs-beacon-search')->set_default_value(\date('Y-m-d'))->set_attribute('data-beacon_search', 'Reports')]), (new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields\GroupedFields())->set_name('grouped_field')->set_grouped_fields([(new \WPDeskFIVendor\WPDesk\Forms\Field\SelectField())->set_name('currency')->set_label(\esc_html__('Currency:', 'flexible-invoices'))->set_options($this->get_currencies())]), (new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields\FixedSubmitField())->set_name('download_report')->set_label(\esc_html__('Generate', 'flexible-invoices'))->add_class('button-primary'), (new \WPDeskFIVendor\WPDesk\Forms\Field\NoOnceField(self::NONCE_ACTION))->set_name(self::NONCE_NAME)];
+        return [(new GroupedFields())->set_name('grouped_field')->set_grouped_fields([(new Field\DateField())->set_name('start_date')->set_label(esc_html__('From:', 'flexible-invoices'))->add_class('medium-text hs-beacon-search')->set_default_value(date('Y-m-d', strtotime('NOW - 1 months')))->set_attribute('data-beacon_search', 'Reports'), (new Field\DateField())->set_name('end_date')->set_label(esc_html__('To:', 'flexible-invoices'))->add_class('medium-text hs-beacon-search')->set_default_value(date('Y-m-d'))->set_attribute('data-beacon_search', 'Reports')]), (new GroupedFields())->set_name('grouped_field')->set_grouped_fields([(new SelectField())->set_name('currency')->set_label(esc_html__('Currency:', 'flexible-invoices'))->set_options($this->get_currencies())]), (new FixedSubmitField())->set_name('download_report')->set_label(esc_html__('Generate', 'flexible-invoices'))->add_class('button-primary'), (new Field\NoOnceField(self::NONCE_ACTION))->set_name(self::NONCE_NAME)];
     }
     /**
      * @return string
      */
-    public function get_method() : string
+    public function get_method(): string
     {
         return 'POST';
     }
     /**
      * @return string
      */
-    public function get_action() : string
+    public function get_action(): string
     {
-        return \admin_url('admin-ajax.php?action=fiw_generate_report');
+        return admin_url('admin-ajax.php?action=fiw_generate_report');
     }
     /**
      * @return string
      */
-    public function get_form_id() : string
+    public function get_form_id(): string
     {
         return 'reports';
     }
     /**
      * @return string
      */
-    public static function get_tab_slug() : string
+    public static function get_tab_slug(): string
     {
         return 'reports';
     }
     /**
      * @return string
      */
-    public function get_tab_name() : string
+    public function get_tab_name(): string
     {
-        return \esc_html__('Reports', 'flexible-invoices');
+        return esc_html__('Reports', 'flexible-invoices');
     }
 }

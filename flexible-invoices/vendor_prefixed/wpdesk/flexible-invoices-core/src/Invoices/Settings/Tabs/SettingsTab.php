@@ -36,7 +36,7 @@ interface SettingsTab
      *
      * @return string
      */
-    public function render(\WPDeskFIVendor\WPDesk\View\Renderer\Renderer $renderer);
+    public function render(Renderer $renderer);
     /**
      * Use to set settings from database or defaults.
      *

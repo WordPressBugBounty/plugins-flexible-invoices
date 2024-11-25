@@ -21,13 +21,13 @@ class FQIntegration
      * @var string
      */
     private $domain;
-    public function __construct(\WC_Order_Item $item)
+    public function __construct(WC_Order_Item $item)
     {
         $this->order_item = $item;
         $this->item_meta = !empty($this->order_item->get_meta('_fq_measurement_data')) ? (array) $item->get_meta('_fq_measurement_data') : [];
-        $this->domain = \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Plugin::is_fq_pro_addon_enabled() ? 'flexible-quantity' : 'flexible-quantity-measurement-price-calculator-for-woocommerce';
+        $this->domain = Plugin::is_fq_pro_addon_enabled() ? 'flexible-quantity' : 'flexible-quantity-measurement-price-calculator-for-woocommerce';
     }
-    public function get_item_unit($default = 'szt') : string
+    public function get_item_unit($default = 'szt'): string
     {
         if (empty($this->item_meta)) {
             return $default;
@@ -37,7 +37,7 @@ class FQIntegration
         $measurement_qty = $this->item_meta['_quantity'] ?? 0;
         $fq_quantity = (float) $measurement_needed * (float) $measurement_qty;
         if ($fq_quantity === $this->order_item->get_quantity() && $measurement_unit) {
-            return \__($measurement_unit, $this->domain);
+            return __($measurement_unit, $this->domain);
         }
         return $default;
     }

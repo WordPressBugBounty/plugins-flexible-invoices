@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class Th extends \WPDeskFIVendor\Mpdf\Tag\Td
+class Th extends Td
 {
     public function close(&$ahtml, &$ihtml)
     {

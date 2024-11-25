@@ -3,7 +3,7 @@
 namespace WPDeskFIVendor\Mpdf\Tag;
 
 use WPDeskFIVendor\Mpdf\Utils\UtfString;
-abstract class InlineTag extends \WPDeskFIVendor\Mpdf\Tag\Tag
+abstract class InlineTag extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -30,7 +30,7 @@ abstract class InlineTag extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $objattr['SUBJECT'] = '';
             $objattr['OPACITY'] = $this->mpdf->annotOpacity;
             $objattr['COLOR'] = $this->colorConverter->convert('yellow', $this->mpdf->PDFAXwarnings);
-            $annot = "\xbb\xa4\xactype=annot,objattr=" . \serialize($objattr) . "\xbb\xa4\xac";
+            $annot = "\xbb\xa4\xactype=annot,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
         }
         /* -- END ANNOTATIONS -- */
         // mPDF 5.7.3 Inline tags
@@ -65,27 +65,27 @@ abstract class InlineTag extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $currdir = 'rtl';
         }
         if (isset($attr['DIR']) && $attr['DIR'] != '') {
-            $currdir = \strtolower($attr['DIR']);
+            $currdir = strtolower($attr['DIR']);
         }
         if (isset($properties['DIRECTION'])) {
-            $currdir = \strtolower($properties['DIRECTION']);
+            $currdir = strtolower($properties['DIRECTION']);
         }
         // mPDF 6 bidi
         // cf. http://www.w3.org/TR/css3-writing-modes/#unicode-bidi
         if ($tag === 'BDO') {
-            if (isset($attr['DIR']) && \strtolower($attr['DIR']) === 'rtl') {
+            if (isset($attr['DIR']) && strtolower($attr['DIR']) === 'rtl') {
                 $bdf = 0x202e;
                 $popd = 'RLOPDF';
-            } elseif (isset($attr['DIR']) && \strtolower($attr['DIR']) === 'ltr') {
+            } elseif (isset($attr['DIR']) && strtolower($attr['DIR']) === 'ltr') {
                 $bdf = 0x202d;
                 $popd = 'LROPDF';
             }
             // U+202D LRO
         } elseif ($tag === 'BDI') {
-            if (isset($attr['DIR']) && \strtolower($attr['DIR']) === 'rtl') {
+            if (isset($attr['DIR']) && strtolower($attr['DIR']) === 'rtl') {
                 $bdf = 0x2067;
                 $popd = 'RLIPDI';
-            } elseif (isset($attr['DIR']) && \strtolower($attr['DIR']) === 'ltr') {
+            } elseif (isset($attr['DIR']) && strtolower($attr['DIR']) === 'ltr') {
                 $bdf = 0x2066;
                 $popd = 'LRIPDI';
             } else {
@@ -93,7 +93,7 @@ abstract class InlineTag extends \WPDeskFIVendor\Mpdf\Tag\Tag
                 $popd = 'FSIPDI';
             }
             // U+2068 FSI
-        } elseif (isset($properties['UNICODE-BIDI']) && \strtolower($properties['UNICODE-BIDI']) === 'bidi-override') {
+        } elseif (isset($properties['UNICODE-BIDI']) && strtolower($properties['UNICODE-BIDI']) === 'bidi-override') {
             if ($currdir === 'rtl') {
                 $bdf = 0x202e;
                 $popd = 'RLOPDF';
@@ -102,7 +102,7 @@ abstract class InlineTag extends \WPDeskFIVendor\Mpdf\Tag\Tag
                 $popd = 'LROPDF';
             }
             // U+202D LRO
-        } elseif (isset($properties['UNICODE-BIDI']) && \strtolower($properties['UNICODE-BIDI']) === 'embed') {
+        } elseif (isset($properties['UNICODE-BIDI']) && strtolower($properties['UNICODE-BIDI']) === 'embed') {
             if ($currdir === 'rtl') {
                 $bdf = 0x202b;
                 $popd = 'RLEPDF';
@@ -111,7 +111,7 @@ abstract class InlineTag extends \WPDeskFIVendor\Mpdf\Tag\Tag
                 $popd = 'LREPDF';
             }
             // U+202A LRE
-        } elseif (isset($properties['UNICODE-BIDI']) && \strtolower($properties['UNICODE-BIDI']) === 'isolate') {
+        } elseif (isset($properties['UNICODE-BIDI']) && strtolower($properties['UNICODE-BIDI']) === 'isolate') {
             if ($currdir === 'rtl') {
                 $bdf = 0x2067;
                 $popd = 'RLIPDI';
@@ -120,7 +120,7 @@ abstract class InlineTag extends \WPDeskFIVendor\Mpdf\Tag\Tag
                 $popd = 'LRIPDI';
             }
             // U+2066 LRI
-        } elseif (isset($properties['UNICODE-BIDI']) && \strtolower($properties['UNICODE-BIDI']) === 'isolate-override') {
+        } elseif (isset($properties['UNICODE-BIDI']) && strtolower($properties['UNICODE-BIDI']) === 'isolate-override') {
             if ($currdir === 'rtl') {
                 $bdf = 0x2067;
                 $bdf2 = 0x202e;
@@ -131,15 +131,15 @@ abstract class InlineTag extends \WPDeskFIVendor\Mpdf\Tag\Tag
                 $popd = 'LRILROPDFPDI';
             }
             // U+2066 LRI  // U+202D LRO
-        } elseif (isset($properties['UNICODE-BIDI']) && \strtolower($properties['UNICODE-BIDI']) === 'plaintext') {
+        } elseif (isset($properties['UNICODE-BIDI']) && strtolower($properties['UNICODE-BIDI']) === 'plaintext') {
             $bdf = 0x2068;
             $popd = 'FSIPDI';
             // U+2068 FSI
         } else {
-            if (isset($attr['DIR']) && \strtolower($attr['DIR']) === 'rtl') {
+            if (isset($attr['DIR']) && strtolower($attr['DIR']) === 'rtl') {
                 $bdf = 0x202b;
                 $popd = 'RLEPDF';
-            } elseif (isset($attr['DIR']) && \strtolower($attr['DIR']) === 'ltr') {
+            } elseif (isset($attr['DIR']) && strtolower($attr['DIR']) === 'ltr') {
                 $bdf = 0x202a;
                 $popd = 'LREPDF';
             }
@@ -154,13 +154,13 @@ abstract class InlineTag extends \WPDeskFIVendor\Mpdf\Tag\Tag
             }
             $this->mpdf->InlineBDFctr++;
             if ($bdf2) {
-                $bdf2 = \WPDeskFIVendor\Mpdf\Utils\UtfString::code2utf($bdf);
+                $bdf2 = UtfString::code2utf($bdf);
             }
             $this->mpdf->OTLdata = [];
             if ($this->mpdf->tableLevel) {
-                $this->mpdf->_saveCellTextBuffer(\WPDeskFIVendor\Mpdf\Utils\UtfString::code2utf($bdf) . $bdf2);
+                $this->mpdf->_saveCellTextBuffer(UtfString::code2utf($bdf) . $bdf2);
             } else {
-                $this->mpdf->_saveTextBuffer(\WPDeskFIVendor\Mpdf\Utils\UtfString::code2utf($bdf) . $bdf2);
+                $this->mpdf->_saveTextBuffer(UtfString::code2utf($bdf) . $bdf2);
             }
             $this->mpdf->biDirectional = \true;
         }
@@ -185,20 +185,20 @@ abstract class InlineTag extends \WPDeskFIVendor\Mpdf\Tag\Tag
             unset($this->mpdf->InlineAnnots[$tag]);
             // *ANNOTATIONS*
         } else {
-            if (isset($this->mpdf->InlineProperties[$tag]) && \count($this->mpdf->InlineProperties[$tag])) {
-                $tmpProps = \array_pop($this->mpdf->InlineProperties[$tag]);
+            if (isset($this->mpdf->InlineProperties[$tag]) && count($this->mpdf->InlineProperties[$tag])) {
+                $tmpProps = array_pop($this->mpdf->InlineProperties[$tag]);
                 // mPDF 5.7.4
                 $this->mpdf->restoreInlineProperties($tmpProps);
             }
-            if (isset($this->mpdf->InlineAnnots[$tag]) && \count($this->mpdf->InlineAnnots[$tag])) {
+            if (isset($this->mpdf->InlineAnnots[$tag]) && count($this->mpdf->InlineAnnots[$tag])) {
                 // *ANNOTATIONS*
-                $annot = \array_pop($this->mpdf->InlineAnnots[$tag]);
+                $annot = array_pop($this->mpdf->InlineAnnots[$tag]);
                 // *ANNOTATIONS*
             }
             // *ANNOTATIONS*
-            if (isset($this->mpdf->InlineBDF[$tag]) && \count($this->mpdf->InlineBDF[$tag])) {
+            if (isset($this->mpdf->InlineBDF[$tag]) && count($this->mpdf->InlineBDF[$tag])) {
                 // mPDF 6
-                $bdfarr = \array_pop($this->mpdf->InlineBDF[$tag]);
+                $bdfarr = array_pop($this->mpdf->InlineBDF[$tag]);
                 $bdf = $bdfarr[0];
             }
         }

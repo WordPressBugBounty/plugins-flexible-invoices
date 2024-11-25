@@ -54,7 +54,7 @@ if ($show_recipient_type !== 'none') {
             echo \esc_html($recipient->get_city());
             ?></td></tr>
             <tr><td><?php 
-            echo \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Countries::get_country_label($recipient->get_country());
+            echo Countries::get_country_label($recipient->get_country());
             ?></td></tr>
         <?php 
         }

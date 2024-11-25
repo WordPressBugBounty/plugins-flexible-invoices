@@ -30,7 +30,7 @@ class ColorSpaceRestrictor
      * @param \Mpdf\Color\ColorModeConverter $colorModeConverter
      * @param int $mode
      */
-    public function __construct(\WPDeskFIVendor\Mpdf\Mpdf $mpdf, \WPDeskFIVendor\Mpdf\Color\ColorModeConverter $colorModeConverter, $mode)
+    public function __construct(Mpdf $mpdf, ColorModeConverter $colorModeConverter, $mode)
     {
         $this->mpdf = $mpdf;
         $this->colorModeConverter = $colorModeConverter;
@@ -45,7 +45,7 @@ class ColorSpaceRestrictor
      */
     public function restrictColorSpace($c, $color, &$PDFAXwarnings = [])
     {
-        if (!\is_array($c)) {
+        if (!is_array($c)) {
             return $c;
         }
         $mode = (int) $c[0];

@@ -5,7 +5,7 @@ namespace WPDeskFIVendor;
 $path = '../tmp/';
 $tempfilename = $_REQUEST['filename'] . '.pdf';
 if (\strstr($tempfilename, '/') || \strstr($tempfilename, '\\')) {
-    throw new \WPDeskFIVendor\MpdfException('Output filename can not not contain \\ or /');
+    throw new MpdfException('Output filename can not not contain \ or /');
 }
 $name = $_REQUEST['opname'];
 $dest = $_REQUEST['dest'];
@@ -22,7 +22,7 @@ if ($tempfilename && \file_exists($path . $tempfilename)) {
         }
     } elseif ($dest === 'D') {
         if (\headers_sent()) {
-            throw new \WPDeskFIVendor\MpdfException('Some data has already been output to browser, can\'t send PDF file');
+            throw new MpdfException('Some data has already been output to browser, can\'t send PDF file');
         }
         \header('Content-Description: File Transfer');
         \header('Content-Transfer-Encoding: binary');
@@ -49,7 +49,7 @@ if ($tempfilename && \file_exists($path . $tempfilename)) {
     // Clear any files in directory that are >24 hrs old
     $interval = 86400;
     if ($handle = \opendir(\dirname($path . 'dummy'))) {
-        while (\false !== ($file = \readdir($handle))) {
+        while (\false !== $file = \readdir($handle)) {
             if (\filemtime($path . $file) + $interval < \time() && $file != ".." && $file != "." && \substr($file, -3) == 'pdf') {
                 \unlink($path . $file);
             }

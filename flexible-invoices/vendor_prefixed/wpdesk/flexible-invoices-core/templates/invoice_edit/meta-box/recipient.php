@@ -54,12 +54,12 @@ echo \esc_html($recipient->get_postcode());
 		<div class="inspire_invoices_recipient_country"><?php 
 \esc_html_e('Country', 'flexible-invoices');
 ?>: <span><?php 
-echo \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Countries::get_country_label($recipient->get_country());
+echo Helpers\Countries::get_country_label($recipient->get_country());
 ?></span></div>
 		<div class="inspire_invoices_recipient_country"><?php 
 \esc_html_e('State', 'flexible-invoices');
 ?>: <span><?php 
-echo \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Countries::get_country_state_label($recipient->get_state(), $recipient->get_country());
+echo Helpers\Countries::get_country_state_label($recipient->get_state(), $recipient->get_country());
 ?></span></div>
     </div>
 	<div class="edit_data">
@@ -143,7 +143,7 @@ echo \esc_attr($recipient->get_postcode());
 $fake_option = '';
 $countries = [];
 $states = [];
-if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active()) {
+if (Helpers\WooCommerce::is_active()) {
     $countries = \WC()->countries->get_countries();
     $states = \WC()->countries->get_states();
 }
@@ -155,7 +155,7 @@ if (!isset($countries[$recipient_country]) && !empty($recipient_country)) {
 if (empty($recipient_country)) {
     $recipient_country = \get_option('woocommerce_default_country');
 }
-if ($recipient_country && \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active()) {
+if ($recipient_country && Helpers\WooCommerce::is_active()) {
     $states = \WC()->countries->get_states($recipient_country);
 }
 ?>
@@ -165,7 +165,7 @@ if ($recipient_country && \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\He
 \esc_html_e('Country', 'flexible-invoices');
 ?></label>
             <?php 
-if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active()) {
+if (Helpers\WooCommerce::is_active()) {
     ?>
                 <select id="inspire_invoices_recipient_country" name="recipient[country]" class="country-select2 medium hs-beacon-search">
                     <?php 
@@ -201,7 +201,7 @@ if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_
 \esc_html_e('State', 'flexible-invoices');
 ?></label>
 			<?php 
-if (\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce::is_active()) {
+if (Helpers\WooCommerce::is_active()) {
     ?>
 				<select id="inspire_invoices_recipient_state" name="recipient[state]" class="country-select2 medium hs-beacon-search">
 					<?php 

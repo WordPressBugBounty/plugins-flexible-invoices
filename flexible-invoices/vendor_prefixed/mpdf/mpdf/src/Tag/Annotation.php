@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class Annotation extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class Annotation extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -19,7 +19,7 @@ class Annotation extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $objattr['border_bottom']['w'] = 0;
             $objattr['border_left']['w'] = 0;
             $objattr['border_right']['w'] = 0;
-            $objattr['CONTENT'] = \htmlspecialchars_decode($attr['CONTENT'], \ENT_QUOTES);
+            $objattr['CONTENT'] = htmlspecialchars_decode($attr['CONTENT'], \ENT_QUOTES);
             $objattr['type'] = 'annot';
             $objattr['POPUP'] = '';
         } else {
@@ -75,14 +75,14 @@ class Annotation extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $objattr['COLOR'] = $this->colorConverter->convert('yellow', $this->mpdf->PDFAXwarnings);
         }
         if (isset($attr['POPUP']) && !empty($attr['POPUP'])) {
-            $pop = \preg_split('/\\s+/', \trim($attr['POPUP']));
-            if (\count($pop) > 1) {
+            $pop = preg_split('/\s+/', trim($attr['POPUP']));
+            if (count($pop) > 1) {
                 $objattr['POPUP'] = $pop;
             } else {
                 $objattr['POPUP'] = \true;
             }
         }
-        $e = "\xbb\xa4\xactype=annot,objattr=" . \serialize($objattr) . "\xbb\xa4\xac";
+        $e = "\xbb\xa4\xactype=annot,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
         if ($this->mpdf->tableLevel) {
             $this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['textbuffer'][] = [$e];
         } else {

@@ -12,7 +12,7 @@ use WPDeskFIVendor\WPDesk\View\Renderer\Renderer;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Settings
  */
-abstract class FieldSettingsTab implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\SettingsTab
+abstract class FieldSettingsTab implements SettingsTab
 {
     /**
      * @var FormWithFields
@@ -21,7 +21,7 @@ abstract class FieldSettingsTab implements \WPDeskFIVendor\WPDesk\Library\Flexib
     /**
      * @return Field[]
      */
-    protected abstract function get_fields();
+    abstract protected function get_fields();
     /**
      * @return bool
      */
@@ -36,7 +36,7 @@ abstract class FieldSettingsTab implements \WPDeskFIVendor\WPDesk\Library\Flexib
     {
         if ($this->form === null) {
             $fields = $this->get_fields();
-            $this->form = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\FormWithFieldsWPML($fields, static::get_tab_slug());
+            $this->form = new FormWithFieldsWPML($fields, static::get_tab_slug());
         }
         return $this->form;
     }
@@ -45,7 +45,7 @@ abstract class FieldSettingsTab implements \WPDeskFIVendor\WPDesk\Library\Flexib
      *
      * @return string
      */
-    public function render(\WPDeskFIVendor\WPDesk\View\Renderer\Renderer $renderer)
+    public function render(Renderer $renderer)
     {
         return $this->get_form()->render_form($renderer);
     }
@@ -54,7 +54,7 @@ abstract class FieldSettingsTab implements \WPDeskFIVendor\WPDesk\Library\Flexib
      *
      * @return void
      */
-    public function output_render(\WPDeskFIVendor\WPDesk\View\Renderer\Renderer $renderer)
+    public function output_render(Renderer $renderer)
     {
         echo $this->get_form()->render_form($renderer);
         //phpcs:ignore
@@ -89,7 +89,7 @@ abstract class FieldSettingsTab implements \WPDeskFIVendor\WPDesk\Library\Flexib
      */
     public static function get_option($key, $default = \false)
     {
-        $persistence = \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\SettingsForm::get_settings_persistence();
+        $persistence = SettingsForm::get_settings_persistence();
         if ($persistence->has($key)) {
             return $persistence->get($key);
         }

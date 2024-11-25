@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class TBody extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class TBody extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {

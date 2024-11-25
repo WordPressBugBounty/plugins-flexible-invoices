@@ -51,7 +51,7 @@ $hideVat = $settings->get('hide_vat') === 'yes' && !$correction->get_total_tax()
 $hideVatNumber = $settings->get('hide_vat_number') === 'yes' && !$correction->get_total_tax();
 $translator::switch_lang($correction->get_user_lang());
 $translator::set_translate_lang($correction->get_user_lang());
-$currency_helper = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Currency($correction->get_currency());
+$currency_helper = new Currency($correction->get_currency());
 $product_name_style = \true === $hideVat ? 'width: 50%' : 'width: 30%';
 ?>
 <!DOCTYPE HTML>
@@ -225,7 +225,7 @@ if (!empty($client->get_name())) {
 $output_street = '';
 $output_street .= $client->get_street() ? '<span>' . \esc_html($client->get_street()) . '</span><br/>' : '';
 $output_street .= $client->get_street2() ? '<span>' . \esc_html($client->get_street2()) . '</span><br/>' : '';
-echo \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::template_customer_street_filter($output_street, $client);
+echo Hooks::template_customer_street_filter($output_street, $client);
 ?>
 
                     <?php 
@@ -554,23 +554,23 @@ if (!$pkwiuEmpty) {
             <td class="number"><?php 
 echo $currency_helper->string_as_money($total_net_price);
 ?></td><?php 
-// suma "Total net price"
+// suma "Total net price" 
 ?>
             <?php 
 if (!$hideVat) {
     ?>
                 <td class="number">X</td><?php 
-    // tu zawsze X
+    // tu zawsze X 
     ?>
                 <td class="number"><?php 
     echo $currency_helper->string_as_money($total_tax_amount);
     ?></td><?php 
-    // suma "Tax amount"
+    // suma "Tax amount" 
     ?>
                 <td class="number"><?php 
     echo $currency_helper->string_as_money($total_gross_price);
     ?></td><?php 
-    // suma "Total gross price"
+    // suma "Total gross price" 
     ?>
             <?php 
 }
@@ -578,7 +578,7 @@ if (!$hideVat) {
         </tr>
 
         <?php 
-// poniższe sekcje to rozbicie podatków wg stawek
+// poniższe sekcje to rozbicie podatków wg stawek 
 ?>
 
         <?php 
@@ -606,22 +606,22 @@ if (!$hideVat) {
                     <td class="number"><?php 
         echo $currency_helper->string_as_money($price);
         ?></td><?php 
-        // suma "Total net price" dla danej stawki podatkowej
+        // suma "Total net price" dla danej stawki podatkowej 
         ?>
                     <td class="number"><?php 
         echo $taxType;
         ?></td><?php 
-        //tu stawka podatkowa
+        //tu stawka podatkowa 
         ?>
                     <td class="number"><?php 
         echo $currency_helper->string_as_money($total_tax_tax_amount[$taxType]);
         ?></td><?php 
-        // suma "Tax amount" dla danej stawki podatkowej
+        // suma "Tax amount" dla danej stawki podatkowej 
         ?>
                     <td class="number"><?php 
         echo $currency_helper->string_as_money($total_tax_gross_price[$taxType]);
         ?></td><?php 
-        // suma "Total gross price" dla danej stawki podatkowej
+        // suma "Total gross price" dla danej stawki podatkowej 
         ?>
                 </tr>
             <?php 
@@ -635,7 +635,7 @@ if (!$hideVat) {
         </tfoot>
     </table>
     <table class="totals"><?php 
-//tutaj wszystkie kwoty są brutto z podsumowania
+//tutaj wszystkie kwoty są brutto z podsumowania 
 ?>
         <tbody>
         <tr>
@@ -734,7 +734,7 @@ if (!empty($note)) {
 }
 ?>
     <?php 
-\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::template_correction_after_notes($correction, $client_country, $hideVat, $hideVatNumber);
+Hooks::template_correction_after_notes($correction, $client_country, $hideVat, $hideVatNumber);
 ?>
 
     <div class="fix"></div>

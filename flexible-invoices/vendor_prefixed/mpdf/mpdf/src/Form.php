@@ -85,7 +85,7 @@ class Form
     var $form_button_icon;
     // FORMS
     var $textarea_lineheight;
-    public function __construct(\WPDeskFIVendor\Mpdf\Mpdf $mpdf, \WPDeskFIVendor\Mpdf\Otl $otl, \WPDeskFIVendor\Mpdf\Color\ColorConverter $colorConverter, \WPDeskFIVendor\Mpdf\Writer\BaseWriter $writer, \WPDeskFIVendor\Mpdf\Writer\FormWriter $formWriter)
+    public function __construct(Mpdf $mpdf, Otl $otl, ColorConverter $colorConverter, BaseWriter $writer, FormWriter $formWriter)
     {
         $this->mpdf = $mpdf;
         $this->otl = $otl;
@@ -209,10 +209,10 @@ class Form
             $this->mpdf->y += $this->form_element_spacing['input']['outer']['v'] / $k;
             // Chop texto to max length $w-inner-padding
             while ($this->mpdf->GetStringWidth($texto) > $w - $this->form_element_spacing['input']['inner']['h'] * 2) {
-                $texto = \mb_substr($texto, 0, \mb_strlen($texto, $this->mpdf->mb_enc) - 1, $this->mpdf->mb_enc);
+                $texto = mb_substr($texto, 0, mb_strlen($texto, $this->mpdf->mb_enc) - 1, $this->mpdf->mb_enc);
             }
             // DIRECTIONALITY
-            if (\preg_match('/([' . $this->mpdf->pregRTLchars . '])/u', $texto)) {
+            if (preg_match('/([' . $this->mpdf->pregRTLchars . '])/u', $texto)) {
                 $this->mpdf->biDirectional = \true;
             }
             // *RTL*
@@ -306,7 +306,7 @@ class Form
                 $this->mpdf->SetTColor($this->colorConverter->convert(0, $this->mpdf->PDFAXwarnings));
             }
             $this->mpdf->Rect($this->mpdf->x, $this->mpdf->y, $w, $h, 'DF');
-            $ClipPath = \sprintf('q %.3F %.3F %.3F %.3F re W n ', $this->mpdf->x * \WPDeskFIVendor\Mpdf\Mpdf::SCALE, ($this->mpdf->h - $this->mpdf->y) * \WPDeskFIVendor\Mpdf\Mpdf::SCALE, $w * \WPDeskFIVendor\Mpdf\Mpdf::SCALE, -$h * \WPDeskFIVendor\Mpdf\Mpdf::SCALE);
+            $ClipPath = sprintf('q %.3F %.3F %.3F %.3F re W n ', $this->mpdf->x * Mpdf::SCALE, ($this->mpdf->h - $this->mpdf->y) * Mpdf::SCALE, $w * Mpdf::SCALE, -$h * Mpdf::SCALE);
             $this->writer->write($ClipPath);
             $w -= $this->form_element_spacing['textarea']['inner']['h'] * 2 / $k;
             $this->mpdf->x += $this->form_element_spacing['textarea']['inner']['h'] / $k;
@@ -357,7 +357,7 @@ class Form
             // mPDF 5.3.37
             $data = ['VAL' => [], 'OPT' => [], 'SEL' => []];
             if (isset($objattr['items'])) {
-                for ($i = 0; $i < \count($objattr['items']); $i++) {
+                for ($i = 0; $i < count($objattr['items']); $i++) {
                     $item = $objattr['items'][$i];
                     $data['VAL'][] = isset($item['exportValue']) ? $item['exportValue'] : '';
                     $data['OPT'][] = isset($item['content']) ? $item['content'] : '';
@@ -366,7 +366,7 @@ class Form
                     }
                 }
             }
-            if (\count($data['SEL']) === 0 && $this->formSelectDefaultOption) {
+            if (count($data['SEL']) === 0 && $this->formSelectDefaultOption) {
                 $data['SEL'][] = 0;
             }
             if (isset($objattr['color'])) {
@@ -390,7 +390,7 @@ class Form
             $this->mpdf->x += $this->form_element_spacing['select']['outer']['h'] / $k;
             $this->mpdf->y += $this->form_element_spacing['select']['outer']['v'] / $k;
             // DIRECTIONALITY
-            if (\preg_match('/([' . $this->mpdf->pregRTLchars . '])/u', $texto)) {
+            if (preg_match('/([' . $this->mpdf->pregRTLchars . '])/u', $texto)) {
                 $this->mpdf->biDirectional = \true;
             }
             // *RTL*
@@ -412,7 +412,7 @@ class Form
                 $this->mpdf->Cell($this->mpdf->FontSize * 1.4, $h, $down, 1, 0, 'C', 1);
             } else {
                 $this->mpdf->SetFont('czapfdingbats');
-                $this->mpdf->Cell($this->mpdf->FontSize * 1.4, $h, \chr(116), 1, 0, 'C', 1);
+                $this->mpdf->Cell($this->mpdf->FontSize * 1.4, $h, chr(116), 1, 0, 'C', 1);
             }
             $this->mpdf->SetFont($save_font);
             $this->mpdf->currentfontfamily = $save_currentfont;
@@ -437,7 +437,7 @@ class Form
             $this->SetJSButton($w, $h, $objattr['fieldname'], isset($objattr['value']) ? $objattr['value'] : '', $js, $objattr['ID'], $objattr['title'], $flags, isset($objattr['Indexed']) ? $objattr['Indexed'] : \false);
         } else {
             $this->mpdf->y = $objattr['INNER-Y'];
-            $this->writer->write(\sprintf('q %.3F 0 0 %.3F %.3F %.3F cm /I%d Do Q', $objattr['INNER-WIDTH'] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE, $objattr['INNER-HEIGHT'] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE, $objattr['INNER-X'] * \WPDeskFIVendor\Mpdf\Mpdf::SCALE, ($this->mpdf->h - ($objattr['INNER-Y'] + $objattr['INNER-HEIGHT'])) * \WPDeskFIVendor\Mpdf\Mpdf::SCALE, $objattr['ID']));
+            $this->writer->write(sprintf('q %.3F 0 0 %.3F %.3F %.3F cm /I%d Do Q', $objattr['INNER-WIDTH'] * Mpdf::SCALE, $objattr['INNER-HEIGHT'] * Mpdf::SCALE, $objattr['INNER-X'] * Mpdf::SCALE, ($this->mpdf->h - ($objattr['INNER-Y'] + $objattr['INNER-HEIGHT'])) * Mpdf::SCALE, $objattr['ID']));
             if (!empty($objattr['BORDER-WIDTH'])) {
                 $this->mpdf->PaintImgBorder($objattr, $is_table);
             }
@@ -492,7 +492,7 @@ class Form
             $this->mpdf->x += $this->form_element_spacing['button']['inner']['h'] / $k;
             $this->mpdf->y += $this->form_element_spacing['button']['inner']['v'] / $k;
             // DIRECTIONALITY
-            if (\preg_match('/([' . $this->mpdf->pregRTLchars . '])/u', $texto)) {
+            if (preg_match('/([' . $this->mpdf->pregRTLchars . '])/u', $texto)) {
                 $this->mpdf->biDirectional = \true;
             }
             // *RTL*
@@ -696,8 +696,8 @@ class Form
             $this->writer->write('<<');
             $this->writer->write('/Type /Annot ');
             $this->writer->write('/Subtype /Widget');
-            $this->writer->write('/NM ' . $this->writer->string(\sprintf('%04u-%04u', $n, 3000 + $key++)));
-            $this->writer->write('/M ' . $this->writer->string('D:' . \date('YmdHis')));
+            $this->writer->write('/NM ' . $this->writer->string(sprintf('%04u-%04u', $n, 3000 + $key++)));
+            $this->writer->write('/M ' . $this->writer->string('D:' . date('YmdHis')));
             $this->writer->write('/Rect [0 0 0 0] ');
             $this->writer->write('/FT /Btn ');
             if (!empty($frg['disabled'])) {
@@ -737,7 +737,7 @@ class Form
             $this->writer->write('/Fields [' . $this->pdf_acro_array . ']');
             $f = '';
             foreach ($this->form_fonts as $fn) {
-                if (\is_array($this->mpdf->fonts[$fn]['n'])) {
+                if (is_array($this->mpdf->fonts[$fn]['n'])) {
                     throw new \WPDeskFIVendor\Mpdf\MpdfException('Cannot use fonts with SMP or SIP characters for interactive Form elements');
                 }
                 $f .= '/F' . $this->mpdf->fonts[$fn]['i'] . ' ' . $this->mpdf->fonts[$fn]['n'] . ' 0 R ';
@@ -753,22 +753,22 @@ class Form
     }
     function SetFormButtonJS($name, $js)
     {
-        $js = \str_replace("\t", ' ', \trim($js));
+        $js = str_replace("\t", ' ', trim($js));
         if (isset($name) && isset($js)) {
             $this->array_form_button_js[$this->writer->escape($name)] = ['js' => $js];
         }
     }
     function SetFormChoiceJS($name, $js)
     {
-        $js = \str_replace("\t", ' ', \trim($js));
+        $js = str_replace("\t", ' ', trim($js));
         if (isset($name) && isset($js)) {
             $this->array_form_choice_js[$this->writer->escape($name)] = ['js' => $js];
         }
     }
     function SetFormTextJS($name, $js)
     {
-        for ($i = 0; $i < \count($js); $i++) {
-            $j = \str_replace("\t", ' ', \trim($js[$i][1]));
+        for ($i = 0; $i < count($js); $i++) {
+            $j = str_replace("\t", ' ', trim($js[$i][1]));
             $format = $js[$i][0];
             if ($name) {
                 $this->array_form_text_js[$this->writer->escape($name)][$format] = ['js' => $j];
@@ -777,9 +777,9 @@ class Form
     }
     function Win1252ToPDFDocEncoding($txt)
     {
-        $Win1252ToPDFDocEncoding = [\chr(0200) => \chr(0240), \chr(0214) => \chr(0226), \chr(0212) => \chr(0227), \chr(0237) => \chr(0230), \chr(0225) => \chr(0200), \chr(0210) => \chr(032), \chr(0206) => \chr(0201), \chr(0207) => \chr(0202), \chr(0205) => \chr(0203), \chr(0227) => \chr(0204), \chr(0226) => \chr(0205), \chr(0203) => \chr(0206), \chr(0213) => \chr(0210), \chr(0233) => \chr(0211), \chr(0211) => \chr(0213), \chr(0204) => \chr(0214), \chr(0223) => \chr(0215), \chr(0224) => \chr(0216), \chr(0221) => \chr(0217), \chr(0222) => \chr(0220), \chr(0202) => \chr(0221), \chr(0232) => \chr(0235), \chr(0230) => \chr(037), \chr(0231) => \chr(0222), \chr(0216) => \chr(0231), \chr(0240) => \chr(040)];
+        $Win1252ToPDFDocEncoding = [chr(0200) => chr(0240), chr(0214) => chr(0226), chr(0212) => chr(0227), chr(0237) => chr(0230), chr(0225) => chr(0200), chr(0210) => chr(032), chr(0206) => chr(0201), chr(0207) => chr(0202), chr(0205) => chr(0203), chr(0227) => chr(0204), chr(0226) => chr(0205), chr(0203) => chr(0206), chr(0213) => chr(0210), chr(0233) => chr(0211), chr(0211) => chr(0213), chr(0204) => chr(0214), chr(0223) => chr(0215), chr(0224) => chr(0216), chr(0221) => chr(0217), chr(0222) => chr(0220), chr(0202) => chr(0221), chr(0232) => chr(0235), chr(0230) => chr(037), chr(0231) => chr(0222), chr(0216) => chr(0231), chr(0240) => chr(040)];
         // mPDF 5.3.46
-        return \strtr($txt, $Win1252ToPDFDocEncoding);
+        return strtr($txt, $Win1252ToPDFDocEncoding);
     }
     function SetFormText($w, $h, $name, $value = '', $default = '', $title = '', $flags = [], $align = 'L', $hidden = \false, $maxlen = -1, $js = '', $background_col = \false, $border_col = \false)
     {
@@ -794,7 +794,7 @@ class Form
         if ($maxlen < 1) {
             $maxlen = \false;
         }
-        if (!\preg_match('/^[a-zA-Z0-9_:\\-]+$/', $name)) {
+        if (!preg_match('/^[a-zA-Z0-9_:\-]+$/', $name)) {
             throw new \WPDeskFIVendor\Mpdf\MpdfException('Field [' . $name . '] must have a name attribute, which can only contain letters, numbers, colon(:), undersore(_) or hyphen(-)');
         }
         if ($this->mpdf->onlyCoreFonts) {
@@ -829,7 +829,7 @@ class Form
             $bc_c = $this->form_border_color;
         }
         $f = ['n' => $this->formCount, 'typ' => 'Tx', 'page' => $this->mpdf->page, 'x' => $this->mpdf->x, 'y' => $this->mpdf->y, 'w' => $w, 'h' => $h, 'T' => $name, 'FF' => $flags, 'V' => $value, 'DV' => $default, 'TU' => $title, 'hidden' => $hidden, 'Q' => $align, 'maxlen' => $maxlen, 'BS_W' => $this->form_border_width, 'BS_S' => $this->form_border_style, 'BC_C' => $bc_c, 'BG_C' => $bg_c, 'style' => ['font' => $this->mpdf->FontFamily, 'fontsize' => $this->mpdf->FontSizePt, 'fontcolor' => $this->mpdf->TextColor]];
-        if (\is_array($js) && \count($js) > 0) {
+        if (is_array($js) && count($js) > 0) {
             $this->SetFormTextJS($name, $js);
         }
         // mPDF 5.3.25
@@ -844,7 +844,7 @@ class Form
             }
             $this->forms[$this->formCount] = $f;
         }
-        if (!\in_array($this->mpdf->FontFamily, $this->form_fonts)) {
+        if (!in_array($this->mpdf->FontFamily, $this->form_fonts)) {
             $this->form_fonts[] = $this->mpdf->FontFamily;
             $this->mpdf->fonts[$this->mpdf->FontFamily]['used'] = \true;
         }
@@ -860,16 +860,16 @@ class Form
         } else {
             $align = '0';
         }
-        if (!\preg_match('/^[a-zA-Z0-9_:\\-]+$/', $name)) {
+        if (!preg_match('/^[a-zA-Z0-9_:\-]+$/', $name)) {
             throw new \WPDeskFIVendor\Mpdf\MpdfException('Field [' . $name . '] must have a name attribute, which can only contain letters, numbers, colon(:), undersore(_) or hyphen(-)');
         }
         if ($this->mpdf->onlyCoreFonts) {
-            for ($i = 0; $i < \count($array['VAL']); $i++) {
+            for ($i = 0; $i < count($array['VAL']); $i++) {
                 $array['VAL'][$i] = $this->Win1252ToPDFDocEncoding($array['VAL'][$i]);
                 $array['OPT'][$i] = $this->Win1252ToPDFDocEncoding($array['OPT'][$i]);
             }
         } else {
-            for ($i = 0; $i < \count($array['VAL']); $i++) {
+            for ($i = 0; $i < count($array['VAL']); $i++) {
                 if (isset($this->mpdf->CurrentFont['subset'])) {
                     $this->mpdf->UTF8StringToArray($array['VAL'][$i]);
                     // Add characters to font subset
@@ -899,7 +899,7 @@ class Form
             }
             $this->forms[$this->formCount] = $f;
         }
-        if (!\in_array($this->mpdf->FontFamily, $this->form_fonts)) {
+        if (!in_array($this->mpdf->FontFamily, $this->form_fonts)) {
             $this->form_fonts[] = $this->mpdf->FontFamily;
             $this->mpdf->fonts[$this->mpdf->FontFamily]['used'] = \true;
         }
@@ -984,7 +984,7 @@ class Form
     function SetFormButton($bb, $hh, $name, $value, $type, $title = '', $flags = [], $checked = \false, $disabled = \false, $background_col = \false, $border_col = \false, $noprint = \false)
     {
         $this->formCount++;
-        if (!\preg_match('/^[a-zA-Z0-9_:\\-]+$/', $name)) {
+        if (!preg_match('/^[a-zA-Z0-9_:\-]+$/', $name)) {
             throw new \WPDeskFIVendor\Mpdf\MpdfException('Field [' . $name . '] must have a name attribute, which can only contain letters, numbers, colon(:), undersore(_) or hyphen(-)');
         }
         if (!$this->mpdf->onlyCoreFonts) {
@@ -999,7 +999,7 @@ class Form
                 $uvalue = $this->writer->utf8ToUtf16BigEndian($value);
             } elseif ($type === 'radio') {
                 $uvalue = $this->writer->utf8ToUtf16BigEndian($value);
-                $value = \mb_convert_encoding($value, 'Windows-1252', 'UTF-8');
+                $value = mb_convert_encoding($value, 'Windows-1252', 'UTF-8');
             } else {
                 $value = $this->writer->utf8ToUtf16BigEndian($value);
                 $uvalue = $value;
@@ -1008,11 +1008,11 @@ class Form
             $title = $this->Win1252ToPDFDocEncoding($title);
             $value = $this->Win1252ToPDFDocEncoding($value);
             //// ??? not needed
-            $uvalue = \mb_convert_encoding($value, 'UTF-8', 'Windows-1252');
+            $uvalue = mb_convert_encoding($value, 'UTF-8', 'Windows-1252');
             $uvalue = $this->writer->utf8ToUtf16BigEndian($uvalue);
         }
         if ($type === 'radio' || $type === 'checkbox') {
-            if (!\preg_match('/^[a-zA-Z0-9_:\\-\\.]+$/', $value)) {
+            if (!preg_match('/^[a-zA-Z0-9_:\-\.]+$/', $value)) {
                 throw new \WPDeskFIVendor\Mpdf\MpdfException("Field '" . $name . "' must have a value, which can only contain letters, numbers, colon(:), underscore(_), hyphen(-) or period(.)");
             }
         }
@@ -1059,7 +1059,7 @@ class Form
             }
             $this->forms[$this->formCount] = $f;
         }
-        if (!\in_array($this->mpdf->FontFamily, $this->form_fonts)) {
+        if (!in_array($this->mpdf->FontFamily, $this->form_fonts)) {
             $this->form_fonts[] = $this->mpdf->FontFamily;
             $this->mpdf->fonts[$this->mpdf->FontFamily]['used'] = \true;
         }
@@ -1121,9 +1121,9 @@ class Form
     private function getColor($r, $g = -1, $b = -1)
     {
         if ($r == 0 && $g == 0 && $b == 0 || $g == -1) {
-            return \sprintf('%.3F', $r / 255);
+            return sprintf('%.3F', $r / 255);
         }
-        return \sprintf('%.3F %.3F %.3F', $r / 255, $g / 255, $b / 255);
+        return sprintf('%.3F %.3F %.3F', $r / 255, $g / 255, $b / 255);
     }
     function SetFormD($W, $S, $BC, $BG)
     {
@@ -1142,11 +1142,11 @@ class Form
     }
     function _form_rect($x, $y, $w, $h, $hPt)
     {
-        $x *= \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
-        $y = $hPt - $y * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
-        $x2 = $x + $w * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
-        $y2 = $y - $h * \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
-        return \sprintf('%.3F %.3F %.3F %.3F', $x, $y2, $x2, $y);
+        $x *= Mpdf::SCALE;
+        $y = $hPt - $y * Mpdf::SCALE;
+        $x2 = $x + $w * Mpdf::SCALE;
+        $y2 = $y - $h * Mpdf::SCALE;
+        return sprintf('%.3F %.3F %.3F %.3F', $x, $y2, $x2, $y);
     }
     function _put_button_icon($array, $w, $h)
     {
@@ -1168,10 +1168,10 @@ class Form
         $this->writer->write('/Type /XObject');
         $this->writer->write('/Subtype /Image');
         $this->writer->write('/BBox [0 0 1 1]');
-        $this->writer->write('/Length ' . \strlen($info['data']));
+        $this->writer->write('/Length ' . strlen($info['data']));
         $this->writer->write('/BitsPerComponent ' . $info['bpc']);
         if ($info['cs'] === 'Indexed') {
-            $this->writer->write('/ColorSpace [/Indexed /DeviceRGB ' . (\strlen($info['pal']) / 3 - 1) . ' ' . ($this->mpdf->n + 1) . ' 0 R]');
+            $this->writer->write('/ColorSpace [/Indexed /DeviceRGB ' . (strlen($info['pal']) / 3 - 1) . ' ' . ($this->mpdf->n + 1) . ' 0 R]');
         } else {
             $this->writer->write('/ColorSpace /' . $info['cs']);
             if ($info['cs'] === 'DeviceCMYK') {
@@ -1195,8 +1195,8 @@ class Form
         if ($info['cs'] === 'Indexed') {
             $filter = $this->mpdf->compress ? '/Filter /FlateDecode ' : '';
             $this->writer->object();
-            $pal = $this->mpdf->compress ? \gzcompress($info['pal']) : $info['pal'];
-            $this->writer->write('<<' . $filter . '/Length ' . \strlen($pal) . '>>');
+            $pal = $this->mpdf->compress ? gzcompress($info['pal']) : $info['pal'];
+            $this->writer->write('<<' . $filter . '/Length ' . strlen($pal) . '>>');
             $this->writer->stream($pal);
             $this->writer->write('endobj');
         }
@@ -1216,8 +1216,8 @@ class Form
         $this->writer->write('<<');
         $this->writer->write('/Type /Annot ');
         $this->writer->write('/Subtype /Widget');
-        $this->writer->write('/NM ' . $this->writer->string(\sprintf('%04u-%04u', $n, 7000 + $form['n'])));
-        $this->writer->write('/M ' . $this->writer->string('D:' . \date('YmdHis')));
+        $this->writer->write('/NM ' . $this->writer->string(sprintf('%04u-%04u', $n, 7000 + $form['n'])));
+        $this->writer->write('/M ' . $this->writer->string('D:' . date('YmdHis')));
         $this->writer->write('/Rect [ ' . $this->_form_rect($form['x'], $form['y'], $form['w'], $form['h'], $hPt) . ' ]');
         $form['noprint'] ? $this->writer->write('/F 0 ') : $this->writer->write('/F 4 ');
         $this->writer->write('/FT /Btn ');
@@ -1394,12 +1394,12 @@ class Form
         if ($form['subtype'] === 'radio') {
             // output 2 appearance streams for radio buttons on/off
             if ($this->formUseZapD) {
-                $fs = \sprintf('%.3F', $form['style']['fontsize'] * 1.25);
+                $fs = sprintf('%.3F', $form['style']['fontsize'] * 1.25);
                 $fi = 'czapfdingbats';
                 $r_on = 'q ' . $radio_color . ' rg BT /F' . $this->mpdf->fonts[$fi]['i'] . ' ' . $fs . ' Tf 0 0 Td (4) Tj ET Q';
                 $r_off = 'q ' . $radio_color . ' rg BT /F' . $this->mpdf->fonts[$fi]['i'] . ' ' . $fs . ' Tf 0 0 Td (8) Tj ET Q';
             } else {
-                $matrix = \sprintf('%.3F 0 0 %.3F 0 %.3F', $form['style']['fontsize'] * 1.33 / 10, $form['style']['fontsize'] * 1.25 / 10, $form['style']['fontsize']);
+                $matrix = sprintf('%.3F 0 0 %.3F 0 %.3F', $form['style']['fontsize'] * 1.33 / 10, $form['style']['fontsize'] * 1.25 / 10, $form['style']['fontsize']);
                 $fill = $radio_background_color . ' rg 3.778 -7.410 m 2.800 -7.410 1.947 -7.047 1.225 -6.322 c 0.500 -5.600 0.138 -4.747 0.138 -3.769 c 0.138 -2.788 0.500 -1.938 1.225 -1.213 c 1.947 -0.491 2.800 -0.128 3.778 -0.128 c 4.757 -0.128 5.610 -0.491 6.334 -1.213 c 7.056 -1.938 7.419 -2.788 7.419 -3.769 c 7.419 -4.747 7.056 -5.600 6.334 -6.322 c 5.610 -7.047 4.757 -7.410 3.778 -7.410 c h f ';
                 $circle = '3.778 -6.963 m 4.631 -6.963 5.375 -6.641 6.013 -6.004 c 6.653 -5.366 6.972 -4.619 6.972 -3.769 c 6.972 -2.916 6.653 -2.172 6.013 -1.532 c 5.375 -0.894 4.631 -0.576 3.778 -0.576 c 2.928 -0.576 2.182 -0.894 1.544 -1.532 c 0.904 -2.172 0.585 -2.916 0.585 -3.769 c 0.585 -4.619 0.904 -5.366 1.544 -6.004 c 2.182 -6.641 2.928 -6.963 3.778 -6.963 c h 3.778 -7.410 m 2.800 -7.410 1.947 -7.047 1.225 -6.322 c 0.500 -5.600 0.138 -4.747 0.138 -3.769 c 0.138 -2.788 0.500 -1.938 1.225 -1.213 c 1.947 -0.491 2.800 -0.128 3.778 -0.128 c 4.757 -0.128 5.610 -0.491 6.334 -1.213 c 7.056 -1.938 7.419 -2.788 7.419 -3.769 c 7.419 -4.747 7.056 -5.600 6.334 -6.322 c 5.610 -7.047 4.757 -7.410 3.778 -7.410 c h f ';
                 $r_on = 'q ' . $matrix . ' cm ' . $fill . $radio_color . ' rg ' . $circle . '  ' . $radio_color . ' rg
@@ -1408,25 +1408,25 @@ f Q ';
                 $r_off = 'q ' . $matrix . ' cm ' . $fill . $radio_color . ' rg ' . $circle . '  Q ';
             }
             $this->writer->object();
-            $p = $this->mpdf->compress ? \gzcompress($r_on) : $r_on;
-            $this->writer->write('<<' . $filter . '/Length ' . \strlen($p) . ' /Resources 2 0 R>>');
+            $p = $this->mpdf->compress ? gzcompress($r_on) : $r_on;
+            $this->writer->write('<<' . $filter . '/Length ' . strlen($p) . ' /Resources 2 0 R>>');
             $this->writer->stream($p);
             $this->writer->write('endobj');
             $this->writer->object();
-            $p = $this->mpdf->compress ? \gzcompress($r_off) : $r_off;
-            $this->writer->write('<<' . $filter . '/Length ' . \strlen($p) . ' /Resources 2 0 R>>');
+            $p = $this->mpdf->compress ? gzcompress($r_off) : $r_off;
+            $this->writer->write('<<' . $filter . '/Length ' . strlen($p) . ' /Resources 2 0 R>>');
             $this->writer->stream($p);
             $this->writer->write('endobj');
         }
         if ($form['subtype'] === 'checkbox') {
             // First output appearance stream for check box on
             if ($this->formUseZapD) {
-                $fs = \sprintf('%.3F', $form['style']['fontsize'] * 1.25);
+                $fs = sprintf('%.3F', $form['style']['fontsize'] * 1.25);
                 $fi = 'czapfdingbats';
                 $cb_on = 'q ' . $radio_color . ' rg BT /F' . $this->mpdf->fonts[$fi]['i'] . ' ' . $fs . ' Tf 0 0 Td (4) Tj ET Q';
                 $cb_off = 'q ' . $radio_color . ' rg BT /F' . $this->mpdf->fonts[$fi]['i'] . ' ' . $fs . ' Tf 0 0 Td (8) Tj ET Q';
             } else {
-                $matrix = \sprintf('%.3F 0 0 %.3F 0 %.3F', $form['style']['fontsize'] * 1.33 / 10, $form['style']['fontsize'] * 1.25 / 10, $form['style']['fontsize']);
+                $matrix = sprintf('%.3F 0 0 %.3F 0 %.3F', $form['style']['fontsize'] * 1.33 / 10, $form['style']['fontsize'] * 1.25 / 10, $form['style']['fontsize']);
                 $fill = $radio_background_color . ' rg 7.395 -0.070 m 7.395 -7.344 l 0.121 -7.344 l 0.121 -0.070 l 7.395 -0.070 l h  f ';
                 $square = '0.508 -6.880 m 6.969 -6.880 l 6.969 -0.534 l 0.508 -0.534 l 0.508 -6.880 l h 7.395 -0.070 m 7.395 -7.344 l 0.121 -7.344 l 0.121 -0.070 l 7.395 -0.070 l h ';
                 $cb_on = 'q ' . $matrix . ' cm ' . $fill . $radio_color . ' rg ' . $square . ' f ' . $radio_color . ' rg
@@ -1434,15 +1434,15 @@ f Q ';
                 $cb_off = 'q ' . $matrix . ' cm ' . $fill . $radio_color . ' rg ' . $square . ' f Q ';
             }
             $this->writer->object();
-            $p = $this->mpdf->compress ? \gzcompress($cb_on) : $cb_on;
-            $this->writer->write('<<' . $filter . '/Length ' . \strlen($p) . ' /Resources 2 0 R>>');
+            $p = $this->mpdf->compress ? gzcompress($cb_on) : $cb_on;
+            $this->writer->write('<<' . $filter . '/Length ' . strlen($p) . ' /Resources 2 0 R>>');
             $this->writer->stream($p);
             $this->writer->write('endobj');
             // output appearance stream for check box off (only if not using ZapfDingbats)
             if (!$this->formUseZapD) {
                 $this->writer->object();
-                $p = $this->mpdf->compress ? \gzcompress($cb_off) : $cb_off;
-                $this->writer->write('<<' . $filter . '/Length ' . \strlen($p) . ' /Resources 2 0 R>>');
+                $p = $this->mpdf->compress ? gzcompress($cb_off) : $cb_off;
+                $this->writer->write('<<' . $filter . '/Length ' . strlen($p) . ' /Resources 2 0 R>>');
                 $this->writer->stream($p);
                 $this->writer->write('endobj');
             }
@@ -1473,12 +1473,12 @@ f Q ';
         $temp .= '/BC [ ' . $form['BC_C'] . ' ] ';
         $temp .= '/BG [ ' . $form['BG_C'] . ' ] ';
         $this->writer->write('/MK << ' . $temp . ' >>');
-        $this->writer->write('/NM ' . $this->writer->string(\sprintf('%04u-%04u', $n, 6000 + $form['n'])));
-        $this->writer->write('/M ' . $this->writer->string('D:' . \date('YmdHis')));
+        $this->writer->write('/NM ' . $this->writer->string(sprintf('%04u-%04u', $n, 6000 + $form['n'])));
+        $this->writer->write('/M ' . $this->writer->string('D:' . date('YmdHis')));
         $this->writer->write('/T ' . $this->writer->string($form['T']));
         $this->writer->write('/DA (/F' . $this->mpdf->fonts[$form['style']['font']]['i'] . ' ' . $form['style']['fontsize'] . ' Tf ' . $form['style']['fontcolor'] . ')');
         $opt = '';
-        $count = \count($form['OPT']['VAL']);
+        $count = count($form['OPT']['VAL']);
         for ($i = 0; $i < $count; $i++) {
             $opt .= '[ ' . $this->writer->string($form['OPT']['VAL'][$i]) . ' ' . $this->writer->string($form['OPT']['OPT'][$i]) . ' ] ';
         }
@@ -1492,7 +1492,7 @@ f Q ';
             $selectIndex .= ' ' . $selectVal . ' ';
         }
         if ($selectItem) {
-            if (\count($form['OPT']['SEL']) < 2) {
+            if (count($form['OPT']['SEL']) < 2) {
                 $this->writer->write('/V ' . $selectItem . ' ');
                 $this->writer->write('/DV ' . $selectItem . ' ');
             } else {
@@ -1501,7 +1501,7 @@ f Q ';
             }
             $this->writer->write('/I [' . $selectIndex . '] ');
         }
-        if (\is_array($form['FF']) && \count($form['FF']) > 0) {
+        if (is_array($form['FF']) && count($form['FF']) > 0) {
             $this->writer->write('/Ff ' . $this->_setflag($form['FF']) . ' ');
         }
         // Javascript
@@ -1534,7 +1534,7 @@ f Q ';
         $this->writer->write('/FT /Tx ');
         $this->writer->write('/H /N ');
         $this->writer->write('/R 0 ');
-        if (\is_array($form['FF']) && \count($form['FF']) > 0) {
+        if (is_array($form['FF']) && count($form['FF']) > 0) {
             $this->writer->write('/Ff ' . $this->_setflag($form['FF']) . ' ');
         }
         if (isset($form['maxlen']) && $form['maxlen'] > 0) {
@@ -1558,8 +1558,8 @@ f Q ';
         if ($form['Q']) {
             $this->writer->write('/Q ' . $form['Q'] . '');
         }
-        $this->writer->write('/NM ' . $this->writer->string(\sprintf('%04u-%04u', $n, 5000 + $form['n'])));
-        $this->writer->write('/M ' . $this->writer->string('D:' . \date('YmdHis')));
+        $this->writer->write('/NM ' . $this->writer->string(sprintf('%04u-%04u', $n, 5000 + $form['n'])));
+        $this->writer->write('/M ' . $this->writer->string('D:' . date('YmdHis')));
         if (isset($this->array_form_text_js[$form['T']])) {
             $put_js = 1;
             $cc = 0;

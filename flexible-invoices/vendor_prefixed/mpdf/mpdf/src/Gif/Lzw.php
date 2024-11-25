@@ -40,14 +40,14 @@ class Lzw
         unset($this->Vals);
         unset($this->Stack);
         unset($this->Buf);
-        $this->Next = \range(0, (1 << $this->MAX_LZW_BITS) - 1);
-        $this->Vals = \range(0, (1 << $this->MAX_LZW_BITS) - 1);
-        $this->Stack = \range(0, (1 << $this->MAX_LZW_BITS + 1) - 1);
-        $this->Buf = \range(0, 279);
+        $this->Next = range(0, (1 << $this->MAX_LZW_BITS) - 1);
+        $this->Vals = range(0, (1 << $this->MAX_LZW_BITS) - 1);
+        $this->Stack = range(0, (1 << $this->MAX_LZW_BITS + 1) - 1);
+        $this->Buf = range(0, 279);
     }
     function deCompress($data, &$datLen)
     {
-        $stLen = \strlen($data);
+        $stLen = strlen($data);
         $datLen = 0;
         $ret = "";
         $dp = 0;
@@ -55,7 +55,7 @@ class Lzw
         // INITIALIZATION
         $this->LZWCommandInit($data, $dp);
         while (($iIndex = $this->LZWCommand($data, $dp)) >= 0) {
-            $ret .= \chr($iIndex);
+            $ret .= chr($iIndex);
         }
         $datLen = $dp;
         if ($iIndex != -2) {
@@ -65,7 +65,7 @@ class Lzw
     }
     function LZWCommandInit(&$data, &$dp)
     {
-        $this->SetCodeSize = \ord($data[0]);
+        $this->SetCodeSize = ord($data[0]);
         $dp += 1;
         $this->CodeSize = $this->SetCodeSize + 1;
         $this->ClearCode = 1 << $this->SetCodeSize;
@@ -172,11 +172,11 @@ class Lzw
             }
             $this->Buf[0] = $this->Buf[$this->LastByte - 2];
             $this->Buf[1] = $this->Buf[$this->LastByte - 1];
-            $Count = \ord($data[$dp]);
+            $Count = ord($data[$dp]);
             $dp += 1;
             if ($Count) {
                 for ($i = 0; $i < $Count; $i++) {
-                    $this->Buf[2 + $i] = \ord($data[$dp + $i]);
+                    $this->Buf[2 + $i] = ord($data[$dp + $i]);
                 }
                 $dp += $Count;
             } else {
@@ -188,7 +188,7 @@ class Lzw
         }
         $iRet = 0;
         for ($i = $this->CurBit, $j = 0; $j < $this->CodeSize; $i++, $j++) {
-            $iRet |= (($this->Buf[\intval($i / 8)] & 1 << $i % 8) != 0) << $j;
+            $iRet |= (($this->Buf[intval($i / 8)] & 1 << $i % 8) != 0) << $j;
         }
         $this->CurBit += $this->CodeSize;
         return $iRet;

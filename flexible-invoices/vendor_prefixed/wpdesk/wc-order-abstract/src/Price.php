@@ -17,8 +17,8 @@ class Price
      *
      * @return string
      */
-    public static function get_rounded_price(float $price) : string
+    public static function get_rounded_price(float $price): string
     {
-        return \number_format($price, 2, '.', '');
+        return number_format($price, 2, '.', '');
     }
 }

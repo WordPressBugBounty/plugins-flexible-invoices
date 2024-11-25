@@ -7,7 +7,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Settings\Fields
  */
-class AttributesSubStartField extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields\SubStartField
+class AttributesSubStartField extends SubStartField
 {
     /**
      * @return string

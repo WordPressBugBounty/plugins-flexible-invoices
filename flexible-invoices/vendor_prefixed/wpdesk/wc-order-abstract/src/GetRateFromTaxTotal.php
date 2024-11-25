@@ -77,21 +77,21 @@ class GetRateFromTaxTotal
     /**
      * @return string
      */
-    public function get_class() : string
+    public function get_class(): string
     {
         return (string) $this->rate_class;
     }
     /**
      * @return float
      */
-    public function get_rate() : float
+    public function get_rate(): float
     {
         return $this->rate;
     }
     /**
      * @return int
      */
-    public function get_rate_id() : int
+    public function get_rate_id(): int
     {
         return $this->rate_id;
     }
@@ -100,7 +100,7 @@ class GetRateFromTaxTotal
      *
      * @return array
      */
-    private function remove_empty_rates(array $total) : array
+    private function remove_empty_rates(array $total): array
     {
         foreach ($total as $tax_rate_id => $tax_rate) {
             if ($tax_rate === '') {

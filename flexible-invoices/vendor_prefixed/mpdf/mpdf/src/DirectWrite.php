@@ -22,7 +22,7 @@ class DirectWrite
      * @var \Mpdf\Color\ColorConverter
      */
     private $colorConverter;
-    public function __construct(\WPDeskFIVendor\Mpdf\Mpdf $mpdf, \WPDeskFIVendor\Mpdf\Otl $otl, \WPDeskFIVendor\Mpdf\SizeConverter $sizeConverter, \WPDeskFIVendor\Mpdf\Color\ColorConverter $colorConverter)
+    public function __construct(Mpdf $mpdf, Otl $otl, SizeConverter $sizeConverter, ColorConverter $colorConverter)
     {
         $this->mpdf = $mpdf;
         $this->otl = $otl;
@@ -45,11 +45,11 @@ class DirectWrite
         //Output text in flowing mode
         $w = $this->mpdf->w - $this->mpdf->rMargin - $this->mpdf->x;
         $wmax = $w - ($this->mpdf->cMarginL + $this->mpdf->cMarginR);
-        $s = \str_replace("\r", '', $txt);
+        $s = str_replace("\r", '', $txt);
         if ($this->mpdf->usingCoreFont) {
-            $nb = \strlen($s);
+            $nb = strlen($s);
         } else {
-            $nb = \mb_strlen($s, $this->mpdf->mb_enc);
+            $nb = mb_strlen($s, $this->mpdf->mb_enc);
             // handle single space character
             if ($nb === 1 && $s === ' ') {
                 $this->mpdf->x += $this->mpdf->GetStringWidth($s);
@@ -62,18 +62,18 @@ class DirectWrite
         $l = 0;
         $nl = 1;
         if (!$this->mpdf->usingCoreFont) {
-            if (\preg_match('/([' . $this->mpdf->pregRTLchars . '])/u', $txt)) {
+            if (preg_match('/([' . $this->mpdf->pregRTLchars . '])/u', $txt)) {
                 $this->mpdf->biDirectional = \true;
             }
             // *RTL*
             while ($i < $nb) {
                 //Get next character
-                $c = \mb_substr($s, $i, 1, $this->mpdf->mb_enc);
+                $c = mb_substr($s, $i, 1, $this->mpdf->mb_enc);
                 if ($c === "\n") {
                     // WORD SPACING
                     $this->mpdf->ResetSpacing();
                     //Explicit line break
-                    $tmp = \rtrim(\mb_substr($s, $j, $i - $j, $this->mpdf->mb_enc));
+                    $tmp = rtrim(mb_substr($s, $j, $i - $j, $this->mpdf->mb_enc));
                     $this->mpdf->Cell($w, $h, $tmp, 0, 2, $align, $fill, $link);
                     $i++;
                     $sep = -1;
@@ -118,24 +118,24 @@ class DirectWrite
                         if ($i == $j) {
                             $i++;
                         }
-                        $tmp = \rtrim(\mb_substr($s, $j, $i - $j, $this->mpdf->mb_enc));
+                        $tmp = rtrim(mb_substr($s, $j, $i - $j, $this->mpdf->mb_enc));
                         $this->mpdf->Cell($w, $h, $tmp, 0, 2, $align, $fill, $link);
                     } else {
-                        $tmp = \rtrim(\mb_substr($s, $j, $sep - $j, $this->mpdf->mb_enc));
+                        $tmp = rtrim(mb_substr($s, $j, $sep - $j, $this->mpdf->mb_enc));
                         if ($align === 'J') {
                             //////////////////////////////////////////
                             // JUSTIFY J using Unicode fonts (Word spacing doesn't work)
                             // WORD SPACING
                             // Change NON_BREAKING SPACE to spaces so they are 'spaced' properly
-                            $tmp = \str_replace(\chr(194) . \chr(160), \chr(32), $tmp);
+                            $tmp = str_replace(chr(194) . chr(160), chr(32), $tmp);
                             $len_ligne = $this->mpdf->GetStringWidth($tmp);
-                            $nb_carac = \mb_strlen($tmp, $this->mpdf->mb_enc);
-                            $nb_spaces = \mb_substr_count($tmp, ' ', $this->mpdf->mb_enc);
+                            $nb_carac = mb_strlen($tmp, $this->mpdf->mb_enc);
+                            $nb_spaces = mb_substr_count($tmp, ' ', $this->mpdf->mb_enc);
                             $inclCursive = \false;
-                            if (!empty($this->mpdf->CurrentFont['useOTL']) && \preg_match('/([' . $this->mpdf->pregCURSchars . '])/u', $tmp)) {
+                            if (!empty($this->mpdf->CurrentFont['useOTL']) && preg_match('/([' . $this->mpdf->pregCURSchars . '])/u', $tmp)) {
                                 $inclCursive = \true;
                             }
-                            list($charspacing, $ws) = $this->mpdf->GetJspacing($nb_carac, $nb_spaces, ($w - 2 - $len_ligne) * \WPDeskFIVendor\Mpdf\Mpdf::SCALE, $inclCursive);
+                            list($charspacing, $ws) = $this->mpdf->GetJspacing($nb_carac, $nb_spaces, ($w - 2 - $len_ligne) * Mpdf::SCALE, $inclCursive);
                             $this->mpdf->SetSpacing($charspacing, $ws);
                             //////////////////////////////////////////
                         }
@@ -170,7 +170,7 @@ class DirectWrite
                     //Explicit line break
                     // WORD SPACING
                     $this->mpdf->ResetSpacing();
-                    $this->mpdf->Cell($w, $h, \substr($s, $j, $i - $j), 0, 2, $align, $fill, $link);
+                    $this->mpdf->Cell($w, $h, substr($s, $j, $i - $j), 0, 2, $align, $fill, $link);
                     $i++;
                     $sep = -1;
                     $j = $i;
@@ -214,19 +214,19 @@ class DirectWrite
                         if ($i == $j) {
                             $i++;
                         }
-                        $this->mpdf->Cell($w, $h, \substr($s, $j, $i - $j), 0, 2, $align, $fill, $link);
+                        $this->mpdf->Cell($w, $h, substr($s, $j, $i - $j), 0, 2, $align, $fill, $link);
                     } else {
-                        $tmp = \substr($s, $j, $sep - $j);
+                        $tmp = substr($s, $j, $sep - $j);
                         if ($align === 'J') {
                             //////////////////////////////////////////
                             // JUSTIFY J using Unicode fonts
                             // WORD SPACING is not fully supported for complex scripts
                             // Change NON_BREAKING SPACE to spaces so they are 'spaced' properly
-                            $tmp = \str_replace(\chr(160), \chr(32), $tmp);
+                            $tmp = str_replace(chr(160), chr(32), $tmp);
                             $len_ligne = $this->mpdf->GetStringWidth($tmp);
-                            $nb_carac = \strlen($tmp);
-                            $nb_spaces = \substr_count($tmp, ' ');
-                            list($charspacing, $ws) = $this->mpdf->GetJspacing($nb_carac, $nb_spaces, ($w - 2 - $len_ligne) * \WPDeskFIVendor\Mpdf\Mpdf::SCALE, $false);
+                            $nb_carac = strlen($tmp);
+                            $nb_spaces = substr_count($tmp, ' ');
+                            list($charspacing, $ws) = $this->mpdf->GetJspacing($nb_carac, $nb_spaces, ($w - 2 - $len_ligne) * Mpdf::SCALE, $false);
                             $this->mpdf->SetSpacing($charspacing, $ws);
                             //////////////////////////////////////////
                         }
@@ -261,9 +261,9 @@ class DirectWrite
                 $this->mpdf->x = $this->mpdf->lMargin;
             }
             if ($this->mpdf->usingCoreFont) {
-                $tmp = \substr($s, $j, $i - $j);
+                $tmp = substr($s, $j, $i - $j);
             } else {
-                $tmp = \mb_substr($s, $j, $i - $j, $this->mpdf->mb_enc);
+                $tmp = mb_substr($s, $j, $i - $j, $this->mpdf->mb_enc);
             }
             $this->mpdf->Cell($w, $h, $tmp, 0, 0, $align, $fill, $link);
         }
@@ -281,7 +281,7 @@ class DirectWrite
         if ($fontwidth == 0) {
             throw new \WPDeskFIVendor\Mpdf\MpdfException('Please use values unequal to zero for font width (CircularText)');
         }
-        $text = \str_replace("\r", '', $text);
+        $text = str_replace("\r", '', $text);
         // circumference
         $u = $r * 2 * \M_PI;
         $checking = \true;
@@ -290,18 +290,18 @@ class DirectWrite
             $t = 0;
             $w = [];
             if ($this->mpdf->usingCoreFont) {
-                $nb = \strlen($text);
+                $nb = strlen($text);
                 for ($i = 0; $i < $nb; $i++) {
                     $w[$i] = $this->mpdf->GetStringWidth($text[$i]);
                     $w[$i] *= $kerning * $fontwidth;
                     $t += $w[$i];
                 }
             } else {
-                $nb = \mb_strlen($text, $this->mpdf->mb_enc);
+                $nb = mb_strlen($text, $this->mpdf->mb_enc);
                 $lastchar = '';
                 $unicode = $this->mpdf->UTF8StringToArray($text);
                 for ($i = 0; $i < $nb; $i++) {
-                    $c = \mb_substr($text, $i, 1, $this->mpdf->mb_enc);
+                    $c = mb_substr($text, $i, 1, $this->mpdf->mb_enc);
                     $w[$i] = $this->mpdf->GetStringWidth($c);
                     $w[$i] *= $kerning * $fontwidth;
                     $char = $unicode[$i];
@@ -371,7 +371,7 @@ class DirectWrite
             if ($this->mpdf->usingCoreFont) {
                 $c = $text[$i];
             } else {
-                $c = \mb_substr($text, $i, 1, $this->mpdf->mb_enc);
+                $c = mb_substr($text, $i, 1, $this->mpdf->mb_enc);
             }
             $this->mpdf->Cell($w[$i], $this->mpdf->FontSize, $c, 0, 0, 'C');
             // mPDF 5.3.53
@@ -412,10 +412,10 @@ class DirectWrite
             $text = $this->mpdf->all_entities_to_utf8($text);
         }
         if ($this->mpdf->usingCoreFont) {
-            $text = \mb_convert_encoding($text, $this->mpdf->mb_enc, 'UTF-8');
+            $text = mb_convert_encoding($text, $this->mpdf->mb_enc, 'UTF-8');
         }
         // DIRECTIONALITY
-        if (\preg_match('/([' . $this->mpdf->pregRTLchars . '])/u', $text)) {
+        if (preg_match('/([' . $this->mpdf->pregRTLchars . '])/u', $text)) {
             $this->mpdf->biDirectional = \true;
         }
         // *RTL*
@@ -426,7 +426,7 @@ class DirectWrite
             if ($this->mpdf->CurrentFont['haskernGPOS']) {
                 $this->mpdf->OTLtags['Plus'] .= ' kern';
             } else {
-                $textvar |= \WPDeskFIVendor\Mpdf\Css\TextVars::FC_KERNING;
+                $textvar |= TextVars::FC_KERNING;
             }
         }
         // Use OTL OpenType Table Layout - GSUB & GPOS

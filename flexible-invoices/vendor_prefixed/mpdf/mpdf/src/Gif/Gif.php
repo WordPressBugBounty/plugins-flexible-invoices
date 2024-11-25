@@ -20,8 +20,8 @@ class Gif
     var $m_bLoaded;
     public function __construct()
     {
-        $this->m_gfh = new \WPDeskFIVendor\Mpdf\Gif\FileHeader();
-        $this->m_img = new \WPDeskFIVendor\Mpdf\Gif\Image();
+        $this->m_gfh = new FileHeader();
+        $this->m_img = new Image();
         $this->m_lpData = '';
         $this->m_bLoaded = \false;
     }
@@ -45,13 +45,13 @@ class Gif
         if (!$this->m_gfh->load($this->m_lpData, $len)) {
             return \false;
         }
-        $this->m_lpData = \substr($this->m_lpData, $len);
+        $this->m_lpData = substr($this->m_lpData, $len);
         do {
             $imgLen = 0;
             if (!$this->m_img->load($this->m_lpData, $imgLen)) {
                 return \false;
             }
-            $this->m_lpData = \substr($this->m_lpData, $imgLen);
+            $this->m_lpData = substr($this->m_lpData, $imgLen);
         } while ($iIndex-- > 0);
         $this->m_bLoaded = \true;
         return \true;

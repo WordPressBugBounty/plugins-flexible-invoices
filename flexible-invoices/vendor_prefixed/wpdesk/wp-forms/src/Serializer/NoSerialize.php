@@ -3,7 +3,7 @@
 namespace WPDeskFIVendor\WPDesk\Forms\Serializer;
 
 use WPDeskFIVendor\WPDesk\Forms\Serializer;
-class NoSerialize implements \WPDeskFIVendor\WPDesk\Forms\Serializer
+class NoSerialize implements Serializer
 {
     public function serialize($value)
     {

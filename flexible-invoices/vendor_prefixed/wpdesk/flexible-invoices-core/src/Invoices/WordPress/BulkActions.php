@@ -8,16 +8,16 @@ use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Integration
  */
-class BulkActions implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+class BulkActions implements Hookable
 {
     const PAID_BULK_ACTION_ID = 'set_as_payed';
     const PAID_BULK_CONFIRM_ID = 'bulk_set_as_payed';
     const SEND_BULK_CONFIRM_ID = 'bulk_send_email';
     public function hooks()
     {
-        \add_filter('bulk_actions-edit-inspire_invoice', [$this, 'add_bulk_option']);
-        \add_filter('handle_bulk_actions-edit-inspire_invoice', [$this, 'set_bulk_actions_handler'], 10, 3);
-        \add_action('admin_notices', [$this, 'bulk_notice']);
+        add_filter('bulk_actions-edit-inspire_invoice', [$this, 'add_bulk_option']);
+        add_filter('handle_bulk_actions-edit-inspire_invoice', [$this, 'set_bulk_actions_handler'], 10, 3);
+        add_action('admin_notices', [$this, 'bulk_notice']);
     }
     /**
      * @param array $actions
@@ -26,12 +26,12 @@ class BulkActions implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookabl
      *
      * @internal You should not use this directly from another application
      */
-    public function add_bulk_option(array $actions) : array
+    public function add_bulk_option(array $actions): array
     {
         if (isset($actions['edit'])) {
             unset($actions['edit']);
         }
-        $actions[self::PAID_BULK_ACTION_ID] = \esc_html__('Paid', 'flexible-invoices');
+        $actions[self::PAID_BULK_ACTION_ID] = esc_html__('Paid', 'flexible-invoices');
         return $actions;
     }
     /**
@@ -43,13 +43,13 @@ class BulkActions implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookabl
      *
      * @internal You should not use this directly from another application
      */
-    public function set_bulk_actions_handler(string $redirect_to, string $do_action, array $post_ids) : string
+    public function set_bulk_actions_handler(string $redirect_to, string $do_action, array $post_ids): string
     {
         if ($do_action === self::PAID_BULK_ACTION_ID) {
             foreach ($post_ids as $post_id) {
-                \update_post_meta($post_id, '_payment_status', 'paid');
+                update_post_meta($post_id, '_payment_status', 'paid');
             }
-            return \add_query_arg(self::PAID_BULK_CONFIRM_ID, \count($post_ids), $redirect_to);
+            return add_query_arg(self::PAID_BULK_CONFIRM_ID, count($post_ids), $redirect_to);
         }
         return $redirect_to;
     }
@@ -64,12 +64,12 @@ class BulkActions implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookabl
             //phpcs:ignore
             $invoices_count = (int) $_REQUEST[self::PAID_BULK_CONFIRM_ID];
             //phpcs:ignore
-            \printf('<div id="message" class="updated notice"><p>' . \_n('%s invoice marked as paid.', '%s invoices marked as paid.', $invoices_count, 'flexible-invoices') . '</p></div>', $invoices_count);
+            printf('<div id="message" class="updated notice"><p>' . _n('%s invoice marked as paid.', '%s invoices marked as paid.', $invoices_count, 'flexible-invoices') . '</p></div>', $invoices_count);
             //phpcs:ignore
         }
         if (!empty($_REQUEST[self::SEND_BULK_CONFIRM_ID])) {
             //phpcs:ignore
-            print '<div id="message" class="updated notice"><p>' . \esc_html__('Invoices was sent.', 'flexible-invoices') . '</p></div>';
+            print '<div id="message" class="updated notice"><p>' . esc_html__('Invoices was sent.', 'flexible-invoices') . '</p></div>';
         }
     }
 }

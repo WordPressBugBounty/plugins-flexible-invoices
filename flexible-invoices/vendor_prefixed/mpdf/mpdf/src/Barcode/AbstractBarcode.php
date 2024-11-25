@@ -41,7 +41,7 @@ abstract class AbstractBarcode
      */
     protected function binseqToArray($seq, array $barcodeData)
     {
-        $len = \strlen($seq);
+        $len = strlen($seq);
         $w = 0;
         $k = 0;
         for ($i = 0; $i < $len; ++$i) {

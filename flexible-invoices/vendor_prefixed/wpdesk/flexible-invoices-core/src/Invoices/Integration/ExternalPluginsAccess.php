@@ -62,7 +62,7 @@ class ExternalPluginsAccess
      * @param Renderer         $renderer
      * @param PDF              $pdf
      */
-    public function __construct(string $version, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory $document_factory, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\SaveDocument $document_saver, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy $settings_strategy, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings $settings, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\LibraryInfo $library_info, \WPDeskFIVendor\Psr\Log\LoggerInterface $logger, \WPDeskFIVendor\WPDesk\View\Renderer\Renderer $renderer, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\PDF $pdf)
+    public function __construct(string $version, DocumentFactory $document_factory, SaveDocument $document_saver, SettingsStrategy $settings_strategy, Settings $settings, LibraryInfo $library_info, LoggerInterface $logger, Renderer $renderer, PDF $pdf)
     {
         $this->version = $version;
         $this->document_factory = $document_factory;
@@ -77,63 +77,63 @@ class ExternalPluginsAccess
     /**
      * @return string
      */
-    public function get_version() : string
+    public function get_version(): string
     {
         return $this->version;
     }
     /**
      * @return DocumentFactory
      */
-    public function get_document_factory() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory
+    public function get_document_factory(): DocumentFactory
     {
         return $this->document_factory;
     }
     /**
      * @return SaveDocument
      */
-    public function get_document_saver() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\SaveDocument
+    public function get_document_saver(): SaveDocument
     {
         return $this->document_saver;
     }
     /**
      * @return SettingsStrategy
      */
-    public function get_settings_strategy() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy
+    public function get_settings_strategy(): SettingsStrategy
     {
         return $this->settings_strategy;
     }
     /**
      * @return Settings
      */
-    public function get_settings() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings
+    public function get_settings(): Settings
     {
         return $this->settings;
     }
     /**
      * @return LibraryInfo
      */
-    public function get_library_info() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\LibraryInfo
+    public function get_library_info(): LibraryInfo
     {
         return $this->library_info;
     }
     /**
      * @return LoggerInterface
      */
-    public function get_logger() : \WPDeskFIVendor\Psr\Log\LoggerInterface
+    public function get_logger(): LoggerInterface
     {
         return $this->logger;
     }
     /**
      * @return Renderer
      */
-    public function get_renderer() : \WPDeskFIVendor\WPDesk\View\Renderer\Renderer
+    public function get_renderer(): Renderer
     {
         return $this->renderer;
     }
     /**
      * @return PDF
      */
-    public function get_pdf() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\PDF
+    public function get_pdf(): PDF
     {
         return $this->pdf;
     }

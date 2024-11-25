@@ -7,7 +7,7 @@ namespace WPDeskFIVendor\WPDesk\Forms\Field;
  *
  * @package WPDesk\Forms
  */
-abstract class NoValueField extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
+abstract class NoValueField extends BasicField
 {
     public function get_name()
     {

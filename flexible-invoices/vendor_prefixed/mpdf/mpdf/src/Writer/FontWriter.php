@@ -25,7 +25,7 @@ class FontWriter
      * @var string
      */
     private $fontDescriptor;
-    public function __construct(\WPDeskFIVendor\Mpdf\Mpdf $mpdf, \WPDeskFIVendor\Mpdf\Writer\BaseWriter $writer, \WPDeskFIVendor\Mpdf\Fonts\FontCache $fontCache, $fontDescriptor)
+    public function __construct(Mpdf $mpdf, BaseWriter $writer, FontCache $fontCache, $fontDescriptor)
     {
         $this->mpdf = $mpdf;
         $this->writer = $writer;
@@ -43,8 +43,8 @@ class FontWriter
                     if (isset($f['fontkey']) && $f['fontkey'] === $fontkey && $f['type'] === 'TTF') {
                         $used = $f['used'];
                         if ($used) {
-                            $nChars = (\ord($f['cw'][0]) << 8) + \ord($f['cw'][1]);
-                            $usage = (int) (\count($f['subset']) * 100 / $nChars);
+                            $nChars = (ord($f['cw'][0]) << 8) + ord($f['cw'][1]);
+                            $usage = (int) (count($f['subset']) * 100 / $nChars);
                             $fsize = $info['length1'];
                             // Always subset the very large TTF files
                             if ($fsize > $this->mpdf->maxTTFFilesize * 1024) {
@@ -73,11 +73,11 @@ class FontWriter
                             $originalsize = $this->fontCache->jsonLoad($fontkey . '.ps.json');
                             // sets $originalsize (of repackaged font)
                         } else {
-                            $ttf = new \WPDeskFIVendor\Mpdf\TTFontFile($this->fontCache, $this->fontDescriptor);
+                            $ttf = new TTFontFile($this->fontCache, $this->fontDescriptor);
                             $font = $ttf->repackageTTF($this->mpdf->FontFiles[$fontkey]['ttffile'], $this->mpdf->fonts[$fontkey]['TTCfontID'], $this->mpdf->debugfonts, $this->mpdf->fonts[$fontkey]['useOTL']);
                             // mPDF 5.7.1
-                            $originalsize = \strlen($font);
-                            $font = \gzcompress($font);
+                            $originalsize = strlen($font);
+                            $font = gzcompress($font);
                             unset($ttf);
                             $this->fontCache->binaryWrite($fontkey . '.ps.z', $font);
                             $this->fontCache->jsonWrite($fontkey . '.ps.json', $originalsize);
@@ -85,11 +85,11 @@ class FontWriter
                     } elseif ($this->fontCache->has($fontkey . '.z')) {
                         $font = $this->fontCache->load($fontkey . '.z');
                     } else {
-                        $font = \file_get_contents($this->mpdf->FontFiles[$fontkey]['ttffile']);
-                        $font = \gzcompress($font);
+                        $font = file_get_contents($this->mpdf->FontFiles[$fontkey]['ttffile']);
+                        $font = gzcompress($font);
                         $this->fontCache->binaryWrite($fontkey . '.z', $font);
                     }
-                    $this->writer->write('<</Length ' . \strlen($font));
+                    $this->writer->write('<</Length ' . strlen($font));
                     $this->writer->write('/Filter /FlateDecode');
                     $this->writer->write('/Length1 ' . $originalsize);
                     $this->writer->write('>>');
@@ -139,8 +139,8 @@ class FontWriter
                     continue;
                 }
                 $ssfaid = 'AA';
-                $ttf = new \WPDeskFIVendor\Mpdf\TTFontFile($this->fontCache, $this->fontDescriptor);
-                $subsetCount = \count($font['subsetfontids']);
+                $ttf = new TTFontFile($this->fontCache, $this->fontDescriptor);
+                $subsetCount = count($font['subsetfontids']);
                 for ($sfid = 0; $sfid < $subsetCount; $sfid++) {
                     $this->mpdf->fonts[$k]['n'][$sfid] = $this->mpdf->n + 1;
                     // NB an array for subset
@@ -148,15 +148,15 @@ class FontWriter
                     $ssfaid++;
                     /* For some strange reason a subset ($sfid > 0) containing less than 97 characters causes an error
                     	  so fill up the array */
-                    for ($j = \count($font['subsets'][$sfid]); $j < 98; $j++) {
+                    for ($j = count($font['subsets'][$sfid]); $j < 98; $j++) {
                         $font['subsets'][$sfid][$j] = 0;
                     }
                     $subset = $font['subsets'][$sfid];
                     unset($subset[0]);
                     $ttfontstream = $ttf->makeSubsetSIP($font['ttffile'], $subset, $font['TTCfontID'], $this->mpdf->debugfonts, $font['useOTL']);
                     // mPDF 5.7.1
-                    $ttfontsize = \strlen($ttfontstream);
-                    $fontstream = \gzcompress($ttfontstream);
+                    $ttfontsize = strlen($ttfontstream);
+                    $fontstream = gzcompress($ttfontstream);
                     $widthstring = '';
                     $toUnistring = '';
                     foreach ($font['subsets'][$sfid] as $cp => $u) {
@@ -164,18 +164,18 @@ class FontWriter
                         if ($w !== \false) {
                             $widthstring .= $w . ' ';
                         } else {
-                            $widthstring .= \round($ttf->defaultWidth) . ' ';
+                            $widthstring .= round($ttf->defaultWidth) . ' ';
                         }
                         if ($u > 65535) {
-                            $utf8 = \chr(($u >> 18) + 240) . \chr(($u >> 12 & 63) + 128) . \chr(($u >> 6 & 63) + 128) . \chr(($u & 63) + 128);
-                            $utf16 = \mb_convert_encoding($utf8, 'UTF-16BE', 'UTF-8');
-                            $l1 = \ord($utf16[0]);
-                            $h1 = \ord($utf16[1]);
-                            $l2 = \ord($utf16[2]);
-                            $h2 = \ord($utf16[3]);
-                            $toUnistring .= \sprintf("<%02s> <%02s%02s%02s%02s>\n", \strtoupper(\dechex($cp)), \strtoupper(\dechex($l1)), \strtoupper(\dechex($h1)), \strtoupper(\dechex($l2)), \strtoupper(\dechex($h2)));
+                            $utf8 = chr(($u >> 18) + 240) . chr(($u >> 12 & 63) + 128) . chr(($u >> 6 & 63) + 128) . chr(($u & 63) + 128);
+                            $utf16 = mb_convert_encoding($utf8, 'UTF-16BE', 'UTF-8');
+                            $l1 = ord($utf16[0]);
+                            $h1 = ord($utf16[1]);
+                            $l2 = ord($utf16[2]);
+                            $h2 = ord($utf16[3]);
+                            $toUnistring .= sprintf("<%02s> <%02s%02s%02s%02s>\n", strtoupper(dechex($cp)), strtoupper(dechex($l1)), strtoupper(dechex($h1)), strtoupper(dechex($l2)), strtoupper(dechex($h2)));
                         } else {
-                            $toUnistring .= \sprintf("<%02s> <%04s>\n", \strtoupper(\dechex($cp)), \strtoupper(\dechex($u)));
+                            $toUnistring .= sprintf("<%02s> <%04s>\n", strtoupper(dechex($cp)), strtoupper(dechex($u)));
                         }
                     }
                     // Additional Type1 or TrueType font
@@ -183,7 +183,7 @@ class FontWriter
                     $this->writer->write('<</Type /Font');
                     $this->writer->write('/BaseFont /' . $subsetname);
                     $this->writer->write('/Subtype /TrueType');
-                    $this->writer->write('/FirstChar 0 /LastChar ' . (\count($font['subsets'][$sfid]) - 1));
+                    $this->writer->write('/FirstChar 0 /LastChar ' . (count($font['subsets'][$sfid]) - 1));
                     $this->writer->write('/Widths ' . ($this->mpdf->n + 1) . ' 0 R');
                     $this->writer->write('/FontDescriptor ' . ($this->mpdf->n + 2) . ' 0 R');
                     $this->writer->write('/ToUnicode ' . ($this->mpdf->n + 3) . ' 0 R');
@@ -223,19 +223,19 @@ class FontWriter
                     $toUni .= "<00> <FF>\n";
                     // $toUni .= sprintf("<00> <%02s>\n", strtoupper(dechex(count($font['subsets'][$sfid])-1)));
                     $toUni .= "endcodespacerange\n";
-                    $toUni .= \count($font['subsets'][$sfid]) . " beginbfchar\n";
+                    $toUni .= count($font['subsets'][$sfid]) . " beginbfchar\n";
                     $toUni .= $toUnistring;
                     $toUni .= "endbfchar\n";
                     $toUni .= "endcmap\n";
                     $toUni .= "CMapName currentdict /CMap defineresource pop\n";
                     $toUni .= "end\n";
                     $toUni .= "end\n";
-                    $this->writer->write('<</Length ' . \strlen($toUni) . '>>');
+                    $this->writer->write('<</Length ' . strlen($toUni) . '>>');
                     $this->writer->stream($toUni);
                     $this->writer->write('endobj');
                     // Font file
                     $this->writer->object();
-                    $this->writer->write('<</Length ' . \strlen($fontstream));
+                    $this->writer->write('<</Length ' . strlen($fontstream));
                     $this->writer->write('/Filter /FlateDecode');
                     $this->writer->write('/Length1 ' . $ttfontsize);
                     $this->writer->write('>>');
@@ -249,13 +249,13 @@ class FontWriter
                 $this->mpdf->fonts[$k]['n'] = $this->mpdf->n + 1;
                 if ($asSubset) {
                     $ssfaid = 'A';
-                    $ttf = new \WPDeskFIVendor\Mpdf\TTFontFile($this->fontCache, $this->fontDescriptor);
+                    $ttf = new TTFontFile($this->fontCache, $this->fontDescriptor);
                     $fontname = 'MPDFA' . $ssfaid . '+' . $font['name'];
                     $subset = $font['subset'];
                     unset($subset[0]);
                     $ttfontstream = $ttf->makeSubset($font['ttffile'], $subset, $font['TTCfontID'], $this->mpdf->debugfonts, $font['useOTL']);
-                    $ttfontsize = \strlen($ttfontstream);
-                    $fontstream = \gzcompress($ttfontstream);
+                    $ttfontsize = strlen($ttfontstream);
+                    $fontstream = gzcompress($ttfontstream);
                     $codeToGlyph = $ttf->codeToGlyph;
                     unset($codeToGlyph[0]);
                 } else {
@@ -314,7 +314,7 @@ class FontWriter
                 $toUni .= "CMapName currentdict /CMap defineresource pop\n";
                 $toUni .= "end\n";
                 $toUni .= "end\n";
-                $this->writer->write('<</Length ' . \strlen($toUni) . '>>');
+                $this->writer->write('<</Length ' . strlen($toUni) . '>>');
                 $this->writer->stream($toUni);
                 $this->writer->write('endobj');
                 // CIDSystemInfo dictionary
@@ -350,31 +350,28 @@ class FontWriter
                 // Embed CIDToGIDMap
                 // A specification of the mapping from CIDs to glyph indices
                 if ($asSubset) {
-                    $cidtogidmap = \str_pad('', 256 * 256 * 2, "\x00");
+                    $cidtogidmap = str_pad('', 256 * 256 * 2, "\x00");
                     foreach ($codeToGlyph as $cc => $glyph) {
-                        $cidtogidmap[$cc * 2] = \chr($glyph >> 8);
-                        $cidtogidmap[$cc * 2 + 1] = \chr($glyph & 0xff);
+                        $cidtogidmap[$cc * 2] = chr($glyph >> 8);
+                        $cidtogidmap[$cc * 2 + 1] = chr($glyph & 0xff);
                     }
-                    $cidtogidmap = \gzcompress($cidtogidmap);
+                    $cidtogidmap = gzcompress($cidtogidmap);
+                } else if ($this->fontCache->has($font['fontkey'] . '.cgm')) {
+                    $cidtogidmap = $this->fontCache->load($font['fontkey'] . '.cgm');
                 } else {
-                    // First see if there is a cached CIDToGIDMapfile
-                    if ($this->fontCache->has($font['fontkey'] . '.cgm')) {
-                        $cidtogidmap = $this->fontCache->load($font['fontkey'] . '.cgm');
-                    } else {
-                        $ttf = new \WPDeskFIVendor\Mpdf\TTFontFile($this->fontCache, $this->fontDescriptor);
-                        $charToGlyph = $ttf->getCTG($font['ttffile'], $font['TTCfontID'], $this->mpdf->debugfonts, $font['useOTL']);
-                        $cidtogidmap = \str_pad('', 256 * 256 * 2, "\x00");
-                        foreach ($charToGlyph as $cc => $glyph) {
-                            $cidtogidmap[$cc * 2] = \chr($glyph >> 8);
-                            $cidtogidmap[$cc * 2 + 1] = \chr($glyph & 0xff);
-                        }
-                        unset($ttf);
-                        $cidtogidmap = \gzcompress($cidtogidmap);
-                        $this->fontCache->binaryWrite($font['fontkey'] . '.cgm', $cidtogidmap);
+                    $ttf = new TTFontFile($this->fontCache, $this->fontDescriptor);
+                    $charToGlyph = $ttf->getCTG($font['ttffile'], $font['TTCfontID'], $this->mpdf->debugfonts, $font['useOTL']);
+                    $cidtogidmap = str_pad('', 256 * 256 * 2, "\x00");
+                    foreach ($charToGlyph as $cc => $glyph) {
+                        $cidtogidmap[$cc * 2] = chr($glyph >> 8);
+                        $cidtogidmap[$cc * 2 + 1] = chr($glyph & 0xff);
                     }
+                    unset($ttf);
+                    $cidtogidmap = gzcompress($cidtogidmap);
+                    $this->fontCache->binaryWrite($font['fontkey'] . '.cgm', $cidtogidmap);
                 }
                 $this->writer->object();
-                $this->writer->write('<</Length ' . \strlen($cidtogidmap) . '');
+                $this->writer->write('<</Length ' . strlen($cidtogidmap) . '');
                 $this->writer->write('/Filter /FlateDecode');
                 $this->writer->write('>>');
                 $this->writer->stream($cidtogidmap);
@@ -382,7 +379,7 @@ class FontWriter
                 // Font file
                 if ($asSubset) {
                     $this->writer->object();
-                    $this->writer->write('<</Length ' . \strlen($fontstream));
+                    $this->writer->write('<</Length ' . strlen($fontstream));
                     $this->writer->write('/Filter /FlateDecode');
                     $this->writer->write('/Length1 ' . $ttfontsize);
                     $this->writer->write('>>');
@@ -391,7 +388,7 @@ class FontWriter
                     unset($ttf);
                 }
             } else {
-                throw new \WPDeskFIVendor\Mpdf\MpdfException(\sprintf('Unsupported font type: %s (%s)', $type, $name));
+                throw new \WPDeskFIVendor\Mpdf\MpdfException(sprintf('Unsupported font type: %s (%s)', $type, $name));
             }
         }
     }
@@ -404,7 +401,7 @@ class FontWriter
             $character['startcid'] = 128;
         }
         // for each character
-        $cwlen = $asSubset ? $maxUni + 1 : \strlen($font['cw']) / 2;
+        $cwlen = $asSubset ? $maxUni + 1 : strlen($font['cw']) / 2;
         for ($cid = $character['startcid']; $cid < $cwlen; $cid++) {
             if ($cid == 128 && $asSubset && !$this->fontCache->has($fontCacheFilename)) {
                 $character = ['rangeid' => $character['rangeid'], 'prevcid' => $character['prevcid'], 'prevwidth' => $character['prevwidth'], 'interval' => $character['interval'], 'range' => $character['range']];
@@ -415,7 +412,7 @@ class FontWriter
             if ($character1 === "\x00" && $character2 === "\x00") {
                 continue;
             }
-            $width = (\ord($character1) << 8) + \ord($character2);
+            $width = (ord($character1) << 8) + ord($character2);
             if ($width === 65535) {
                 $width = 0;
             }
@@ -433,7 +430,7 @@ class FontWriter
                         if (isset($character['range'][$character['rangeid']][0]) && $width === $character['range'][$character['rangeid']][0]) {
                             $character['range'][$character['rangeid']][] = $width;
                         } else {
-                            \array_pop($character['range'][$character['rangeid']]);
+                            array_pop($character['range'][$character['rangeid']]);
                             // new range
                             $character['rangeid'] = $character['prevcid'];
                             $character['range'][$character['rangeid']] = [];
@@ -477,12 +474,12 @@ class FontWriter
         $nextk = -1;
         $prevint = \false;
         foreach ($range as $k => $ws) {
-            $cws = \count($ws);
+            $cws = count($ws);
             if ($k == $nextk and !$prevint and (!isset($ws['interval']) or $cws < 4)) {
                 if (isset($range[$k]['interval'])) {
                     unset($range[$k]['interval']);
                 }
-                $range[$prevk] = \array_merge($range[$prevk], $range[$k]);
+                $range[$prevk] = array_merge($range[$prevk], $range[$k]);
                 unset($range[$k]);
             } else {
                 $prevk = $k;
@@ -503,19 +500,19 @@ class FontWriter
         // output data
         $w = '';
         foreach ($range as $k => $ws) {
-            if (\count(\array_count_values($ws)) === 1) {
+            if (count(array_count_values($ws)) === 1) {
                 // interval mode is more compact
-                $w .= ' ' . $k . ' ' . ($k + \count($ws) - 1) . ' ' . $ws[0];
+                $w .= ' ' . $k . ' ' . ($k + count($ws) - 1) . ' ' . $ws[0];
             } else {
                 // range mode
-                $w .= ' ' . $k . ' [ ' . \implode(' ', $ws) . ' ]' . "\n";
+                $w .= ' ' . $k . ' [ ' . implode(' ', $ws) . ' ]' . "\n";
             }
         }
         return '/W [' . $w . ' ]';
     }
     private function writeFontWidths(&$font, $cidoffset = 0)
     {
-        \ksort($font['cw']);
+        ksort($font['cw']);
         unset($font['cw'][65535]);
         $rangeid = 0;
         $range = [];
@@ -532,7 +529,7 @@ class FontWriter
                         if ($width === $range[$rangeid][0]) {
                             $range[$rangeid][] = $width;
                         } else {
-                            \array_pop($range[$rangeid]);
+                            array_pop($range[$rangeid]);
                             // new range
                             $rangeid = $prevcid;
                             $range[$rangeid] = [];

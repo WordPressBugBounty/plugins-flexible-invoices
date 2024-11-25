@@ -7,7 +7,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFie
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields
  */
-class VatNumber extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields\FormField
+class VatNumber extends FormField
 {
     /**
      * @var string
@@ -39,7 +39,7 @@ class VatNumber extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooC
      *
      * @return array
      */
-    public function add_address_replacements(array $fields, array $args) : array
+    public function add_address_replacements(array $fields, array $args): array
     {
         if (!empty($args[$this->get_field_id()])) {
             $fields['{' . $this->get_field_id() . '}'] = $this->label . ': ' . $args[$this->get_field_id()];
@@ -55,21 +55,21 @@ class VatNumber extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooC
      *
      * @return array
      */
-    protected function prepare_checkout_field($field_priority = null) : array
+    protected function prepare_checkout_field($field_priority = null): array
     {
-        $user_id = \get_current_user_id();
+        $user_id = get_current_user_id();
         $default = '';
         if ($user_id) {
-            $default = \get_user_meta($user_id, $this->field_id, \true);
+            $default = get_user_meta($user_id, $this->field_id, \true);
         }
-        return ['label' => $this->label, 'placeholder' => $this->placeholder, 'required' => $this->get_required(), 'class' => \is_admin() ? '' : ['form-row-wide woocommerce-form__label woocommerce-form__label-for-checkbox'], 'clear' => \true, 'priority' => $field_priority, 'default' => $default ?? ''];
+        return ['label' => $this->label, 'placeholder' => $this->placeholder, 'required' => $this->get_required(), 'class' => is_admin() ? '' : ['form-row-wide woocommerce-form__label woocommerce-form__label-for-checkbox'], 'clear' => \true, 'priority' => $field_priority, 'default' => $default ?? ''];
     }
     /**
      * Prepare admin field.
      *
      * @return array
      */
-    protected function prepare_admin_field() : array
+    protected function prepare_admin_field(): array
     {
         $field = $this->prepare_checkout_field();
         $field['show'] = \false;

@@ -17,9 +17,9 @@ class DecToAlpha
         // 1 letter (up to 26)
         if ($valor > 702) {
             // 3 letters (up to 18278)
-            $c1 = 65 + \floor(($valor - 703) / 676);
-            $c2 = 65 + \floor(($valor - 703) % 676 / 26);
-            $c3 = 65 + \floor(($valor - 703) % 676 % 26);
+            $c1 = 65 + floor(($valor - 703) / 676);
+            $c2 = 65 + floor(($valor - 703) % 676 / 26);
+            $c3 = 65 + floor(($valor - 703) % 676 % 26);
         } elseif ($valor > 26) {
             // 2 letters (up to 702)
             $c1 = 64 + (int) (($valor - 1) / 26);
@@ -28,15 +28,15 @@ class DecToAlpha
                 $c2 += 26;
             }
         }
-        $alpha = \chr($c1);
+        $alpha = chr($c1);
         if ($c2 !== '') {
-            $alpha .= \chr($c2);
+            $alpha .= chr($c2);
         }
         if ($c3 !== '') {
-            $alpha .= \chr($c3);
+            $alpha .= chr($c3);
         }
         if (!$toUpper) {
-            $alpha = \strtolower($alpha);
+            $alpha = strtolower($alpha);
         }
         return $alpha;
     }

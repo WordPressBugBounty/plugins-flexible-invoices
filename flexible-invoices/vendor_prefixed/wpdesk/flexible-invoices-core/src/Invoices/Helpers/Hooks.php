@@ -14,7 +14,7 @@ class Hooks
      *
      * @return array
      */
-    public static function signature_user_filter(array $users, array $site_users) : array
+    public static function signature_user_filter(array $users, array $site_users): array
     {
         /**
          * Filters the default signature users passed to select in general settings.
@@ -25,7 +25,7 @@ class Hooks
          * @return array
          * @since 1.3.5
          */
-        return \apply_filters('fi/core/settings/general/signature_users', $users, $site_users);
+        return apply_filters('fi/core/settings/general/signature_users', $users, $site_users);
     }
     /**
      * @param Document $document
@@ -33,7 +33,7 @@ class Hooks
      * @param bool     $hide_vat
      * @param bool     $hide_vat_number
      */
-    public static function template_correction_after_notes(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document $document, string $client_country, bool $hide_vat, bool $hide_vat_number)
+    public static function template_correction_after_notes(Document $document, string $client_country, bool $hide_vat, bool $hide_vat_number)
     {
         /**
          * Fire hook after correction notes (deprecated - use fi/core/template/correction/after_notes).
@@ -47,7 +47,7 @@ class Hooks
          *
          * @since 3.0.0
          */
-        \do_action('flexible_invoices_after_notes', $client_country, $hide_vat, $hide_vat_number, $document);
+        do_action('flexible_invoices_after_notes', $client_country, $hide_vat, $hide_vat_number, $document);
         /**
          * Fire hook after correction notes.
          *
@@ -58,7 +58,7 @@ class Hooks
          *
          * @since 3.0.0
          */
-        \do_action('fi/core/template/correction/after_notes', $document, $client_country, $hide_vat, $hide_vat_number);
+        do_action('fi/core/template/correction/after_notes', $document, $client_country, $hide_vat, $hide_vat_number);
     }
     /**
      * @param Document $document
@@ -66,7 +66,7 @@ class Hooks
      * @param bool     $hide_vat
      * @param bool     $hide_vat_number
      */
-    public static function template_invoice_after_notes(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document $document, string $client_country, bool $hide_vat, bool $hide_vat_number)
+    public static function template_invoice_after_notes(Document $document, string $client_country, bool $hide_vat, bool $hide_vat_number)
     {
         /**
          * Fire hook after invoice notes (deprecated - use fi/core/template/invoice/after_notes).
@@ -80,7 +80,7 @@ class Hooks
          *
          * @since 3.0.0
          */
-        \do_action('flexible_invoices_after_notes', $client_country, $hide_vat, $hide_vat_number, $document);
+        do_action('flexible_invoices_after_notes', $client_country, $hide_vat, $hide_vat_number, $document);
         /**
          * Fire hook after invoice notes.
          *
@@ -91,7 +91,7 @@ class Hooks
          *
          * @since 3.0.0
          */
-        \do_action('fi/core/template/invoice/after_notes', $document, $client_country, $hide_vat, $hide_vat_number);
+        do_action('fi/core/template/invoice/after_notes', $document, $client_country, $hide_vat, $hide_vat_number);
     }
     /**
      * @param string   $output_street
@@ -99,7 +99,7 @@ class Hooks
      *
      * @return string
      */
-    public static function template_customer_street_filter(string $output_street, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Customer $customer) : string
+    public static function template_customer_street_filter(string $output_street, Customer $customer): string
     {
         /**
          * Filters client street.
@@ -109,19 +109,19 @@ class Hooks
          *
          * @since 3.0.0
          */
-        return \apply_filters('fi/core/template/invoice/client/street', $output_street, $customer);
+        return apply_filters('fi/core/template/invoice/client/street', $output_street, $customer);
     }
     /**
      * @param PersistentContainer $settings Settings container.
      */
-    public static function template_custom_css_hook(\WPDeskFIVendor\WPDesk\Persistence\PersistentContainer $settings)
+    public static function template_custom_css_hook(PersistentContainer $settings)
     {
         /**
          * Fires in custom CSS section.
          *
          * @param PersistentContainer $settings Settings.
          */
-        \do_action('fi/core/template/invoice/custom_css', $settings);
+        do_action('fi/core/template/invoice/custom_css', $settings);
     }
     /**
      * @param Document $document Document object (invoice, correction etc.)
@@ -130,7 +130,7 @@ class Hooks
      *
      * @return mixed|void
      */
-    public static function template_exchange_vertical_filter(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document $document, array $products, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Customer $customer)
+    public static function template_exchange_vertical_filter(Document $document, array $products, Customer $customer)
     {
         /**
          * Filters template totals section.
@@ -139,7 +139,7 @@ class Hooks
          * @param array    $products Document products.
          * @param Customer $customer Customer object.
          */
-        return \apply_filters('fi/core/template/invoice/exchange/vertical', '', $document, $products, $customer);
+        return apply_filters('fi/core/template/invoice/exchange/vertical', '', $document, $products, $customer);
     }
     /**
      * @param string $wpml_user_lang
@@ -151,7 +151,7 @@ class Hooks
          *
          * @param string $wpml_user_lang Current lang.
          */
-        \do_action('wpml_switch_language', $wpml_user_lang);
+        do_action('wpml_switch_language', $wpml_user_lang);
     }
     /**
      * @param string $value
@@ -161,12 +161,12 @@ class Hooks
      *
      * @return string
      */
-    public static function wpml_translate_single_string_filter(string $value, string $textdomain, string $id, string $current_lang) : string
+    public static function wpml_translate_single_string_filter(string $value, string $textdomain, string $id, string $current_lang): string
     {
         /**
          * @ignore WPML hook.
          */
-        return \apply_filters('wpml_translate_single_string', $value, $textdomain, $id, $current_lang);
+        return apply_filters('wpml_translate_single_string', $value, $textdomain, $id, $current_lang);
     }
     /**
      * @param WC_Order $order
@@ -174,7 +174,7 @@ class Hooks
      * @param string   $plain_text
      * @param string   $email
      */
-    public static function woocommerce_email_after_order_table_hook(\WC_Order $order, bool $sent_to_admin, string $plain_text, string $email)
+    public static function woocommerce_email_after_order_table_hook(WC_Order $order, bool $sent_to_admin, string $plain_text, string $email)
     {
         /**
          * Fires in email template.
@@ -184,7 +184,7 @@ class Hooks
          * @param string   $plain_text    Plain text,
          * @param string   $email         Recipient email.
          */
-        \do_action('woocommerce_email_after_order_table', $order, $sent_to_admin, $plain_text, $email);
+        do_action('woocommerce_email_after_order_table', $order, $sent_to_admin, $plain_text, $email);
     }
     /**
      * @param WC_Order $order
@@ -192,7 +192,7 @@ class Hooks
      * @param string   $plain_text
      * @param string   $email
      */
-    public static function woocommerce_email_order_meta_hook(\WC_Order $order, bool $sent_to_admin, string $plain_text, string $email)
+    public static function woocommerce_email_order_meta_hook(WC_Order $order, bool $sent_to_admin, string $plain_text, string $email)
     {
         /**
          * Fires in email template.
@@ -202,7 +202,7 @@ class Hooks
          * @param string   $plain_text    Plain text,
          * @param string   $email         Recipient email.
          */
-        \do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);
+        do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);
     }
     /**
      * @param bool   $email_heading Sent to admin.
@@ -216,7 +216,7 @@ class Hooks
          * @param string $email_heading Email heading.
          * @param string $email         Recipient email.
          */
-        \do_action('woocommerce_email_header', $email_heading, $email);
+        do_action('woocommerce_email_header', $email_heading, $email);
     }
     /**
      * @param string $format Date format.
@@ -228,7 +228,7 @@ class Hooks
          *
          * @param string $format Date format.
          */
-        return \apply_filters('fi/core/document/date/format', $format);
+        return apply_filters('fi/core/document/date/format', $format);
     }
     /**
      * @param string $format Date format.
@@ -242,7 +242,7 @@ class Hooks
          *
          * @since 3.8.2
          */
-        return \apply_filters('fi/core/document/date/issue/format', $format);
+        return apply_filters('fi/core/document/date/issue/format', $format);
     }
     /**
      * @param string $format Date format.
@@ -256,7 +256,7 @@ class Hooks
          *
          * @since 3.8.2
          */
-        return \apply_filters('fi/core/document/date/payment/format', $format);
+        return apply_filters('fi/core/document/date/payment/format', $format);
     }
     /**
      * @param string $format Date format.
@@ -270,7 +270,7 @@ class Hooks
          *
          * @since 3.8.2
          */
-        return \apply_filters('fi/core/document/date/paid/format', $format);
+        return apply_filters('fi/core/document/date/paid/format', $format);
     }
     /**
      * @param string $format Date format.
@@ -284,6 +284,6 @@ class Hooks
          *
          * @since 3.8.2
          */
-        return \apply_filters('fi/core/document/date/sale/format', $format);
+        return apply_filters('fi/core/document/date/sale/format', $format);
     }
 }

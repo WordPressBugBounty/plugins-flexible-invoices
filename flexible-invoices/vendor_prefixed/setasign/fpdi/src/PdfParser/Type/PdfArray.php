@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\Type;
@@ -16,7 +16,7 @@ use WPDeskFIVendor\setasign\Fpdi\PdfParser\Tokenizer;
  *
  * @property array $value The value of the PDF type.
  */
-class PdfArray extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
+class PdfArray extends PdfType
 {
     /**
      * Parses an array of the passed tokenizer and parser.
@@ -26,7 +26,7 @@ class PdfArray extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
      * @return false|self
      * @throws PdfTypeException
      */
-    public static function parse(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Tokenizer $tokenizer, \WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParser $parser)
+    public static function parse(Tokenizer $tokenizer, PdfParser $parser)
     {
         $result = [];
         // Recurse into this function until we reach the end of the array.
@@ -62,9 +62,9 @@ class PdfArray extends \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType
      */
     public static function ensure($array, $size = null)
     {
-        $result = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::ensureType(self::class, $array, 'Array value expected.');
+        $result = PdfType::ensureType(self::class, $array, 'Array value expected.');
         if ($size !== null && \count($array->value) !== $size) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException(\sprintf('Array with %s entries expected.', $size), \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException::INVALID_DATA_SIZE);
+            throw new PdfTypeException(\sprintf('Array with %s entries expected.', $size), PdfTypeException::INVALID_DATA_SIZE);
         }
         return $result;
     }

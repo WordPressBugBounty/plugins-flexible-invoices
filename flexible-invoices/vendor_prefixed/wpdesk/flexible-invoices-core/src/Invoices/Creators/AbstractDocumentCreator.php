@@ -18,7 +18,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Creators
  */
-abstract class AbstractDocumentCreator implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\Creator
+abstract class AbstractDocumentCreator implements Creator
 {
     const TYPE = 'invoice';
     /**
@@ -50,7 +50,7 @@ abstract class AbstractDocumentCreator implements \WPDeskFIVendor\WPDesk\Library
      * @param string            $button_label
      * @param string            $name
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory $source_factory, string $button_label, string $name)
+    public function __construct(DataSourceFactory $source_factory, string $button_label, string $name)
     {
         $this->button_label = $button_label;
         $this->name = $name;
@@ -66,60 +66,60 @@ abstract class AbstractDocumentCreator implements \WPDeskFIVendor\WPDesk\Library
     /**
      * @return string
      */
-    public function get_type() : string
+    public function get_type(): string
     {
         return self::TYPE;
     }
     /**
      * @return string
      */
-    public function get_button_label() : string
+    public function get_button_label(): string
     {
         return $this->button_label;
     }
     /**
      * @return string
      */
-    public function get_name() : string
+    public function get_name(): string
     {
         return $this->name;
     }
     /**
      * @return Document
      */
-    public function get_document() : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document
+    public function get_document(): Document
     {
         return $this->document;
     }
     /**
      * @return false
      */
-    public function is_allowed_for_create() : bool
+    public function is_allowed_for_create(): bool
     {
         return \true;
     }
     /**
      * @return bool
      */
-    public function is_allowed_for_auto_create() : bool
+    public function is_allowed_for_auto_create(): bool
     {
         return \true;
     }
     /**
      * @return DocumentEmail
      */
-    public abstract function get_email_class();
+    abstract public function get_email_class();
     /**
      * @return false
      */
-    public function is_allowed_to_send() : bool
+    public function is_allowed_to_send(): bool
     {
         return \true;
     }
     /**
      * @return bool
      */
-    public function is_allowed_for_edit() : bool
+    public function is_allowed_for_edit(): bool
     {
         return \true;
     }
@@ -128,14 +128,14 @@ abstract class AbstractDocumentCreator implements \WPDeskFIVendor\WPDesk\Library
      *
      * @return DocumentNumber
      */
-    public function get_document_numbering(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document $document) : \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentNumber
+    public function get_document_numbering(Document $document): DocumentNumber
     {
-        return new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentNumber($this->source_factory->get_settings(), $document, $this->get_name());
+        return new DocumentNumber($this->source_factory->get_settings(), $document, $this->get_name());
     }
     /**
      * @return bool
      */
-    public function can_show_document_in_my_account() : bool
+    public function can_show_document_in_my_account(): bool
     {
         return \true;
     }
@@ -146,7 +146,7 @@ abstract class AbstractDocumentCreator implements \WPDeskFIVendor\WPDesk\Library
      *
      * @throws Exception
      */
-    protected function assign_data_from_source(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\DocumentSetters $document, int $post_id, string $source_type)
+    protected function assign_data_from_source(DocumentSetters $document, int $post_id, string $source_type)
     {
         $data = $this->source_factory->get_source($post_id, $source_type, $this->get_type());
         $document->set_number($data->get_number());
@@ -185,21 +185,21 @@ abstract class AbstractDocumentCreator implements \WPDeskFIVendor\WPDesk\Library
      *
      * @return CustomMeta
      */
-    public function custom_meta(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\DocumentGetters $document, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Containers\MetaContainer $meta)
+    public function custom_meta(DocumentGetters $document, MetaContainer $meta)
     {
-        return new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\DocumentsMeta\NullCustomMeta($document, $meta);
+        return new NullCustomMeta($document, $meta);
     }
     /**
      * @return array
      */
-    public function get_auto_create_statuses() : array
+    public function get_auto_create_statuses(): array
     {
-        $settings = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings();
+        $settings = new Settings();
         $status = $settings->get($this->get_type() . '_auto_create_status', []);
-        if (\is_string($status) && !empty($status)) {
+        if (is_string($status) && !empty($status)) {
             return [$status];
         }
-        if (\is_array($status)) {
+        if (is_array($status)) {
             return $status;
         }
         return [];

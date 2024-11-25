@@ -3,7 +3,7 @@
 namespace WPDeskFIVendor\WPDesk\Forms\Field;
 
 use WPDeskFIVendor\WPDesk\Forms\Sanitizer\TextFieldSanitizer;
-class InputTextField extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
+class InputTextField extends BasicField
 {
     public function __construct()
     {
@@ -13,7 +13,7 @@ class InputTextField extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
     }
     public function get_sanitizer()
     {
-        return new \WPDeskFIVendor\WPDesk\Forms\Sanitizer\TextFieldSanitizer();
+        return new TextFieldSanitizer();
     }
     public function get_template_name()
     {

@@ -49,9 +49,9 @@ class Protection
      * @var \Mpdf\Pdf\Protection\UniqidGenerator
      */
     private $uniqidGenerator;
-    public function __construct(\WPDeskFIVendor\Mpdf\Pdf\Protection\UniqidGenerator $uniqidGenerator)
+    public function __construct(UniqidGenerator $uniqidGenerator)
     {
-        if (!\function_exists('random_int') || !\function_exists('random_bytes')) {
+        if (!function_exists('random_int') || !function_exists('random_bytes')) {
             throw new \WPDeskFIVendor\Mpdf\MpdfException('Unable to set PDF file protection, CSPRNG Functions are not available. ' . 'Use paragonie/random_compat polyfill or upgrade to PHP 7.');
         }
         $this->uniqidGenerator = $uniqidGenerator;
@@ -86,9 +86,9 @@ class Protection
      */
     public function setProtection($permissions = [], $user_pass = '', $owner_pass = null, $length = 40)
     {
-        if (\is_string($permissions) && \strlen($permissions) > 0) {
+        if (is_string($permissions) && strlen($permissions) > 0) {
             $permissions = [$permissions];
-        } elseif (!\is_array($permissions)) {
+        } elseif (!is_array($permissions)) {
             return \false;
         }
         $protection = $this->getProtectionBitsFromOptions($permissions);
@@ -98,7 +98,7 @@ class Protection
             throw new \WPDeskFIVendor\Mpdf\MpdfException('PDF protection only allows lenghts of 40 or 128');
         }
         if ($owner_pass === null) {
-            $owner_pass = \bin2hex(\random_bytes(23));
+            $owner_pass = bin2hex(random_bytes(23));
         }
         $this->generateEncryptionKey($user_pass, $owner_pass, $protection);
         return \true;
@@ -117,7 +117,7 @@ class Protection
         } else {
             $len = 10;
         }
-        return \substr($this->md5toBinary($this->encryptionKey . \pack('VXxx', $n)), 0, $len);
+        return substr($this->md5toBinary($this->encryptionKey . pack('VXxx', $n)), 0, $len);
     }
     /**
      * RC4 is the standard encryption algorithm used in PDF format
@@ -130,12 +130,12 @@ class Protection
     public function rc4($key, $text)
     {
         if ($this->lastRc4Key != $key) {
-            $k = \str_repeat($key, 256 / \strlen($key) + 1);
-            $rc4 = \range(0, 255);
+            $k = str_repeat($key, 256 / strlen($key) + 1);
+            $rc4 = range(0, 255);
             $j = 0;
             for ($i = 0; $i < 256; $i++) {
                 $t = $rc4[$i];
-                $j = ($j + $t + \ord($k[$i])) % 256;
+                $j = ($j + $t + ord($k[$i])) % 256;
                 $rc4[$i] = $rc4[$j];
                 $rc4[$j] = $t;
             }
@@ -144,7 +144,7 @@ class Protection
         } else {
             $rc4 = $this->lastRc4KeyC;
         }
-        $len = \strlen($text);
+        $len = strlen($text);
         $a = 0;
         $b = 0;
         $out = '';
@@ -155,7 +155,7 @@ class Protection
             $rc4[$a] = $rc4[$b];
             $rc4[$b] = $t;
             $k = $rc4[($rc4[$a] + $rc4[$b]) % 256];
-            $out .= \chr(\ord($text[$i]) ^ $k);
+            $out .= chr(ord($text[$i]) ^ $k);
         }
         return $out;
     }
@@ -204,7 +204,7 @@ class Protection
         // bits 7, 8, 13-32
         foreach ($permissions as $permission) {
             if (!isset($this->options[$permission])) {
-                throw new \WPDeskFIVendor\Mpdf\MpdfException(\sprintf('Invalid permission type "%s"', $permission));
+                throw new \WPDeskFIVendor\Mpdf\MpdfException(sprintf('Invalid permission type "%s"', $permission));
             }
             if ($this->options[$permission] > 32) {
                 $this->useRC128Encryption = \true;
@@ -228,14 +228,14 @@ class Protection
         } else {
             $keybytelen = 40 / 8;
         }
-        $owner_rc4_key = \substr($tmp, 0, $keybytelen);
+        $owner_rc4_key = substr($tmp, 0, $keybytelen);
         $enc = $this->rc4($owner_rc4_key, $user_pass);
         if ($this->useRC128Encryption) {
-            $len = \strlen($owner_rc4_key);
+            $len = strlen($owner_rc4_key);
             for ($i = 1; $i <= 19; ++$i) {
                 $key = '';
                 for ($j = 0; $j < $len; ++$j) {
-                    $key .= \chr(\ord($owner_rc4_key[$j]) ^ $i);
+                    $key .= chr(ord($owner_rc4_key[$j]) ^ $i);
                 }
                 $enc = $this->rc4($key, $enc);
             }
@@ -247,16 +247,16 @@ class Protection
         if ($this->useRC128Encryption) {
             $tmp = $this->md5toBinary($this->padding . $this->hexToString($this->uniqid));
             $enc = $this->rc4($this->encryptionKey, $tmp);
-            $len = \strlen($tmp);
+            $len = strlen($tmp);
             for ($i = 1; $i <= 19; ++$i) {
                 $key = '';
                 for ($j = 0; $j < $len; ++$j) {
-                    $key .= \chr(\ord($this->encryptionKey[$j]) ^ $i);
+                    $key .= chr(ord($this->encryptionKey[$j]) ^ $i);
                 }
                 $enc = $this->rc4($key, $enc);
             }
-            $enc .= \str_repeat("\x00", 16);
-            return \substr($enc, 0, 32);
+            $enc .= str_repeat("\x00", 16);
+            return substr($enc, 0, 32);
         } else {
             return $this->rc4($this->encryptionKey, $this->padding);
         }
@@ -264,8 +264,8 @@ class Protection
     private function generateEncryptionKey($user_pass, $owner_pass, $protection)
     {
         // Pad passwords
-        $user_pass = \substr($user_pass . $this->padding, 0, 32);
-        $owner_pass = \substr($owner_pass . $this->padding, 0, 32);
+        $user_pass = substr($user_pass . $this->padding, 0, 32);
+        $owner_pass = substr($owner_pass . $this->padding, 0, 32);
         $this->oValue = $this->oValue($user_pass, $owner_pass);
         $this->uniqid = $this->uniqidGenerator->generate();
         // Compute encyption key
@@ -274,35 +274,35 @@ class Protection
         } else {
             $keybytelen = 40 / 8;
         }
-        $prot = \sprintf('%032b', $protection);
-        $perms = \chr(\bindec(\substr($prot, 24, 8)));
-        $perms .= \chr(\bindec(\substr($prot, 16, 8)));
-        $perms .= \chr(\bindec(\substr($prot, 8, 8)));
-        $perms .= \chr(\bindec(\substr($prot, 0, 8)));
+        $prot = sprintf('%032b', $protection);
+        $perms = chr(bindec(substr($prot, 24, 8)));
+        $perms .= chr(bindec(substr($prot, 16, 8)));
+        $perms .= chr(bindec(substr($prot, 8, 8)));
+        $perms .= chr(bindec(substr($prot, 0, 8)));
         $tmp = $this->md5toBinary($user_pass . $this->oValue . $perms . $this->hexToString($this->uniqid));
         if ($this->useRC128Encryption) {
             for ($i = 0; $i < 50; ++$i) {
-                $tmp = $this->md5toBinary(\substr($tmp, 0, $keybytelen));
+                $tmp = $this->md5toBinary(substr($tmp, 0, $keybytelen));
             }
         }
-        $this->encryptionKey = \substr($tmp, 0, $keybytelen);
+        $this->encryptionKey = substr($tmp, 0, $keybytelen);
         $this->uValue = $this->uValue();
         $this->pValue = $protection;
     }
     private function md5toBinary($string)
     {
-        return \pack('H*', \md5($string));
+        return pack('H*', md5($string));
     }
     private function hexToString($hs)
     {
         $s = '';
-        $len = \strlen($hs);
+        $len = strlen($hs);
         if ($len % 2 != 0) {
             $hs .= '0';
             ++$len;
         }
         for ($i = 0; $i < $len; $i += 2) {
-            $s .= \chr(\hexdec($hs[$i] . $hs[$i + 1]));
+            $s .= chr(hexdec($hs[$i] . $hs[$i + 1]));
         }
         return $s;
     }

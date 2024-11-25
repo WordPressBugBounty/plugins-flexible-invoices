@@ -90,15 +90,15 @@ interface DocumentSetters
     /**
      * @param Seller $seller
      */
-    public function set_seller(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Seller $seller);
+    public function set_seller(Seller $seller);
     /**
      * @param Customer $customer
      */
-    public function set_customer(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Customer $customer);
+    public function set_customer(Customer $customer);
     /**
      * @param Recipient $recipient
      */
-    public function set_recipient(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Recipient $recipient);
+    public function set_recipient(Recipient $recipient);
     /**
      * @param string $customer_name
      */

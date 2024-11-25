@@ -21,7 +21,7 @@ use WPDeskFIVendor\WPDesk\View\Renderer\Renderer;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Integration
  */
-class RegisterMetaBoxes implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+class RegisterMetaBoxes implements Hookable
 {
     /** @var string slug od administrator role */
     const ADMIN_ROLE = 'administrator';
@@ -49,7 +49,7 @@ class RegisterMetaBoxes implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\H
      * @param Renderer         $renderer
      * @param Settings         $settings
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy $strategy, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory $document_factory, \WPDeskFIVendor\WPDesk\View\Renderer\Renderer $renderer, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings $settings)
+    public function __construct(SettingsStrategy $strategy, DocumentFactory $document_factory, Renderer $renderer, Settings $settings)
     {
         $this->document_factory = $document_factory;
         $this->strategy = $strategy;
@@ -61,8 +61,8 @@ class RegisterMetaBoxes implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\H
      */
     public function hooks()
     {
-        \add_action('add_meta_boxes', [$this, 'register_meta_boxes'], 1, 2);
-        \add_action('post_submitbox_start', [$this, 'options_box_callback'], 10);
+        add_action('add_meta_boxes', [$this, 'register_meta_boxes'], 1, 2);
+        add_action('post_submitbox_start', [$this, 'options_box_callback'], 10);
     }
     /**
      * @param string       $post_type
@@ -72,37 +72,37 @@ class RegisterMetaBoxes implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\H
      */
     public function register_meta_boxes(string $post_type, $post = null)
     {
-        if ($post_type === \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType::POST_TYPE_NAME && isset($post->ID)) {
+        if ($post_type === RegisterPostType::POST_TYPE_NAME && isset($post->ID)) {
             $document = $this->document_factory->get_document_creator($post->ID)->get_document();
-            $invoice = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Decorators\DocumentDecorator($document, $this->strategy);
-            \add_meta_box('ocs', \esc_html__('Seller, Customer, Recipient', 'flexible-invoices'), [$this, 'ocs_box_callback'], \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType::POST_TYPE_NAME, 'normal', 'high', ['invoice' => $invoice]);
-            \add_meta_box('products', \esc_html__('Products', 'flexible-invoices'), [$this, 'products_box_callback'], \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType::POST_TYPE_NAME, 'normal', 'high', ['invoice' => $invoice]);
-            \add_meta_box('payment', \esc_html__('Payments and other info', 'flexible-invoices'), [$this, 'payment_box_callback'], \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType::POST_TYPE_NAME, 'normal', 'high', ['invoice' => $invoice]);
-            if (isset($_GET['invoice_debug']) && \current_user_can('manage_options')) {
+            $invoice = new DocumentDecorator($document, $this->strategy);
+            add_meta_box('ocs', esc_html__('Seller, Customer, Recipient', 'flexible-invoices'), [$this, 'ocs_box_callback'], RegisterPostType::POST_TYPE_NAME, 'normal', 'high', ['invoice' => $invoice]);
+            add_meta_box('products', esc_html__('Products', 'flexible-invoices'), [$this, 'products_box_callback'], RegisterPostType::POST_TYPE_NAME, 'normal', 'high', ['invoice' => $invoice]);
+            add_meta_box('payment', esc_html__('Payments and other info', 'flexible-invoices'), [$this, 'payment_box_callback'], RegisterPostType::POST_TYPE_NAME, 'normal', 'high', ['invoice' => $invoice]);
+            if (isset($_GET['invoice_debug']) && current_user_can('manage_options')) {
                 //phpcs:ignore
-                \add_meta_box('debug', \esc_html__('Debug', 'flexible-invoices'), [$this, 'debug_meta_box_callback'], \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType::POST_TYPE_NAME, 'normal', 'low', ['invoice' => $invoice]);
+                add_meta_box('debug', esc_html__('Debug', 'flexible-invoices'), [$this, 'debug_meta_box_callback'], RegisterPostType::POST_TYPE_NAME, 'normal', 'low', ['invoice' => $invoice]);
             }
         }
     }
     /**
      * @return array
      */
-    private function get_signature_users() : array
+    private function get_signature_users(): array
     {
         $users = [];
-        $site_users = \get_users(['role__in' => [self::ADMIN_ROLE, self::EDITOR_ROLE, self::SHOP_MANAGER_ROLE]]);
+        $site_users = get_users(['role__in' => [self::ADMIN_ROLE, self::EDITOR_ROLE, self::SHOP_MANAGER_ROLE]]);
         foreach ($site_users as $user) {
             $users[$user->ID] = $user->display_name ?: $user->user_login;
         }
-        return \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks::signature_user_filter($users, $site_users);
+        return Hooks::signature_user_filter($users, $site_users);
     }
     /**
      * @param WP_Post $post
      * @param array   $args
      */
-    public function ocs_box_callback(\WP_Post $post, array $args)
+    public function ocs_box_callback(WP_Post $post, array $args)
     {
-        \wp_nonce_field('flexible_invoices_nonce', 'flexible_invoices_nonce');
+        wp_nonce_field('flexible_invoices_nonce', 'flexible_invoices_nonce');
         /**
          * @var Document $invoice
          */
@@ -114,9 +114,9 @@ class RegisterMetaBoxes implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\H
      */
     public function options_box_callback($post)
     {
-        if ($post && $post->post_type === \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType::POST_TYPE_NAME) {
+        if ($post && $post->post_type === RegisterPostType::POST_TYPE_NAME) {
             $creator = $this->document_factory->get_document_creator($post->ID);
-            $document = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Decorators\DocumentDecorator($creator->get_document(), $this->strategy);
+            $document = new DocumentDecorator($creator->get_document(), $this->strategy);
             $this->renderer->output_render('invoice_edit/options_metabox', ['document' => $document]);
         }
     }
@@ -124,7 +124,7 @@ class RegisterMetaBoxes implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\H
      * @param WP_Post $post
      * @param array   $args
      */
-    public function products_box_callback(\WP_Post $post, array $args)
+    public function products_box_callback(WP_Post $post, array $args)
     {
         /**
          * @var Document $invoice
@@ -140,7 +140,7 @@ class RegisterMetaBoxes implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\H
      * @param WP_Post $post
      * @param array   $args
      */
-    public function payment_box_callback(\WP_Post $post, array $args)
+    public function payment_box_callback(WP_Post $post, array $args)
     {
         /**
          * @var Document $document
@@ -153,7 +153,7 @@ class RegisterMetaBoxes implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\H
      *
      * @return array
      */
-    private function filter_payment_statuses(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document $document) : array
+    private function filter_payment_statuses(Document $document): array
     {
         $payment_statuses = $this->strategy->get_payment_statuses();
         if ($document->get_type() === 'proforma') {
@@ -165,7 +165,7 @@ class RegisterMetaBoxes implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\H
      * @param WP_Post $post
      * @param array   $args
      */
-    public function debug_meta_box_callback(\WP_Post $post, array $args)
+    public function debug_meta_box_callback(WP_Post $post, array $args)
     {
         /**
          * @var Document $invoice
@@ -173,22 +173,22 @@ class RegisterMetaBoxes implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\H
         $invoice = $args['args']['invoice'];
         print '<strong>Document Object</strong>';
         print '<pre style="overflow:auto;">';
-        \print_r($invoice);
+        print_r($invoice);
         //phpcs:ignore
         print '</pre>';
         print '<strong>Post Meta Object</strong>';
         print '<pre style="overflow:auto;">';
-        $post_meta = \get_post_meta($invoice->get_id());
+        $post_meta = get_post_meta($invoice->get_id());
         if (!empty($post_meta)) {
             foreach ($post_meta as $meta_name => $meta_value) {
                 $value = $meta_value[0] ?? '';
-                if (\false !== \stripos($meta_name, '_date_')) {
-                    $arr[$meta_name] = $value . ' (' . \date('Y-m-d H:i', $value) . ')';
+                if (\false !== stripos($meta_name, '_date_')) {
+                    $arr[$meta_name] = $value . ' (' . date('Y-m-d H:i', $value) . ')';
                 } else {
-                    $arr[$meta_name] = \is_serialized($value) ? \maybe_unserialize($value) : $value;
+                    $arr[$meta_name] = is_serialized($value) ? maybe_unserialize($value) : $value;
                 }
             }
-            \print_r($arr);
+            print_r($arr);
             //phpcs:ignore
         }
         print '</pre>';

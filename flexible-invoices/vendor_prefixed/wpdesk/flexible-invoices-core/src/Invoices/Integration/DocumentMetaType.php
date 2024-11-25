@@ -27,9 +27,9 @@ class DocumentMetaType
      *
      * @return string
      */
-    public function get_document_type(int $post_id, string $default) : string
+    public function get_document_type(int $post_id, string $default): string
     {
-        $type = \get_post_meta($post_id, '_type', \true);
+        $type = get_post_meta($post_id, '_type', \true);
         if ($this->is_correction($post_id)) {
             return self::CORRECTION_TYPE;
         }
@@ -43,9 +43,9 @@ class DocumentMetaType
      *
      * @return bool
      */
-    private function is_correction(int $post_id) : bool
+    private function is_correction(int $post_id): bool
     {
-        $is_correction = (int) \get_post_meta($post_id, '_correction', \true);
+        $is_correction = (int) get_post_meta($post_id, '_correction', \true);
         return $is_correction === 1;
     }
 }

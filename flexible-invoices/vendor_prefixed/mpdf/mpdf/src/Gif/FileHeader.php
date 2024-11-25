@@ -43,26 +43,26 @@ class FileHeader
     function load($lpData, &$hdrLen)
     {
         $hdrLen = 0;
-        $this->m_lpVer = \substr($lpData, 0, 6);
+        $this->m_lpVer = substr($lpData, 0, 6);
         if ($this->m_lpVer != "GIF87a" && $this->m_lpVer != "GIF89a") {
             return \false;
         }
-        $this->m_nWidth = $this->w2i(\substr($lpData, 6, 2));
-        $this->m_nHeight = $this->w2i(\substr($lpData, 8, 2));
+        $this->m_nWidth = $this->w2i(substr($lpData, 6, 2));
+        $this->m_nHeight = $this->w2i(substr($lpData, 8, 2));
         if (!$this->m_nWidth || !$this->m_nHeight) {
             return \false;
         }
-        $b = \ord(\substr($lpData, 10, 1));
+        $b = ord(substr($lpData, 10, 1));
         $this->m_bGlobalClr = $b & 0x80 ? \true : \false;
         $this->m_nColorRes = ($b & 0x70) >> 4;
         $this->m_bSorted = $b & 0x8 ? \true : \false;
         $this->m_nTableSize = 2 << ($b & 0x7);
-        $this->m_nBgColor = \ord(\substr($lpData, 11, 1));
-        $this->m_nPixelRatio = \ord(\substr($lpData, 12, 1));
+        $this->m_nBgColor = ord(substr($lpData, 11, 1));
+        $this->m_nPixelRatio = ord(substr($lpData, 12, 1));
         $hdrLen = 13;
         if ($this->m_bGlobalClr) {
-            $this->m_colorTable = new \WPDeskFIVendor\Mpdf\Gif\ColorTable();
-            if (!$this->m_colorTable->load(\substr($lpData, $hdrLen), $this->m_nTableSize)) {
+            $this->m_colorTable = new ColorTable();
+            if (!$this->m_colorTable->load(substr($lpData, $hdrLen), $this->m_nTableSize)) {
                 return \false;
             }
             $hdrLen += 3 * $this->m_nTableSize;
@@ -71,6 +71,6 @@ class FileHeader
     }
     function w2i($str)
     {
-        return \ord(\substr($str, 0, 1)) + (\ord(\substr($str, 1, 1)) << 8);
+        return ord(substr($str, 0, 1)) + (ord(substr($str, 1, 1)) << 8);
     }
 }

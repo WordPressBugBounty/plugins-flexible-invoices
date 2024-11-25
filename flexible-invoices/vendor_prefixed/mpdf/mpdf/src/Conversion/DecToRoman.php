@@ -25,7 +25,7 @@ class DecToRoman
     }
     private function ensureNumberIsAnInteger($number)
     {
-        if (!\is_int($number)) {
+        if (!is_int($number)) {
             throw new \InvalidArgumentException('Can only translate integers to roman');
         }
     }
@@ -40,15 +40,15 @@ class DecToRoman
     }
     public function getUpperBound()
     {
-        $symbolGroupCount = \count($this->symbolMap);
+        $symbolGroupCount = count($this->symbolMap);
         $valueOfOne = 10 ** ($symbolGroupCount - 1);
-        $hasFiveSymbol = \array_key_exists(1, $this->symbolMap[$symbolGroupCount - 1]);
+        $hasFiveSymbol = array_key_exists(1, $this->symbolMap[$symbolGroupCount - 1]);
         return $valueOfOne * ($hasFiveSymbol ? 9 : 4) - 1;
     }
     private function constructRomanString($number, $toUpper)
     {
         $romanNumber = '';
-        $symbolMapCount = \count($this->symbolMap);
+        $symbolMapCount = count($this->symbolMap);
         for ($i = 0; $i < $symbolMapCount; $i++) {
             $divisor = 10 ** ($i + 1);
             $remainder = $number % $divisor;
@@ -60,7 +60,7 @@ class DecToRoman
             }
         }
         if (!$toUpper) {
-            $romanNumber = \strtolower($romanNumber);
+            $romanNumber = strtolower($romanNumber);
         }
         return $romanNumber;
     }
@@ -88,7 +88,7 @@ class DecToRoman
     }
     private function formatOneToThree($orderOfMagnitude, $digit)
     {
-        return \str_repeat($this->getOneSymbol($orderOfMagnitude), $digit);
+        return str_repeat($this->getOneSymbol($orderOfMagnitude), $digit);
     }
     private function getOneSymbol($orderOfMagnitude)
     {

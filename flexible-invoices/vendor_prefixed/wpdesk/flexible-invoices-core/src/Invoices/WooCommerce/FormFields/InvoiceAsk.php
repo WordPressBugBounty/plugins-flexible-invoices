@@ -7,7 +7,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFie
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields
  */
-class InvoiceAsk extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields\FormField
+class InvoiceAsk extends FormField
 {
     const CHECKBOX_CHECKED_VALUE = '1';
     const CHECKBOX_UNCHECKED_VALUE = '0';
@@ -29,7 +29,7 @@ class InvoiceAsk extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Woo
     /**
      * @return string
      */
-    public function get_label() : string
+    public function get_label(): string
     {
         return $this->label;
     }
@@ -38,7 +38,7 @@ class InvoiceAsk extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Woo
      *
      * @return bool
      */
-    private function is_field_checked_from_args(array $args) : bool
+    private function is_field_checked_from_args(array $args): bool
     {
         return !empty($args[$this->get_field_id()]) && (string) $args[$this->get_field_id()] === self::CHECKBOX_CHECKED_VALUE;
     }
@@ -48,9 +48,9 @@ class InvoiceAsk extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Woo
      *
      * @return array
      */
-    public function add_address_replacements(array $fields, array $args) : array
+    public function add_address_replacements(array $fields, array $args): array
     {
-        $value = isset($args[$this->get_field_id()]) && $args[$this->get_field_id()] ? \esc_html__('yes', 'flexible-invoices') : \esc_html__('no', 'flexible-invoices');
+        $value = isset($args[$this->get_field_id()]) && $args[$this->get_field_id()] ? esc_html__('yes', 'flexible-invoices') : esc_html__('no', 'flexible-invoices');
         if ($this->is_field_checked_from_args($args)) {
             $fields['{' . $this->get_field_id() . '}'] = $this->label . ': ' . $value;
         } else {
@@ -65,7 +65,7 @@ class InvoiceAsk extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Woo
      *
      * @return array
      */
-    protected function prepare_checkout_field($field_priority = null) : array
+    protected function prepare_checkout_field($field_priority = null): array
     {
         return ['label' => $this->label, 'required' => $this->get_required(), 'class' => ['form-row-wide'], 'type' => 'checkbox', 'clear' => \true, 'priority' => $field_priority];
     }
@@ -74,8 +74,8 @@ class InvoiceAsk extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Woo
      *
      * @return array
      */
-    protected function prepare_admin_field() : array
+    protected function prepare_admin_field(): array
     {
-        return ['label' => $this->label, 'required' => $this->get_required(), 'class' => 'form-row-wide', 'type' => 'select', 'clear' => \true, 'options' => [self::CHECKBOX_UNCHECKED_VALUE => \esc_html__('no', 'flexible-invoices'), self::CHECKBOX_CHECKED_VALUE => \esc_html__('yes', 'flexible-invoices')], 'show' => \false];
+        return ['label' => $this->label, 'required' => $this->get_required(), 'class' => 'form-row-wide', 'type' => 'select', 'clear' => \true, 'options' => [self::CHECKBOX_UNCHECKED_VALUE => esc_html__('no', 'flexible-invoices'), self::CHECKBOX_CHECKED_VALUE => esc_html__('yes', 'flexible-invoices')], 'show' => \false];
     }
 }

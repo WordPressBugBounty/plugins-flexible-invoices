@@ -15,7 +15,7 @@ final class OptionalContentWriter
      * @var \Mpdf\Writer\BaseWriter
      */
     private $writer;
-    public function __construct(\WPDeskFIVendor\Mpdf\Mpdf $mpdf, \WPDeskFIVendor\Mpdf\Writer\BaseWriter $writer)
+    public function __construct(Mpdf $mpdf, BaseWriter $writer)
     {
         $this->mpdf = $mpdf;
         $this->writer = $writer;
@@ -39,8 +39,8 @@ final class OptionalContentWriter
             $this->writer->write('/Usage <</Print <</PrintState /OFF>> /View <</ViewState /OFF>>>>>>');
             $this->writer->write('endobj');
         }
-        if (\count($this->mpdf->layers)) {
-            \ksort($this->mpdf->layers);
+        if (count($this->mpdf->layers)) {
+            ksort($this->mpdf->layers);
             foreach ($this->mpdf->layers as $id => $layer) {
                 $this->writer->object();
                 $this->mpdf->layers[$id]['n'] = $this->mpdf->n;

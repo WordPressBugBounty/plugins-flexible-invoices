@@ -8,7 +8,7 @@ use WPDeskFIVendor\WPDesk\Forms\Field\InputTextField;
  *
  * @package WPDesk\FIT\Settings\Fields
  */
-class ColorPickerField extends \WPDeskFIVendor\WPDesk\Forms\Field\InputTextField
+class ColorPickerField extends InputTextField
 {
     /**
      * @return string

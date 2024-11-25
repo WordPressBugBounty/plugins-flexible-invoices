@@ -3,7 +3,7 @@
 namespace WPDeskFIVendor\Mpdf\Tag;
 
 use WPDeskFIVendor\Mpdf\Utils\NumericString;
-class Hr extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class Hr extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -11,7 +11,7 @@ class Hr extends \WPDeskFIVendor\Mpdf\Tag\Tag
         if (isset($attr['STYLE'])) {
             $properties = $this->cssManager->readInlineCSS($attr['STYLE']);
             if (isset($properties['CLEAR'])) {
-                $this->mpdf->ClearFloats(\strtoupper($properties['CLEAR']), $this->mpdf->blklvl);
+                $this->mpdf->ClearFloats(strtoupper($properties['CLEAR']), $this->mpdf->blklvl);
             }
             // *CSS-FLOAT*
         }
@@ -44,12 +44,12 @@ class Hr extends \WPDeskFIVendor\Mpdf\Tag\Tag
         } elseif (isset($attr['ALIGN']) && $attr['ALIGN'] != '') {
             $objattr['align'] = $this->getAlign($attr['ALIGN']);
         }
-        if (isset($properties['MARGIN-LEFT']) && \strtolower($properties['MARGIN-LEFT']) === 'auto') {
+        if (isset($properties['MARGIN-LEFT']) && strtolower($properties['MARGIN-LEFT']) === 'auto') {
             $objattr['align'] = 'R';
         }
-        if (isset($properties['MARGIN-RIGHT']) && \strtolower($properties['MARGIN-RIGHT']) === 'auto') {
+        if (isset($properties['MARGIN-RIGHT']) && strtolower($properties['MARGIN-RIGHT']) === 'auto') {
             $objattr['align'] = 'L';
-            if (isset($properties['MARGIN-RIGHT']) && \strtolower($properties['MARGIN-RIGHT']) === 'auto' && isset($properties['MARGIN-LEFT']) && \strtolower($properties['MARGIN-LEFT']) === 'auto') {
+            if (isset($properties['MARGIN-RIGHT']) && strtolower($properties['MARGIN-RIGHT']) === 'auto' && isset($properties['MARGIN-LEFT']) && strtolower($properties['MARGIN-LEFT']) === 'auto') {
                 $objattr['align'] = 'C';
             }
         }
@@ -64,13 +64,13 @@ class Hr extends \WPDeskFIVendor\Mpdf\Tag\Tag
         /* -- TABLES -- */
         if ($this->mpdf->tableLevel) {
             $objattr['W-PERCENT'] = 100;
-            if (isset($properties['WIDTH']) && \WPDeskFIVendor\Mpdf\Utils\NumericString::containsPercentChar($properties['WIDTH'])) {
-                $properties['WIDTH'] = \WPDeskFIVendor\Mpdf\Utils\NumericString::removePercentChar($properties['WIDTH']);
+            if (isset($properties['WIDTH']) && NumericString::containsPercentChar($properties['WIDTH'])) {
+                $properties['WIDTH'] = NumericString::removePercentChar($properties['WIDTH']);
                 // make "90%" become simply "90"
                 $objattr['W-PERCENT'] = $properties['WIDTH'];
             }
-            if (isset($attr['WIDTH']) && \WPDeskFIVendor\Mpdf\Utils\NumericString::containsPercentChar($attr['WIDTH'])) {
-                $attr['WIDTH'] = \WPDeskFIVendor\Mpdf\Utils\NumericString::removePercentChar($attr['WIDTH']);
+            if (isset($attr['WIDTH']) && NumericString::containsPercentChar($attr['WIDTH'])) {
+                $attr['WIDTH'] = NumericString::removePercentChar($attr['WIDTH']);
                 // make "90%" become simply "90"
                 $objattr['W-PERCENT'] = $attr['WIDTH'];
             }
@@ -78,7 +78,7 @@ class Hr extends \WPDeskFIVendor\Mpdf\Tag\Tag
         /* -- END TABLES -- */
         $objattr['type'] = 'hr';
         $objattr['height'] = $objattr['linewidth'] + $objattr['margin_top'] + $objattr['margin_bottom'];
-        $e = "\xbb\xa4\xactype=image,objattr=" . \serialize($objattr) . "\xbb\xa4\xac";
+        $e = "\xbb\xa4\xactype=image,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
         /* -- TABLES -- */
         // Output it to buffers
         if ($this->mpdf->tableLevel) {

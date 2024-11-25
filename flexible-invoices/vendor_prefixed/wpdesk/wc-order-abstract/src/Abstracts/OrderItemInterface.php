@@ -17,7 +17,7 @@ interface OrderItemInterface
     /**
      * @return int
      */
-    public function get_item_id() : int;
+    public function get_item_id(): int;
     /**
      * @param string $type
      */
@@ -25,7 +25,7 @@ interface OrderItemInterface
     /**
      * @return string
      */
-    public function get_type() : string;
+    public function get_type(): string;
     /**
      * @param string $name
      */
@@ -33,7 +33,7 @@ interface OrderItemInterface
     /**
      * @return string
      */
-    public function get_name() : string;
+    public function get_name(): string;
     /**
      * @param float $qty
      */
@@ -41,7 +41,7 @@ interface OrderItemInterface
     /**
      * @return float
      */
-    public function get_qty() : float;
+    public function get_qty(): float;
     /**
      * @param float $discount_price
      */
@@ -49,7 +49,7 @@ interface OrderItemInterface
     /**
      * @return float
      */
-    public function get_discount_price() : float;
+    public function get_discount_price(): float;
     /**
      * @param float $net_price
      */
@@ -57,7 +57,7 @@ interface OrderItemInterface
     /**
      * @return float
      */
-    public function get_net_price() : float;
+    public function get_net_price(): float;
     /**
      * @param float $net_price_r
      */
@@ -65,7 +65,7 @@ interface OrderItemInterface
     /**
      * @return float
      */
-    public function get_net_price_r() : float;
+    public function get_net_price_r(): float;
     /**
      * @param float $gross_price
      */
@@ -73,7 +73,7 @@ interface OrderItemInterface
     /**
      * @return float
      */
-    public function get_gross_price() : float;
+    public function get_gross_price(): float;
     /**
      * @param float $gross_price_r
      */
@@ -81,7 +81,7 @@ interface OrderItemInterface
     /**
      * @return float
      */
-    public function get_gross_price_r() : float;
+    public function get_gross_price_r(): float;
     /**
      * @param float $vat_price
      */
@@ -89,7 +89,7 @@ interface OrderItemInterface
     /**
      * @return float
      */
-    public function get_vat_price() : float;
+    public function get_vat_price(): float;
     /**
      * @param float $vat_price_r
      */
@@ -97,7 +97,7 @@ interface OrderItemInterface
     /**
      * @return float
      */
-    public function get_vat_price_r() : float;
+    public function get_vat_price_r(): float;
     /**
      * @param string $currency_slug
      */
@@ -105,7 +105,7 @@ interface OrderItemInterface
     /**
      * @return string
      */
-    public function get_currency_slug() : string;
+    public function get_currency_slug(): string;
     /**
      * @param string $currency_symbol
      */
@@ -113,7 +113,7 @@ interface OrderItemInterface
     /**
      * @return string
      */
-    public function get_currency_symbol() : string;
+    public function get_currency_symbol(): string;
     /**
      * @param float $rate
      */
@@ -121,7 +121,7 @@ interface OrderItemInterface
     /**
      * @return float
      */
-    public function get_rate() : float;
+    public function get_rate(): float;
     /**
      * @param array $meta_data
      */
@@ -129,7 +129,7 @@ interface OrderItemInterface
     /**
      * @return array
      */
-    public function get_meta_data() : array;
+    public function get_meta_data(): array;
     /**
      * @param string $tax_class
      */
@@ -137,7 +137,7 @@ interface OrderItemInterface
     /**
      * @return string
      */
-    public function get_tax_class() : string;
+    public function get_tax_class(): string;
     /**
      * @param int $tax_id
      */
@@ -145,13 +145,13 @@ interface OrderItemInterface
     /**
      * @return int
      */
-    public function get_tax_id() : int;
+    public function get_tax_id(): int;
     /**
      * @param WC_Order_Item $item
      */
-    public function set_item_object(\WC_Order_Item $item);
+    public function set_item_object(WC_Order_Item $item);
     /**
      * @return WC_Order_Item
      */
-    public function get_item_object() : \WC_Order_Item;
+    public function get_item_object(): WC_Order_Item;
 }

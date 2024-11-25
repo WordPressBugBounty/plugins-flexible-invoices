@@ -26,11 +26,11 @@ class ColorTable
         $this->m_nColors = 0;
         $this->m_arColors = [];
         for ($i = 0; $i < $num; $i++) {
-            $rgb = \substr($lpData, $i * 3, 3);
-            if (\strlen($rgb) < 3) {
+            $rgb = substr($lpData, $i * 3, 3);
+            if (strlen($rgb) < 3) {
                 return \false;
             }
-            $this->m_arColors[] = (\ord($rgb[2]) << 16) + (\ord($rgb[1]) << 8) + \ord($rgb[0]);
+            $this->m_arColors[] = (ord($rgb[2]) << 16) + (ord($rgb[1]) << 8) + ord($rgb[0]);
             $this->m_nColors++;
         }
         return \true;
@@ -39,14 +39,14 @@ class ColorTable
     {
         $ret = "";
         for ($i = 0; $i < $this->m_nColors; $i++) {
-            $ret .= \chr($this->m_arColors[$i] & 0xff) . \chr(($this->m_arColors[$i] & 0xff00) >> 8) . \chr(($this->m_arColors[$i] & 0xff0000) >> 16);
+            $ret .= chr($this->m_arColors[$i] & 0xff) . chr(($this->m_arColors[$i] & 0xff00) >> 8) . chr(($this->m_arColors[$i] & 0xff0000) >> 16);
             // B
         }
         return $ret;
     }
     function colorIndex($rgb)
     {
-        $rgb = \intval($rgb) & 0xffffff;
+        $rgb = intval($rgb) & 0xffffff;
         $r1 = $rgb & 0xff;
         $g1 = ($rgb & 0xff00) >> 8;
         $b1 = ($rgb & 0xff0000) >> 16;
@@ -55,7 +55,7 @@ class ColorTable
             $r2 = $this->m_arColors[$i] & 0xff;
             $g2 = ($this->m_arColors[$i] & 0xff00) >> 8;
             $b2 = ($this->m_arColors[$i] & 0xff0000) >> 16;
-            $d = \abs($r2 - $r1) + \abs($g2 - $g1) + \abs($b2 - $b1);
+            $d = abs($r2 - $r1) + abs($g2 - $g1) + abs($b2 - $b1);
             if ($idx == -1 || $d < $dif) {
                 $idx = $i;
                 $dif = $d;

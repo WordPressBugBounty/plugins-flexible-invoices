@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class Progress extends \WPDeskFIVendor\Mpdf\Tag\Meter
+class Progress extends Meter
 {
     protected function makeSVG($type, $value, $max, $min, $optimum, $low, $high)
     {

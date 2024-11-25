@@ -10,7 +10,7 @@ use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Beacon
  */
-class BeaconLoader implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable
+class BeaconLoader implements Hookable
 {
     /**
      * @var LibraryInfo
@@ -19,7 +19,7 @@ class BeaconLoader implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
     /**
      * @param LibraryInfo $plugin_info
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\LibraryInfo $plugin_info)
+    public function __construct(LibraryInfo $plugin_info)
     {
         $this->plugin_info = $plugin_info;
     }
@@ -28,7 +28,7 @@ class BeaconLoader implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
      */
     public function hooks()
     {
-        \add_action('init', [$this, 'init_beacon'], 10);
+        add_action('init', [$this, 'init_beacon'], 10);
     }
     /**
      * Init beacon.
@@ -36,7 +36,7 @@ class BeaconLoader implements \WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookab
     public function init_beacon()
     {
         $beacon_id = '17f6054b-a2fb-4ee7-8bb5-0c3cbad1ef6a';
-        $beacon = new \WPDeskFIVendor\WPDesk\Beacon\BeaconPro($beacon_id, new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Beacon\BeaconShowStrategy(), $this->plugin_info->get_plugin_url() . 'vendor_prefixed/wpdesk/wp-helpscout-beacon/assets/');
+        $beacon = new BeaconPro($beacon_id, new BeaconShowStrategy(), $this->plugin_info->get_plugin_url() . 'vendor_prefixed/wpdesk/wp-helpscout-beacon/assets/');
         $beacon->hooks();
     }
 }

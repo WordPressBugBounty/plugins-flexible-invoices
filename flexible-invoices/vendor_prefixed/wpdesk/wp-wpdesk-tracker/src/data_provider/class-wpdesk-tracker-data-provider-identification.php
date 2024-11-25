@@ -14,7 +14,7 @@ namespace WPDeskFIVendor;
 if (!\defined('ABSPATH')) {
     exit;
 }
-if (!\class_exists('WPDeskFIVendor\\WPDesk_Tracker_Data_Provider_Identification')) {
+if (!\class_exists('WPDeskFIVendor\WPDesk_Tracker_Data_Provider_Identification')) {
     /**
      * Class WPDesk_Tracker_Data_Provider_Identification
      */

@@ -7,7 +7,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentExcept
  *.
  * @package WPDesk\Library\FlexibleInvoicesAbstracts\DocumentExceptions
  */
-class DocumentAlreadyExistsException extends \RuntimeException implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentExceptions\DocumentException
+class DocumentAlreadyExistsException extends \RuntimeException implements DocumentException
 {
     public function __construct()
     {

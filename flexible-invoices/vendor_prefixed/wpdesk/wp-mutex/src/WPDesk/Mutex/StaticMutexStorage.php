@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\WPDesk\Mutex;
 
-class StaticMutexStorage implements \WPDeskFIVendor\WPDesk\Mutex\MutexStorage
+class StaticMutexStorage implements MutexStorage
 {
     /**
      * @var Mutex[]
@@ -37,7 +37,7 @@ class StaticMutexStorage implements \WPDeskFIVendor\WPDesk\Mutex\MutexStorage
         if (isset(self::$mutexStorage[$name])) {
             unset(self::$mutexStorage[$name]);
         } else {
-            throw new \WPDeskFIVendor\WPDesk\Mutex\MutexNotFoundInStorage();
+            throw new MutexNotFoundInStorage();
         }
     }
 }

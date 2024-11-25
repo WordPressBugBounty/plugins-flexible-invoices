@@ -2,6 +2,6 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class PageBreak extends \WPDeskFIVendor\Mpdf\Tag\FormFeed
+class PageBreak extends FormFeed
 {
 }

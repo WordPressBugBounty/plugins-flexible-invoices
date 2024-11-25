@@ -2,7 +2,7 @@
 
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items;
 
-class FeeItem extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\DocumentItem
+class FeeItem extends DocumentItem
 {
     const TYPE = 'fee';
 }

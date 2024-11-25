@@ -39,7 +39,7 @@ class EanExt extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WP
     private function init($code, $length = 5)
     {
         // Padding
-        $code = \str_pad($code, $length, '0', \STR_PAD_LEFT);
+        $code = str_pad($code, $length, '0', \STR_PAD_LEFT);
         // Calculate check digit
         if ($length == 2) {
             $r = $code % 4;
@@ -47,7 +47,7 @@ class EanExt extends \WPDeskFIVendor\Mpdf\Barcode\AbstractBarcode implements \WP
             $r = 3 * ($code[0] + $code[2] + $code[4]) + 9 * ($code[1] + $code[3]);
             $r %= 10;
         } else {
-            throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(\sprintf('Invalid EAN barcode value "%s"', $code));
+            throw new \WPDeskFIVendor\Mpdf\Barcode\BarcodeException(sprintf('Invalid EAN barcode value "%s"', $code));
         }
         // Convert digits to bars
         $codes = ['A' => [

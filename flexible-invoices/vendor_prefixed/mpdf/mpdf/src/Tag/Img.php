@@ -3,7 +3,7 @@
 namespace WPDeskFIVendor\Mpdf\Tag;
 
 use WPDeskFIVendor\Mpdf\Mpdf;
-class Img extends \WPDeskFIVendor\Mpdf\Tag\Tag
+class Img extends Tag
 {
     public function open($attr, &$ahtml, &$ihtml)
     {
@@ -27,7 +27,7 @@ class Img extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $srcpath = $attr['SRC'];
             $orig_srcpath = isset($attr['ORIG_SRC']) ? $attr['ORIG_SRC'] : '';
             $properties = $this->cssManager->MergeCSS('', 'IMG', $attr);
-            if (isset($properties['DISPLAY']) && \strtolower($properties['DISPLAY']) === 'none') {
+            if (isset($properties['DISPLAY']) && strtolower($properties['DISPLAY']) === 'none') {
                 return;
             }
             if (isset($properties['Z-INDEX']) && $this->mpdf->current_layer == 0) {
@@ -38,7 +38,7 @@ class Img extends \WPDeskFIVendor\Mpdf\Tag\Tag
             }
             $objattr['visibility'] = 'visible';
             if (isset($properties['VISIBILITY'])) {
-                $v = \strtolower($properties['VISIBILITY']);
+                $v = strtolower($properties['VISIBILITY']);
                 if (($v === 'hidden' || $v === 'printonly' || $v === 'screenonly') && $this->mpdf->visibility === 'visible') {
                     $objattr['visibility'] = $v;
                 }
@@ -120,9 +120,9 @@ class Img extends \WPDeskFIVendor\Mpdf\Tag\Tag
                 $objattr['opacity'] = $properties['OPACITY'];
             }
             if ($this->mpdf->HREF) {
-                if (\strpos($this->mpdf->HREF, '.') === \false && \strpos($this->mpdf->HREF, '@') !== 0) {
+                if (strpos($this->mpdf->HREF, '.') === \false && strpos($this->mpdf->HREF, '@') !== 0) {
                     $href = $this->mpdf->HREF;
-                    while (\array_key_exists($href, $this->mpdf->internallink)) {
+                    while (array_key_exists($href, $this->mpdf->internallink)) {
                         $href = '#' . $href;
                     }
                     $this->mpdf->internallink[$href] = $this->mpdf->AddLink();
@@ -138,7 +138,7 @@ class Img extends \WPDeskFIVendor\Mpdf\Tag\Tag
                 $objattr['bgcolor'] = $this->colorConverter->convert($properties['BACKGROUND-COLOR'], $this->mpdf->PDFAXwarnings);
             }
             /* -- BACKGROUNDS -- */
-            if (isset($properties['GRADIENT-MASK']) && \preg_match('/(-moz-)*(repeating-)*(linear|radial)-gradient/', $properties['GRADIENT-MASK'])) {
+            if (isset($properties['GRADIENT-MASK']) && preg_match('/(-moz-)*(repeating-)*(linear|radial)-gradient/', $properties['GRADIENT-MASK'])) {
                 $objattr['GRADIENT-MASK'] = $properties['GRADIENT-MASK'];
             }
             /* -- END BACKGROUNDS -- */
@@ -146,13 +146,13 @@ class Img extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $interpolation = \false;
             if (!empty($properties['IMAGE-RENDERING'])) {
                 $interpolation = \false;
-                if (\strtolower($properties['IMAGE-RENDERING']) === 'crisp-edges') {
+                if (strtolower($properties['IMAGE-RENDERING']) === 'crisp-edges') {
                     $interpolation = \false;
-                } elseif (\strtolower($properties['IMAGE-RENDERING']) === 'optimizequality') {
+                } elseif (strtolower($properties['IMAGE-RENDERING']) === 'optimizequality') {
                     $interpolation = \true;
-                } elseif (\strtolower($properties['IMAGE-RENDERING']) === 'smooth') {
+                } elseif (strtolower($properties['IMAGE-RENDERING']) === 'smooth') {
                     $interpolation = \true;
-                } elseif (\strtolower($properties['IMAGE-RENDERING']) === 'auto') {
+                } elseif (strtolower($properties['IMAGE-RENDERING']) === 'auto') {
                     $interpolation = $this->mpdf->interpolateImages;
                 }
                 $info['interpolation'] = $interpolation;
@@ -193,25 +193,22 @@ class Img extends \WPDeskFIVendor\Mpdf\Tag\Tag
                     // WMF units are twips (1/20pt)
                     // divide by 20 to get points
                     // divide by k to get user units
-                    $w = \abs($info['w']) / (20 * \WPDeskFIVendor\Mpdf\Mpdf::SCALE);
-                    $h = \abs($info['h']) / (20 * \WPDeskFIVendor\Mpdf\Mpdf::SCALE);
+                    $w = abs($info['w']) / (20 * Mpdf::SCALE);
+                    $h = abs($info['h']) / (20 * Mpdf::SCALE);
+                } else if ($info['type'] === 'svg') {
+                    // SVG units are pixels
+                    $w = abs($info['w']) / Mpdf::SCALE;
+                    $h = abs($info['h']) / Mpdf::SCALE;
                 } else {
-                    /* -- END IMAGES-WMF -- */
-                    if ($info['type'] === 'svg') {
-                        // SVG units are pixels
-                        $w = \abs($info['w']) / \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
-                        $h = \abs($info['h']) / \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
-                    } else {
-                        //Put image at default image dpi
-                        $w = $info['w'] / \WPDeskFIVendor\Mpdf\Mpdf::SCALE * (72 / $this->mpdf->img_dpi);
-                        $h = $info['h'] / \WPDeskFIVendor\Mpdf\Mpdf::SCALE * (72 / $this->mpdf->img_dpi);
-                    }
+                    //Put image at default image dpi
+                    $w = $info['w'] / Mpdf::SCALE * (72 / $this->mpdf->img_dpi);
+                    $h = $info['h'] / Mpdf::SCALE * (72 / $this->mpdf->img_dpi);
                 }
                 if (isset($properties['IMAGE-RESOLUTION'])) {
-                    if (\preg_match('/from-image/i', $properties['IMAGE-RESOLUTION']) && isset($info['set-dpi']) && $info['set-dpi'] > 0) {
+                    if (preg_match('/from-image/i', $properties['IMAGE-RESOLUTION']) && isset($info['set-dpi']) && $info['set-dpi'] > 0) {
                         $w *= $this->mpdf->img_dpi / $info['set-dpi'];
                         $h *= $this->mpdf->img_dpi / $info['set-dpi'];
-                    } elseif (\preg_match('/(\\d+)dpi/i', $properties['IMAGE-RESOLUTION'], $m)) {
+                    } elseif (preg_match('/(\d+)dpi/i', $properties['IMAGE-RESOLUTION'], $m)) {
                         $dpi = $m[1];
                         if ($dpi > 0) {
                             $w *= $this->mpdf->img_dpi / $dpi;
@@ -222,26 +219,26 @@ class Img extends \WPDeskFIVendor\Mpdf\Tag\Tag
             }
             // IF WIDTH OR HEIGHT SPECIFIED
             if ($w == 0) {
-                $w = $info['h'] ? \abs($h * $info['w'] / $info['h']) : \INF;
+                $w = $info['h'] ? abs($h * $info['w'] / $info['h']) : \INF;
             }
             if ($h == 0) {
-                $h = $info['w'] ? \abs($w * $info['h'] / $info['w']) : \INF;
+                $h = $info['w'] ? abs($w * $info['h'] / $info['w']) : \INF;
             }
             if ($minw && $w < $minw) {
                 $w = $minw;
-                $h = $info['w'] ? \abs($w * $info['h'] / $info['w']) : \INF;
+                $h = $info['w'] ? abs($w * $info['h'] / $info['w']) : \INF;
             }
             if ($maxw && $w > $maxw) {
                 $w = $maxw;
-                $h = $info['w'] ? \abs($w * $info['h'] / $info['w']) : \INF;
+                $h = $info['w'] ? abs($w * $info['h'] / $info['w']) : \INF;
             }
             if ($minh && $h < $minh) {
                 $h = $minh;
-                $w = $info['h'] ? \abs($h * $info['w'] / $info['h']) : \INF;
+                $w = $info['h'] ? abs($h * $info['w'] / $info['h']) : \INF;
             }
             if ($maxh && $h > $maxh) {
                 $h = $maxh;
-                $w = $info['h'] ? \abs($h * $info['w'] / $info['h']) : \INF;
+                $w = $info['h'] ? abs($h * $info['w'] / $info['h']) : \INF;
             }
             // Resize to maximum dimensions of page
             $maxWidth = $this->mpdf->blk[$this->mpdf->blklvl]['inner_width'];
@@ -252,11 +249,11 @@ class Img extends \WPDeskFIVendor\Mpdf\Tag\Tag
             if ($w + $extrawidth > $maxWidth + 0.0001) {
                 // mPDF 5.7.4  0.0001 to allow for rounding errors when w==maxWidth
                 $w = $maxWidth - $extrawidth;
-                $h = \abs($w * $info['h'] / $info['w']);
+                $h = abs($w * $info['h'] / $info['w']);
             }
             if ($h + $extraheight > $maxHeight) {
                 $h = $maxHeight - $extraheight;
-                $w = \abs($h * $info['w'] / $info['h']);
+                $w = abs($h * $info['w'] / $info['h']);
             }
             $objattr['type'] = 'image';
             $objattr['itype'] = $info['type'];
@@ -266,12 +263,9 @@ class Img extends \WPDeskFIVendor\Mpdf\Tag\Tag
             if ($info['type'] === 'wmf') {
                 $objattr['wmf_x'] = $info['x'];
                 $objattr['wmf_y'] = $info['y'];
-            } else {
-                /* -- END IMAGES-WMF -- */
-                if ($info['type'] === 'svg') {
-                    $objattr['wmf_x'] = $info['x'];
-                    $objattr['wmf_y'] = $info['y'];
-                }
+            } else if ($info['type'] === 'svg') {
+                $objattr['wmf_x'] = $info['x'];
+                $objattr['wmf_y'] = $info['y'];
             }
             $objattr['height'] = $h + $extraheight;
             $objattr['width'] = $w + $extrawidth;
@@ -279,8 +273,8 @@ class Img extends \WPDeskFIVendor\Mpdf\Tag\Tag
             $objattr['image_width'] = $w;
             /* -- CSS-IMAGE-FLOAT -- */
             if (!$this->mpdf->ColActive && !$this->mpdf->tableLevel && !$this->mpdf->listlvl && !$this->mpdf->kwt) {
-                if (isset($properties['FLOAT']) && (\strtoupper($properties['FLOAT']) === 'RIGHT' || \strtoupper($properties['FLOAT']) === 'LEFT')) {
-                    $objattr['float'] = \strtoupper(\substr($properties['FLOAT'], 0, 1));
+                if (isset($properties['FLOAT']) && (strtoupper($properties['FLOAT']) === 'RIGHT' || strtoupper($properties['FLOAT']) === 'LEFT')) {
+                    $objattr['float'] = strtoupper(substr($properties['FLOAT'], 0, 1));
                 }
             }
             /* -- END CSS-IMAGE-FLOAT -- */
@@ -288,7 +282,7 @@ class Img extends \WPDeskFIVendor\Mpdf\Tag\Tag
             if (isset($properties['TRANSFORM']) && !$this->mpdf->ColActive && !$this->mpdf->kwt) {
                 $objattr['transform'] = $properties['TRANSFORM'];
             }
-            $e = "\xbb\xa4\xactype=image,objattr=" . \serialize($objattr) . "\xbb\xa4\xac";
+            $e = "\xbb\xa4\xactype=image,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
             /* -- TABLES -- */
             // Output it to buffers
             if ($this->mpdf->tableLevel) {
@@ -321,7 +315,7 @@ class Img extends \WPDeskFIVendor\Mpdf\Tag\Tag
                 $objattr['SUBJECT'] = '';
                 $objattr['OPACITY'] = $this->mpdf->annotOpacity;
                 $objattr['COLOR'] = $this->colorConverter->convert('yellow', $this->mpdf->PDFAXwarnings);
-                $e = "\xbb\xa4\xactype=annot,objattr=" . \serialize($objattr) . "\xbb\xa4\xac";
+                $e = "\xbb\xa4\xactype=annot,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
                 if ($this->mpdf->tableLevel) {
                     // *TABLES*
                     $this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['textbuffer'][] = [$e];

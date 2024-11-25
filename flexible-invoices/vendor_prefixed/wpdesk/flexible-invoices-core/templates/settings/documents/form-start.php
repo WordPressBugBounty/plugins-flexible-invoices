@@ -17,7 +17,7 @@ echo \esc_attr($form->get_action());
 		<?php 
 $active = 'current';
 foreach ($form->get_fields() as $field) {
-    if ($field instanceof \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields\SubStartField) {
+    if ($field instanceof SubStartField) {
         ?>
 				<li>
 					<a class="sub-tab-<?php 

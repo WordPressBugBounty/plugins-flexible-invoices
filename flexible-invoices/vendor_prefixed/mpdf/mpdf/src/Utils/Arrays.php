@@ -6,11 +6,11 @@ class Arrays
 {
     public static function get($array, $key, $default = null)
     {
-        if (\is_array($array) && \array_key_exists($key, $array)) {
+        if (is_array($array) && array_key_exists($key, $array)) {
             return $array[$key];
         }
-        if (\func_num_args() < 3) {
-            throw new \InvalidArgumentException(\sprintf('Array does not contain key "%s"', $key));
+        if (func_num_args() < 3) {
+            throw new \InvalidArgumentException(sprintf('Array does not contain key "%s"', $key));
         }
         return $default;
     }
@@ -29,18 +29,18 @@ class Arrays
      */
     public static function allUniqueSortedCombinations($array)
     {
-        $input = \array_unique($array);
-        if (\count($input) <= 1) {
+        $input = array_unique($array);
+        if (count($input) <= 1) {
             return [$input];
         }
-        \sort($input);
+        sort($input);
         $combinations = [];
         foreach ($input as $value) {
             $combinations[] = [$value];
         }
-        $n = \count($input);
+        $n = count($input);
         for ($k = 2; $k <= $n; $k++) {
-            $combinations = \array_merge($combinations, self::combinations($input, $k));
+            $combinations = array_merge($combinations, self::combinations($input, $k));
         }
         return $combinations;
     }
@@ -58,10 +58,10 @@ class Arrays
      */
     public static function combinations($array, $k)
     {
-        $n = \count($array);
+        $n = count($array);
         $combinations = [];
-        $indexes = \range(0, $k - 1);
-        $maxIndexes = \range($n - $k, $n - 1);
+        $indexes = range(0, $k - 1);
+        $maxIndexes = range($n - $k, $n - 1);
         do {
             $combination = [];
             foreach ($indexes as $index) {

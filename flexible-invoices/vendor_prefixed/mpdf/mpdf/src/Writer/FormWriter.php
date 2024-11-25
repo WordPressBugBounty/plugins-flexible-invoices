@@ -15,7 +15,7 @@ final class FormWriter
      * @var \Mpdf\Writer\BaseWriter
      */
     private $writer;
-    public function __construct(\WPDeskFIVendor\Mpdf\Mpdf $mpdf, \WPDeskFIVendor\Mpdf\Writer\BaseWriter $writer)
+    public function __construct(Mpdf $mpdf, BaseWriter $writer)
     {
         $this->mpdf = $mpdf;
         $this->writer = $writer;
@@ -32,8 +32,8 @@ final class FormWriter
             if ($this->mpdf->compress) {
                 $this->writer->write('/Filter /FlateDecode');
             }
-            $data = $this->mpdf->compress ? \gzcompress($info['data']) : $info['data'];
-            $this->writer->write('/Length ' . \strlen($data) . '>>');
+            $data = $this->mpdf->compress ? gzcompress($info['data']) : $info['data'];
+            $this->writer->write('/Length ' . strlen($data) . '>>');
             $this->writer->stream($data);
             unset($this->mpdf->formobjects[$file]['data']);
             $this->writer->write('endobj');

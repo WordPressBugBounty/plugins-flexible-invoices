@@ -26,7 +26,7 @@ $settings = isset($params['settings']) ? $params['settings'] : \false;
  * @var Currency $helper ;
  */
 $helper = isset($params['currency_helper']) ? $params['currency_helper'] : \false;
-$currency_helper = new \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Currency($post_data['currency']);
+$currency_helper = new Currency($post_data['currency']);
 $decimal_places = 2;
 $total_net = 0;
 $total_tax = 0;

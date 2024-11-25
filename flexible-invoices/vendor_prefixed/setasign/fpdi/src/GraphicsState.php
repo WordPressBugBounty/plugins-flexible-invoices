@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi;
@@ -23,10 +23,12 @@ class GraphicsState
     /**
      * @param Matrix|null $ctm
      */
-    public function __construct(\WPDeskFIVendor\setasign\Fpdi\Math\Matrix $ctm = null)
+    public function __construct($ctm = null)
     {
         if ($ctm === null) {
-            $ctm = new \WPDeskFIVendor\setasign\Fpdi\Math\Matrix();
+            $ctm = new Matrix();
+        } elseif (!$ctm instanceof Matrix) {
+            throw new \InvalidArgumentException('$ctm must be an instance of Fpdi\Matrix or null');
         }
         $this->ctm = $ctm;
     }
@@ -34,7 +36,7 @@ class GraphicsState
      * @param Matrix $matrix
      * @return $this
      */
-    public function add(\WPDeskFIVendor\setasign\Fpdi\Math\Matrix $matrix)
+    public function add(Matrix $matrix)
     {
         $this->ctm = $matrix->multiply($this->ctm);
         return $this;
@@ -47,13 +49,13 @@ class GraphicsState
      */
     public function rotate($x, $y, $angle)
     {
-        if (\abs($angle) < 1.0E-5) {
+        if (abs($angle) < 1.0E-5) {
             return $this;
         }
-        $angle = \deg2rad($angle);
-        $c = \cos($angle);
-        $s = \sin($angle);
-        $this->add(new \WPDeskFIVendor\setasign\Fpdi\Math\Matrix($c, $s, -$s, $c, $x, $y));
+        $angle = deg2rad($angle);
+        $c = cos($angle);
+        $s = sin($angle);
+        $this->add(new Matrix($c, $s, -$s, $c, $x, $y));
         return $this->translate(-$x, -$y);
     }
     /**
@@ -63,7 +65,7 @@ class GraphicsState
      */
     public function translate($shiftX, $shiftY)
     {
-        return $this->add(new \WPDeskFIVendor\setasign\Fpdi\Math\Matrix(1, 0, 0, 1, $shiftX, $shiftY));
+        return $this->add(new Matrix(1, 0, 0, 1, $shiftX, $shiftY));
     }
     /**
      * @param int|float $scaleX
@@ -72,13 +74,13 @@ class GraphicsState
      */
     public function scale($scaleX, $scaleY)
     {
-        return $this->add(new \WPDeskFIVendor\setasign\Fpdi\Math\Matrix($scaleX, 0, 0, $scaleY, 0, 0));
+        return $this->add(new Matrix($scaleX, 0, 0, $scaleY, 0, 0));
     }
     /**
      * @param Vector $vector
      * @return Vector
      */
-    public function toUserSpace(\WPDeskFIVendor\setasign\Fpdi\Math\Vector $vector)
+    public function toUserSpace(Vector $vector)
     {
         return $vector->multiplyWithMatrix($this->ctm);
     }

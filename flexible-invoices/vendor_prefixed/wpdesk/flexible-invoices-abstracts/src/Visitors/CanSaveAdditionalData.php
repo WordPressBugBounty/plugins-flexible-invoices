@@ -15,5 +15,5 @@ interface CanSaveAdditionalData
      *
      * @return void
      */
-    public function save_document($document_id, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document $document);
+    public function save_document($document_id, Document $document);
 }

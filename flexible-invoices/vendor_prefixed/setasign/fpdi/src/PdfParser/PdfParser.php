@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2023 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser;
@@ -65,10 +65,10 @@ class PdfParser
      *
      * @param StreamReader $streamReader
      */
-    public function __construct(\WPDeskFIVendor\setasign\Fpdi\PdfParser\StreamReader $streamReader)
+    public function __construct(StreamReader $streamReader)
     {
         $this->streamReader = $streamReader;
-        $this->tokenizer = new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Tokenizer($streamReader);
+        $this->tokenizer = new Tokenizer($streamReader);
     }
     /**
      * Removes cycled references.
@@ -115,7 +115,7 @@ class PdfParser
             $offset = \strpos($buffer, '%PDF-');
             if ($offset === \false) {
                 if (!$this->streamReader->increaseLength(100) || --$maxIterations === 0) {
-                    throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParserException('Unable to find PDF file header.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParserException::FILE_HEADER_NOT_FOUND);
+                    throw new PdfParserException('Unable to find PDF file header.', PdfParserException::FILE_HEADER_NOT_FOUND);
                 }
                 continue;
             }
@@ -136,7 +136,7 @@ class PdfParser
     public function getCrossReference()
     {
         if ($this->xref === null) {
-            $this->xref = new \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReference($this, $this->resolveFileHeader());
+            $this->xref = new CrossReference($this, $this->resolveFileHeader());
         }
         return $this->xref;
     }
@@ -149,14 +149,14 @@ class PdfParser
     public function getPdfVersion()
     {
         $this->resolveFileHeader();
-        if (\preg_match('/%PDF-(\\d)\\.(\\d)/', $this->fileHeader, $result) === 0) {
-            throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParserException('Unable to extract PDF version from file header.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParserException::PDF_VERSION_NOT_FOUND);
+        if (\preg_match('/%PDF-(\d)\.(\d)/', $this->fileHeader, $result) === 0) {
+            throw new PdfParserException('Unable to extract PDF version from file header.', PdfParserException::PDF_VERSION_NOT_FOUND);
         }
         list(, $major, $minor) = $result;
         $catalog = $this->getCatalog();
         if (isset($catalog->value['Version'])) {
-            $versionParts = \explode('.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfName::unescape(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve($catalog->value['Version'], $this)->value));
-            if (\count($versionParts) === 2) {
+            $versionParts = \explode('.', PdfName::unescape(PdfType::resolve($catalog->value['Version'], $this)->value));
+            if (count($versionParts) === 2) {
                 list($major, $minor) = $versionParts;
             }
         }
@@ -173,8 +173,8 @@ class PdfParser
     public function getCatalog()
     {
         $trailer = $this->getCrossReference()->getTrailer();
-        $catalog = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($trailer, 'Root'), $this);
-        return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::ensure($catalog);
+        $catalog = PdfType::resolve(PdfDictionary::get($trailer, 'Root'), $this);
+        return PdfDictionary::ensure($catalog);
     }
     /**
      * Get an indirect object by its object number.
@@ -212,7 +212,7 @@ class PdfParser
         }
         if ($token === \false) {
             if ($expectedType !== null) {
-                throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException('Got unexpected token type.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException::INVALID_DATA_TYPE);
+                throw new Type\PdfTypeException('Got unexpected token type.', Type\PdfTypeException::INVALID_DATA_TYPE);
             }
             return \false;
         }
@@ -240,37 +240,37 @@ class PdfParser
                         if (\is_numeric($token2) && ($token3 = $this->tokenizer->getNextToken()) !== \false) {
                             switch ($token3) {
                                 case 'obj':
-                                    if ($expectedType !== null && $expectedType !== \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObject::class) {
-                                        throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException('Got unexpected token type.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException::INVALID_DATA_TYPE);
+                                    if ($expectedType !== null && $expectedType !== PdfIndirectObject::class) {
+                                        throw new Type\PdfTypeException('Got unexpected token type.', Type\PdfTypeException::INVALID_DATA_TYPE);
                                     }
                                     return $this->parsePdfIndirectObject((int) $token, (int) $token2);
                                 case 'R':
-                                    if ($expectedType !== null && $expectedType !== \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObjectReference::class) {
-                                        throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException('Got unexpected token type.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException::INVALID_DATA_TYPE);
+                                    if ($expectedType !== null && $expectedType !== PdfIndirectObjectReference::class) {
+                                        throw new Type\PdfTypeException('Got unexpected token type.', Type\PdfTypeException::INVALID_DATA_TYPE);
                                     }
-                                    return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObjectReference::create((int) $token, (int) $token2);
+                                    return PdfIndirectObjectReference::create((int) $token, (int) $token2);
                             }
                             $this->tokenizer->pushStack($token3);
                         }
                         $this->tokenizer->pushStack($token2);
                     }
-                    if ($expectedType !== null && $expectedType !== \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::class) {
-                        throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException('Got unexpected token type.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException::INVALID_DATA_TYPE);
+                    if ($expectedType !== null && $expectedType !== PdfNumeric::class) {
+                        throw new Type\PdfTypeException('Got unexpected token type.', Type\PdfTypeException::INVALID_DATA_TYPE);
                     }
-                    return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create($token + 0);
+                    return PdfNumeric::create($token + 0);
                 }
                 if ($token === 'true' || $token === 'false') {
                     $this->ensureExpectedType($token, $expectedType);
-                    return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfBoolean::create($token === 'true');
+                    return PdfBoolean::create($token === 'true');
                 }
                 if ($token === 'null') {
                     $this->ensureExpectedType($token, $expectedType);
-                    return new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNull();
+                    return new PdfNull();
                 }
-                if ($expectedType !== null && $expectedType !== \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfToken::class) {
-                    throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException('Got unexpected token type.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException::INVALID_DATA_TYPE);
+                if ($expectedType !== null && $expectedType !== PdfToken::class) {
+                    throw new Type\PdfTypeException('Got unexpected token type.', Type\PdfTypeException::INVALID_DATA_TYPE);
                 }
-                $v = new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfToken();
+                $v = new PdfToken();
                 $v->value = $token;
                 return $v;
         }
@@ -280,14 +280,14 @@ class PdfParser
      */
     protected function parsePdfString()
     {
-        return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfString::parse($this->streamReader);
+        return PdfString::parse($this->streamReader);
     }
     /**
      * @return false|PdfHexString
      */
     protected function parsePdfHexString()
     {
-        return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfHexString::parse($this->streamReader);
+        return PdfHexString::parse($this->streamReader);
     }
     /**
      * @return bool|PdfDictionary
@@ -295,14 +295,14 @@ class PdfParser
      */
     protected function parsePdfDictionary()
     {
-        return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::parse($this->tokenizer, $this->streamReader, $this);
+        return PdfDictionary::parse($this->tokenizer, $this->streamReader, $this);
     }
     /**
      * @return PdfName
      */
     protected function parsePdfName()
     {
-        return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfName::parse($this->tokenizer, $this->streamReader);
+        return PdfName::parse($this->tokenizer, $this->streamReader);
     }
     /**
      * @return false|PdfArray
@@ -310,7 +310,7 @@ class PdfParser
      */
     protected function parsePdfArray()
     {
-        return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfArray::parse($this->tokenizer, $this);
+        return PdfArray::parse($this->tokenizer, $this);
     }
     /**
      * @param int $objectNumber
@@ -320,7 +320,7 @@ class PdfParser
      */
     protected function parsePdfIndirectObject($objectNumber, $generationNumber)
     {
-        return \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObject::parse($objectNumber, $generationNumber, $this, $this->tokenizer, $this->streamReader);
+        return PdfIndirectObject::parse($objectNumber, $generationNumber, $this, $this->tokenizer, $this->streamReader);
     }
     /**
      * Ensures that the token will evaluate to an expected object type (or not).
@@ -332,10 +332,10 @@ class PdfParser
      */
     protected function ensureExpectedType($token, $expectedType)
     {
-        static $mapping = ['(' => \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfString::class, '<' => \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfHexString::class, '<<' => \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::class, '/' => \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfName::class, '[' => \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfArray::class, 'true' => \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfBoolean::class, 'false' => \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfBoolean::class, 'null' => \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNull::class];
+        static $mapping = ['(' => PdfString::class, '<' => PdfHexString::class, '<<' => PdfDictionary::class, '/' => PdfName::class, '[' => PdfArray::class, 'true' => PdfBoolean::class, 'false' => PdfBoolean::class, 'null' => PdfNull::class];
         if ($expectedType === null || $mapping[$token] === $expectedType) {
             return \true;
         }
-        throw new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException('Got unexpected token type.', \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException::INVALID_DATA_TYPE);
+        throw new Type\PdfTypeException('Got unexpected token type.', Type\PdfTypeException::INVALID_DATA_TYPE);
     }
 }

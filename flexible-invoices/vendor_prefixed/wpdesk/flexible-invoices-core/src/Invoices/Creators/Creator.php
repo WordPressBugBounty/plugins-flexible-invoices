@@ -12,7 +12,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\DocumentsMeta\CustomMeta;
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Creators
  */
-interface Creator extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCreator, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCreatorRestrictions
+interface Creator extends DocumentCreator, DocumentCreatorRestrictions
 {
     /**
      * Returns class for saving additional custom meta for each document.
@@ -22,5 +22,5 @@ interface Creator extends \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstrac
      *
      * @return CustomMeta
      */
-    public function custom_meta(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\DocumentGetters $document, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Containers\MetaContainer $meta);
+    public function custom_meta(DocumentGetters $document, MetaContainer $meta);
 }

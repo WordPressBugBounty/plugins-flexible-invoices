@@ -2,6 +2,6 @@
 
 namespace WPDeskFIVendor\Mpdf\Tag;
 
-class Strike extends \WPDeskFIVendor\Mpdf\Tag\InlineTag
+class Strike extends InlineTag
 {
 }

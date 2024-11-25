@@ -9,7 +9,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\DocumentGe
  *
  * @package WPDesk\Library\FlexibleInvoicesCore\Strategy
  */
-abstract class DocumentCustomMeta implements \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\DocumentsMeta\CustomMeta
+abstract class DocumentCustomMeta implements CustomMeta
 {
     /**
      * @var DocumentGetters
@@ -23,7 +23,7 @@ abstract class DocumentCustomMeta implements \WPDeskFIVendor\WPDesk\Library\Flex
      * @param DocumentGetters $document
      * @param MetaContainer   $meta_container
      */
-    public function __construct(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\DocumentGetters $document, \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Containers\MetaContainer $meta_container)
+    public function __construct(DocumentGetters $document, MetaContainer $meta_container)
     {
         $this->document = $document;
         $this->meta_container = $meta_container;
@@ -31,5 +31,5 @@ abstract class DocumentCustomMeta implements \WPDeskFIVendor\WPDesk\Library\Flex
     /**
      * @return void
      */
-    public abstract function save();
+    abstract public function save();
 }

@@ -8,5 +8,5 @@ interface PdfPrinter
     /**
      * @return string
      */
-    public function get_as_string(\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document $document) : string;
+    public function get_as_string(Document $document): string;
 }

@@ -3,7 +3,7 @@
 namespace WPDeskFIVendor\WPDesk\Forms\Validator;
 
 use WPDeskFIVendor\WPDesk\Forms\Validator;
-class NoValidateValidator implements \WPDeskFIVendor\WPDesk\Forms\Validator
+class NoValidateValidator implements Validator
 {
     public function is_valid($value)
     {

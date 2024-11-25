@@ -28,7 +28,7 @@ trait FpdiTrait
         useImportedPage as fpdiUseImportedPage;
         importPage as fpdiImportPage;
     }
-    protected $k = \WPDeskFIVendor\Mpdf\Mpdf::SCALE;
+    protected $k = Mpdf::SCALE;
     /**
      * The currently used object number.
      *
@@ -122,10 +122,10 @@ trait FpdiTrait
             $this->AddPage();
         }
         /* Extract $x if an array */
-        if (\is_array($x)) {
+        if (is_array($x)) {
             unset($x['pageId']);
-            \extract($x, \EXTR_IF_EXISTS);
-            if (\is_array($x)) {
+            extract($x, \EXTR_IF_EXISTS);
+            if (is_array($x)) {
                 $x = 0;
             }
         }
@@ -147,7 +147,7 @@ trait FpdiTrait
      * @throws PdfReaderException
      * @see PageBoundaries
      */
-    public function importPage($pageNumber, $box = \WPDeskFIVendor\setasign\Fpdi\PdfReader\PageBoundaries::CROP_BOX, $groupXObject = \true)
+    public function importPage($pageNumber, $box = PageBoundaries::CROP_BOX, $groupXObject = \true)
     {
         $pageId = $this->fpdiImportPage($pageNumber, $box, $groupXObject);
         $this->importedPages[$pageId]['externalLinks'] = $this->getImportedExternalPageLinks($pageNumber);
@@ -170,27 +170,27 @@ trait FpdiTrait
         $page = $reader->getPage($pageNumber);
         $page->getPageDictionary();
         $annotations = $page->getAttribute('Annots');
-        if ($annotations instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObjectReference) {
-            $annotations = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve($parser->getIndirectObject($annotations->value), $parser);
+        if ($annotations instanceof PdfIndirectObjectReference) {
+            $annotations = PdfType::resolve($parser->getIndirectObject($annotations->value), $parser);
         }
-        if ($annotations instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfArray) {
-            $annotations = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve($annotations, $parser);
+        if ($annotations instanceof PdfArray) {
+            $annotations = PdfType::resolve($annotations, $parser);
             foreach ($annotations->value as $annotation) {
                 try {
-                    $annotation = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve($annotation, $parser);
-                    $type = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfName::ensure(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($annotation, 'Type'), $parser));
-                    $subtype = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfName::ensure(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($annotation, 'Subtype'), $parser));
-                    $link = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::ensure(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($annotation, 'A'), $parser));
+                    $annotation = PdfType::resolve($annotation, $parser);
+                    $type = PdfName::ensure(PdfType::resolve(PdfDictionary::get($annotation, 'Type'), $parser));
+                    $subtype = PdfName::ensure(PdfType::resolve(PdfDictionary::get($annotation, 'Subtype'), $parser));
+                    $link = PdfDictionary::ensure(PdfType::resolve(PdfDictionary::get($annotation, 'A'), $parser));
                     /* Skip over annotations that aren't links */
                     if ($type->value !== 'Annot' || $subtype->value !== 'Link') {
                         continue;
                     }
                     /* Calculate the link positioning */
-                    $position = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfArray::ensure(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($annotation, 'Rect'), $parser), 4);
-                    $rect = \WPDeskFIVendor\setasign\Fpdi\PdfReader\DataStructure\Rectangle::byPdfArray($position, $parser);
-                    $uri = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfString::ensure(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType::resolve(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfDictionary::get($link, 'URI'), $parser));
-                    $links[] = ['x' => $rect->getLlx() / \WPDeskFIVendor\Mpdf\Mpdf::SCALE, 'y' => $rect->getLly() / \WPDeskFIVendor\Mpdf\Mpdf::SCALE, 'width' => $rect->getWidth() / \WPDeskFIVendor\Mpdf\Mpdf::SCALE, 'height' => $rect->getHeight() / \WPDeskFIVendor\Mpdf\Mpdf::SCALE, 'url' => $uri->value];
-                } catch (\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfTypeException $e) {
+                    $position = PdfArray::ensure(PdfType::resolve(PdfDictionary::get($annotation, 'Rect'), $parser), 4);
+                    $rect = Rectangle::byPdfArray($position, $parser);
+                    $uri = PdfString::ensure(PdfType::resolve(PdfDictionary::get($link, 'URI'), $parser));
+                    $links[] = ['x' => $rect->getLlx() / Mpdf::SCALE, 'y' => $rect->getLly() / Mpdf::SCALE, 'width' => $rect->getWidth() / Mpdf::SCALE, 'height' => $rect->getHeight() / Mpdf::SCALE, 'url' => $uri->value];
+                } catch (PdfTypeException $e) {
                     continue;
                 }
             }
@@ -261,9 +261,9 @@ trait FpdiTrait
             while (($objectNumber = \array_pop($this->objectsToCopy[$readerId])) !== null) {
                 try {
                     $object = $parser->getIndirectObject($objectNumber);
-                } catch (\WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException $e) {
-                    if ($e->getCode() === \WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException::OBJECT_NOT_FOUND) {
-                        $object = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObject::create($objectNumber, 0, new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNull());
+                } catch (CrossReferenceException $e) {
+                    if ($e->getCode() === CrossReferenceException::OBJECT_NOT_FOUND) {
+                        $object = PdfIndirectObject::create($objectNumber, 0, new PdfNull());
                     } else {
                         throw $e;
                     }
@@ -291,10 +291,10 @@ trait FpdiTrait
      * @param PdfType $value
      * @throws PdfTypeException
      */
-    public function writePdfType(\WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType $value)
+    public function writePdfType(PdfType $value)
     {
         if (!$this->encrypted) {
-            if ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObject) {
+            if ($value instanceof PdfIndirectObject) {
                 /**
                  * @var $value PdfIndirectObject
                  */
@@ -307,22 +307,22 @@ trait FpdiTrait
             $this->fpdiWritePdfType($value);
             return;
         }
-        if ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfString) {
-            $string = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfString::unescape($value->value);
+        if ($value instanceof PdfString) {
+            $string = PdfString::unescape($value->value);
             $string = $this->protection->rc4($this->protection->objectKey($this->currentObjectNumber), $string);
             $value->value = $this->writer->escape($string);
-        } elseif ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfHexString) {
-            $filter = new \WPDeskFIVendor\setasign\Fpdi\PdfParser\Filter\AsciiHex();
+        } elseif ($value instanceof PdfHexString) {
+            $filter = new AsciiHex();
             $string = $filter->decode($value->value);
             $string = $this->protection->rc4($this->protection->objectKey($this->currentObjectNumber), $string);
             $value->value = $filter->encode($string, \true);
-        } elseif ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfStream) {
+        } elseif ($value instanceof PdfStream) {
             $stream = $value->getStream();
             $stream = $this->protection->rc4($this->protection->objectKey($this->currentObjectNumber), $stream);
             $dictionary = $value->value;
-            $dictionary->value['Length'] = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNumeric::create(\strlen($stream));
-            $value = \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfStream::create($dictionary, $stream);
-        } elseif ($value instanceof \WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObject) {
+            $dictionary->value['Length'] = PdfNumeric::create(\strlen($stream));
+            $value = PdfStream::create($dictionary, $stream);
+        } elseif ($value instanceof PdfIndirectObject) {
             /**
              * @var $value PdfIndirectObject
              */
