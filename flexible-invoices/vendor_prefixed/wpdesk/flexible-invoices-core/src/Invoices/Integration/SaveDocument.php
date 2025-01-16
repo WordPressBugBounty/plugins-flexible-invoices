@@ -6,7 +6,6 @@ use Exception;
 use WPDeskFIVendor\Psr\Log\LoggerInterface;
 use RuntimeException;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentExceptions\UnknownDocumentTypeException;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\AbstractDocumentCreator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCreator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document;
@@ -72,7 +71,7 @@ class SaveDocument implements Hookable
     }
     /**
      * @param int     $post_id
-     * @param WP_Post $post
+     * @param \WP_Post $post
      *
      * @return false|int
      */
@@ -148,7 +147,6 @@ class SaveDocument implements Hookable
             $meta->set('_date_pay', $document->get_date_of_pay());
             $meta->set('_date_paid', $document->get_date_of_paid());
             $meta->set('_products', $document->get_items());
-            $this->save_client_meta($meta, $document->get_customer_as_array());
             $meta->set('_recipient', $document->get_recipient_as_array());
             $meta->set('_owner', $document->get_seller_as_array());
             $meta->set('_total_price', CalculateTotals::calculate_total_gross($document->get_items()));
@@ -166,7 +164,9 @@ class SaveDocument implements Hookable
             $meta->set('_add_order_id', $document->get_show_order_number());
             $meta->set('_wc_order_id', $document->get_order_id());
             $meta->set('_version', $this->plugin_version);
+            $meta->set('_corrected_invoice_id', $document->get_corrected_id());
             $this->save_tax_items($meta, $document->get_items());
+            $this->save_client_meta($meta, $document->get_customer_as_array());
             EmailStatus::save($document);
             $document_creator->custom_meta($document, $meta)->save();
             /**
@@ -179,6 +179,7 @@ class SaveDocument implements Hookable
              * @since 3.0.0
              */
             do_action('fi/core/document/save', $document, $meta, $document_id);
+            sleep(1);
         } catch (Exception $e) {
             $this->logger->error($e->getMessage());
         }
@@ -232,24 +233,24 @@ class SaveDocument implements Hookable
         }
     }
     /**
-     * @param array $products
+     * @param array $items
      *
      * @return array
      */
-    private function create_tax_totals(array $products): array
+    private function create_tax_totals(array $items): array
     {
         $tax_types = [];
-        foreach ($products as $product) {
-            if (!isset($tax_types[$product['vat_type']]['total_vat_sum'])) {
-                $tax_types[$product['vat_type']]['vat_type'] = 0;
-                $tax_types[$product['vat_type']]['vat_index'] = 0;
-                $tax_types[$product['vat_type']]['qty'] = 0;
-                $tax_types[$product['vat_type']]['total_vat_sum'] = 0;
+        foreach ($items as $item) {
+            if (!isset($tax_types[$item['vat_type']]['total_vat_sum'])) {
+                $tax_types[$item['vat_type']]['vat_type'] = 0;
+                $tax_types[$item['vat_type']]['vat_index'] = 0;
+                $tax_types[$item['vat_type']]['qty'] = 0;
+                $tax_types[$item['vat_type']]['total_vat_sum'] = 0;
             }
-            $tax_types[$product['vat_type']]['vat_type'] = $product['vat_type'];
-            $tax_types[$product['vat_type']]['vat_index'] = $product['vat_type_index'];
-            $tax_types[$product['vat_type']]['qty'] += $product['quantity'];
-            $tax_types[$product['vat_type']]['total_vat_sum'] += $product['vat_sum'];
+            $tax_types[$item['vat_type']]['vat_type'] = $item['vat_type'];
+            $tax_types[$item['vat_type']]['vat_index'] = $item['vat_type_index'];
+            $tax_types[$item['vat_type']]['qty'] += $item['quantity'];
+            $tax_types[$item['vat_type']]['total_vat_sum'] += $item['vat_sum'];
         }
         return $tax_types;
     }

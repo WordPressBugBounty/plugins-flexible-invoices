@@ -4,27 +4,21 @@ namespace WPDeskFIVendor\Mpdf;
 
 use WPDeskFIVendor\Psr\Log\LoggerInterface;
 use WPDeskFIVendor\Mpdf\Log\Context as LogContext;
+use WPDeskFIVendor\Mpdf\PsrLogAwareTrait\PsrLogAwareTrait;
 class SizeConverter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
 {
+    use PsrLogAwareTrait;
     private $dpi;
     private $defaultFontSize;
     /**
      * @var \Mpdf\Mpdf
      */
     private $mpdf;
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    private $logger;
     public function __construct($dpi, $defaultFontSize, Mpdf $mpdf, LoggerInterface $logger)
     {
         $this->dpi = $dpi;
         $this->defaultFontSize = $defaultFontSize;
         $this->mpdf = $mpdf;
-        $this->logger = $logger;
-    }
-    public function setLogger(LoggerInterface $logger)
-    {
         $this->logger = $logger;
     }
     /**

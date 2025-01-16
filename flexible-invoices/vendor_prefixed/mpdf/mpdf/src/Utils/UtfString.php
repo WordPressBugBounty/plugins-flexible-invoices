@@ -33,10 +33,7 @@ class UtfString
     {
         // Returns the utf string corresponding to the unicode value
         if ($num < 128) {
-            if ($lo) {
-                return chr($num);
-            }
-            return '&#' . $num . ';';
+            return $lo ? chr($num) : '&#' . $num . ';';
         }
         if ($num < 2048) {
             return chr(($num >> 6) + 192) . chr(($num & 63) + 128);

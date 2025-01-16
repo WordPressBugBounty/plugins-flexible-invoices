@@ -62,7 +62,7 @@ class TextArea extends Tag
         if (isset($properties['FONT-FAMILY'])) {
             $this->mpdf->SetFont($properties['FONT-FAMILY'], '', 0, \false);
         }
-        if (isset($properties['FONT-SIZE'])) {
+        if (isset($properties['FONT-SIZE']) && $properties['FONT-SIZE'] !== 'auto') {
             $mmsize = $this->sizeConverter->convert($properties['FONT-SIZE'], $this->mpdf->default_font_size / Mpdf::SCALE);
             $this->mpdf->SetFontSize($mmsize * Mpdf::SCALE, \false);
         }
@@ -121,6 +121,9 @@ class TextArea extends Tag
         $objattr['height'] = $rowsize * $this->mpdf->lineheight + $this->form->form_element_spacing['textarea']['outer']['v'] * 2 + $this->form->form_element_spacing['textarea']['inner']['v'] * 2;
         $objattr['rows'] = $rowsize;
         $objattr['cols'] = $colsize;
+        if ($properties['FONT-SIZE'] === 'auto' && $this->mpdf->useActiveForms) {
+            $objattr['use_auto_fontsize'] = \true;
+        }
         $this->mpdf->specialcontent = serialize($objattr);
         if ($this->mpdf->tableLevel) {
             // *TABLES*

@@ -349,7 +349,7 @@ class Td extends Tag
         unset($c);
         $this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['s'] = 0;
         $cs = $rs = 1;
-        if (isset($attr['COLSPAN']) && $attr['COLSPAN'] > 1) {
+        if (isset($attr['COLSPAN']) && preg_match('/^\d+$/', $attr['COLSPAN']) && $attr['COLSPAN'] > 1) {
             $cs = $this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['colspan'] = $attr['COLSPAN'];
         }
         if ($this->mpdf->table[$this->mpdf->tableLevel][$this->mpdf->tbctr[$this->mpdf->tableLevel]]['nc'] < $this->mpdf->col + $cs) {
@@ -361,7 +361,7 @@ class Td extends Tag
                 $this->mpdf->cell[$this->mpdf->row][$l] = 0;
             }
         }
-        if (isset($attr['ROWSPAN']) && $attr['ROWSPAN'] > 1) {
+        if (isset($attr['ROWSPAN']) && preg_match('/^\d+$/', $attr['ROWSPAN']) && $attr['ROWSPAN'] > 1) {
             $rs = $this->mpdf->cell[$this->mpdf->row][$this->mpdf->col]['rowspan'] = $attr['ROWSPAN'];
         }
         for ($k = $this->mpdf->row; $k < $this->mpdf->row + $rs; $k++) {

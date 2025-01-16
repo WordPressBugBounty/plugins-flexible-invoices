@@ -36,7 +36,7 @@ class ColorConverter
             $cstr = '';
             if (is_array($c)) {
                 $c = array_pad($c, 6, 0);
-                $cstr = pack('a1ccccc', $c[0], $c[1] & 0xff, $c[2] & 0xff, $c[3] & 0xff, $c[4] & 0xff, $c[5] & 0xff);
+                $cstr = pack('a1ccccc', $c[0], round($c[1]) & 0xff, round($c[2]) & 0xff, round($c[3]) & 0xff, round($c[4]) & 0xff, round($c[5]) & 0xff);
             }
             $this->cache[$color] = $cstr;
         }
@@ -56,7 +56,7 @@ class ColorConverter
             $ret = [1, min(255, ord($c[1]) + 32)];
         }
         $c = array_pad($ret, 6, 0);
-        $cstr = pack('a1ccccc', $c[0], $c[1] & 0xff, $c[2] & 0xff, $c[3] & 0xff, $c[4] & 0xff, $c[5] & 0xff);
+        $cstr = pack('a1ccccc', $c[0], round($c[1]) & 0xff, round($c[2]) & 0xff, round($c[3]) & 0xff, round($c[4]) & 0xff, round($c[5]) & 0xff);
         return $cstr;
     }
     public function darken($c)
@@ -139,6 +139,10 @@ class ColorConverter
             // case of #nnnnnn or #nnn
             $c = $this->processHashColor($color);
         } elseif (preg_match('/(rgba|rgb|device-cmyka|cmyka|device-cmyk|cmyk|hsla|hsl|spot)\((.*?)\)/', $color, $m)) {
+            // ignore colors containing CSS variables
+            if (str_starts_with(mb_strtolower($m[2]), 'var(--')) {
+                $m[2] = '0, 0, 0, 100';
+            }
             $c = $this->processModeColor($m[1], explode(',', $m[2]));
         }
         if ($this->mpdf->PDFA || $this->mpdf->PDFX || $this->mpdf->restrictColorSpace) {
@@ -159,9 +163,9 @@ class ColorConverter
         if (strlen($cor) === 4) {
             $cor = '#' . $cor[1] . $cor[1] . $cor[2] . $cor[2] . $cor[3] . $cor[3];
         }
-        $r = hexdec(substr($cor, 1, 2));
-        $g = hexdec(substr($cor, 3, 2));
-        $b = hexdec(substr($cor, 5, 2));
+        $r = self::safeHexDec(substr($cor, 1, 2));
+        $g = self::safeHexDec(substr($cor, 3, 2));
+        $b = self::safeHexDec(substr($cor, 5, 2));
         return [3, $r, $g, $b];
     }
     /**
@@ -266,5 +270,15 @@ class ColorConverter
         if (!in_array($color[0], [static::MODE_GRAYSCALE, static::MODE_SPOT, static::MODE_RGB, static::MODE_CMYK, static::MODE_RGBA, static::MODE_CMYKA])) {
             throw new \WPDeskFIVendor\Mpdf\MpdfException('Invalid color input, invalid color mode in binary color string');
         }
+    }
+    /**
+     * Converts the given hexString to its decimal representation when all digits are hexadecimal
+     *
+     * @param string $hexString The hexadecimal string to convert
+     * @return float|int The decimal representation of hexString or 0 if not all digits of hexString are hexadecimal
+     */
+    private function safeHexDec($hexString)
+    {
+        return ctype_xdigit($hexString) ? hexdec($hexString) : 0;
     }
 }

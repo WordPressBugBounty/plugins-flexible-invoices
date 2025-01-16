@@ -61,7 +61,7 @@ class Tokenizer
     /**
      * Get next token.
      *
-     * @return bool|string
+     * @return false|string
      */
     public function getNextToken()
     {
@@ -99,7 +99,7 @@ class Tokenizer
         do {
             $lastBuffer = $this->streamReader->getBuffer(\false);
             $pos = \strcspn($lastBuffer, "\x00\t\n\f\r ()<>[]{}/%", $bufferOffset);
-        } while ($lastBuffer !== \false && ($bufferOffset + $pos === \strlen($lastBuffer) && $this->streamReader->increaseLength()));
+        } while ($bufferOffset + $pos === \strlen($lastBuffer) && $this->streamReader->increaseLength());
         $result = \substr($lastBuffer, $bufferOffset - 1, $pos + 1);
         $this->streamReader->setOffset($bufferOffset + $pos);
         return $result;

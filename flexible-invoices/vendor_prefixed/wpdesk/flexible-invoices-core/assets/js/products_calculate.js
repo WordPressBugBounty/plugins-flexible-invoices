@@ -9,14 +9,14 @@ jQuery.noConflict();
 		if( a === 0 || b === 0 ) {
 			return 0;
 		}
-		var log_10 = function ( c ) {
+		let log_10 = function ( c ) {
 				return Math.log( c ) / Math.log( 10 );
 			},
 			ten_e = function ( d ) {
 				return Math.pow( 10, d );
 			},
 			pow_10 = -Math.floor( Math.min( log_10( a ), log_10( b ) ) ) + 1;
-		var mul = ( ( a * ten_e( pow_10 ) ) * ( b * ten_e( pow_10 ) ) ) / ten_e( pow_10 * 2 );
+		let mul = ( ( a * ten_e( pow_10 ) ) * ( b * ten_e( pow_10 ) ) ) / ten_e( pow_10 * 2 );
 
 		if( isNaN( mul ) || ! isFinite( mul ) ) {
 			return 0;
@@ -46,7 +46,7 @@ jQuery.noConflict();
 			moneyMultiply(
 				parseFloatLocal( $( '.net_price', $productHandle ).val() ),
 				parseFloatLocal( $( '.quantity', $productHandle ).val() )
-			).toFixed( 2 )
+			).toFixed( 4 )
 		);
 		invoiceRefreshProductVatRate( $productHandle );
 	}
@@ -57,13 +57,13 @@ jQuery.noConflict();
 				parseFloatLocal( $( '.total_price', $productHandle ).val() ),
 				getVatRateFromField( $( '.vat_type', $productHandle ) ),
 				parseFloatLocal( $( '.quantity', $productHandle ).val() )
-			).toFixed( 2 )
+			).toFixed( 4 )
 		);
 		$( '.net_price', $productHandle ).trigger( 'change' );
 	}
 
 	function invoiceRefreshProductVatRate( $productHandle ) {
-		var vatType = getVatRateFromField( $( '.vat_type', $productHandle ) );
+		let vatType = getVatRateFromField( $( '.vat_type', $productHandle ) );
 		let discount = 0;
 
 		if( $( '.discount', $productHandle ).length > 0 ) {
@@ -87,63 +87,98 @@ jQuery.noConflict();
 	}
 
 	function invoiceRefreshProductTotal( $productHandle ) {
-		var total = parseFloatLocal( $( '.vat_sum', $productHandle ).val() ) + parseFloatLocal( $( '.net_price_sum', $productHandle ).val() );
+
+		let total = parseFloatLocal( $( '.vat_sum', $productHandle ).val() ) + parseFloatLocal( $( '.net_price_sum', $productHandle ).val() );
 		$( '.total_price', $productHandle ).val(
 			(
 				( isNaN( total ) ? 0 : total ).toFixed( 2 )
 			)
 		);
-		invoiceRefreshTotal();
+		invoiceRefreshTotal( $( '.vat_sum', $productHandle ).parents( 'table' ) );
 	}
 
-	function invoiceRefreshTotal() {
-		var price = 0.0;
-		$( '.product_row .total_price' ).each( function ( index, item ) {
-			var val = parseFloatLocal( $( item ).val() );
-			price += isNaN( val ) ? 0 : val;
-		} );
+	function invoiceRefreshTotal( $table ) {
+		let price = 0.0;
+		if( $table.hasClass( 'after-correction' ) ) {
+			price = calculate_correction_total( $table );
+
+		} else {
+			$( '.product_row .total_price' ).each( function ( index, item ) {
+				let val = parseFloatLocal( $( item ).val() );
+				price += isNaN( val ) ? 0 : val;
+			} );
+		}
+
 
 		$( '[name=total_price]' ).val( price.toFixed( 2 ) );
+	}
+
+	function calculate_correction_total() {
+		let  before_price = 0.0;
+		let  after_price = 0.0;
+		$( '#before-correction .product_row .total_price' ).each( function ( index, item ) {
+			let before_price_val = parseFloatLocal( $( item ).val() );
+			before_price += isNaN( before_price_val ) ? 0 : before_price_val;
+		} );
+
+		$( '#after-correction .product_row .total_price' ).each( function ( index, item ) {
+			let after_price_val = parseFloatLocal( $( item ).val() );
+
+			after_price += isNaN( after_price_val ) ? 0 : after_price_val;
+		} );
+
+		return -before_price + after_price;
 	}
 
 	$( 'body.post-type-inspire_invoice .products_metabox' )
 		.on( 'click', '.remove_product', function ( e ) {
 			e.preventDefault();
 
+			let table = $( this ).parents( 'table' );
+			if( table.hasClass( 'after-correction' ) ) {
+				let after_index = $( this ).parents( '.product_row' ).index();
+				$( 'table.before-correction tbody tr' ).eq( after_index ).remove();
+			}
 			$( this ).parents( '.product_row' ).remove();
-			invoiceRefreshTotal();
+			invoiceRefreshTotal( $( this ).parents( 'table' ) );
 		} )
 		.on( 'click', '.add_product', function ( e ) {
 			e.preventDefault();
 
-			var $container = $( '.products_container' );
 			let item_html = $( '#product_prototype' ).html();
-			$container.append( item_html );
+			$( '.products_container' ).append( item_html );
+		} )
+		.on( 'click', '.add_product_correction', function ( e ) {
+			e.preventDefault();
+			let product_before = $( '#product_before_prototype' ).html();
+			let product_after = $( '#product_after_prototype' ).html();
+			$( '.products_before_container' ).append( product_before );
+			$( '.products_after_container' ).append( product_after );
 		} )
 		.on( 'change', '.refresh_net_price_sum', function ( e ) {
-			var productHandle = $( this ).parents( '.product_row' );
+			let productHandle = $( this ).parents( '.product_row' );
 			invoiceRefreshProductNetPriceSum( productHandle );
 		} )
 		.on( 'change', '.refresh_product', function ( e ) {
-			var productHandle = $( this ).parents( '.product_row' );
-			var price = this.options[ this.selectedIndex ].dataset.price;
+			let productHandle = $( this ).parents( '.product_row' );
+			let price = this.options[ this.selectedIndex ].dataset.price;
 
 			productHandle[ 0 ].querySelector( "input[name='product[net_price][]" ).value = price;
 
 			invoiceRefreshProductNetPriceSum( productHandle );
 		} )
 		.on( 'change', '.refresh_vat_sum', function ( e ) {
-			var productHandle = $( this ).parents( '.product_row' );
+			let productHandle = $( this ).parents( '.product_row' );
 			invoiceRefreshProductNetPriceSum( productHandle );
 
 		} )
 		.on( 'change', '.refresh_total_price', function ( e ) {
-			var productHandle = $( this ).parents( '.product_row' );
+			let productHandle = $( this ).parents( '.product_row' );
 			$( '.total_price', productHandle ).trigger( 'change' );
 		} )
 		.on( 'change', '.refresh_total', function ( e ) {
-			invoiceRefreshTotal();
-			var productHandle = $( this ).parents( '.product_row' );
+			invoiceRefreshTotal( $( this ).parents( 'table' ) );
+			let productHandle = $( this ).parents( '.product_row' );
 			invoiceRefreshProductBruttoPriceSum( productHandle );
 		} );
 

@@ -49,17 +49,18 @@ if (!empty($client->get_postcode()) || !empty($client->get_city())) {
 		<?php 
     }
     ?>
-        <tr><td><?php 
-    echo \esc_html(Countries::get_country_label($client->get_country()));
-    ?></td></tr>
     <?php 
 }
 ?>
-    <?php 
-if (!empty($client->get_city())) {
+		<?php 
+if (!empty($client->get_country())) {
     ?>
-        <tr><td></td></tr>
-    <?php 
+			<tr>
+				<td><?php 
+    echo Countries::get_country_label($client->get_country());
+    ?></td>
+			</tr>
+		<?php 
 }
 ?>
     <?php 

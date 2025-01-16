@@ -6,11 +6,13 @@ use WPDeskFIVendor\Mpdf\Strict;
 use WPDeskFIVendor\Mpdf\Form;
 use WPDeskFIVendor\Mpdf\Mpdf;
 use WPDeskFIVendor\Mpdf\Pdf\Protection;
+use WPDeskFIVendor\Mpdf\PsrLogAwareTrait\PsrLogAwareTrait;
 use WPDeskFIVendor\Mpdf\Utils\PdfDate;
 use WPDeskFIVendor\Psr\Log\LoggerInterface;
 class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
 {
     use Strict;
+    use PsrLogAwareTrait;
     /**
      * @var \Mpdf\Mpdf
      */
@@ -27,10 +29,6 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
      * @var \Mpdf\Pdf\Protection
      */
     private $protection;
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    private $logger;
     public function __construct(Mpdf $mpdf, BaseWriter $writer, Form $form, Protection $protection, LoggerInterface $logger)
     {
         $this->mpdf = $mpdf;
@@ -43,7 +41,6 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     {
         $this->writer->object();
         $this->mpdf->MetadataRoot = $this->mpdf->n;
-        $Producer = 'mPDF' . ($this->mpdf->exposeVersion ? ' ' . Mpdf::VERSION : '');
         $z = date('O');
         // +0200
         $offset = substr($z, 0, 3) . ':' . substr($z, 3, 2);
@@ -55,7 +52,7 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         $m .= ' <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="3.1-701">' . "\n";
         $m .= '  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">' . "\n";
         $m .= '   <rdf:Description rdf:about="uuid:' . $uuid . '" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">' . "\n";
-        $m .= '    <pdf:Producer>' . $Producer . '</pdf:Producer>' . "\n";
+        $m .= '    <pdf:Producer>' . $this->getProducerString() . '</pdf:Producer>' . "\n";
         if (!empty($this->mpdf->keywords)) {
             $m .= '    <pdf:Keywords>' . $this->mpdf->keywords . '</pdf:Keywords>' . "\n";
         }
@@ -134,7 +131,7 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     }
     public function writeInfo()
     {
-        $this->writer->write('/Producer ' . $this->writer->utf16BigEndianTextString('mPDF' . ($this->mpdf->exposeVersion ? ' ' . $this->getVersionString() : '')));
+        $this->writer->write('/Producer ' . $this->writer->utf16BigEndianTextString($this->getProducerString()));
         if (!empty($this->mpdf->title)) {
             $this->writer->write('/Title ' . $this->writer->utf16BigEndianTextString($this->mpdf->title));
         }
@@ -290,6 +287,11 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     {
         $this->writer->write('/Type /Catalog');
         $this->writer->write('/Pages 1 0 R');
+        if (is_string($this->mpdf->currentLang)) {
+            $this->writer->write(sprintf('/Lang (%s)', $this->mpdf->currentLang));
+        } elseif (is_string($this->mpdf->default_lang)) {
+            $this->writer->write(sprintf('/Lang (%s)', $this->mpdf->default_lang));
+        }
         if ($this->mpdf->ZoomMode === 'fullpage') {
             $this->writer->write('/OpenAction [3 0 R /Fit]');
         } elseif ($this->mpdf->ZoomMode === 'fullwidth') {
@@ -676,10 +678,6 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             $this->writer->write('/ID [<' . $uniqid . '> <' . $uniqid . '>]');
         }
     }
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
     private function getVersionString()
     {
         $return = Mpdf::VERSION;
@@ -696,5 +694,9 @@ class MetadataWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             }
         }
         return $return;
+    }
+    private function getProducerString()
+    {
+        return 'mPDF' . ($this->mpdf->exposeVersion ? ' ' . $this->getVersionString() : '');
     }
 }

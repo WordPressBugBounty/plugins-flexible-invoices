@@ -28,9 +28,9 @@ class PostDocumentDataSource extends AbstractDataSource
      */
     private $post_meta_data;
     /**
-     * @param int      $post_id
+     * @param int $post_id
      * @param Settings $options_container
-     * @param string   $document_type
+     * @param string $document_type
      */
     public function __construct(int $post_id, Settings $options_container, string $document_type)
     {
@@ -117,13 +117,38 @@ class PostDocumentDataSource extends AbstractDataSource
             foreach ($this->products['name'] as $index => $name) {
                 $vat_type = explode('|', $this->products['vat_type'][$index]);
                 $qty = $this->products['quantity'][$index] ?? 1;
-                if (empty($qty)) {
+                if (empty($qty) && $this->get_document_type() !== 'correction') {
                     $qty = 1;
                 }
-                $products[] = ['name' => $name, 'sku' => $this->products['sku'][$index], 'unit' => $this->products['unit'][$index], 'quantity' => PriceFormatter::string_to_float($qty), 'net_price' => PriceFormatter::string_to_float($this->products['net_price'][$index]), 'discount' => $this->products['discount'][$index] ?? '', 'net_price_sum' => PriceFormatter::string_to_float($this->products['net_price_sum'][$index]), 'vat_type' => $vat_type[1] ?? '0', 'vat_type_index' => $vat_type[0] ?? '0', 'vat_type_name' => $vat_type[2] ?? '0', 'vat_rate' => PriceFormatter::string_to_float($this->products['vat_sum'][$index]) / PriceFormatter::string_to_float($qty), 'vat_sum' => PriceFormatter::string_to_float($this->products['vat_sum'][$index]), 'total_price' => PriceFormatter::string_to_float($this->products['total_price'][$index])];
+                $products[] = ['name' => $name, 'sku' => $this->products['sku'][$index], 'unit' => $this->products['unit'][$index], 'quantity' => $qty, 'net_price' => PriceFormatter::string_to_float($this->products['net_price'][$index]), 'discount' => $this->products['discount'][$index] ?? '', 'net_price_sum' => PriceFormatter::string_to_float($this->products['net_price_sum'][$index]), 'vat_type' => $vat_type[1] ?? '0', 'vat_type_index' => $vat_type[0] ?? '0', 'vat_type_name' => $vat_type[2] ?? '0', 'vat_rate' => $this->calculate_vat_rate($qty, $index), 'vat_sum' => PriceFormatter::string_to_float($this->products['vat_sum'][$index]), 'total_price' => PriceFormatter::string_to_float($this->products['total_price'][$index]), 'wc_item_type' => $this->products['wc_item_type'][$index] ?? '', 'wc_order_item_id' => $this->products['wc_order_item_id'][$index] ?? '', 'wc_product_id' => $this->products['wc_product_id'][$index] ?? '', 'wc_variation_id' => $this->products['wc_variation_id'][$index] ?? ''];
             }
         }
+        // Backward compatibility.
+        $correction_products = [];
+        if ($this->get_document_type() === 'correction' && !empty($products)) {
+            foreach ($products as $index2 => $product) {
+                if (isset($this->products['before_correction'][$index2])) {
+                    $product['before_correction'] = 1;
+                    $product['quantity'] = '-' . $product['quantity'];
+                    $product['net_price_sum'] = '-' . $product['net_price_sum'];
+                    $product['vat_rate'] = '-' . $product['vat_rate'];
+                    $product['vat_sum'] = '-' . $product['vat_sum'];
+                    $product['total_price'] = '-' . $product['total_price'];
+                    $correction_products[] = $product;
+                } else {
+                    $correction_products[] = $product;
+                }
+            }
+            return $correction_products;
+        }
         return $products;
+    }
+    private function calculate_vat_rate(int $product_quantity, int $index): float
+    {
+        if ($product_quantity > 0) {
+            return PriceFormatter::string_to_float($this->products['vat_sum'][$index]) / PriceFormatter::string_to_float($product_quantity);
+        }
+        return 0;
     }
     /**
      * @return string
@@ -247,5 +272,12 @@ class PostDocumentDataSource extends AbstractDataSource
     public function get_show_order_number(): int
     {
         return (int) $this->source->param('post.add_order_id')->get();
+    }
+    /**
+     * @return int
+     */
+    public function get_corrected_id(): int
+    {
+        return (int) $this->source->param('post.corrected_invoice')->get();
     }
 }

@@ -163,7 +163,7 @@ class SequentialOrderNumber implements Hookable
     {
         $namespace = $this->is_hpos_active() ? self::NEW_NAMESPACE : self::OLD_NAMESPACE;
         if (!get_option($namespace)) {
-            $orders = wc_get_orders(['numberposts' => '10', 'nopaging' => \true]);
+            $orders = wc_get_orders(['limit' => '10', 'paginate' => \false]);
             if (is_array($orders)) {
                 foreach ($orders as $order) {
                     if ($order->get_meta(self::META_NAME_ORDER_NUMBER) === '') {

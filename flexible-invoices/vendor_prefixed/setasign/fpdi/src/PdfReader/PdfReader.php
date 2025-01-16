@@ -96,7 +96,7 @@ class PdfReader
     /**
      * Get a page instance.
      *
-     * @param int $pageNumber
+     * @param int|numeric-string $pageNumber
      * @return Page
      * @throws PdfTypeException
      * @throws CrossReferenceException

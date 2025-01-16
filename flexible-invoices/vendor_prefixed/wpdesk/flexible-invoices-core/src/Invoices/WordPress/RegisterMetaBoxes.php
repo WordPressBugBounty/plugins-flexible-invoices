@@ -16,6 +16,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 use WPDeskFIVendor\WPDesk\View\Renderer\Renderer;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Invoice as InvoiceHelper;
 /**
  * Register custom meta boxes.
  *
@@ -82,6 +83,7 @@ class RegisterMetaBoxes implements Hookable
                 //phpcs:ignore
                 add_meta_box('debug', esc_html__('Debug', 'flexible-invoices'), [$this, 'debug_meta_box_callback'], RegisterPostType::POST_TYPE_NAME, 'normal', 'low', ['invoice' => $invoice]);
             }
+            do_action('fi/core/register/metabox', $invoice, $this->renderer, $this->settings);
         }
     }
     /**
@@ -130,10 +132,7 @@ class RegisterMetaBoxes implements Hookable
          * @var Document $invoice
          */
         $document = $args['args']['invoice'];
-        $template = 'products_metabox';
-        if ($document->get_type() === 'correction') {
-            $template = 'correction_products';
-        }
+        $template = $document->get_type() . '_products';
         $this->renderer->output_render('invoice_edit/' . $template, ['invoice' => $document, 'vat_types' => $this->strategy->get_taxes(), 'plugin' => $this, 'post' => $post, 'show_discount' => $this->settings->get('show_discount') === 'yes']);
     }
     /**

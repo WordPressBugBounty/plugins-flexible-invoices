@@ -4,7 +4,7 @@
 	var FlexibleInvoiceAdmin = {
 
 		editProductName: function () {
-			jQuery( '.products_container' ).on( 'click', '.edit_item_name', function () {
+			jQuery( '.products_container, .products_before_container, .products_after_container' ).on( 'click', '.edit_item_name', function () {
 				let is_input = $( this ).closest( 'td' ).find( '.item_input_name' );
 				let select_input = $( this ).closest( 'td' ).find( 'select' );
 				let select = $( this ).closest( 'td' ).find( '.product_select_name' );
@@ -123,10 +123,9 @@
 	}
 
 
-	jQuery( '#products' ).on( 'click', '.add_product', function ( e ) {
-		let lastelem = jQuery( '.products_container' ).find( '.refresh_product' ).last();
-		lastelem.next().remove();
-		FlexibleInvoiceAdmin.initProductsSelect2( lastelem );
+	jQuery( '#products' ).on( 'click', '.add_document_product', function ( e ) {
+		let last_elem = jQuery( '.products_metabox' ).find( '.refresh_product' );
+		FlexibleInvoiceAdmin.initProductsSelect2( last_elem );
 	} )
 
 	if( jQuery( '.products_metabox' ).length ) {

@@ -1316,6 +1316,9 @@ class Otl
                                 if (!($this->OTLdata[$ptr]['mask'] & $mask)) {
                                     continue;
                                 }
+                                if (!isset($this->OTLdata[$ptr + 1])) {
+                                    continue;
+                                }
                                 $nextGlyph = $this->OTLdata[$ptr + 1]['hex'];
                                 $nextGID = $this->OTLdata[$ptr + 1]['uni'];
                                 if (isset($this->GSLuCoverage[$lu][$c][$nextGID])) {
@@ -5624,7 +5627,7 @@ class Otl
         for ($nc = 0; $nc < $numchunks; $nc++) {
             $numchars = isset($cOTLdata[$nc]['char_data']) ? count($cOTLdata[$nc]['char_data']) : 0;
             for ($i = 0; $i < $numchars; ++$i) {
-                $carac = [];
+                $carac = ['level' => 0];
                 if (isset($cOTLdata[$nc]['GPOSinfo'][$i])) {
                     $carac['GPOSinfo'] = $cOTLdata[$nc]['GPOSinfo'][$i];
                 }
@@ -5645,7 +5648,7 @@ class Otl
                 $bidiData[] = $carac;
             }
         }
-        if ($maxlevel == 0) {
+        if ($maxlevel === 0) {
             return;
         }
         $numchars = count($bidiData);
@@ -5657,7 +5660,7 @@ class Otl
         //  The types of characters used here are the original types, not those modified by the previous phase cf N1 and N2*******
         //  Because a Paragraph Separator breaks lines, there will be at most one per line, at the end of that line.
         // Set the initial paragraph embedding level
-        if ($blockdir == 'rtl') {
+        if ($blockdir === 'rtl') {
             $pel = 1;
         } else {
             $pel = 0;
@@ -6141,11 +6144,11 @@ class Otl
         if ($available == '') {
             return '';
         }
-        $tags = preg_split('/-/', $ietf);
+        $tags = $ietf ? preg_split('/-/', $ietf) : [];
         $lang = '';
         $country = '';
         $script = '';
-        $lang = strtolower($tags[0]);
+        $lang = isset($tags[0]) ? strtolower($tags[0]) : '';
         if (isset($tags[1]) && $tags[1]) {
             if (strlen($tags[1]) == 2) {
                 $country = strtolower($tags[1]);

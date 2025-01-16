@@ -106,8 +106,7 @@ class Checkout implements Hookable
      */
     public function save_wpml_user_session_lang($order_id)
     {
-        $wpml_user_lang = isset($_POST['wpml_user_lang']) ? trim(sanitize_text_field(wp_unslash($_POST['wpml_user_lang']))) : 'en';
-        // phpcs:ignore
+        $wpml_user_lang = trim(sanitize_text_field(wp_unslash(apply_filters('wpml_current_language', 'en'))));
         if ($wpml_user_lang) {
             $order = \wc_get_order($order_id);
             $order->update_meta_data('wpml_user_lang', $wpml_user_lang);

@@ -14,8 +14,7 @@ class WooCommerce
      */
     public static function is_active(): bool
     {
-        global $woocommerce;
-        return $woocommerce instanceof \WooCommerce;
+        return defined('WC_VERSION');
     }
     /**
      * Gets an array of countries in the EU.

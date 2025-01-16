@@ -6,8 +6,8 @@ namespace WPDeskFIVendor;
  * @var array $params
  */
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\InvoicesIntegration;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce;
 $params = isset($params) ? $params : [];
-$is_woocommerce_active = \defined('WC_VERSION');
 /**
  * @var WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document $invoice
  */
@@ -84,7 +84,7 @@ if (!empty($items)) {
 					<td>
 						<div class="product_select_name" style="width: 90%; float: left;">
 							<?php 
-        if ($is_woocommerce_active) {
+        if (WooCommerce::is_active()) {
             ?>
 								<div class="select-product">
 									<select name="product[name][]" class="refresh_product wide-input">
@@ -106,7 +106,7 @@ if (!empty($items)) {
         ?>
 						</div>
 						<a style="float:right; margin-top: 5px; <?php 
-        echo $is_woocommerce_active ? '' : 'display:none;';
+        echo WooCommerce::is_active() ? '' : 'display:none;';
         ?>" href="#" class="edit_item_name" title="<?php 
         \esc_attr_e('Click to enter item name manually', 'flexible-invoices');
         ?>">
@@ -193,42 +193,18 @@ if (!empty($items)) {
 					</td>
 					<td>
 						<?php 
-        $vat_type_options = array();
-        ?>
-						<?php 
+        $vat_type_options = [];
         $selected_key = \false;
-        ?>
-						<?php 
-        /* tax with same name and rate? */
-        ?>
-						<?php 
+        /* Tax with same name and rate? */
         foreach ($vat_types as $vat_key => $vat_type) {
-            ?>
-							<?php 
             $vat_type_options[\implode('|', $vat_type)] = $vat_type['name'];
-            ?>
-							<?php 
             if (!$selected_key && $vat_type['name'] === $product['vat_type_name'] && \floatval($vat_type['rate']) == \floatval($product['vat_type'])) {
-                ?>
-								<?php 
                 $selected_key = \implode('|', $vat_type);
-                ?>
-							<?php 
             }
-            ?>
-						<?php 
         }
-        ?>
-						<?php 
         if (!$selected_key) {
-            ?>
-							<?php 
             $selected_key = '-1|' . $product['vat_type'] . '|' . $product['vat_type_name'];
-            ?>
-							<?php 
             $vat_type_options[$selected_key] = $product['vat_type_name'];
-            ?>
-						<?php 
         }
         ?>
 						<label>
@@ -304,7 +280,7 @@ if (!empty($items)) {
 		<td>
 			<div class="product_select_name" style="width: 90%; float: left;">
 				<?php 
-if ($is_woocommerce_active) {
+if (WooCommerce::is_active()) {
     ?>
 					<div class="select-product">
 						<label>
@@ -322,7 +298,7 @@ if ($is_woocommerce_active) {
 ?>
 			</div>
 			<a style="float:right; margin-top: 5px; <?php 
-echo $is_woocommerce_active ? '' : 'display:none;';
+echo WooCommerce::is_active() ? '' : 'display:none;';
 ?>" href="#" class="edit_item_name" title="<?php 
 \esc_html_e('Click to enter item name manually', 'flexible-invoices');
 ?>">

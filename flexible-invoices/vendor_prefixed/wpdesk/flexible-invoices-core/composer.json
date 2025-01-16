@@ -41,7 +41,7 @@
         "wpdesk\/wp-helpscout-beacon": "^1.2",
         "wpdesk\/wp-persistence": "^3",
         "wpdesk\/wc-order-abstract": "*",
-        "mpdf\/mpdf": "8.0.11",
+        "mpdf\/mpdf": "8.2.4",
         "ext-json": "*",
         "ext-zip": "*",
         "ext-mbstring": "*"
@@ -51,7 +51,7 @@
         "psr\/container": "^1",
         "10up\/wp_mock": "*",
         "mockery\/mockery": "*",
-        "phpunit\/phpunit": "<7",
+        "phpunit\/phpunit": "^9",
         "wp-cli\/wp-cli": "2.4.1",
         "wp-cli\/wp-cli-bundle": "2.4.0"
     },

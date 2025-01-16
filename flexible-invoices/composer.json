@@ -52,7 +52,7 @@
 		"phpunit/phpunit": "^9",
 		"psr/container": "^1",
 		"psr/log": "^1.1.4",
-		"wpdesk/flexible-invoices-core": "3.8.4",
+		"wpdesk/flexible-invoices-core": "3.8.12",
 		"wpdesk/ltv-dashboard-widget": "^1",
 		"wpdesk/wp-codeception": "^2",
 		"wpdesk/wp-logs": "^1.7",

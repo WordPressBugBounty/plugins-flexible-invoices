@@ -10,11 +10,11 @@ use WPDeskFIVendor\Mpdf\Css\TextVars;
 use WPDeskFIVendor\Mpdf\Log\Context as LogContext;
 use WPDeskFIVendor\Mpdf\Fonts\MetricsGenerator;
 use WPDeskFIVendor\Mpdf\Output\Destination;
+use WPDeskFIVendor\Mpdf\PsrLogAwareTrait\MpdfPsrLogAwareTrait;
 use WPDeskFIVendor\Mpdf\QrCode;
 use WPDeskFIVendor\Mpdf\Utils\Arrays;
 use WPDeskFIVendor\Mpdf\Utils\NumericString;
 use WPDeskFIVendor\Mpdf\Utils\UtfString;
-use WPDeskFIVendor\Psr\Log\LoggerInterface;
 use WPDeskFIVendor\Psr\Log\NullLogger;
 /**
  * mPDF, PHP library generating PDF files from UTF-8 encoded HTML
@@ -28,8 +28,10 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
 {
     use Strict;
     use FpdiTrait;
-    const VERSION = '8.0.11';
+    use MpdfPsrLogAwareTrait;
+    const VERSION = '8.2.4';
     const SCALE = 72 / 25.4;
+    const OBJECT_IDENTIFIER = "\xbb\xa4\xac";
     var $useFixedNormalLineHeight;
     // mPDF 6
     var $useFixedTextBaseline;
@@ -326,6 +328,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     var $pageTemplate;
     var $docTemplate;
     var $docTemplateContinue;
+    var $docTemplateContinue2pages;
     var $arabGlyphs;
     var $arabHex;
     var $persianGlyphs;
@@ -768,6 +771,9 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     var $outerblocktags;
     var $innerblocktags;
     public $exposeVersion;
+    private $preambleWritten = \false;
+    private $watermarkTextObject;
+    private $watermarkImageObject;
     /**
      * @var string
      */
@@ -854,9 +860,17 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
      */
     private $protection;
     /**
-     * @var \Mpdf\RemoteContentFetcher
+     * @var \Mpdf\Http\ClientInterface
      */
-    private $remoteContentFetcher;
+    private $httpClient;
+    /**
+     * @var \Mpdf\File\LocalContentLoaderInterface
+     */
+    private $localContentLoader;
+    /**
+     * @var \Mpdf\AssetFetcher
+     */
+    private $assetFetcher;
     /**
      * @var \Mpdf\Image\ImageProcessor
      */
@@ -869,10 +883,6 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
      * @var \Mpdf\Language\ScriptToLanguageInterface
      */
     private $scriptToLanguage;
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    private $logger;
     /**
      * @var \Mpdf\Writer\BaseWriter
      */
@@ -926,17 +936,24 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
      */
     private $services;
     /**
-     * @param mixed[] $config
+     * @var \Mpdf\Container\ContainerInterface
      */
-    public function __construct(array $config = [])
+    private $container;
+    /**
+     * @param mixed[] $config
+     * @param \Mpdf\Container\ContainerInterface|null $container Experimental container to override internal services
+     */
+    public function __construct(array $config = [], $container = null)
     {
         $this->_dochecks();
+        assert(!$container || $container instanceof \WPDeskFIVendor\Mpdf\Container\ContainerInterface);
         list($mode, $format, $default_font_size, $default_font, $mgl, $mgr, $mgt, $mgb, $mgh, $mgf, $orientation) = $this->initConstructorParams($config);
         $this->logger = new NullLogger();
         $originalConfig = $config;
         $config = $this->initConfig($originalConfig);
-        $serviceFactory = new ServiceFactory();
-        $services = $serviceFactory->getServices($this, $this->logger, $config, $this->restrictColorSpace, $this->languageToFont, $this->scriptToLanguage, $this->fontDescriptor, $this->bmp, $this->directWrite, $this->wmf);
+        $serviceFactory = new ServiceFactory($container);
+        $services = $serviceFactory->getServices($this, $this->logger, $config, $this->languageToFont, $this->scriptToLanguage, $this->fontDescriptor, $this->bmp, $this->directWrite, $this->wmf);
+        $this->container = $container;
         $this->services = [];
         foreach ($services as $key => $service) {
             $this->{$key} = $service;
@@ -1057,7 +1074,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         $this->tableLevel = 0;
         $this->tbctr = [];
         // counter for nested tables at each level
-        $this->page_box = [];
+        $this->page_box = new PageBox();
         $this->show_marks = '';
         // crop or cross marks
         $this->kwt = \false;
@@ -1335,21 +1352,12 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     {
         mb_internal_encoding($this->originalMbEnc);
         @mb_regex_encoding($this->originalMbRegexEnc);
-    }
-    /**
-     * @param \Psr\Log\LoggerInterface
-     *
-     * @return \Mpdf\Mpdf
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-        foreach ($this->services as $name) {
-            if ($this->{$name} && $this->{$name} instanceof \WPDeskFIVendor\Psr\Log\LoggerAwareInterface) {
-                $this->{$name}->setLogger($logger);
-            }
+        // this will free up the readers, based on code from Setasign's FpdiTrait::cleanUp()
+        foreach ($this->createdReaders as $id) {
+            $this->readers[$id]->getParser()->getStreamReader()->cleanUp();
+            unset($this->readers[$id]);
         }
-        return $this;
+        $this->createdReaders = [];
     }
     private function initConfig(array $config)
     {
@@ -1388,11 +1396,9 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 $format = 'A4';
             }
             // e.g. A4-L = A4 landscape, A4-P = A4 portrait
+            $orientation = $orientation ?: 'P';
             if (preg_match('/([0-9a-zA-Z]*)-([P,L])/i', $format, $m)) {
-                $format = $m[1];
-                $orientation = $m[2];
-            } elseif (empty($orientation)) {
-                $orientation = 'P';
+                list(, $format, $orientation) = $m;
             }
             $format = PageFormat::getSizeFromName($format);
             $this->fwPt = $format[0];
@@ -1408,11 +1414,11 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         $this->fh = $this->fhPt / Mpdf::SCALE;
         // Page orientation
         $orientation = strtolower($orientation);
-        if ($orientation === 'p' || $orientation == 'portrait') {
+        if ($orientation === 'p' || $orientation === 'portrait') {
             $orientation = 'P';
             $this->wPt = $this->fwPt;
             $this->hPt = $this->fhPt;
-        } elseif ($orientation === 'l' || $orientation == 'landscape') {
+        } elseif ($orientation === 'l' || $orientation === 'landscape') {
             $orientation = 'L';
             $this->wPt = $this->fhPt;
             $this->hPt = $this->fwPt;
@@ -1688,12 +1694,13 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     {
         // Begin document
         if ($this->state == 0) {
-            // Was is function _begindoc()
-            // Start document
             $this->state = 1;
-            $this->writer->write('%PDF-' . $this->pdf_version);
-            $this->writer->write('%' . chr(226) . chr(227) . chr(207) . chr(211));
-            // 4 chars > 128 to show binary file
+            if (\false === $this->preambleWritten) {
+                $this->writer->write('%PDF-' . $this->pdf_version);
+                $this->writer->write('%' . chr(226) . chr(227) . chr(207) . chr(211));
+                // 4 chars > 128 to show binary file
+                $this->preambleWritten = \true;
+            }
         }
     }
     function Close()
@@ -1713,7 +1720,6 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         if ($this->tablebuffer) {
             $this->printtablebuffer();
         }
-        // *TABLES*
         /* -- COLUMNS -- */
         if ($this->ColActive) {
             $this->SetColumns(0);
@@ -1742,7 +1748,6 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         if ($this->tableOfContents->TOCmark || count($this->tableOfContents->m_TOC)) {
             $this->tableOfContents->insertTOC();
         }
-        // *TOC*
         // Close page
         $this->_endpage();
         // Close document
@@ -2786,8 +2791,13 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             $pagecount = $this->setSourceFile($this->docTemplate);
             if ($this->page - $this->docTemplateStart > $pagecount) {
                 if ($this->docTemplateContinue) {
-                    $tplIdx = $this->importPage($pagecount);
-                    $this->useTemplate($tplIdx);
+                    if ($this->docTemplateContinue2pages && $pagecount >= 2 && 0 === $this->page % 2) {
+                        $tplIdx = $this->importPage($pagecount - 1);
+                        $this->useTemplate($tplIdx);
+                    } else {
+                        $tplIdx = $this->importPage($pagecount);
+                        $this->useTemplate($tplIdx);
+                    }
                 }
             } else {
                 $tplIdx = $this->importPage($this->page - $this->docTemplateStart);
@@ -4147,7 +4157,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         } else {
             $bottom = 0;
         }
-        if (!$this->tableLevel && ($this->y + $this->divheight > $this->PageBreakTrigger || $this->y + $h > $this->PageBreakTrigger || $this->y + $h * 2 + $bottom > $this->PageBreakTrigger && $this->blk[$this->blklvl]['page_break_after_avoid']) && !$this->InFooter && $this->AcceptPageBreak()) {
+        if (!$this->tableLevel && ($this->y + $this->divheight > $this->PageBreakTrigger || $this->y + $h > $this->PageBreakTrigger || $this->y + $h * 2 + $bottom > $this->PageBreakTrigger && (isset($this->blk[$this->blklvl]['page_break_after_avoid']) && $this->blk[$this->blklvl]['page_break_after_avoid'])) && !$this->InFooter && $this->AcceptPageBreak()) {
             // mPDF 5.7.2
             $x = $this->x;
             // Current X position
@@ -4717,23 +4727,9 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     }
     function applyGPOSpdf($txt, $aix, $x, $y, $OTLdata, $textvar = 0)
     {
-        // Generate PDF string
-        // ==============================
-        if (isset($this->CurrentFont['sip']) && $this->CurrentFont['sip'] || isset($this->CurrentFont['smp']) && $this->CurrentFont['smp']) {
-            $sipset = \true;
-        } else {
-            $sipset = \false;
-        }
-        if ($textvar & TextVars::FC_SMALLCAPS) {
-            $smcaps = \true;
-        } else {
-            $smcaps = \false;
-        }
-        if ($sipset) {
-            $fontid = $last_fontid = $original_fontid = $this->CurrentFont['subsetfontids'][0];
-        } else {
-            $fontid = $last_fontid = $original_fontid = $this->CurrentFont['i'];
-        }
+        $sipset = isset($this->CurrentFont['sip']) && $this->CurrentFont['sip'] || isset($this->CurrentFont['smp']) && $this->CurrentFont['smp'];
+        $smcaps = $textvar & TextVars::FC_SMALLCAPS;
+        $fontid = $sipset ? $last_fontid = $original_fontid = $this->CurrentFont['subsetfontids'][0] : $last_fontid = $original_fontid = $this->CurrentFont['i'];
         $SmallCapsON = \false;
         // state: uppercase/not
         $lastSmallCapsON = \false;
@@ -4748,14 +4744,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         $XshiftBefore = 0;
         $XshiftAfter = 0;
         $lastYPlacement = 0;
-        if ($sipset) {
-            // mPDF 6  DELETED ********
-            // 	$txt= preg_replace('/'.preg_quote($this->aliasNbPg,'/').'/', chr(7), $txt);	// ? Need to adjust OTL info
-            // 	$txt= preg_replace('/'.preg_quote($this->aliasNbPgGp,'/').'/', chr(8), $txt);	// ? Need to adjust OTL info
-            $tj = '<';
-        } else {
-            $tj = '(';
-        }
+        $tj = $sipset ? '<' : '(';
         for ($i = 0; $i < count($unicode); $i++) {
             $c = $unicode[$i];
             $tx = '';
@@ -4772,7 +4761,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 }
                 // XPlacement from GPOS
                 if (isset($GPOSinfo[$i]['XPlacement']) && $GPOSinfo[$i]['XPlacement']) {
-                    if (!isset($GPOSinfo[$i]['wDir']) || $GPOSinfo[$i]['wDir'] != 'RTL') {
+                    if (!isset($GPOSinfo[$i]['wDir']) || $GPOSinfo[$i]['wDir'] !== 'RTL') {
                         if (isset($GPOSinfo[$i]['BaseWidth'])) {
                             $GPOSinfo[$i]['XPlacement'] -= $GPOSinfo[$i]['BaseWidth'];
                         }
@@ -4791,18 +4780,19 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                     // word spacing
                     $XshiftAfter += $wordspacing;
                 }
-                if (substr($OTLdata['group'], $i + 1, 1) != 'M') {
+                if (substr($OTLdata['group'], $i + 1, 1) !== 'M') {
                     // Don't add inter-character spacing before Marks
                     $XshiftAfter += $charspacing;
                 }
                 // ...applyGPOSpdf...
                 // XAdvance from GPOS - Convert to PDF Text space (thousandths of a unit );
-                if ((isset($GPOSinfo[$i]['wDir']) && $GPOSinfo[$i]['wDir'] != 'RTL' || !isset($GPOSinfo[$i]['wDir'])) && isset($GPOSinfo[$i]['XAdvanceL']) && $GPOSinfo[$i]['XAdvanceL']) {
+                if ((isset($GPOSinfo[$i]['wDir']) && $GPOSinfo[$i]['wDir'] !== 'RTL' || !isset($GPOSinfo[$i]['wDir'])) && isset($GPOSinfo[$i]['XAdvanceL']) && $GPOSinfo[$i]['XAdvanceL']) {
                     $XshiftAfter += $GPOSinfo[$i]['XAdvanceL'] * 1000 / $this->CurrentFont['unitsPerEm'];
-                } elseif (isset($GPOSinfo[$i]['wDir']) && $GPOSinfo[$i]['wDir'] == 'RTL' && isset($GPOSinfo[$i]['XAdvanceR']) && $GPOSinfo[$i]['XAdvanceR']) {
+                } elseif (isset($GPOSinfo[$i]['wDir']) && $GPOSinfo[$i]['wDir'] === 'RTL' && isset($GPOSinfo[$i]['XAdvanceR']) && $GPOSinfo[$i]['XAdvanceR']) {
                     $XshiftAfter += $GPOSinfo[$i]['XAdvanceR'] * 1000 / $this->CurrentFont['unitsPerEm'];
                 }
             } else {
+                // Character & Word spacing - if NOT OTL
                 $XshiftAfter += $charspacing;
                 if ($c == 32) {
                     $XshiftAfter += $wordspacing;
@@ -4814,7 +4804,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                     $XshiftBefore += $this->CurrentFont['kerninfo'][$unicode[$i - 1]][$unicode[$i]];
                 }
             }
-            if ($YPlacement != $lastYPlacement) {
+            if ($YPlacement !== $lastYPlacement) {
                 $groupBreak = \true;
             }
             if ($XshiftBefore) {
@@ -4852,16 +4842,6 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             }
             // Prepare Text and Select Font ID
             if ($sipset) {
-                // mPDF 6  DELETED ********
-                // if ($c == 7 || $c == 8) {
-                // if ($original_fontid != $last_fontid) {
-                // 	$groupBreak = true;
-                // 	$fontid = $original_fontid;
-                // }
-                // if ($c == 7) { $tj .= $this->aliasNbPgHex; }
-                // else { $tj .= $this->aliasNbPgGpHex; }
-                // continue;
-                // }
                 for ($j = 0; $j < 99; $j++) {
                     $init = array_search($c, $this->CurrentFont['subsets'][$j]);
                     if ($init !== \false) {
@@ -4871,7 +4851,8 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                         }
                         $tx = sprintf("%02s", strtoupper(dechex($init)));
                         break;
-                    } elseif (count($this->CurrentFont['subsets'][$j]) < 255) {
+                    }
+                    if (count($this->CurrentFont['subsets'][$j]) < 255) {
                         $n = count($this->CurrentFont['subsets'][$j]);
                         $this->CurrentFont['subsets'][$j][$n] = $c;
                         if ($this->CurrentFont['subsetfontids'][$j] != $last_fontid) {
@@ -4880,7 +4861,8 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                         }
                         $tx = sprintf("%02s", strtoupper(dechex($n)));
                         break;
-                    } elseif (!isset($this->CurrentFont['subsets'][$j + 1])) {
+                    }
+                    if (!isset($this->CurrentFont['subsets'][$j + 1])) {
                         $this->CurrentFont['subsets'][$j + 1] = [0 => 0];
                         $this->CurrentFont['subsetfontids'][$j + 1] = count($this->fonts) + $this->extraFontSubsets + 1;
                         $this->extraFontSubsets++;
@@ -4889,7 +4871,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             } else {
                 $tx = UtfString::code2utf($c);
                 if ($this->usingCoreFont) {
-                    $tx = utf8_decode($tx);
+                    $tx = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $tx);
                 } else {
                     $tx = $this->writer->utf8ToUtf16BigEndian($tx, \false);
                 }
@@ -4897,11 +4879,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             }
             // If any settings require a new Text Group
             if ($groupBreak || $fontstretch != $last_fontstretch) {
-                if ($sipset) {
-                    $tj .= '>] TJ ';
-                } else {
-                    $tj .= ')] TJ ';
-                }
+                $tj .= $sipset ? '>] TJ ' : ')] TJ ';
                 if ($fontid != $last_fontid || $fontsize != $last_fontsize) {
                     $tj .= sprintf(' /F%d %.3F Tf ', $fontid, $fontsize);
                 }
@@ -4911,11 +4889,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 if ($YPlacement != $lastYPlacement) {
                     $tj .= sprintf('%.3F Ts ', $YPlacement);
                 }
-                if ($sipset) {
-                    $tj .= '[<';
-                } else {
-                    $tj .= '[(';
-                }
+                $tj .= $sipset ? '[<' : '[(';
             }
             // Output the code for the txt character
             $tj .= $tx;
@@ -4934,7 +4908,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 $tatw = $this->_getCharWidth($this->CurrentFont['cw'], 0x640);
                 // Get YPlacement from next Base character
                 $nextbase = $i + 1;
-                while ($OTLdata['group'][$nextbase] != 'C') {
+                while ($OTLdata['group'][$nextbase] !== 'C') {
                     $nextbase++;
                 }
                 if (isset($GPOSinfo[$nextbase]) && isset($GPOSinfo[$nextbase]['YPlacement']) && $GPOSinfo[$nextbase]['YPlacement']) {
@@ -4950,7 +4924,8 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                             }
                             $tx = sprintf("%02s", strtoupper(dechex($init)));
                             break;
-                        } elseif (count($this->CurrentFont['subsets'][$j]) < 255) {
+                        }
+                        if (count($this->CurrentFont['subsets'][$j]) < 255) {
                             $n = count($this->CurrentFont['subsets'][$j]);
                             $this->CurrentFont['subsets'][$j][$n] = $c;
                             if ($this->CurrentFont['subsetfontids'][$j] != $last_fontid) {
@@ -4958,7 +4933,8 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                             }
                             $tx = sprintf("%02s", strtoupper(dechex($n)));
                             break;
-                        } elseif (!isset($this->CurrentFont['subsets'][$j + 1])) {
+                        }
+                        if (!isset($this->CurrentFont['subsets'][$j + 1])) {
                             $this->CurrentFont['subsets'][$j + 1] = [0 => 0];
                             $this->CurrentFont['subsetfontids'][$j + 1] = count($this->fonts) + $this->extraFontSubsets + 1;
                             $this->extraFontSubsets++;
@@ -4972,7 +4948,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 if ($kashida > $tatw) {
                     // Insert multiple tatweel characters, repositioning the last one to give correct total length
                     $fontstretch = 100;
-                    $nt = intval($kashida / $tatw);
+                    $nt = (int) ($kashida / $tatw);
                     $nudgeback = ($nt + 1) * $tatw - $kashida;
                     $optx = str_repeat($tx, $nt);
                     if ($sipset) {
@@ -4987,11 +4963,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                     $fontstretch = $kashida / $tatw * 100;
                     $optx = $tx;
                 }
-                if ($sipset) {
-                    $tj .= '>] TJ ';
-                } else {
-                    $tj .= ')] TJ ';
-                }
+                $tj .= $sipset ? '>] TJ ' : ')] TJ ';
                 if ($fontid != $last_fontid || $fontsize != $last_fontsize) {
                     $tj .= sprintf(' /F%d %.3F Tf ', $fontid, $fontsize);
                 }
@@ -4999,11 +4971,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                     $tj .= sprintf('%d Tz ', $fontstretch);
                 }
                 $tj .= sprintf('%.3F Ts ', $YPlacement);
-                if ($sipset) {
-                    $tj .= '[<';
-                } else {
-                    $tj .= '[(';
-                }
+                $tj .= $sipset ? '[<' : '[(';
                 // Output the code for the txt character(s)
                 $tj .= $optx;
                 $last_fontid = $fontid;
@@ -5012,37 +4980,21 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             }
             $lastYPlacement = $YPlacement;
         }
-        // Finish up
-        if ($sipset) {
-            $tj .= '>';
-            if ($XshiftAfter) {
-                $tj .= sprintf('%d', -$XshiftAfter);
-            }
-            if ($last_fontid != $original_fontid) {
-                $tj .= '] TJ ';
-                $tj .= sprintf(' /F%d %.3F Tf ', $original_fontid, $fontsize);
-                $tj .= '[';
-            }
-            $tj = preg_replace('/([^\\\\])<>/', '\1 ', $tj);
-        } else {
-            $tj .= ')';
-            if ($XshiftAfter) {
-                $tj .= sprintf('%d', -$XshiftAfter);
-            }
-            if ($last_fontid != $original_fontid) {
-                $tj .= '] TJ ';
-                $tj .= sprintf(' /F%d %.3F Tf ', $original_fontid, $fontsize);
-                $tj .= '[';
-            }
-            $tj = preg_replace('/([^\\\\])\(\)/', '\1 ', $tj);
+        $tj .= $sipset ? '>' : ')';
+        if ($XshiftAfter) {
+            $tj .= sprintf('%d', -$XshiftAfter);
         }
-        $s = sprintf(' BT ' . $aix . ' 0 Tc 0 Tw [%s] TJ ET ', $x, $y, $tj);
-        // echo $s."\n\n"; // exit;
-        return $s;
+        if ($last_fontid != $original_fontid) {
+            $tj .= '] TJ ';
+            $tj .= sprintf(' /F%d %.3F Tf ', $original_fontid, $fontsize);
+            $tj .= '[';
+        }
+        $tj = $sipset ? preg_replace('/([^\\\\])<>/', '\1 ', $tj) : preg_replace('/([^\\\\])\(\)/', '\1 ', $tj);
+        return sprintf(' BT ' . $aix . ' 0 Tc 0 Tw [%s] TJ ET ', $x, $y, $tj);
     }
     function _kern($txt, $mode, $aix, $x, $y)
     {
-        if ($mode == 'MBTw') {
+        if ($mode === 'MBTw') {
             // Multibyte requiring word spacing
             $space = ' ';
             // Convert string to UTF-16BE without BOM
@@ -5050,16 +5002,16 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             $space = $this->writer->escape($space);
             $s = sprintf(' BT ' . $aix, $x * Mpdf::SCALE, ($this->h - $y) * Mpdf::SCALE);
             $t = explode(' ', $txt);
-            for ($i = 0; $i < count($t); $i++) {
-                $tx = $t[$i];
+            foreach ($t as $i => $iValue) {
+                $tx = $iValue;
                 $tj = '(';
                 $unicode = $this->UTF8StringToArray($tx);
-                for ($ti = 0; $ti < count($unicode); $ti++) {
-                    if ($ti > 0 && isset($this->CurrentFont['kerninfo'][$unicode[$ti - 1]][$unicode[$ti]])) {
-                        $kern = -$this->CurrentFont['kerninfo'][$unicode[$ti - 1]][$unicode[$ti]];
+                foreach ($unicode as $ti => $tiValue) {
+                    if ($ti > 0 && isset($this->CurrentFont['kerninfo'][$unicode[$ti - 1]][$tiValue])) {
+                        $kern = -$this->CurrentFont['kerninfo'][$unicode[$ti - 1]][$tiValue];
                         $tj .= sprintf(')%d(', $kern);
                     }
-                    $tc = UtfString::code2utf($unicode[$ti]);
+                    $tc = UtfString::code2utf($tiValue);
                     $tc = $this->writer->utf8ToUtf16BigEndian($tc, \false);
                     $tj .= $this->writer->escape($tc);
                 }
@@ -5070,36 +5022,37 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 }
             }
             $s .= ' ET ';
-        } elseif (!$this->usingCoreFont) {
+            return $s;
+        }
+        if (!$this->usingCoreFont) {
             $s = '';
             $tj = '(';
             $unicode = $this->UTF8StringToArray($txt);
-            for ($i = 0; $i < count($unicode); $i++) {
-                if ($i > 0 && isset($this->CurrentFont['kerninfo'][$unicode[$i - 1]][$unicode[$i]])) {
-                    $kern = -$this->CurrentFont['kerninfo'][$unicode[$i - 1]][$unicode[$i]];
+            foreach ($unicode as $i => $iValue) {
+                if ($i > 0 && isset($this->CurrentFont['kerninfo'][$unicode[$i - 1]][$iValue])) {
+                    $kern = -$this->CurrentFont['kerninfo'][$unicode[$i - 1]][$iValue];
                     $tj .= sprintf(')%d(', $kern);
                 }
-                $tx = UtfString::code2utf($unicode[$i]);
+                $tx = UtfString::code2utf($iValue);
                 $tx = $this->writer->utf8ToUtf16BigEndian($tx, \false);
                 $tj .= $this->writer->escape($tx);
             }
             $tj .= ')';
             $s .= sprintf(' BT ' . $aix . ' [%s] TJ ET ', $x * Mpdf::SCALE, ($this->h - $y) * Mpdf::SCALE, $tj);
-        } else {
-            // CORE Font
-            $s = '';
-            $tj = '(';
-            $l = strlen($txt);
-            for ($i = 0; $i < $l; $i++) {
-                if ($i > 0 && isset($this->CurrentFont['kerninfo'][$txt[$i - 1]][$txt[$i]])) {
-                    $kern = -$this->CurrentFont['kerninfo'][$txt[$i - 1]][$txt[$i]];
-                    $tj .= sprintf(')%d(', $kern);
-                }
-                $tj .= $this->writer->escape($txt[$i]);
-            }
-            $tj .= ')';
-            $s .= sprintf(' BT ' . $aix . ' [%s] TJ ET ', $x * Mpdf::SCALE, ($this->h - $y) * Mpdf::SCALE, $tj);
+            return $s;
         }
+        $s = '';
+        $tj = '(';
+        $l = strlen($txt);
+        for ($i = 0; $i < $l; $i++) {
+            if ($i > 0 && isset($this->CurrentFont['kerninfo'][$txt[$i - 1]][$txt[$i]])) {
+                $kern = -$this->CurrentFont['kerninfo'][$txt[$i - 1]][$txt[$i]];
+                $tj .= sprintf(')%d(', $kern);
+            }
+            $tj .= $this->writer->escape($txt[$i]);
+        }
+        $tj .= ')';
+        $s .= sprintf(' BT ' . $aix . ' [%s] TJ ET ', $x * Mpdf::SCALE, ($this->h - $y) * Mpdf::SCALE, $tj);
         return $s;
     }
     function MultiCell($w, $h, $txt, $border = 0, $align = '', $fill = 0, $link = '', $directionality = 'ltr', $encoded = \false, $OTLdata = \false, $maxrows = \false)
@@ -5742,7 +5695,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             $lastfontreqstyle = null;
             $lastfontstyle = null;
         }
-        if ($blockdir == 'ltr' && strpos($lastfontreqstyle, "I") !== \false && strpos($lastfontstyle, "I") === \false) {
+        if ($blockdir == 'ltr' && $lastfontreqstyle && strpos($lastfontreqstyle, "I") !== \false && strpos($lastfontstyle, "I") === \false) {
             // Artificial italic
             $lastitalic = $this->FontSize * 0.15 * Mpdf::SCALE;
         } else {
@@ -6380,7 +6333,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                                 $translate_x = $this->sizeConverter->convert($vv[0], $maxsize_x, \false, \false);
                                 $tr2 .= $this->transformTranslate($translate_x, 0, \true) . ' ';
                             } elseif ($c == 'translatey' && count($vv)) {
-                                $translate_y = $this->sizeConverter->convert($vv[1], $maxsize_y, \false, \false);
+                                $translate_y = $this->sizeConverter->convert($vv[0], $maxsize_y, \false, \false);
                                 $tr2 .= $this->transformTranslate(0, $translate_y, \true) . ' ';
                             } elseif ($c == 'scale' && count($vv)) {
                                 $scale_x = $vv[0] * 100;
@@ -6394,7 +6347,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                                 $scale_x = $vv[0] * 100;
                                 $tr2 .= $this->transformScale($scale_x, 0, $cx, $cy, \true) . ' ';
                             } elseif ($c == 'scaley' && count($vv)) {
-                                $scale_y = $vv[1] * 100;
+                                $scale_y = $vv[0] * 100;
                                 $tr2 .= $this->transformScale(0, $scale_y, $cx, $cy, \true) . ' ';
                             } elseif ($c == 'skew' && count($vv)) {
                                 $angle_x = $this->ConvertAngle($vv[0], \false);
@@ -6538,7 +6491,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                     $out->output($qrcode, $this, $objattr['INNER-X'], $objattr['INNER-Y'], $objattr['bsize'] * 25, $bgColor, $color);
                     unset($qrcode);
                 } else {
-                    $this->WriteBarcode2($objattr['code'], $objattr['INNER-X'], $objattr['INNER-Y'], $objattr['bsize'], $objattr['bheight'], $bgcol, $col, $objattr['btype'], $objattr['pr_ratio'], $k);
+                    $this->WriteBarcode2($objattr['code'], $objattr['INNER-X'], $objattr['INNER-Y'], $objattr['bsize'], $objattr['bheight'], $bgcol, $col, $objattr['btype'], $objattr['pr_ratio'], $k, $objattr['quiet_zone_left'], $objattr['quiet_zone_right']);
                 }
             }
             // TEXT CIRCLE
@@ -6866,7 +6819,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         }
         // *TABLES*
         // OBJECTS - IMAGES & FORM Elements (NB has already skipped line/page if required - in printbuffer)
-        if (substr($s, 0, 3) == "\xbb\xa4\xac") {
+        if (substr($s, 0, 3) == Mpdf::OBJECT_IDENTIFIER) {
             // identifier has been identified!
             $objattr = $this->_getObjAttr($s);
             $h_corr = 0;
@@ -7217,8 +7170,13 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                         $contentB[count($content) - 1] = preg_replace('/R/', '', $contentB[count($content) - 1]);
                         // ???
                     }
-                    if ($type == 'hyphen') {
-                        $currContent .= '-';
+                    if ($type === 'hyphen') {
+                        $hyphen = in_array(mb_substr($currContent, -1), ['-', '–', '—'], \true);
+                        if (!$hyphen) {
+                            $currContent .= '-';
+                        } else {
+                            $savedPreContent[count($savedPreContent) - 1] = '-' . $savedPreContent[count($savedPreContent) - 1];
+                        }
                         if (!empty($cOTLdata[count($cOTLdata) - 1])) {
                             $cOTLdata[count($cOTLdata) - 1]['char_data'][] = ['bidi_class' => 9, 'uni' => 45];
                             $cOTLdata[count($cOTLdata) - 1]['group'] .= 'C';
@@ -7248,7 +7206,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 }
                 // Right Trim current content - including CJK space, and for OTLdata
                 // incl. CJK - strip CJK space at end of line &#x3000; = \xe3\x80\x80 = CJK space
-                $currContent = rtrim($currContent);
+                $currContent = $currContent ? rtrim($currContent) : '';
                 if ($this->checkCJK) {
                     $currContent = preg_replace("/　\$/", '', $currContent);
                 }
@@ -7821,13 +7779,13 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         // Automatic width and height calculation if needed
         if ($w == 0 and $h == 0) {
             /* -- IMAGES-WMF -- */
-            if ($info['type'] == 'wmf') {
+            if ($info['type'] === 'wmf') {
                 // WMF units are twips (1/20pt)
                 // divide by 20 to get points
                 // divide by k to get user units
                 $w = abs($info['w']) / (20 * Mpdf::SCALE);
                 $h = abs($info['h']) / (20 * Mpdf::SCALE);
-            } else if ($info['type'] == 'svg') {
+            } else if ($info['type'] === 'svg') {
                 // returned SVG units are pts
                 // divide by k to get user units (mm)
                 $w = abs($info['w']) / Mpdf::SCALE;
@@ -8029,11 +7987,11 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     /* -- HTML-CSS -- */
     function _getObjAttr($t)
     {
-        $c = explode("\xbb\xa4\xac", $t, 2);
-        $c = explode(",", $c[1], 2);
+        $c = explode(Mpdf::OBJECT_IDENTIFIER, $t, 2);
+        $c = explode(',', $c[1], 2);
         foreach ($c as $v) {
-            $v = explode("=", $v, 2);
-            $sp[$v[0]] = $v[1];
+            $v = explode('=', $v, 2);
+            $sp[$v[0]] = trim($v[1], Mpdf::OBJECT_IDENTIFIER);
         }
         return unserialize($sp['objattr']);
     }
@@ -8503,6 +8461,28 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         }
         $this->cache->clearOld();
     }
+    public function OutputBinaryData()
+    {
+        return $this->Output(null, Destination::STRING_RETURN);
+    }
+    public function OutputHttpInline()
+    {
+        return $this->Output(null, Destination::INLINE);
+    }
+    /**
+     * @param string $fileName
+     */
+    public function OutputHttpDownload($fileName)
+    {
+        return $this->Output($fileName, Destination::DOWNLOAD);
+    }
+    /**
+     * @param string $fileName
+     */
+    public function OutputFile($fileName)
+    {
+        return $this->Output($fileName, Destination::FILE);
+    }
     // *****************************************************************************
     //                                                                             *
     //                             Protected methods                               *
@@ -8523,6 +8503,13 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         }
         if (!function_exists('mb_substr')) {
             throw new \WPDeskFIVendor\Mpdf\MpdfException('mbstring extension must be loaded in order to run mPDF');
+        }
+        if (!function_exists('mb_regex_encoding')) {
+            $mamp = '';
+            if (strtoupper(substr(\PHP_OS, 0, 3)) === 'WIN') {
+                $mamp = ' If using MAMP, there is a bug in its PHP build causing this.';
+            }
+            throw new \WPDeskFIVendor\Mpdf\MpdfException('mbstring extension with mbregex support must be loaded in order to run mPDF.' . $mamp);
         }
     }
     function _puthtmlheaders()
@@ -8558,6 +8545,13 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 $this->margin_footer = $this->saveHTMLHeader[$n][$OE]['mf'];
                 $this->w = $this->saveHTMLHeader[$n][$OE]['pw'];
                 $this->h = $this->saveHTMLHeader[$n][$OE]['ph'];
+                if ($this->w > $this->h) {
+                    $this->hPt = $this->fwPt;
+                    $this->wPt = $this->fhPt;
+                } else {
+                    $this->hPt = $this->fhPt;
+                    $this->wPt = $this->fwPt;
+                }
                 $rotate = isset($this->saveHTMLHeader[$n][$OE]['rotate']) ? $this->saveHTMLHeader[$n][$OE]['rotate'] : null;
                 $this->Reset();
                 $this->pageoutput[$n] = [];
@@ -8623,6 +8617,13 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 $this->margin_footer = $this->saveHTMLFooter[$n][$OE]['mf'];
                 $this->w = $this->saveHTMLFooter[$n][$OE]['pw'];
                 $this->h = $this->saveHTMLFooter[$n][$OE]['ph'];
+                if ($this->w > $this->h) {
+                    $this->hPt = $this->fwPt;
+                    $this->wPt = $this->fhPt;
+                } else {
+                    $this->hPt = $this->fhPt;
+                    $this->wPt = $this->fwPt;
+                }
                 $rotate = isset($this->saveHTMLFooter[$n][$OE]['rotate']) ? $this->saveHTMLFooter[$n][$OE]['rotate'] : null;
                 $this->Reset();
                 $this->pageoutput[$n] = [];
@@ -8876,13 +8877,13 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         }
         /* -- CSS-PAGE -- */
         // Paged media (page-box)
-        if ($pagesel || isset($this->page_box['using']) && $this->page_box['using']) {
-            if ($pagesel || $this->page == 1) {
+        if ($pagesel || $this->page_box['using']) {
+            if ($pagesel || $this->page === 1) {
                 $first = \true;
             } else {
                 $first = \false;
             }
-            if ($this->mirrorMargins && $this->page % 2 == 0) {
+            if ($this->mirrorMargins && $this->page % 2 === 0) {
                 $oddEven = 'E';
             } else {
                 $oddEven = 'O';
@@ -8895,7 +8896,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 $psel = '';
             }
             list($orientation, $mgl, $mgr, $mgt, $mgb, $mgh, $mgf, $hname, $fname, $bg, $resetpagenum, $pagenumstyle, $suppress, $marks, $newformat) = $this->SetPagedMediaCSS($psel, $first, $oddEven);
-            if ($this->mirrorMargins && $this->page % 2 == 0) {
+            if ($this->mirrorMargins && $this->page % 2 === 0) {
                 if ($hname) {
                     $ehvalue = 1;
                     $ehname = $hname;
@@ -8965,14 +8966,14 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 $this->OrientationChanges[$this->page] = \true;
             }
         }
-        if ($orientation != $this->CurOrientation || $newformat) {
+        if ($orientation !== $this->CurOrientation || $newformat) {
             // Change orientation
-            if ($orientation == 'P') {
+            if ($orientation === 'P') {
                 $this->wPt = $this->fwPt;
                 $this->hPt = $this->fhPt;
                 $this->w = $this->fw;
                 $this->h = $this->fh;
-                if (($this->forcePortraitHeaders || $this->forcePortraitMargins) && $this->DefOrientation == 'P') {
+                if (($this->forcePortraitHeaders || $this->forcePortraitMargins) && $this->DefOrientation === 'P') {
                     $this->tMargin = $this->orig_tMargin;
                     $this->bMargin = $this->orig_bMargin;
                     $this->DeflMargin = $this->orig_lMargin;
@@ -8987,7 +8988,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 $this->hPt = $this->fwPt;
                 $this->w = $this->fh;
                 $this->h = $this->fw;
-                if (($this->forcePortraitHeaders || $this->forcePortraitMargins) && $this->DefOrientation == 'P') {
+                if (($this->forcePortraitHeaders || $this->forcePortraitMargins) && $this->DefOrientation === 'P') {
                     $this->tMargin = $this->orig_lMargin;
                     $this->bMargin = $this->orig_rMargin;
                     $this->DeflMargin = $this->orig_bMargin;
@@ -9005,9 +9006,9 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         }
         $this->pageDim[$this->page]['w'] = $this->w;
         $this->pageDim[$this->page]['h'] = $this->h;
-        $this->pageDim[$this->page]['outer_width_LR'] = isset($this->page_box['outer_width_LR']) ? $this->page_box['outer_width_LR'] : 0;
-        $this->pageDim[$this->page]['outer_width_TB'] = isset($this->page_box['outer_width_TB']) ? $this->page_box['outer_width_TB'] : 0;
-        if (!isset($this->page_box['outer_width_LR']) && !isset($this->page_box['outer_width_TB'])) {
+        $this->pageDim[$this->page]['outer_width_LR'] = $this->page_box['outer_width_LR'] ?: 0;
+        $this->pageDim[$this->page]['outer_width_TB'] = $this->page_box['outer_width_TB'] ?: 0;
+        if (!$this->page_box['outer_width_LR'] && !$this->page_box['outer_width_TB']) {
             $this->pageDim[$this->page]['bleedMargin'] = 0;
         } elseif ($this->bleedMargin <= $this->page_box['outer_width_LR'] && $this->bleedMargin <= $this->page_box['outer_width_TB']) {
             $this->pageDim[$this->page]['bleedMargin'] = $this->bleedMargin;
@@ -9245,7 +9246,8 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         $this->OTLtags = $save_OTLtags;
         $this->magic_reverse_dir($texte, $this->directionality, $OTLdata);
         $this->SetAlpha($alpha);
-        $this->SetTColor($this->colorConverter->convert(0, $this->PDFAXwarnings));
+        $color = $this->watermarkTextObject ? $this->watermarkTextObject->getColor() : 0;
+        $this->SetTColor($this->colorConverter->convert($color, $this->PDFAXwarnings));
         $szfont = $fontsize;
         $loop = 0;
         $maxlen = min($this->w, $this->h);
@@ -10063,14 +10065,11 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         $this->basepath = str_replace("\\", "/", $this->basepath);
         // If on Windows
         $tr = parse_url($this->basepath);
-        if (isset($tr['host']) && $tr['host'] == $host) {
-            $this->basepathIsLocal = \true;
-        } else {
-            $this->basepathIsLocal = \false;
-        }
+        $this->basepathIsLocal = isset($tr['host']) && $tr['host'] == $host;
     }
     public function GetFullPath(&$path, $basepath = '')
     {
+        // @todo make return, remove reference
         // When parsing CSS need to pass temporary basepath - so links are relative to current stylesheet
         if (!$basepath) {
             $basepath = $this->basepath;
@@ -10079,14 +10078,14 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         $path = str_replace("\\", '/', $path);
         // If on Windows
         // mPDF 5.7.2
-        if (substr($path, 0, 2) === '//') {
+        if (strpos($path, '//') === 0) {
             $scheme = parse_url($basepath, \PHP_URL_SCHEME);
             $scheme = $scheme ?: 'http';
             $path = $scheme . ':' . $path;
         }
         $path = preg_replace('|^./|', '', $path);
         // Inadvertently corrects "./path/etc" and "//www.domain.com/etc"
-        if (substr($path, 0, 1) == '#') {
+        if (strpos($path, '#') === 0) {
             return;
         }
         // Skip schemes not supported by installed stream wrappers
@@ -10095,11 +10094,11 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         if (preg_match($pattern, $path)) {
             return;
         }
-        if (substr($path, 0, 3) == "../") {
+        if (strpos($path, '../') === 0) {
             // It is a relative link
-            $backtrackamount = substr_count($path, "../");
-            $maxbacktrack = substr_count($basepath, "/") - 3;
-            $filepath = str_replace("../", '', $path);
+            $backtrackamount = substr_count($path, '../');
+            $maxbacktrack = substr_count($basepath, '/') - 3;
+            $filepath = str_replace('../', '', $path);
             $path = $basepath;
             // If it is an invalid relative link, then make it go to directory root
             if ($backtrackamount > $maxbacktrack) {
@@ -10109,11 +10108,13 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             for ($i = 0; $i < $backtrackamount + 1; $i++) {
                 $path = substr($path, 0, strrpos($path, "/"));
             }
-            $path = $path . "/" . $filepath;
+            $path .= '/' . $filepath;
             // Make it an absolute path
-        } elseif ((strpos($path, ":/") === \false || strpos($path, ":/") > 10) && !is_file($path)) {
-            // It is a local link
-            if (substr($path, 0, 1) == "/") {
+            return;
+        }
+        if ((strpos($path, ":/") === \false || strpos($path, ":/") > 10) && !@is_file($path)) {
+            // It is a local link. Ignore potential file errors
+            if (strpos($path, '/') === 0) {
                 $tr = parse_url($basepath);
                 // mPDF 5.7.2
                 $root = '';
@@ -10124,9 +10125,9 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 $root .= isset($tr['port']) && $tr['port'] ? ':' . $tr['port'] : '';
                 // mPDF 5.7.3
                 $path = $root . $path;
-            } else {
-                $path = $basepath . $path;
+                return;
             }
+            $path = $basepath . $path;
         }
         // Do nothing if it is an Absolute Link
     }
@@ -11423,6 +11424,15 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     /* -- WATERMARK -- */
     function SetWatermarkText($txt = '', $alpha = -1)
     {
+        if ($txt instanceof \WPDeskFIVendor\Mpdf\WatermarkText) {
+            $this->watermarkTextObject = $txt;
+            $this->watermarkText = $txt->getText();
+            $this->watermarkTextAlpha = $txt->getAlpha();
+            $this->watermarkAngle = $txt->getAngle();
+            $this->watermark_font = $txt->getFont() === null ? $txt->getFont() : $this->watermark_font;
+            $this->watermark_size = $txt->getSize();
+            return;
+        }
         if ($alpha >= 0) {
             $this->watermarkTextAlpha = $alpha;
         }
@@ -11430,6 +11440,15 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     }
     function SetWatermarkImage($src, $alpha = -1, $size = 'D', $pos = 'F')
     {
+        if ($src instanceof \WPDeskFIVendor\Mpdf\WatermarkImage) {
+            $this->watermarkImage = $src->getPath();
+            $this->watermark_size = $src->getSize();
+            $this->watermark_pos = $src->getPosition();
+            $this->watermarkImageAlpha = $src->getAlpha();
+            $this->watermarkImgBehind = $src->isBehindContent();
+            $this->watermarkImgAlphaBlend = $src->getAlphaBlend();
+            return;
+        }
         if ($alpha >= 0) {
             $this->watermarkImageAlpha = $alpha;
         }
@@ -11539,7 +11558,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         }
         /* -- WATERMARK -- */
         if ($this->watermarkText && $this->showWatermarkText) {
-            $this->watermark($this->watermarkText, $this->watermarkAngle, 120, $this->watermarkTextAlpha);
+            $this->watermark($this->watermarkText, $this->watermarkAngle, is_int($this->watermark_size) ? $this->watermark_size : 120, $this->watermarkTextAlpha);
             // Watermark text
         }
         if ($this->watermarkImage && $this->showWatermarkImage) {
@@ -11915,7 +11934,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                         $objattr['text'] = $e;
                         $objattr['OTLdata'] = $this->OTLdata;
                         $this->OTLdata = [];
-                        $te = "\xbb\xa4\xactype=textarea,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
+                        $te = Mpdf::OBJECT_IDENTIFIER . "type=textarea,objattr=" . serialize($objattr) . Mpdf::OBJECT_IDENTIFIER;
                         if ($this->tdbegin) {
                             $this->_saveCellTextBuffer($te, $this->HREF);
                         } else {
@@ -11967,6 +11986,9 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                                     $s1 = 0;
                                 }
                                 if (!isset($this->table[$this->tableLevel][$this->tbctr[$this->tableLevel]]['decimal_align'][$this->col]['maxs0'])) {
+                                    if ($this->table[$this->tableLevel][$this->tbctr[$this->tableLevel]]['decimal_align'] === \false) {
+                                        $this->table[$this->tableLevel][$this->tbctr[$this->tableLevel]]['decimal_align'] = [];
+                                    }
                                     $this->table[$this->tableLevel][$this->tbctr[$this->tableLevel]]['decimal_align'][$this->col]['maxs0'] = $s0;
                                 } else {
                                     $this->table[$this->tableLevel][$this->tbctr[$this->tableLevel]]['decimal_align'][$this->col]['maxs0'] = max($s0, $this->table[$this->tableLevel][$this->tbctr[$this->tableLevel]]['decimal_align'][$this->col]['maxs0']);
@@ -12225,7 +12247,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                     $this->Reset();
                     $this->pageoutput[$this->page] = [];
                 }
-                $this->y = $this->blk[$this->blklvl]['float_endpos'] * 1000 % 1000000 / 1000;
+                $this->y = round($this->blk[$this->blklvl]['float_endpos'] * 1000) % 1000000 / 1000;
                 // mod changes operands to integers before processing
             }
             /* -- END CSS-FLOAT -- */
@@ -13583,7 +13605,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         }
         $this->ResetMargins();
         $this->pageoutput[$this->page] = [];
-        $this->y = $end * 1000 % 1000000 / 1000;
+        $this->y = round($end * 1000) % 1000000 / 1000;
         // mod changes operands to integers before processing
     }
     // Added mPDF 3.0 Float DIV
@@ -13714,7 +13736,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             $objattr['dir'] = isset($this->blk[$this->blklvl]['direction']) ? $this->blk[$this->blklvl]['direction'] : 'ltr';
             $objattr['listmarker'] = \true;
             $objattr['listmarkerposition'] = $listitemposition;
-            $e = "\xbb\xa4\xactype=image,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
+            $e = Mpdf::OBJECT_IDENTIFIER . "type=image,objattr=" . serialize($objattr) . Mpdf::OBJECT_IDENTIFIER;
             $this->_saveTextBuffer($e);
             if ($listitemposition == 'inside') {
                 $e = $spacer;
@@ -13742,7 +13764,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             $objattr['fontsize'] = $this->FontSize;
             $objattr['fontsizept'] = $this->FontSizePt;
             $objattr['fontstyle'] = $this->FontStyle;
-            $e = "\xbb\xa4\xactype=listmarker,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
+            $e = Mpdf::OBJECT_IDENTIFIER . "type=listmarker,objattr=" . serialize($objattr) . Mpdf::OBJECT_IDENTIFIER;
             $this->listitem = $this->_saveTextBuffer($e, '', '', \true);
             // true returns array
         } elseif (preg_match('/U\+([a-fA-F0-9]+)/i', $listitemtype, $m)) {
@@ -13778,7 +13800,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 $objattr['fontsize'] = $this->FontSize;
                 $objattr['fontsizept'] = $this->FontSizePt;
                 $objattr['fontstyle'] = $this->FontStyle;
-                $e = "\xbb\xa4\xactype=listmarker,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
+                $e = Mpdf::OBJECT_IDENTIFIER . "type=listmarker,objattr=" . serialize($objattr) . Mpdf::OBJECT_IDENTIFIER;
                 $this->listitem = $this->_saveTextBuffer($e, '', '', \true);
                 // true returns array
             }
@@ -13813,7 +13835,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 $objattr['fontsize'] = $this->FontSize;
                 $objattr['fontsizept'] = $this->FontSizePt;
                 $objattr['fontstyle'] = $this->FontStyle;
-                $e = "\xbb\xa4\xactype=listmarker,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
+                $e = Mpdf::OBJECT_IDENTIFIER . "type=listmarker,objattr=" . serialize($objattr) . Mpdf::OBJECT_IDENTIFIER;
                 $this->listitem = $this->_saveTextBuffer($e, '', '', \true);
                 // true returns array
             }
@@ -14192,7 +14214,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         // First make sure each element/chunk has the OTLdata for Bidi set.
         for ($i = 0; $i < $array_size; $i++) {
             if (empty($arrayaux[$i][18])) {
-                if (substr($arrayaux[$i][0], 0, 3) == "\xbb\xa4\xac") {
+                if (substr($arrayaux[$i][0], 0, 3) == Mpdf::OBJECT_IDENTIFIER) {
                     // object identifier has been identified!
                     $unicode = [0xfffc];
                     // Object replacement character
@@ -14218,7 +14240,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         }
         // Remove empty items // mPDF 6
         for ($i = $array_size - 1; $i > 0; $i--) {
-            if (empty($arrayaux[$i][0]) && (isset($arrayaux[$i][16]) && $arrayaux[$i][16] !== '0') && empty($arrayaux[$i][7])) {
+            if ('' === $arrayaux[$i][0] && (isset($arrayaux[$i][16]) && $arrayaux[$i][16] !== '0') && empty($arrayaux[$i][7])) {
                 unset($arrayaux[$i]);
             }
         }
@@ -14385,7 +14407,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             }
             // SPECIAL CONTENT - IMAGES & FORM OBJECTS
             // Print-out special content
-            if (substr($vetor[0], 0, 3) == "\xbb\xa4\xac") {
+            if (substr($vetor[0], 0, 3) == Mpdf::OBJECT_IDENTIFIER) {
                 // identifier has been identified!
                 $objattr = $this->_getObjAttr($vetor[0]);
                 /* -- TABLES -- */
@@ -16125,10 +16147,8 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         $this->currentfontfamily = '';
         $this->currentfontsize = '';
         $this->currentfontstyle = '';
-        /* -- TABLES -- */
         if ($this->tableLevel && isset($this->table[1][1]['cellLineHeight'])) {
             $this->SetLineHeight('', $this->table[1][1]['cellLineHeight']);
-            // *TABLES*
         } else if (isset($this->blk[$this->blklvl]['line_height']) && $this->blk[$this->blklvl]['line_height']) {
             $this->SetLineHeight('', $this->blk[$this->blklvl]['line_height']);
             // sets default line height
@@ -17137,7 +17157,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 $line = preg_replace('/{iteration ([a-zA-Z0-9_]+)}/', '\1', $line);
             }
             // IMAGES & FORM ELEMENTS
-            if (substr($line, 0, 3) == "\xbb\xa4\xac") {
+            if (substr($line, 0, 3) == Mpdf::OBJECT_IDENTIFIER) {
                 // inline object - FORM element or IMAGE!
                 $objattr = $this->_getObjAttr($line);
                 if ($objattr['type'] != 'hr' && isset($objattr['width']) && $objattr['width'] / $this->shrin_k > $maxwidth + 0.0001) {
@@ -18680,7 +18700,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         for ($i = $row + 1; $i < $table['nr']; $i++) {
             $cellsset = 0;
             for ($j = 0; $j < $table['nc']; $j++) {
-                if ($table['cells'][$i][$j]) {
+                if (!empty($table['cells'][$i][$j])) {
                     if (isset($table['cells'][$i][$j]['colspan'])) {
                         $cellsset += $table['cells'][$i][$j]['colspan'];
                     } else {
@@ -19645,10 +19665,10 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                     if (isset($cell['textbuffer'])) {
                         for ($n = 0; $n < count($cell['textbuffer']); $n++) {
                             $t = $cell['textbuffer'][$n][0];
-                            if (substr($t, 0, 19) == "\xbb\xa4\xactype=nestedtable") {
+                            if (substr($t, 0, 19) == Mpdf::OBJECT_IDENTIFIER . "type=nestedtable") {
                                 $objattr = $this->_getObjAttr($t);
                                 $objattr['col'] = $col;
-                                $cell['textbuffer'][$n][0] = "\xbb\xa4\xactype=nestedtable,objattr=" . serialize($objattr) . "\xbb\xa4\xac";
+                                $cell['textbuffer'][$n][0] = Mpdf::OBJECT_IDENTIFIER . "type=nestedtable,objattr=" . serialize($objattr) . Mpdf::OBJECT_IDENTIFIER;
                                 $this->table[$this->tableLevel + 1][$objattr['nestedcontent']]['nestedpos'][1] = $col;
                             }
                         }
@@ -19920,7 +19940,13 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                     } else {
                         $extra = $table['max_cell_border_width']['B'] / 2;
                     }
-                    if ($j == $startcol && ($y + $maxrowheight + $extra > $pagetrigger + 0.001 || ($this->keepColumns || !$this->ColActive) && !empty($tablefooter) && $y + $maxrowheight + $tablefooterrowheight + $extra > $pagetrigger && ($this->tableLevel == 1 && $i < $numrows - $table['headernrows'])) && ($y0 > 0 || $x0 > 0) && !$this->InFooter && $this->autoPageBreak) {
+                    // lookahead for pagebreak
+                    $pagebreaklookahead = 1;
+                    while (isset($table['pagebreak-before']) && isset($table['pagebreak-before'][$i + $pagebreaklookahead]) && $table['pagebreak-before'][$i + $pagebreaklookahead] == 'avoid') {
+                        // pagebreak-after is mapped to pagebreak-before on i+1 in Tags/Tr.php
+                        $pagebreaklookahead++;
+                    }
+                    if ($j == $startcol && ($y + $pagebreaklookahead * $maxrowheight + $extra > $pagetrigger + 0.001 || ($this->keepColumns || !$this->ColActive) && !empty($tablefooter) && $y + $maxrowheight + $tablefooterrowheight + $extra > $pagetrigger && ($this->tableLevel == 1 && $i < $numrows - $table['headernrows'])) && ($y0 > 0 || $x0 > 0) && !$this->InFooter && $this->autoPageBreak) {
                         if (!$skippage) {
                             $finalSpread = \true;
                             $firstSpread = \true;
@@ -22159,7 +22185,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
                 $th = $sum_h * $i / $this->NbCol;
                 foreach ($breaks as $bk => $val) {
                     if ($val > $th) {
-                        if ($val - $th < $th - $breaks[$bk - 1]) {
+                        if (!$bk || $val - $th < $th - $breaks[$bk - 1]) {
                             $cbr[$i - 1] = $val;
                         } else {
                             $cbr[$i - 1] = $breaks[$bk - 1];
@@ -23482,7 +23508,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     function purify_utf8($html, $lo = \true)
     {
         if (!$this->is_utf8($html)) {
-            while (mb_convert_encoding(mb_convert_encoding($html, "UTF-32", "UTF-8"), "UTF-8", "UTF-32") != $html) {
+            while (mb_convert_encoding(mb_convert_encoding($html, "UTF-32", "UTF-8"), "UTF-8", "UTF-32") !== $html) {
                 $a = @iconv('UTF-8', 'UTF-8', $html);
                 $error = error_get_last();
                 if ($error && $error['message'] === 'iconv(): Detected an illegal character in input string') {
@@ -23890,13 +23916,13 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
     /**
      * POSTAL and OTHER barcodes
      */
-    function WriteBarcode2($code, $x = '', $y = '', $size = 1, $height = 1, $bgcol = \false, $col = \false, $btype = 'IMB', $print_ratio = '', $k = 1)
+    function WriteBarcode2($code, $x = '', $y = '', $size = 1, $height = 1, $bgcol = \false, $col = \false, $btype = 'IMB', $print_ratio = '', $k = 1, $quiet_zone_left = null, $quiet_zone_right = null)
     {
         if (empty($code)) {
             return;
         }
         $this->barcode = new Barcode();
-        $arrcode = $this->barcode->getBarcodeArray($code, $btype, $print_ratio);
+        $arrcode = $this->barcode->getBarcodeArray($code, $btype, $print_ratio, $quiet_zone_left, $quiet_zone_right);
         if (empty($x)) {
             $x = $this->x;
         }
@@ -24301,12 +24327,12 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
             throw new \WPDeskFIVendor\Mpdf\MpdfException(sprintf('mPDF will not process HTML with disabled pcre.backtrack_limit to prevent unexpected behaviours, please set a positive backtrack limit.', $limit));
         }
         if (strlen($html) > (int) $limit) {
-            throw new \WPDeskFIVendor\Mpdf\MpdfException(sprintf('The HTML code size is larger than pcre.backtrack_limit %d. You should use WriteHTML() with smaller string lengths.', $limit));
+            throw new \WPDeskFIVendor\Mpdf\MpdfException(sprintf('The HTML code size is larger than pcre.backtrack_limit %d. You should use WriteHTML() with smaller string lengths. Pass your HTML in smaller chunks.', $limit));
         }
         preg_match_all("/(<annotation.*?>)/si", $html, $m);
         if (count($m[1])) {
             for ($i = 0; $i < count($m[1]); $i++) {
-                $sub = preg_replace("/\n/si", "\xbb\xa4\xac", $m[1][$i]);
+                $sub = preg_replace("/\n/si", Mpdf::OBJECT_IDENTIFIER, $m[1][$i]);
                 $html = preg_replace('/' . preg_quote($m[1][$i], '/') . '/si', $sub, $html);
             }
         }
@@ -24427,9 +24453,14 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         $html = preg_replace('/<textarea([^>]*)><\/textarea>/si', '<textarea\1> </textarea>', $html);
         $html = preg_replace('/(<table[^>]*>)\s*(<caption)(.*?<\/caption>)(.*?<\/table>)/si', '\2 position="top"\3\1\4\2 position="bottom"\3', $html);
         // *TABLES*
-        $html = preg_replace('/<(h[1-6])([^>]*)(>(?:(?!h[1-6]).)*?<\/\1>\s*<table)/si', '<\1\2 keep-with-table="1"\3', $html);
-        // *TABLES*
-        $html = preg_replace("/\xbb\xa4\xac/", "\n", $html);
+        if ($this->use_kwt) {
+            $returnHtml = preg_replace('/<(h[1-6])([^>]*(?<!\/))(>[^>]*<\/\1>\s*<table)/si', '<\1\2 keep-with-table="1"\3', $html);
+            /* If no errors then save the return value */
+            if (preg_last_error() === \PREG_NO_ERROR) {
+                $html = $returnHtml;
+            }
+        }
+        $html = preg_replace('/' . Mpdf::OBJECT_IDENTIFIER . '/', "\n", $html);
         // Fixes <p>&#8377</p> which browser copes with even though it is wrong!
         $html = preg_replace("/(&#[x]{0,1}[0-9a-f]{1,5})</i", "\\1;<", $html);
         return $html;
@@ -24476,7 +24507,7 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         $xref_objid = $m[1];
         preg_match_all('/(\d{10}) (\d{5}) (f|n)/', $m[2], $x);
         for ($i = 0; $i < count($x[0]); $i++) {
-            $xref[] = [intval($x[1][$i]), $x[2][$i], $x[3][$i]];
+            $xref[] = [(int) $x[1][$i], $x[2][$i], $x[3][$i]];
         }
         $changes = [];
         preg_match("/<<\\s*\\/Type\\s*\\/Pages\\s*\\/Kids\\s*\\[(.*?)\\]\\s*\\/Count/s", $pdf, $m);
@@ -24620,10 +24651,15 @@ class Mpdf implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
         }
         $this->pageTemplate = $tplidx;
     }
-    function SetDocTemplate($file = '', $continue = 0)
+    function SetDocTemplate($file = '', $continue = 0, $continue2pages = 0)
     {
         $this->docTemplate = $file;
         $this->docTemplateContinue = $continue;
+        $this->docTemplateContinue2pages = $continue2pages;
+        if ($this->docTemplateContinue2pages) {
+            // Enable continue when continue2pages is set
+            $this->docTemplateContinue = $this->docTemplateContinue2pages;
+        }
     }
     /* -- END IMPORTS -- */
     // JAVASCRIPT

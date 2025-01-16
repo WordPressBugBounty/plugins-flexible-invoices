@@ -42,10 +42,6 @@ abstract class AbstractDocumentCreator implements Creator
      */
     protected $order_id;
     /**
-     * @var string
-     */
-    protected $source_type;
-    /**
      * @param DataSourceFactory $source_factory
      * @param string            $button_label
      * @param string            $name

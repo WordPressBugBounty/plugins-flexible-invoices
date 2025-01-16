@@ -448,11 +448,6 @@ body.post-type-inspire_invoice #major-publishing-actions .fi-download-email-link
 	width: 100px ! important;
 }
 
-
-
-
-
-
 #products .inside {
 	margin: 0 0 10px 0;
 	padding: 0 0;
@@ -495,7 +490,16 @@ button.add_product {
 	margin-bottom: 10px;
 	margin-left: 10px !important;
 }
+button.add_product_correction {
+	padding: 3px;
+	cursor: pointer;
+	border-radius: 0 !important;
+	margin-bottom: 10px;
+	margin-left: 10px !important;
+}
 
 #menu-posts-inspire_invoice ul.wp-submenu li:last-child a {
 	color: #00FFC2 !important;
 }
+
+

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9
+class ComposerStaticInit4fee39db08ea888d19adb9bacbe4cb4e
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -137,6 +137,7 @@ class ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9
         'WPDeskFIVendor\\Monolog\\SignalHandler' => __DIR__ . '/../..' . '/vendor_prefixed/monolog/monolog/src/Monolog/SignalHandler.php',
         'WPDeskFIVendor\\Monolog\\Test\\TestCase' => __DIR__ . '/../..' . '/vendor_prefixed/monolog/monolog/src/Monolog/Test/TestCase.php',
         'WPDeskFIVendor\\Monolog\\Utils' => __DIR__ . '/../..' . '/vendor_prefixed/monolog/monolog/src/Monolog/Utils.php',
+        'WPDeskFIVendor\\Mpdf\\AssetFetcher' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/AssetFetcher.php',
         'WPDeskFIVendor\\Mpdf\\Barcode' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Barcode.php',
         'WPDeskFIVendor\\Mpdf\\Barcode\\AbstractBarcode' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Barcode/AbstractBarcode.php',
         'WPDeskFIVendor\\Mpdf\\Barcode\\BarcodeException' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Barcode/BarcodeException.php',
@@ -161,6 +162,9 @@ class ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9
         'WPDeskFIVendor\\Mpdf\\Color\\NamedColors' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Color/NamedColors.php',
         'WPDeskFIVendor\\Mpdf\\Config\\ConfigVariables' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Config/ConfigVariables.php',
         'WPDeskFIVendor\\Mpdf\\Config\\FontVariables' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Config/FontVariables.php',
+        'WPDeskFIVendor\\Mpdf\\Container\\ContainerInterface' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Container/ContainerInterface.php',
+        'WPDeskFIVendor\\Mpdf\\Container\\NotFoundException' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Container/NotFoundException.php',
+        'WPDeskFIVendor\\Mpdf\\Container\\SimpleContainer' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Container/SimpleContainer.php',
         'WPDeskFIVendor\\Mpdf\\Conversion\\DecToAlpha' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Conversion/DecToAlpha.php',
         'WPDeskFIVendor\\Mpdf\\Conversion\\DecToCjk' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Conversion/DecToCjk.php',
         'WPDeskFIVendor\\Mpdf\\Conversion\\DecToHebrew' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Conversion/DecToHebrew.php',
@@ -171,8 +175,11 @@ class ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9
         'WPDeskFIVendor\\Mpdf\\Css\\DefaultCss' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Css/DefaultCss.php',
         'WPDeskFIVendor\\Mpdf\\Css\\TextVars' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Css/TextVars.php',
         'WPDeskFIVendor\\Mpdf\\DirectWrite' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/DirectWrite.php',
+        'WPDeskFIVendor\\Mpdf\\Exception\\AssetFetchingException' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Exception/AssetFetchingException.php',
         'WPDeskFIVendor\\Mpdf\\Exception\\FontException' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Exception/FontException.php',
         'WPDeskFIVendor\\Mpdf\\Exception\\InvalidArgumentException' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Exception/InvalidArgumentException.php',
+        'WPDeskFIVendor\\Mpdf\\File\\LocalContentLoader' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/File/LocalContentLoader.php',
+        'WPDeskFIVendor\\Mpdf\\File\\LocalContentLoaderInterface' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/File/LocalContentLoaderInterface.php',
         'WPDeskFIVendor\\Mpdf\\File\\StreamWrapperChecker' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/File/StreamWrapperChecker.php',
         'WPDeskFIVendor\\Mpdf\\Fonts\\FontCache' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Fonts/FontCache.php',
         'WPDeskFIVendor\\Mpdf\\Fonts\\FontFileFinder' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Fonts/FontFileFinder.php',
@@ -188,6 +195,13 @@ class ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9
         'WPDeskFIVendor\\Mpdf\\Gif\\Lzw' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Gif/Lzw.php',
         'WPDeskFIVendor\\Mpdf\\Gradient' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Gradient.php',
         'WPDeskFIVendor\\Mpdf\\HTMLParserMode' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/HTMLParserMode.php',
+        'WPDeskFIVendor\\Mpdf\\Http\\ClientInterface' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Http/ClientInterface.php',
+        'WPDeskFIVendor\\Mpdf\\Http\\CurlHttpClient' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Http/CurlHttpClient.php',
+        'WPDeskFIVendor\\Mpdf\\Http\\Exception\\ClientException' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Http/Exception/ClientException.php',
+        'WPDeskFIVendor\\Mpdf\\Http\\Exception\\ForbiddenRequestException' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Http/Exception/ForbiddenRequestException.php',
+        'WPDeskFIVendor\\Mpdf\\Http\\Exception\\NetworkException' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Http/Exception/NetworkException.php',
+        'WPDeskFIVendor\\Mpdf\\Http\\Exception\\RequestException' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Http/Exception/RequestException.php',
+        'WPDeskFIVendor\\Mpdf\\Http\\SocketHttpClient' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Http/SocketHttpClient.php',
         'WPDeskFIVendor\\Mpdf\\Hyphenator' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Hyphenator.php',
         'WPDeskFIVendor\\Mpdf\\Image\\Bmp' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Image/Bmp.php',
         'WPDeskFIVendor\\Mpdf\\Image\\ImageProcessor' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Image/ImageProcessor.php',
@@ -205,10 +219,16 @@ class ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9
         'WPDeskFIVendor\\Mpdf\\Otl' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Otl.php',
         'WPDeskFIVendor\\Mpdf\\OtlDump' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/OtlDump.php',
         'WPDeskFIVendor\\Mpdf\\Output\\Destination' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Output/Destination.php',
+        'WPDeskFIVendor\\Mpdf\\PageBox' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/PageBox.php',
         'WPDeskFIVendor\\Mpdf\\PageFormat' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/PageFormat.php',
         'WPDeskFIVendor\\Mpdf\\Pdf\\Protection' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Pdf/Protection.php',
         'WPDeskFIVendor\\Mpdf\\Pdf\\Protection\\UniqidGenerator' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Pdf/Protection/UniqidGenerator.php',
-        'WPDeskFIVendor\\Mpdf\\RemoteContentFetcher' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/RemoteContentFetcher.php',
+        'WPDeskFIVendor\\Mpdf\\PsrHttpMessageShim\\Request' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/psr-http-message-shim/src/Request.php',
+        'WPDeskFIVendor\\Mpdf\\PsrHttpMessageShim\\Response' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/psr-http-message-shim/src/Response.php',
+        'WPDeskFIVendor\\Mpdf\\PsrHttpMessageShim\\Stream' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/psr-http-message-shim/src/Stream.php',
+        'WPDeskFIVendor\\Mpdf\\PsrHttpMessageShim\\Uri' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/psr-http-message-shim/src/Uri.php',
+        'WPDeskFIVendor\\Mpdf\\PsrLogAwareTrait\\MpdfPsrLogAwareTrait' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/psr-log-aware-trait/src/MpdfPsrLogAwareTrait.php',
+        'WPDeskFIVendor\\Mpdf\\PsrLogAwareTrait\\PsrLogAwareTrait' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/psr-log-aware-trait/src/PsrLogAwareTrait.php',
         'WPDeskFIVendor\\Mpdf\\ServiceFactory' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/ServiceFactory.php',
         'WPDeskFIVendor\\Mpdf\\Shaper\\Indic' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Shaper/Indic.php',
         'WPDeskFIVendor\\Mpdf\\Shaper\\Myanmar' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Shaper/Myanmar.php',
@@ -333,6 +353,9 @@ class ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9
         'WPDeskFIVendor\\Mpdf\\Utils\\NumericString' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Utils/NumericString.php',
         'WPDeskFIVendor\\Mpdf\\Utils\\PdfDate' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Utils/PdfDate.php',
         'WPDeskFIVendor\\Mpdf\\Utils\\UtfString' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Utils/UtfString.php',
+        'WPDeskFIVendor\\Mpdf\\Watermark' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Watermark.php',
+        'WPDeskFIVendor\\Mpdf\\WatermarkImage' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/WatermarkImage.php',
+        'WPDeskFIVendor\\Mpdf\\WatermarkText' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/WatermarkText.php',
         'WPDeskFIVendor\\Mpdf\\Writer\\BackgroundWriter' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Writer/BackgroundWriter.php',
         'WPDeskFIVendor\\Mpdf\\Writer\\BaseWriter' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Writer/BaseWriter.php',
         'WPDeskFIVendor\\Mpdf\\Writer\\BookmarkWriter' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Writer/BookmarkWriter.php',
@@ -397,6 +420,7 @@ class ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9
         'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\BaseCommand' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/BaseCommand.php',
         'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\Configuration' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/Configuration.php',
         'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\CreateCodeceptionTests' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/CreateCodeceptionTests.php',
+        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\Language' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/Language.php',
         'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\LocalCodeceptionTrait' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/LocalCodeceptionTrait.php',
         'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\PrepareCodeceptionDb' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/PrepareCodeceptionDb.php',
         'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\PrepareLocalCodeceptionTests' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/PrepareLocalCodeceptionTests.php',
@@ -611,6 +635,7 @@ class ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\Download\\DownloadMenuPage' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/Download/DownloadMenuPage.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\DuplicatesNotice' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/DuplicatesNotice.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\FindProducts' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/FindProducts.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\InvoiceQuery' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/InvoiceQuery.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\PDF' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/PDF.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\PostTypeCapabilities' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/PostTypeCapabilities.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\PostTypeColumns' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/PostTypeColumns.php',
@@ -866,9 +891,9 @@ class ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit4bf0298d73b625e6dc645e1e9ff461e9::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4fee39db08ea888d19adb9bacbe4cb4e::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4fee39db08ea888d19adb9bacbe4cb4e::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit4fee39db08ea888d19adb9bacbe4cb4e::$classMap;
 
         }, null, ClassLoader::class);
     }

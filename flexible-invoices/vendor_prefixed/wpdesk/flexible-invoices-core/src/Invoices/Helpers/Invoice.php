@@ -3,6 +3,7 @@
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers;
 
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document;
+use WP_Query;
 /**
  * Invoice helpers functions.
  *
@@ -36,11 +37,11 @@ class Invoice
         return admin_url('admin-ajax.php?action=fiw_get_document&id=' . $document->get_id() . '&hash=' . $hash . '&save_file=1');
     }
     /**
-     * @deprecated
      * @param int    $order_id
      * @param string $type
      *
      * @return string|null
+     * @deprecated
      */
     public static function get_document_url(int $order_id, string $type = 'invoice')
     {

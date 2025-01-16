@@ -58,7 +58,7 @@ class Currency
         $currencies_options = self::get_currencies_options();
         foreach ($currencies_options as $currency_slug => $currency_name) {
             $symbol = self::get_currency_symbol($currency_slug);
-            $options[$currency_slug] = ['left' => sprintf(esc_html__('Left (%s99.99)', 'flexible-invoices-woocommerce'), $symbol), 'right' => sprintf(esc_html__('Right (99.99%s)', 'flexible-invoices-woocommerce'), $symbol), 'left_space' => sprintf(esc_html__('Left with space (%s 99.99)', 'flexible-invoices-woocommerce'), $symbol), 'right_space' => sprintf(esc_html__('Right with space (99.99 %s)', 'flexible-invoices-woocommerce'), $symbol)];
+            $options[$currency_slug] = ['left' => sprintf(esc_html__('Left (%s99.99)', 'flexible-invoices'), $symbol), 'right' => sprintf(esc_html__('Right (99.99%s)', 'flexible-invoices'), $symbol), 'left_space' => sprintf(esc_html__('Left with space (%s 99.99)', 'flexible-invoices'), $symbol), 'right_space' => sprintf(esc_html__('Right with space (99.99 %s)', 'flexible-invoices'), $symbol)];
         }
         return $options[$country_slug] ?? $options[self::DEFAULT_SLUG];
     }

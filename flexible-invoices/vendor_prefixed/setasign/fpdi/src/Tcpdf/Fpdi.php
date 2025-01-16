@@ -43,7 +43,7 @@ class Fpdi extends \WPDeskFIVendor\TCPDF
      *
      * @string
      */
-    const VERSION = '2.6.1';
+    const VERSION = '2.6.2';
     /**
      * A counter for template ids.
      *

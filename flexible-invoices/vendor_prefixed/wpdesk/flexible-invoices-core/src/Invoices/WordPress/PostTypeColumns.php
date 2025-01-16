@@ -13,6 +13,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Invoice;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\EmailStatus;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\InvoicesIntegration;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Links;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
@@ -150,6 +151,8 @@ class PostTypeColumns implements Hookable
                 break;
             case 'fi_actions':
                 echo Links::download_email_links($document);
+                echo Links::create_invoice_link($document);
+                echo InvoicesIntegration::is_super() ? Links::create_correction_link($document) : '';
                 break;
             default:
                 echo esc_html(get_post_meta($post_id, '_invoice_' . $column_name, \true));
@@ -207,7 +210,7 @@ class PostTypeColumns implements Hookable
         $document = new DocumentDecorator($document, $this->strategy);
         if ($column_name === 'fi_actions') {
             if (!$document_id) {
-                echo Links::generate_link($order->get_id(), $document->get_type(), $creator->get_button_label());
+                echo Links::generate_link($order->get_id(), $document->get_type(), $creator->get_button_label(), $order->get_status() !== 'refunded');
             } else {
                 echo Links::download_email_links($document);
             }

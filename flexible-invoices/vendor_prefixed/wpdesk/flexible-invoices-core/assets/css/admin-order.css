@@ -17,6 +17,11 @@
 	padding: 0 !important;
 }
 
+.widefat .column-fi_actions a.create-correction {
+	border: 1px solid #B29700;
+	color: #B29700;
+}
+
 .widefat .column-fi_actions a.button::after {
 	font-family: Dashicons;
 	speak: never;
@@ -61,6 +66,13 @@
 	content: "\f316" !important;
 }
 
+.widefat .column-fi_actions a.create-correction::after {
+	content: "\f186" !important;
+}
+.widefat .column-fi_actions a.create-invoice::after {
+	content: "\f495" !important;
+}
+
 .widefat .column-fi_actions a.send_document::after {
 	content: "\f465" !important;
 }
@@ -76,11 +88,21 @@
 }
 
 .column-fi_actions {
-	width: 100px ! important;
+	width: 140px ! important;
 }
 
-.fi-download-email-links p {
+
+a.document-generated {
+	color: green !important;
+}
+
+.fi_actions .fi-download-email-links {
 	display: inline-block;
+}
+
+.fi_actions p {
+	display: inline-block;
+	margin: 2px 0 0 !important;
 }
 
 /**
@@ -103,4 +125,8 @@
 
 .order_notes .fi-note .note_content:after {
 	border-color: #eee7cc transparent;
+}
+
+.fi-download-email-links p {
+	display: inline-block;
 }

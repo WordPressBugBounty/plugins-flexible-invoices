@@ -64,12 +64,25 @@ class RegisterMetaBox implements Hookable
                 if (!$creator->is_allowed_for_create()) {
                     continue;
                 }
-                echo Links::generate_link($order->get_id(), $creator->get_type(), $creator->get_button_label());
+                echo Links::generate_link($order->get_id(), $creator->get_type(), $creator->get_button_label(), $order->get_status() !== 'refunded');
             } else {
-                $document = $this->document_factory->get_document_creator($document_id)->get_document();
-                echo Links::view_link($document, !$creator->is_allowed_for_edit());
-                echo Links::download_email_links($document);
+                $document_meta_ids = $this->get_unique_meta_ids($order->get_meta($meta_type, \false));
+                foreach ($document_meta_ids as $document_meta_id) {
+                    $creator->set_order_id($order->get_id());
+                    $document = $this->document_factory->get_document_creator($document_meta_id)->get_document();
+                    echo Links::view_link($document, !$creator->is_allowed_for_edit());
+                    echo Links::download_email_links($document);
+                }
             }
         }
+    }
+    public function get_unique_meta_ids($document_meta_ids): array
+    {
+        $ids = [];
+        foreach ($document_meta_ids as $document_meta_id) {
+            $document_id = $document_meta_id->get_data();
+            $ids[$document_id['value']] = $document_id['value'];
+        }
+        return $ids;
     }
 }

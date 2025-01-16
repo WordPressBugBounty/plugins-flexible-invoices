@@ -53,12 +53,18 @@ if (!empty($client->get_postcode()) || !empty($client->get_city())) {
 		</tr>
 		<tr>
 			<td><?php 
-    echo Countries::get_country_label($client->get_country());
+    echo Countries::get_country_state_label($client->get_state(), $client->get_country());
     ?></td>
 		</tr>
+	<?php 
+}
+?>
+	<?php 
+if (!empty($client->get_country())) {
+    ?>
 		<tr>
 			<td><?php 
-    echo Countries::get_country_state_label($client->get_state(), $client->get_country());
+    echo Countries::get_country_label($client->get_country());
     ?></td>
 		</tr>
 	<?php 

@@ -4,10 +4,12 @@ namespace WPDeskFIVendor\Mpdf\Writer;
 
 use WPDeskFIVendor\Mpdf\Strict;
 use WPDeskFIVendor\Mpdf\Mpdf;
+use WPDeskFIVendor\Mpdf\PsrLogAwareTrait\PsrLogAwareTrait;
 use WPDeskFIVendor\Psr\Log\LoggerInterface;
 final class ResourceWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterface
 {
     use Strict;
+    use PsrLogAwareTrait;
     /**
      * @var \Mpdf\Mpdf
      */
@@ -52,10 +54,6 @@ final class ResourceWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterfa
      * @var \Mpdf\Writer\JavaScriptWriter
      */
     private $javaScriptWriter;
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    private $logger;
     public function __construct(Mpdf $mpdf, BaseWriter $writer, ColorWriter $colorWriter, FontWriter $fontWriter, ImageWriter $imageWriter, FormWriter $formWriter, OptionalContentWriter $optionalContentWriter, BackgroundWriter $backgroundWriter, BookmarkWriter $bookmarkWriter, MetadataWriter $metadataWriter, JavaScriptWriter $javaScriptWriter, LoggerInterface $logger)
     {
         $this->mpdf = $mpdf;
@@ -191,14 +189,5 @@ final class ResourceWriter implements \WPDeskFIVendor\Psr\Log\LoggerAwareInterfa
             $this->writer->write('>>');
             $this->writer->write('endobj');
         }
-    }
-    /**
-     * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return void
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
     }
 }
