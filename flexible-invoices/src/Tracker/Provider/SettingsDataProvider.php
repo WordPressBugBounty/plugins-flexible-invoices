@@ -46,5 +46,4 @@ class SettingsDataProvider implements \WPDesk_Tracker_Data_Provider {
 
 		return [ 'flexible_invoices' => $plugin_data ];
 	}
-
 }

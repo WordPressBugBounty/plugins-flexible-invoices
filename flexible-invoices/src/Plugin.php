@@ -41,6 +41,7 @@ class Plugin extends AbstractPlugin implements LoggerAwareInterface, HookableCol
 	 * @var string
 	 */
 	private $plugin_text_domain;
+
 	/**
 	 * @var string
 	 */
@@ -85,30 +86,35 @@ class Plugin extends AbstractPlugin implements LoggerAwareInterface, HookableCol
 	 */
 	public function hooks() {
 		parent::hooks();
-		add_action('init', function () {
-			$integration = new InvoicesIntegration( $this->plugin_info, $this->logger );
-			$this->add_hookable( $integration );
-			$this->add_hookable( new SupportMenuPage( $this->plugin_url . '/assets/' ) );
-			$this->add_hookable( new SupportLinks() );
+		add_action(
+			'init',
+			function () {
+				$integration = new InvoicesIntegration( $this->plugin_info, $this->logger );
+				$this->add_hookable( $integration );
+				$this->add_hookable( new SupportMenuPage( $this->plugin_url . '/assets/' ) );
+				$this->add_hookable( new SupportLinks() );
 
-			if ( WooCommerce::is_active() ) {
-				$this->add_hookable( new RegisterCheckoutBlock( $this->plugin_info, $integration->get_settings() ) );
-				( new Tracker\Tracker( $this->plugin_info->get_plugin_file_name() ) )->hooks();
-				( new Tracker\UsageDataTracker( $this->plugin_info->get_plugin_file_name() ) )->hooks();
-				Translator::$text_domain = $this->plugin_text_domain;
-				Translator::init( $this->plugin_info );
+				if ( WooCommerce::is_active() ) {
+					$this->add_hookable( new RegisterCheckoutBlock( $this->plugin_info, $integration->get_settings() ) );
+					( new Tracker\Tracker( $this->plugin_info->get_plugin_file_name() ) )->hooks();
+					( new Tracker\UsageDataTracker( $this->plugin_info->get_plugin_file_name() ) )->hooks();
+					Translator::$text_domain = $this->plugin_text_domain;
+					Translator::init( $this->plugin_info );
+				}
+
+				$this->add_hookable( new AdvancedFiltersAddon() );
+				$this->add_hookable( new SendingSettingsAddon() );
+				$this->hooks_on_hookable_objects();
+			},
+			1
+		);
+
+		add_action(
+			'admin_init',
+			function () {
+				( new DashboardWidget() )->hooks();
 			}
-
-			$this->add_hookable( new AdvancedFiltersAddon() );
-			$this->add_hookable( new SendingSettingsAddon() );
-			$this->hooks_on_hookable_objects();
-
-		},1);
-
-		add_action( 'admin_init', function (){
-			(new DashboardWidget())->hooks();
-		});
-
+		);
 	}
 
 	/**
@@ -131,10 +137,10 @@ class Plugin extends AbstractPlugin implements LoggerAwareInterface, HookableCol
 	 */
 	public function links_filter( $links ) {
 		unset( $links['0'] );
-		$is_pl   = 'pl_PL' === get_locale();
-		$pro_url = $is_pl ? 'https://www.wpdesk.pl/sklep/faktury-woocommerce/' : 'https://www.flexibleinvoices.com/';
+		$is_pl    = 'pl_PL' === get_locale();
+		$pro_url  = $is_pl ? 'https://www.wpdesk.pl/sklep/faktury-woocommerce/' : 'https://www.flexibleinvoices.com/';
 		$pro_url .= '?utm_source=wp-admin-plugins&utm_medium=quick-link&utm_campaign=flexible-invoices-plugins-upgrade-link';
-		$upgrade = '<a href="' . $pro_url . '" target="_blank" style="color:#900351;font-weight:bold;">' . esc_html__( 'Upgrade to PRO →', 'flexible-invoices' ) . '</a>';
+		$upgrade  = '<a href="' . $pro_url . '" target="_blank" style="color:#900351;font-weight:bold;">' . esc_html__( 'Upgrade to PRO →', 'flexible-invoices' ) . '</a>';
 		array_splice( $links, 1, 0, [ $upgrade ] );
 
 		$start_here_url = admin_url( 'edit.php?post_type=inspire_invoice&page=wpdesk-marketing' );
@@ -148,5 +154,4 @@ class Plugin extends AbstractPlugin implements LoggerAwareInterface, HookableCol
 
 		return array_merge( $plugin_links, $links );
 	}
-
 }

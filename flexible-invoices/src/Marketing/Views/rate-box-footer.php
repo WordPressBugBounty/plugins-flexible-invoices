@@ -14,16 +14,18 @@ if ( ! $rate_box ) {
 	<?php
 	$is_PL       = get_locale() === 'pl_PL' ? 'https://wpdesk.pl' : 'https://wpdesk.net';
 	$review_link = 'https://wpde.sk/fi-footer-review-link';
+	//phpcs:disable
 	echo $rate_box->render(
 		$review_link,
 		sprintf(
-			// translator: %1$s icon,  %2$s open url tag, %3$s close url tag.
+			// translators: %1$s icon,  %2$s open url tag, %3$s close url tag.
 			__( 'Created with %1$s by Sailors from %2$sWP Desk%3$s - if you like Flexible Invoices rate us &rarr;', 'flexible-invoices' ),
 			'<span class="love"><span class="dashicons dashicons-heart"></span></span>',
 			'<a target="_blank" href="' . $is_PL . '">',
 			'</a>'
 		)
 	);
+	//phpcs:enable
 	?>
 </script>
 <script>

@@ -147,11 +147,9 @@ class RegisterCheckoutBlock implements Hookable {
 			'show_nip_field'  => $add_nip_field,
 			'description'     => '',
 			'vat_input_label' => $nip_label,
-			'is_required'        => $nip_required,
+			'is_required'     => $nip_required,
 			'should_validate' => $validate_nip,
 			'shop_country'    => $shop_country,
 		];
 	}
-
 }
-

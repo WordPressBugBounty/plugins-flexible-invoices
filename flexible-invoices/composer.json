@@ -16,8 +16,9 @@
 		},
 		"allow-plugins": {
 			"cweagans/composer-patches": true,
-			"kylekatarnls/update-helper": true,
 			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"kylekatarnls/update-helper": true,
+			"phpstan/extension-installer": true,
 			"wpdesk/wp-codeception": true,
 			"wpdesk/wp-wpdesk-composer": true
 		},
@@ -54,6 +55,7 @@
 		"psr/log": "^1.1.4",
 		"wpdesk/flexible-invoices-core": "3.8.12",
 		"wpdesk/ltv-dashboard-widget": "^1",
+		"wpdesk/phpstan-rules": "1.1.4",
 		"wpdesk/wp-codeception": "^2",
 		"wpdesk/wp-logs": "^1.7",
 		"wpdesk/wp-notice": "^3.1",
@@ -66,6 +68,8 @@
 	"scripts": {
 		"test": "echo composer is alive",
 		"phpcs": "phpcs",
+		"phpstan": "php -d memory_limit=1G vendor/bin/phpstan",
+		"phpcbf": "phpcbf src",
 		"phpunit-unit": "phpunit --configuration phpunit-unit.xml --coverage-text --colors=never",
 		"phpunit-unit-fast": "phpunit --configuration phpunit-unit.xml --no-coverage",
 		"phpunit-integration": "phpunit --configuration phpunit-integration.xml --coverage-text --colors=never",

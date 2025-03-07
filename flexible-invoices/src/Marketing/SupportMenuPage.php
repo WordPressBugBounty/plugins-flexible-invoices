@@ -14,7 +14,7 @@ use WPDeskFIVendor\WPDesk\View\Resolver\DirResolver;
 class SupportMenuPage implements Hookable {
 
 	const SCRIPTS_VERSION = 2;
-	const PLUGIN_SLUG = 'flexible-invoices';
+	const PLUGIN_SLUG     = 'flexible-invoices';
 
 	/**
 	 * @var string
@@ -32,8 +32,10 @@ class SupportMenuPage implements Hookable {
 	}
 
 	public function hooks() {
-		add_action( 'admin_menu', function () {
-			add_submenu_page(
+		add_action(
+			'admin_menu',
+			function () {
+				add_submenu_page(
 					RegisterPostType::POST_TYPE_MENU_URL,
 					esc_html__( 'Start Here', 'flexible-invoices' ),
 					esc_html__( 'Start Here', 'flexible-invoices' ),
@@ -41,8 +43,10 @@ class SupportMenuPage implements Hookable {
 					'wpdesk-marketing',
 					[ $this, 'render_page_action' ],
 					11
-			);
-		}, 999 );
+				);
+			},
+			999
+		);
 
 		add_action( 'admin_footer', [ $this, 'append_plugin_rate' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ] );
@@ -66,7 +70,7 @@ class SupportMenuPage implements Hookable {
 			$local = 'en';
 		}
 		$boxes = new MarketingBoxes( self::PLUGIN_SLUG, $local );
-		echo  $this->renderer->render( 'marketing-page', [ 'boxes' => $boxes ] );
+		echo $this->renderer->render( 'marketing-page', [ 'boxes' => $boxes ] ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -84,7 +88,7 @@ class SupportMenuPage implements Hookable {
 	public function append_plugin_rate() {
 		if ( $this->should_show_rate_notice() ) {
 			$rate_box = new RateBox();
-			echo $this->renderer->render( 'rate-box-footer', [ 'rate_box' => $rate_box ] );
+			echo $this->renderer->render( 'rate-box-footer', [ 'rate_box' => $rate_box ] ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 	}
 
@@ -92,10 +96,9 @@ class SupportMenuPage implements Hookable {
 	 * @param string $screen_id
 	 */
 	public function admin_enqueue_scripts( $screen_id ) {
-		if ( in_array( $screen_id, array( 'inspire_invoice_page_wpdesk-marketing' ), true ) ) {
-			wp_enqueue_style( 'marketing-page', $this->assets_url . 'css/marketing.css', array(), self::SCRIPTS_VERSION );
+		if ( in_array( $screen_id, [ 'inspire_invoice_page_wpdesk-marketing' ], true ) ) {
+			wp_enqueue_style( 'marketing-page', $this->assets_url . 'css/marketing.css', [], self::SCRIPTS_VERSION );
 			wp_enqueue_script( 'marketing-page', $this->assets_url . 'js/modal.js', [ 'jquery' ], self::SCRIPTS_VERSION, true );
 		}
 	}
-
 }

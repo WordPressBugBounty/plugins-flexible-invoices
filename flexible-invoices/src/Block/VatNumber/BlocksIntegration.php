@@ -8,9 +8,11 @@ use WPDeskFIVendor\WPDesk_Plugin_Info;
 class BlocksIntegration implements IntegrationInterface {
 
 	private const BLOCK_VERSION = '1.0.0';
+
 	private $plugin_info;
 
 	public const BLOCK_NAME = 'woocommerce-eu-vat-number';
+
 	/**
 	 * @var array
 	 */
@@ -122,7 +124,7 @@ class BlocksIntegration implements IntegrationInterface {
 		wp_set_script_translations(
 			$this->get_name() . '-scripts-frontend',
 			'flexible-invoices',
-			dirname( __FILE__, 4 ) . '/lang'
+			dirname( __DIR__, 3 ) . '/lang'
 		);
 	}
 
@@ -141,6 +143,4 @@ class BlocksIntegration implements IntegrationInterface {
 
 		return self::BLOCK_VERSION;
 	}
-
-
 }

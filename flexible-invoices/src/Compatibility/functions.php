@@ -17,7 +17,7 @@ if ( ! function_exists( 'wpdesk_is_plugin_active' ) ) {
 			}
 		}
 
-		return in_array( $plugin, (array) get_option( 'active_plugins', [] ) );
+		return in_array( $plugin, (array) get_option( 'active_plugins', [] ), true );
 	}
 
 }

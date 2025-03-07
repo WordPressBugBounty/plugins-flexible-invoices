@@ -17,6 +17,7 @@ class SupportLinks implements Hookable {
 	}
 
 	public function get_docs_link( $url ) {
+		// translators: 1: link, strong tag open, 2: url, strong close tag
 		return sprintf( esc_html__( 'Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-invoices' ), '<a href="' . $url . '" target="_blank" style="color: #4BB04E; font-weight: 700;"><strong>', '</strong></a>' );
 	}
 
@@ -31,7 +32,7 @@ class SupportLinks implements Hookable {
 			?>
 			<script>
 				( function ( $ ) {
-					$( '.wp-header-end' ).before( '<div class="support-url-wrapper"><?php echo $this->get_docs_link( $url ); ?></div>' );
+					$( '.wp-header-end' ).before( '<div class="support-url-wrapper"><?php echo $this->get_docs_link( $url ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>' );
 				} )( jQuery );
 			</script>
 			<?php
@@ -48,7 +49,7 @@ class SupportLinks implements Hookable {
 			?>
 			<script>
 				( function ( $ ) {
-					$( '.wp-header-end' ).before( '<div class="support-url-wrapper"><?php echo $this->get_docs_link( $url ); ?></div>' );
+					$( '.wp-header-end' ).before( '<div class="support-url-wrapper"><?php echo $this->get_docs_link( $url ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>' );
 				} )( jQuery );
 			</script>
 			<?php
@@ -65,11 +66,10 @@ class SupportLinks implements Hookable {
 			?>
 			<script>
 				( function ( $ ) {
-					$( '.wp-header-end' ).before( '<div class="support-url-wrapper"><?php echo $this->get_docs_link( $url ); ?></div>' );
+					$( '.wp-header-end' ).before( '<div class="support-url-wrapper"><?php echo $this->get_docs_link( $url ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>' );
 				} )( jQuery );
 			</script>
 			<?php
 		}
 	}
-
 }

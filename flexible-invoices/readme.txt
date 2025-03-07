@@ -5,7 +5,7 @@ Tags: invoice, eu vat, woocommerce pdf invoices, vat invoice, woocommerce invoic
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 5.7.11
+Stable tag: 5.7.14
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -300,6 +300,15 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 64. Send PDF invoices automatically for additional email recipients (PRO add-on).
 
 == Changelog ==
+
+= 5.7.14 - 2025-03-07 =
+* Added support for WooCommerce 9.8
+
+= 5.7.13 - 2025-02-07 =
+* Added support for WooCommerce 9.7
+
+= 5.7.12 - 2025-01-21 =
+* Added support for WooCommerce 9.6
 
 = 5.7.11 - 2025-01-15 =
 * Fixed support for WPML

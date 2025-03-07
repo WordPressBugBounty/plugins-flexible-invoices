@@ -77,6 +77,7 @@ class AdvancedFiltersAddon implements Hookable {
 		if ( current_user_can( 'edit_posts' ) ) {
 			$screen = get_current_screen();
 			if ( $screen->id === 'edit-inspire_invoice' ) {
+				//phpcs:disable
 				echo $this->renderer->render(
 					'advanced-filters-html',
 					[
@@ -90,6 +91,7 @@ class AdvancedFiltersAddon implements Hookable {
 						'payment_statuses' => [],
 					]
 				);
+				//phpcs:enable
 			}
 		}
 	}
@@ -118,6 +120,4 @@ class AdvancedFiltersAddon implements Hookable {
 			return true;
 		}
 	}
-
-
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace  WPDesk\FlexibleInvoices\Tracker;
+namespace WPDesk\FlexibleInvoices\Tracker;
 
 /**
  * Tracks data about usages.
@@ -8,6 +8,7 @@ namespace  WPDesk\FlexibleInvoices\Tracker;
  * @package WPDesk\ShopMagic\Tracker
  */
 class UsageDataTracker {
+
 	/** @var string */
 	private $plugin_file_name;
 
@@ -22,8 +23,11 @@ class UsageDataTracker {
 
 		$tracker->add_data_provider( new Provider\SettingsDataProvider() );
 
-		add_filter( 'wpdesk_tracker_enabled', function () {
-			return true;
-		} );
+		add_filter(
+			'wpdesk_tracker_enabled',
+			function () {
+				return true;
+			}
+		);
 	}
 }

@@ -39,9 +39,9 @@ $filter_vat_number      = 0;
 						</select>
 					</div>
 					<div class="field-row field-half">
-						<input name="filter_price_from" type="text" value="<?php echo $filter_price_from; ?>" placeholder="<?php esc_html_e( 'From', 'flexible-invoices' ); ?>" />
+						<input name="filter_price_from" type="text" value="<?php echo esc_html( $filter_price_from ); ?>" placeholder="<?php esc_html_e( 'From', 'flexible-invoices' ); ?>" />
 						&ndash;
-						<input name="filter_price_to" type="text" value="<?php echo $filter_price_to; ?>" placeholder="<?php esc_html_e( 'To', 'flexible-invoices' ); ?>" />
+						<input name="filter_price_to" type="text" value="<?php echo esc_html( $filter_price_to ); ?>" placeholder="<?php esc_html_e( 'To', 'flexible-invoices' ); ?>" />
 					</div>
 				</div>
 
@@ -53,9 +53,9 @@ $filter_vat_number      = 0;
 						</select>
 					</div>
 					<div class="field-row field-half">
-						<input name="filter_date_from" type="date" value="<?php echo $filter_date_from; ?>" placeholder="<?php esc_html_e( 'From', 'flexible-invoices' ); ?>" />
+						<input name="filter_date_from" type="date" value="<?php echo esc_html( $filter_date_from ); ?>" placeholder="<?php esc_html_e( 'From', 'flexible-invoices' ); ?>" />
 						&ndash;
-						<input name="filter_date_to" type="date" value="<?php echo $filter_date_to; ?>" placeholder="<?php esc_html_e( 'To', 'flexible-invoices' ); ?>" />
+						<input name="filter_date_to" type="date" value="<?php echo esc_html( $filter_date_to ); ?>" placeholder="<?php esc_html_e( 'To', 'flexible-invoices' ); ?>" />
 					</div>
 				</div>
 
@@ -82,7 +82,7 @@ $filter_vat_number      = 0;
 					</div>
 					<div class="field-row">
 						<select class="select2-multiple" name="filter_currency[]" data-allow-clear="true" data-placeholder="<?php esc_html_e( 'Currency', 'flexible-invoices' ); ?>">
-							<option value=""><?php echo get_option( 'woocommerce_currency', 'USD' ); ?></option>
+							<option value=""><?php echo esc_html( get_option( 'woocommerce_currency', 'USD' ) ); ?></option>
 						</select>
 					</div>
 				</div>
@@ -118,7 +118,7 @@ $filter_vat_number      = 0;
 					<?php
 					$bundle_link = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/faktury-woocommerce-zaawansowane-filtry/?utm_source=wp-admin-plugins&utm_medium=button&utm_campaign=flexible-invoices-advanced-filters' : 'https://flexibleinvoices.com/products/advanced-filters-for-flexible-invoices/?utm_source=wp-admin-plugins&utm_medium=button&utm_campaign=flexible-invoices-advanced-filters';
 					?>
-					<p><a style="background-color: #900351; border-color: #900351;" target="_blank" class="button button-primary" href="<?php echo $bundle_link; ?>"><?php esc_html_e( 'Buy Advanced Filters Add-on &rarr;', 'flexible-invoices' ); ?></a></p>
+					<p><a style="background-color: #900351; border-color: #900351;" target="_blank" class="button button-primary" href="<?php echo esc_url( $bundle_link ); ?>"><?php esc_html_e( 'Buy Advanced Filters Add-on &rarr;', 'flexible-invoices' ); ?></a></p>
 				</div>
 			</div>
 		</div>

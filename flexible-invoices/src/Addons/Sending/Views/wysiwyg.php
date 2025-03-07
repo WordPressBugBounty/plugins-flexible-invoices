@@ -9,13 +9,12 @@ namespace WPDeskFIVendor;
  */
 wp_print_styles( 'media-views' );
 
-$id              = 'wyswig_' . $field->get_name();
-$editor_settings = array(
-		'textarea_name' => esc_attr( $name_prefix ) . '[' . esc_attr( $field->get_name() ) . ']',
-		'teeny'         => true,
-		'textarea_rows' => 10,
-		'quicktags'     => false,
-		'media_buttons' => false,
-);
+$id              = 'wyswig_' . $field->get_name(); //phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+$editor_settings = [
+	'textarea_name' => esc_attr( $name_prefix ) . '[' . esc_attr( $field->get_name() ) . ']',
+	'teeny'         => true,
+	'textarea_rows' => 10,
+	'quicktags'     => false,
+	'media_buttons' => false,
+];
 \wp_editor( \wp_kses_post( $value ), $id, $editor_settings );
-?>

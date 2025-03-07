@@ -30,9 +30,10 @@ class SendingTab extends FieldSettingsTab {
 	private function get_doc_link(): string {
 		$pro_url = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/faktury-woocommerce-zaawansowana-wysylka/?utm_source=wp-admin-plugins&utm_medium=button&utm_campaign=flexible-invoices-adavanced-sending' : 'https://flexibleinvoices.com/products/advanced-sending-for-flexible-invoices/?utm_source=wp-admin-plugins&utm_medium=button&utm_campaign=flexible-invoices-advanced-sending';
 
+		// translators: 1: link label, 2: open url tag, 3: url close tag
 		$doc_link = sprintf( esc_html__( 'To automate emails with invoices to your accountant buy the %2$s%1$s%3$s', 'flexible-invoices' ), esc_html__( 'Advanced Sending add-on for Flexible Invoices &rarr;', 'flexible-invoices' ), '<a target="_blank" href="' . $pro_url . '" style="color: #8f0350; font-weight: 700;">', '</a>' );
 		$output   = sprintf( '%2$s%1$s%3$s', $doc_link, '<strong>', '</strong><br/>' );
-		$output   .= sprintf( '%2$s%1$s%3$s', esc_html__( 'The add-on requires Flexible Invoices PRO.', 'flexible-invoices' ), '<strong>', '</strong>' );
+		$output  .= sprintf( '%2$s%1$s%3$s', esc_html__( 'The add-on requires Flexible Invoices PRO.', 'flexible-invoices' ), '<strong>', '</strong>' );
 
 		return $output;
 	}
@@ -43,6 +44,7 @@ class SendingTab extends FieldSettingsTab {
 			$docs_url = 'https://wpde.sk/fi-sending-docs-pl';
 		}
 
+		// translators: 1: link, strong tag open, 2: url, strong close tag
 		return sprintf( esc_html__( 'Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-invoices' ), '<a href="' . $docs_url . '" target="_blank" style="color: #4BB04E; font-weight: 700;"><strong>', '</strong></a>' );
 	}
 
@@ -184,5 +186,4 @@ class SendingTab extends FieldSettingsTab {
 	public static function is_active() {
 		return true;
 	}
-
 }

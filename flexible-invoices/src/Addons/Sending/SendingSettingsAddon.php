@@ -42,7 +42,7 @@ class SendingSettingsAddon implements Hookable {
 			}
 		}
 
-		return in_array( $plugin, (array) get_option( 'active_plugins', array() ) );
+		return in_array( $plugin, (array) get_option( 'active_plugins', [] ), true );
 	}
 
 	/**
@@ -87,5 +87,4 @@ class SendingSettingsAddon implements Hookable {
 
 		return $args;
 	}
-
 }

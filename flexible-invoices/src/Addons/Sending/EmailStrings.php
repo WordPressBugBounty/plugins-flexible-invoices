@@ -52,5 +52,4 @@ class EmailStrings {
 		       esc_html__( 'Shop Support {site_title},', 'flexible-invoices' );
 		//phpcs:enable
 	}
-
 }

@@ -31,13 +31,6 @@ class PluginFactory extends AbstractPlugin implements HookableCollection {
 	protected $plugin_info;
 
 	/**
-	 * @param WPDesk_Plugin_Info $plugin_info Plugin data.
-	 */
-	public function __construct( $plugin_info ) {
-		parent::__construct( $plugin_info );
-	}
-
-	/**
 	 * Fires hooks.
 	 */
 	public function hooks() {
@@ -76,33 +69,39 @@ class PluginFactory extends AbstractPlugin implements HookableCollection {
 	 * Show disable notice for PRO.
 	 */
 	public function show_deactivation_notice() {
-		add_action( 'init', function () {
-			$action = 'deactivate';
-			$plugin = 'flexible-invoices/flexible-invoices.php';
-			$url    = sprintf( admin_url( 'plugins.php?action=' . $action . '&plugin=%s&plugin_status=all&paged=1&s' ), $plugin );
-			$url    = wp_nonce_url( $url, $action . '-plugin_' . $plugin );
-			new Notice(
-				sprintf(
-				// Translators: link.
-					__( '<strong>Flexible Invoices</strong> plugin can be removed now since the PRO version took over its functionalities.%1$s%2$sClick here%3$s to deactivate "Flexible Invoices" plugin.', 'flexible-invoices' ),
-					'<br/>',
-					'<a href="' . $url . '">',
-					'</a>'
-				)
-			);
-		} );
+		add_action(
+			'init',
+			function () {
+				$action = 'deactivate';
+				$plugin = 'flexible-invoices/flexible-invoices.php';
+				$url    = sprintf( admin_url( 'plugins.php?action=' . $action . '&plugin=%s&plugin_status=all&paged=1&s' ), $plugin );
+				$url    = wp_nonce_url( $url, $action . '-plugin_' . $plugin );
+				new Notice(
+					sprintf(
+					// Translators: link.
+						__( '<strong>Flexible Invoices</strong> plugin can be removed now since the PRO version took over its functionalities.%1$s%2$sClick here%3$s to deactivate "Flexible Invoices" plugin.', 'flexible-invoices' ),
+						'<br/>',
+						'<a href="' . $url . '">',
+						'</a>'
+					)
+				);
+			}
+		);
 	}
 
 	/**
 	 * Fire old plugin main class.
 	 */
 	private function show_outdated_pro_notice() {
-		add_action( 'init', function () {
-			new Notice(
-				__( 'The <strong>Flexible Invoices WooCommerce</strong> cannot be run with this version of <strong>Flexible Invoices</strong>. Please upgrade to the Pro version or remove the plugin.', 'flexible-invoices' ),
-				Notice::NOTICE_TYPE_ERROR
-			);
-		} );
+		add_action(
+			'init',
+			function () {
+				new Notice(
+					__( 'The <strong>Flexible Invoices WooCommerce</strong> cannot be run with this version of <strong>Flexible Invoices</strong>. Please upgrade to the Pro version or remove the plugin.', 'flexible-invoices' ),
+					Notice::NOTICE_TYPE_ERROR
+				);
+			}
+		);
 	}
 
 	/**
@@ -118,7 +117,7 @@ class PluginFactory extends AbstractPlugin implements HookableCollection {
 			}
 		}
 
-		return file_exists( $plugin_dir . $plugin ) && in_array( $plugin, (array) get_option( 'active_plugins', [] ) );
+		return file_exists( $plugin_dir . $plugin ) && in_array( $plugin, (array) get_option( 'active_plugins', [] ), true );
 	}
 
 	/**
