@@ -11,7 +11,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFacto
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\MetaPostContainer;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\LibraryInfo;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\AbstractSettingsStrategy;
 use WPDeskFIVendor\Mpdf\Mpdf;
 use WPDeskFIVendor\Mpdf\MpdfException;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Translator;
@@ -35,7 +35,7 @@ class GeneratePDF implements PdfPrinter, Hookable
      */
     private $document_factory;
     /**
-     * @var SettingsStrategy
+     * @var AbstractSettingsStrategy
      */
     private $strategy;
     /**
@@ -46,9 +46,9 @@ class GeneratePDF implements PdfPrinter, Hookable
      * @param LibraryInfo      $library_info
      * @param Renderer         $renderer
      * @param DocumentFactory  $document_factory
-     * @param SettingsStrategy $strategy
+     * @param AbstractSettingsStrategy $strategy
      */
-    public function __construct(LibraryInfo $library_info, Renderer $renderer, DocumentFactory $document_factory, SettingsStrategy $strategy)
+    public function __construct(LibraryInfo $library_info, Renderer $renderer, DocumentFactory $document_factory, AbstractSettingsStrategy $strategy)
     {
         $this->library_info = $library_info;
         $this->renderer = $renderer;
@@ -73,8 +73,8 @@ class GeneratePDF implements PdfPrinter, Hookable
          * Important. The key names must be lowercase.
          *
          * @param array     $font      Declaration of fonts used in the plugin.
-         * @param string    $font_data Default fonts data from mPDF.
-         * @param FontsData $font_data Class to create fonts data items.
+         * @param string    $default_font_data Default fonts data from mPDF.
+         * @param FontsData $fonts_data Class to create fonts data items.
          *
          * @return array
          *
@@ -171,7 +171,7 @@ class GeneratePDF implements PdfPrinter, Hookable
             $mpdf->SetDirectionality('rtl');
         }
         if ($this->settings->get('pdf_numbering') === 'yes') {
-            $mpdf->setFooter('{PAGENO}/{nbpg}');
+            $mpdf->SetFooter('{PAGENO}/{nbpg}');
         }
         $mpdf->img_dpi = 200;
         if (!is_a($document, TemplateDocumentDecorator::class)) {
@@ -252,6 +252,7 @@ class GeneratePDF implements PdfPrinter, Hookable
             $id = (int) $_GET['id'];
             //phpcs:ignore
         }
+        //@phpstan-ignore-next-line
         if (isset($_GET['hash']) && $_GET['hash'] === md5(\NONCE_SALT . $id) || current_user_can('manage_options') || current_user_can('manage_woocommerce')) {
             //phpcs:ignore
             $this->send_to_browser($id);
@@ -309,6 +310,7 @@ class GeneratePDF implements PdfPrinter, Hookable
             $type = 'invoice';
         }
         $template_suffix = $this->get_layout_name() ? '-' . $this->get_layout_name() : '';
+        //@phpstan-ignore-line
         return $type . '/' . $type . $template_suffix;
     }
 }

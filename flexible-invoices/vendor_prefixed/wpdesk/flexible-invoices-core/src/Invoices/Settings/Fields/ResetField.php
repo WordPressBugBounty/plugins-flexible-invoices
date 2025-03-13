@@ -13,6 +13,7 @@ class ResetField extends SubmitField
     /**
      * @return string
      */
+    //@phpstan-ignore-next-line
     public function get_type()
     {
         return 'button';

@@ -85,7 +85,7 @@ class DataType
     }
     public function get_as_json()
     {
-        $data = $this->has() ? $this->data : "";
+        $data = $this->has() ? $this->data : '';
         if ($this->is_object()) {
             $data = (array) $data;
         }
@@ -100,6 +100,7 @@ class DataType
     public function get_serialized(): string
     {
         return serialize($this->data);
+        // phpcs:ignore
     }
     public function get_sanitized($textarea = \false)
     {

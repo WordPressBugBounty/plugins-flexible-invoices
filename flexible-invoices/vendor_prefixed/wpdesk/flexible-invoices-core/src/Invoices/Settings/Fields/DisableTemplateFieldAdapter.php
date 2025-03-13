@@ -3,6 +3,7 @@
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields;
 
 use WPDeskFIVendor\WPDesk\Forms\Field;
+use WPDeskFIVendor\WPDesk\Forms\Field\BasicField;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Plugin;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\InvoicesIntegration;
 /**
@@ -25,9 +26,11 @@ class DisableTemplateFieldAdapter
      */
     private $show_link;
     /**
-     * @param Field $field
+     * @param string $name
+     * @param BasicField $field
+     * @param bool $show_pro_link
      */
-    public function __construct(string $name, Field $field, bool $show_pro_link = \false)
+    public function __construct(string $name, Field\BasicField $field, bool $show_pro_link = \false)
     {
         $this->name = $name;
         $this->show_link = $show_pro_link;

@@ -88,7 +88,7 @@ abstract class AbstractDocumentCreator implements Creator
         return $this->document;
     }
     /**
-     * @return false
+     * @return bool
      */
     public function is_allowed_for_create(): bool
     {
@@ -106,7 +106,7 @@ abstract class AbstractDocumentCreator implements Creator
      */
     abstract public function get_email_class();
     /**
-     * @return false
+     * @return bool
      */
     public function is_allowed_to_send(): bool
     {
@@ -136,13 +136,13 @@ abstract class AbstractDocumentCreator implements Creator
         return \true;
     }
     /**
-     * @param DocumentSetters $document
+     * @param Document $document
      * @param int             $post_id
      * @param string          $source_type
      *
      * @throws Exception
      */
-    protected function assign_data_from_source(DocumentSetters $document, int $post_id, string $source_type)
+    protected function assign_data_from_source(Document $document, int $post_id, string $source_type)
     {
         $data = $this->source_factory->get_source($post_id, $source_type, $this->get_type());
         $document->set_number($data->get_number());
@@ -163,7 +163,7 @@ abstract class AbstractDocumentCreator implements Creator
         $document->set_payment_method_name($data->get_payment_method_name());
         $document->set_payment_status($data->get_payment_status());
         $document->set_notes($data->get_notes());
-        $document->set_tax($data->get_tax());
+        $document->set_tax((string) $data->get_tax());
         $document->set_total_gross($data->get_total_gross());
         $document->set_total_net($data->get_total_net());
         $document->set_total_paid($data->get_total_paid());
@@ -196,6 +196,7 @@ abstract class AbstractDocumentCreator implements Creator
             return [$status];
         }
         if (is_array($status)) {
+            //@phpstan-ignore-line
             return $status;
         }
         return [];

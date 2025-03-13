@@ -33,7 +33,7 @@ class DocumentNumber
      */
     private $document_number;
     /**
-     * @var string
+     * @var int
      */
     private $issue_date;
     /**
@@ -139,7 +139,7 @@ class DocumentNumber
     public function increase_number()
     {
         $number = $this->document_number;
-        $number++;
+        ++$number;
         $this->update_number($number);
         $this->settings->set($this->type . '_start_number_timestamp', $this->current_time);
     }

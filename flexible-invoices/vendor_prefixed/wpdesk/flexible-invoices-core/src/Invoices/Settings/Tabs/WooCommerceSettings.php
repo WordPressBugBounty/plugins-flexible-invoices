@@ -30,7 +30,7 @@ final class WooCommerceSettings extends FieldSettingsTab
     private function set_sub_tab_forms()
     {
         /**
-         * @var WooCommerceFields\SubTabInterface[] $settings
+         * @var WooCommerceFields\SubTabInterface[] $woocommerce_tabs
          */
         $woocommerce_tabs = ['general' => new WooCommerceFields\GeneralSettingsFields(), 'checkout' => new WooCommerceFields\CheckoutSettingsFields(), 'moss' => new WooCommerceFields\MossSettingsFields()];
         /**

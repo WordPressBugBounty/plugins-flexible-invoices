@@ -39,7 +39,7 @@ final class DocumentsSettings extends FieldSettingsTab
     private function set_sub_tab_forms()
     {
         /**
-         * @var DocumentsFields\DocumentsFieldsInterface[] $settings
+         * @var DocumentsFields\DocumentsFieldsInterface[] $documents_settings
          */
         $documents_settings = ['invoice' => new DocumentsFields\InvoicesSettingsFields($this->strategy)];
         if (WooCommerce::is_active()) {

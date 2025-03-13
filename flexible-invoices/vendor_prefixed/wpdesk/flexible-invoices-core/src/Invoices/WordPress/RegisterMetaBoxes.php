@@ -13,6 +13,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\AbstractSettingsStrategy;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 use WPDeskFIVendor\WPDesk\View\Renderer\Renderer;
@@ -33,7 +34,7 @@ class RegisterMetaBoxes implements Hookable
      */
     private $document_factory;
     /**
-     * @var SettingsStrategy
+     * @var AbstractSettingsStrategy
      */
     private $strategy;
     /**
@@ -45,12 +46,12 @@ class RegisterMetaBoxes implements Hookable
      */
     private $settings;
     /**
-     * @param SettingsStrategy $strategy
+     * @param AbstractSettingsStrategy $strategy
      * @param DocumentFactory  $document_factory
      * @param Renderer         $renderer
      * @param Settings         $settings
      */
-    public function __construct(SettingsStrategy $strategy, DocumentFactory $document_factory, Renderer $renderer, Settings $settings)
+    public function __construct(AbstractSettingsStrategy $strategy, DocumentFactory $document_factory, Renderer $renderer, Settings $settings)
     {
         $this->document_factory = $document_factory;
         $this->strategy = $strategy;
@@ -95,6 +96,7 @@ class RegisterMetaBoxes implements Hookable
         $site_users = get_users(['role__in' => [self::ADMIN_ROLE, self::EDITOR_ROLE, self::SHOP_MANAGER_ROLE]]);
         foreach ($site_users as $user) {
             $users[$user->ID] = $user->display_name ?: $user->user_login;
+            // @phpstan-ignore-line
         }
         return Hooks::signature_user_filter($users, $site_users);
     }
@@ -116,7 +118,7 @@ class RegisterMetaBoxes implements Hookable
      */
     public function options_box_callback($post)
     {
-        if ($post && $post->post_type === RegisterPostType::POST_TYPE_NAME) {
+        if ($post instanceof \WP_Post && $post->post_type === RegisterPostType::POST_TYPE_NAME) {
             $creator = $this->document_factory->get_document_creator($post->ID);
             $document = new DocumentDecorator($creator->get_document(), $this->strategy);
             $this->renderer->output_render('invoice_edit/options_metabox', ['document' => $document]);
@@ -129,7 +131,7 @@ class RegisterMetaBoxes implements Hookable
     public function products_box_callback(WP_Post $post, array $args)
     {
         /**
-         * @var Document $invoice
+         * @var Document $document
          */
         $document = $args['args']['invoice'];
         $template = $document->get_type() . '_products';
@@ -179,6 +181,7 @@ class RegisterMetaBoxes implements Hookable
         print '<pre style="overflow:auto;">';
         $post_meta = get_post_meta($invoice->get_id());
         if (!empty($post_meta)) {
+            $arr = [];
             foreach ($post_meta as $meta_name => $meta_value) {
                 $value = $meta_value[0] ?? '';
                 if (\false !== stripos($meta_name, '_date_')) {

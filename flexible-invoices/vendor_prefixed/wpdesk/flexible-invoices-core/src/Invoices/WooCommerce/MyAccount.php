@@ -48,6 +48,7 @@ class MyAccount implements Hookable
                 $type = '_' . $creator->get_type();
                 $document_id = $order->get_meta($type . '_generated', \true);
                 if ($document_id) {
+                    //@phpstan-ignore-line
                     $creator = $this->document_factory->get_document_creator($document_id);
                     $document = $creator->get_document();
                     $hash = Helpers\Invoice::document_hash($document);

@@ -44,7 +44,7 @@ class RegisterMetaBox implements Hookable
         add_meta_box('flexible-invoices', esc_html__('Invoice', 'flexible-invoices'), [$this, 'order_meta_box_view'], $screens, 'side', 'core');
     }
     /**
-     * @param object $post
+     * @param object $post_or_order_object
      *
      * @return void
      * @internal You should not use this directly from another application
@@ -55,7 +55,9 @@ class RegisterMetaBox implements Hookable
         foreach ($this->document_factory->get_creators() as $creator) {
             $meta_type = '_' . $creator->get_type() . '_generated';
             $document_id = (int) $order->get_meta($meta_type);
+            //@phpstan-ignore-line
             $creator->set_order_id($order->get_id());
+            //@phpstan-ignore-line
             $should_skip = (bool) apply_filters('fi/core/order/generate/document/skip/' . $creator->get_type(), \false, $creator, $order);
             if ($should_skip) {
                 continue;
@@ -64,14 +66,20 @@ class RegisterMetaBox implements Hookable
                 if (!$creator->is_allowed_for_create()) {
                     continue;
                 }
+                //@phpstan-ignore-next-line
                 echo Links::generate_link($order->get_id(), $creator->get_type(), $creator->get_button_label(), $order->get_status() !== 'refunded');
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             } else {
                 $document_meta_ids = $this->get_unique_meta_ids($order->get_meta($meta_type, \false));
+                //@phpstan-ignore-line
                 foreach ($document_meta_ids as $document_meta_id) {
                     $creator->set_order_id($order->get_id());
+                    //@phpstan-ignore-line
                     $document = $this->document_factory->get_document_creator($document_meta_id)->get_document();
                     echo Links::view_link($document, !$creator->is_allowed_for_edit());
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     echo Links::download_email_links($document);
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 }
             }
         }

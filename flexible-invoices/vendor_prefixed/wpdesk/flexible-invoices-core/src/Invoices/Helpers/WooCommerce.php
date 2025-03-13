@@ -46,9 +46,15 @@ class WooCommerce
     {
         if ($convert_to_array) {
             $metas = $order->get_item($item_id)->get_meta_data();
-            $ret = array();
+            $ret = [];
             foreach ($metas as $meta) {
-                $ret[] = array('id' => $meta->id, 'meta_id' => $meta->id, 'meta_key' => $meta->key, 'meta_value' => $meta->value);
+                $ret[] = [
+                    'id' => $meta->id,
+                    'meta_id' => $meta->id,
+                    'meta_key' => $meta->key,
+                    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+                    'meta_value' => $meta->value,
+                ];
             }
             return $ret;
         } else {

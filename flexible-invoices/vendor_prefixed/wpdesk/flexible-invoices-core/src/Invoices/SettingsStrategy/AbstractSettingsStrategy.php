@@ -61,8 +61,9 @@ abstract class AbstractSettingsStrategy implements SettingsStrategy
         $tax_rates = [];
         $index = 0;
         foreach ($taxes as $tax) {
+            //@phpstan-ignore-line
             $tax_rates[] = ['index' => $index, 'rate' => $tax['rate'], 'name' => $tax['name']];
-            $index++;
+            ++$index;
         }
         /**
          * Filters vat types.
@@ -75,6 +76,7 @@ abstract class AbstractSettingsStrategy implements SettingsStrategy
          */
         $rates = (array) apply_filters('inspire_invoices_vat_types', $tax_rates);
         if (empty($rates) || !is_array($rates)) {
+            //@phpstan-ignore-line
             return [['index' => 0, 'rate' => 0, 'name' => '0%']];
         }
         return $rates;

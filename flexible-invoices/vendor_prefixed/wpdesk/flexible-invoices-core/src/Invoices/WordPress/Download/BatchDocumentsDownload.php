@@ -28,7 +28,6 @@ class BatchDocumentsDownload extends DateFromToMetaQuery implements Hookable
      */
     private $document_factory;
     /**
-     * @param SettingsStrategy $strategy
      * @param PDF              $pdf
      * @param DocumentFactory  $document_factory
      */

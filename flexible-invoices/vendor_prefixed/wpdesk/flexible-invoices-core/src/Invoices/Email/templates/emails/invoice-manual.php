@@ -4,6 +4,9 @@ namespace WPDeskFIVendor;
 
 /**
  * Email z fakturą
+ *
+ * @var string $email_heading
+ * @var string $email
  */
 if (!\defined('ABSPATH')) {
     exit;
@@ -17,7 +20,9 @@ if (!\defined('ABSPATH')) {
 
 <?php 
 if (isset($download_url) && isset($document_name)) {
-    \printf(\__('Download Invoice: <a href="%s"><b>%s</b></a>', 'flexible-invoices'), $download_url, $document_name);
+    // translators: %1$s - download url, %2$s - document name
+    \printf(\wp_kses_post(\__('Download Invoice: <a href="%s"><b>%s</b></a>', 'flexible-invoices')), \esc_url($download_url), \esc_html($document_name));
+    //phpcs:ignore WordPress.WP.I18n.UnorderedPlaceholdersText
     echo '<br/><br/>';
 }
 ?>

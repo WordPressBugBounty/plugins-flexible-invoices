@@ -27,7 +27,7 @@ class ValidateVatNumber
     /**
      * Return TRUE if supplied tax ID is valid for supplied country.
      *
-     * @param string $vat_number       Taxation ID, e.g. ATU99999999 for Austria.
+     * @param string $raw_vat_number       Taxation ID, e.g. ATU99999999 for Austria.
      * @param string $customer_country Country code, e.g. AT
      *
      * @return bool
@@ -69,7 +69,7 @@ class ValidateVatNumber
                 break;
             case 'BE':
                 // BELGIUM.
-                $is_valid = (bool) preg_match('/(BE)(0?\d{9})$/', $vat_number);
+                $is_valid = (bool) preg_match('/^(BE)(0\d{9}|1\d{9})$/', $vat_number);
                 break;
             case 'BG':
                 // BULGARIA.

@@ -10,10 +10,10 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Decorators\DocumentDecorator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Invoice;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\EmailStatus;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\InvoicesIntegration;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\AbstractSettingsStrategy;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Links;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
@@ -26,7 +26,7 @@ class PostTypeColumns implements Hookable
 {
     const ORDER_POST_TYPE = 'shop_order';
     /**
-     * @var SettingsStrategy
+     * @var AbstractSettingsStrategy
      */
     private $strategy;
     /**
@@ -34,10 +34,10 @@ class PostTypeColumns implements Hookable
      */
     private $document_factory;
     /**
-     * @param SettingsStrategy $strategy
+     * @param AbstractSettingsStrategy $strategy
      * @param DocumentFactory  $document_factory
      */
-    public function __construct(SettingsStrategy $strategy, DocumentFactory $document_factory)
+    public function __construct(AbstractSettingsStrategy $strategy, DocumentFactory $document_factory)
     {
         $this->strategy = $strategy;
         $this->document_factory = $document_factory;
@@ -103,19 +103,19 @@ class PostTypeColumns implements Hookable
                     $post->post_title = $document->get_formatted_number();
                 }
                 if (!$creator->is_allowed_for_edit()) {
-                    echo sprintf('<span class="%1$s"><strong>%2$s</strong></span>', esc_attr($class), esc_html($post->post_title));
+                    printf('<span class="%1$s"><strong>%2$s</strong></span>', esc_attr($class), esc_html($post->post_title));
                 } else {
-                    echo sprintf('<strong><a class="%1$s" title="%2$s" href="%3$s">%4$s</a></strong>', esc_attr($class), esc_html($title_duplicated), esc_url(get_edit_post_link($post_id)), esc_html($post->post_title));
+                    printf('<strong><a class="%1$s" title="%2$s" href="%3$s">%4$s</a></strong>', esc_attr($class), esc_html($title_duplicated), esc_url(get_edit_post_link($post_id)), esc_html($post->post_title));
                 }
                 break;
             case 'client':
                 echo esc_html($document->get_customer()->get_name());
                 break;
             case 'netto':
-                echo esc_html($document->get_total_net());
+                echo esc_html((string) $document->get_total_net());
                 break;
             case 'gross':
-                echo esc_html($document->get_total_gross());
+                echo esc_html((string) $document->get_total_gross());
                 break;
             case 'issue':
                 echo esc_html($document->get_date_of_issue());
@@ -133,7 +133,7 @@ class PostTypeColumns implements Hookable
                             $order_number = $order->get_order_number();
                         }
                     }
-                    echo '<a href="' . admin_url('post.php?post=' . (int) $order_id . '&action=edit') . '">' . esc_html($order_number) . '</a>';
+                    echo '<a href="' . admin_url('post.php?post=' . $order_id . '&action=edit') . '">' . esc_html($order_number) . '</a>';
                     //phpcs:ignore
                 }
                 break;
@@ -151,8 +151,11 @@ class PostTypeColumns implements Hookable
                 break;
             case 'fi_actions':
                 echo Links::download_email_links($document);
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 echo Links::create_invoice_link($document);
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 echo InvoicesIntegration::is_super() ? Links::create_correction_link($document) : '';
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 break;
             default:
                 echo esc_html(get_post_meta($post_id, '_invoice_' . $column_name, \true));
@@ -161,7 +164,7 @@ class PostTypeColumns implements Hookable
         /**
          * Adds body for custom columns to the documents list.
          *
-         * @param array    $column_name Column name.
+         * @param string    $column_name Column name.
          * @param Document $document    Document.
          *
          * @since 3.0.0
@@ -196,7 +199,7 @@ class PostTypeColumns implements Hookable
     }
     /**
      * @param string $column_name Column name,
-     * @param int    $post_id     Post ID.
+     * @param int    $post_id_or_order     Post ID.
      *
      * @internal You should not use this directly from another application
      */
@@ -211,12 +214,16 @@ class PostTypeColumns implements Hookable
         if ($column_name === 'fi_actions') {
             if (!$document_id) {
                 echo Links::generate_link($order->get_id(), $document->get_type(), $creator->get_button_label(), $order->get_status() !== 'refunded');
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             } else {
                 echo Links::download_email_links($document);
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             }
         }
         if ($document_id && $column_name === 'fi_documents') {
+            //@phpstan-ignore-line
             echo Links::view_link($document, !$creator->is_allowed_for_edit());
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         }
     }
 }

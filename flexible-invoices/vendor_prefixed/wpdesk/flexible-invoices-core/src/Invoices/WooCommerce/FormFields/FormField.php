@@ -104,16 +104,12 @@ class FormField implements Hookable
                     $field_priority = (int) $field['priority'];
                 }
                 $checkout_field = $this->prepare_checkout_field($field_priority);
-                if (is_array($checkout_field)) {
-                    $new_fields[$this->checkout_field_id] = $checkout_field;
-                }
+                $new_fields[$this->checkout_field_id] = $checkout_field;
             }
         }
         if (!$added) {
             $checkout_field = $this->prepare_checkout_field();
-            if (is_array($checkout_field)) {
-                $new_fields[$this->checkout_field_id] = $checkout_field;
-            }
+            $new_fields[$this->checkout_field_id] = $checkout_field;
         }
         return $new_fields;
     }

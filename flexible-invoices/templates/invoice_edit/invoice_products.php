@@ -199,11 +199,6 @@ $items = $invoice->get_items();
 		border: 0;
 	}
 </style>
-<script>
-	( function ( $ ) {
-		jQuery( '.wp-heading-inline' ).html( 'Dodaj fakturę' );
-	} )( jQuery );
-</script>
 <script id="product_prototype" type="text/template">
 	<tr class="product_row">
 		<td>

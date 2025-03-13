@@ -35,7 +35,7 @@ class Assets implements Hookable
      */
     private function get_scripts_version(): string
     {
-        return time();
+        return (string) time();
     }
     /**
      * Fire hooks.
@@ -77,7 +77,7 @@ class Assets implements Hookable
      */
     private function enqueue_post_type_scripts(WP_Screen $screen)
     {
-        if (isset($screen->post_type) && 'inspire_invoice' === $screen->post_type) {
+        if ('inspire_invoice' === $screen->post_type) {
             wp_enqueue_style('fiw-admin-style', $this->assets_url . 'css/admin.css', [], $this->scripts_version);
             wp_enqueue_style('fiw-actions-style', $this->assets_url . 'css/admin-order.css', [], $this->scripts_version);
             wp_enqueue_style('jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/smoothness/jquery-ui.css', [], $this->scripts_version);
@@ -110,7 +110,7 @@ class Assets implements Hookable
             wp_enqueue_style('jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/smoothness/jquery-ui.css', [], $this->scripts_version);
             wp_enqueue_style('fiw-settings-style', $this->assets_url . 'css/settings.css', [], $this->scripts_version);
             wp_enqueue_script('fiw-settings', $this->assets_url . 'js/settings.js', ['jquery'], $this->scripts_version, \true);
-            wp_enqueue_script('fiw-tip-tip', $this->assets_url . 'js/jquery.tipTip.js', ['jquery'], $this->scripts_version);
+            wp_enqueue_script('fiw-tip-tip', $this->assets_url . 'js/jquery.tipTip.js', ['jquery'], $this->scripts_version, \false);
             if ($tab === 'invoice-template') {
                 wp_enqueue_style('wp-color-picker');
                 wp_enqueue_script('wp-color-picker');

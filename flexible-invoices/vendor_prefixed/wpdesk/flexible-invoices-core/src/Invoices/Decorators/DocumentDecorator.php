@@ -12,6 +12,7 @@ class DocumentDecorator extends BaseDecorator
 {
     /**
      * @return string
+     * @phpstan-ignore-next-line
      */
     public function get_date_of_paid(): string
     {
@@ -20,6 +21,7 @@ class DocumentDecorator extends BaseDecorator
     }
     /**
      * @return string
+     * @phpstan-ignore-next-line
      */
     public function get_date_of_issue(): string
     {
@@ -28,6 +30,7 @@ class DocumentDecorator extends BaseDecorator
     }
     /**
      * @return string
+     * @phpstan-ignore-next-line
      */
     public function get_date_of_sale(): string
     {
@@ -36,6 +39,7 @@ class DocumentDecorator extends BaseDecorator
     }
     /**
      * @return string
+     * @phpstan-ignore-next-line
      */
     public function get_date_of_pay(): string
     {

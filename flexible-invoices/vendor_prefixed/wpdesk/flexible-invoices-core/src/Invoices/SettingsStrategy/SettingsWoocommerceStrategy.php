@@ -16,6 +16,7 @@ class SettingsWoocommerceStrategy extends AbstractSettingsStrategy
     {
         $payment_methods = parent::get_payment_methods();
         $gateways = WC()->payment_gateways->payment_gateways();
+        //@phpstan-ignore-line
         $woo_payment_methods = [];
         foreach ($gateways as $gateway) {
             $woo_payment_methods['woocommerce'][$gateway->id] = $gateway->title;

@@ -59,7 +59,7 @@ class PostMetaDocumentDataSource extends AbstractDataSource
      */
     public function get_formatted_number(): string
     {
-        return $this->post->post_title ?? $this->meta->get_fallback('_formatted_number', '');
+        return empty($this->post->post_title) ? $this->meta->get_fallback('_formatted_number', '') : $this->post->post_title;
     }
     /**
      * @return int
@@ -88,6 +88,7 @@ class PostMetaDocumentDataSource extends AbstractDataSource
     public function get_seller(): Seller
     {
         if (empty($this->seller)) {
+            //@phpstan-ignore-line
             return parent::get_seller();
         }
         $name = $this->seller['name'] ?? '';

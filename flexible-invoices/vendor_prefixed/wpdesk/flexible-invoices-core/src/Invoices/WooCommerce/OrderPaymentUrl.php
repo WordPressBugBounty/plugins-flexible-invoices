@@ -24,7 +24,7 @@ class OrderPaymentUrl implements Hookable
     public function hooks()
     {
         if ('yes' === $this->settings->get('woocommerce_add_order_url')) {
-            add_filter('fi/core/template/invoice/after_notes', [$this, 'add_payment_url']);
+            add_action('fi/core/template/invoice/after_notes', [$this, 'add_payment_url']);
         }
     }
     /**
@@ -32,15 +32,15 @@ class OrderPaymentUrl implements Hookable
      *
      * @return void
      */
-    public function add_payment_url(Document $document)
+    public function add_payment_url(Document $document): void
     {
         $order_id = $document->get_order_id();
         $order = wc_get_order($order_id);
         if ($order) {
             $order_status = $order->get_status();
             if ($document->get_payment_status() !== 'paid' && ($order_status === 'on-hold' || $order_status === 'pending' || $order_status === 'failed')) {
-                $pay_label = esc_html(apply_filters('fi/core/template/payment/label', esc_html__('Pay for this order', 'flexible-invoices')));
-                echo '<a href="' . esc_url($order->get_checkout_payment_url()) . '" target="_blank">' . $pay_label . '</a>';
+                $pay_label = apply_filters('fi/core/template/payment/label', esc_html__('Pay for this order', 'flexible-invoices'));
+                echo '<a href="' . esc_url($order->get_checkout_payment_url()) . '" target="_blank">' . esc_html($pay_label) . '</a>';
             }
         }
     }

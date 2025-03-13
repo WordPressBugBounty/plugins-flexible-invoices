@@ -4,11 +4,13 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore;
 
 use WPDeskFIVendor\Psr\Log\LoggerInterface;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Beacon\BeaconLoader;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\AbstractDocumentCreator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\InvoiceCreator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCreator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\SettingsForm;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\AbstractSettingsStrategy;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields\InvoiceAsk;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields\VatNumber;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\OrderNote;
@@ -43,7 +45,7 @@ class InvoicesIntegration implements Hookable
      */
     private $settings;
     /**
-     * @var DocumentCreator[]
+     * @var AbstractDocumentCreator[]
      */
     private $creators = [];
     /**
@@ -55,10 +57,6 @@ class InvoicesIntegration implements Hookable
      */
     private $logger;
     /**
-     * @var array
-     */
-    private $document_creators;
-    /**
      * @var string
      */
     public static $plugin_url;
@@ -67,7 +65,7 @@ class InvoicesIntegration implements Hookable
      */
     private $document_factory;
     /**
-     * @var SettingsStrategy\SettingsStrategy
+     * @var AbstractSettingsStrategy
      */
     private $strategy;
     /**
@@ -180,14 +178,14 @@ class InvoicesIntegration implements Hookable
         return $this->strategy;
     }
     /**
-     * @param DocumentCreator $creator
+     * @param AbstractDocumentCreator $creator
      */
-    public function add_creator(DocumentCreator $creator)
+    public function add_creator(AbstractDocumentCreator $creator)
     {
         $this->creators[] = $creator;
     }
     /**
-     * @return DocumentCreator[]
+     * @return AbstractDocumentCreator[]
      */
     public function get_creators(): array
     {
@@ -258,7 +256,7 @@ class InvoicesIntegration implements Hookable
      */
     private function set_document_saver()
     {
-        $this->save_document = new Integration\SaveDocument($this->document_factory, $this->settings, $this->strategy, $this->logger, $this->library_info->get_plugin_version());
+        $this->save_document = new Integration\SaveDocument($this->document_factory, $this->strategy, $this->logger, $this->library_info->get_plugin_version());
     }
     /**
      * @return Integration\SaveDocument
@@ -335,7 +333,7 @@ class InvoicesIntegration implements Hookable
         $order_note = new OrderNote();
         $this->add_hookable(new WooCommerce\CheckoutAssets($this->settings, $this->library_info->get_assets_url()));
         $this->add_hookable(new WooCommerce\MyAccount($this->document_factory, $this->renderer));
-        $this->add_hookable(new WooCommerce\CreateDocumentForOrder($this->document_factory, $this->settings, $this->save_document, $this->renderer, $this->get_pdf_writer()));
+        $this->add_hookable(new WooCommerce\CreateDocumentForOrder($this->document_factory, $this->settings, $this->save_document, $this->get_pdf_writer()));
         $this->add_hookable(new WooCommerce\DocumentPostMeta());
         $this->add_hookable(new WooCommerce\Order\FormattedOrderMeta());
         $this->add_hookable(new WooCommerce\Order\DeleteDocumentRelation($this->document_factory));

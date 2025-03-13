@@ -51,6 +51,9 @@ class Currency
     {
         $option = new Settings();
         $currency_options = $option->get('currency');
+        /**
+         * @var array $currency_options
+         */
         foreach ($currency_options as $currency) {
             $this->currencies[$currency['currency']]['decimal_separator'] = $currency['decimal_separator'];
             $this->currencies[$currency['currency']]['thousand_separator'] = $currency['thousand_separator'];

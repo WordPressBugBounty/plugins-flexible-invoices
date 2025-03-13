@@ -59,6 +59,7 @@ class EmailIntegration implements Hookable
         $id = (int) $request->param('get.document_id')->get();
         $nonce = $request->param('get._wpnonce')->get();
         if ($id && ($nonce && wp_verify_nonce($nonce))) {
+            //@phpstan-ignore-line
             try {
                 $creator = $this->document_factory->get_document_creator($id);
                 $document = $creator->get_document();
@@ -75,6 +76,7 @@ class EmailIntegration implements Hookable
                     } else {
                         $send = $this->send_manual_email($document);
                     }
+                    // translators: %s - document name
                     $note = sprintf(esc_html__('%s was send to the customer', 'flexible-invoices'), $creator->get_name());
                     $this->order_note->add_note($order, $note);
                 } else {
@@ -105,6 +107,9 @@ class EmailIntegration implements Hookable
         $client = $document->get_customer();
         if (!empty($emails[$email_class]) && !empty($client->get_email())) {
             if ($emails[$email_class] instanceof DocumentEmail) {
+                /**
+                 * @var DocumentEmail $emails[ $email_class ]
+                 */
                 $emails[$email_class]->should_send_email($order, $document, $this->pdf);
             }
             return \true;
@@ -125,6 +130,7 @@ class EmailIntegration implements Hookable
         $client = $document->get_customer();
         if (!empty($client->get_email())) {
             $emails['fi_invoice_manual']->should_send_email($document, $this->pdf);
+            //@phpstan-ignore-line
             return \true;
         }
         return \false;

@@ -74,7 +74,7 @@ class Plugin
      */
     public static function is_template_addon_is_disabled(): bool
     {
-        return !Plugin::is_active('flexible-invoices-templates/flexible-invoices-templates.php');
+        return !self::is_active('flexible-invoices-templates/flexible-invoices-templates.php');
     }
     /**
      * Is flexible quantity pro plugin is enabled.
@@ -83,7 +83,7 @@ class Plugin
      */
     public static function is_fq_pro_addon_enabled(): bool
     {
-        return Plugin::is_active('flexible-quantity/flexible-quantity.php');
+        return self::is_active('flexible-quantity/flexible-quantity.php');
     }
     /**
      * Is flexible quantity free plugin is enabled.
@@ -92,6 +92,6 @@ class Plugin
      */
     public static function is_fq_free_addon_enabled(): bool
     {
-        return Plugin::is_active('flexible-quantity-measurement-price-calculator-for-woocommerce/flexible-quantity-measurement-price-calculator-for-woocommerce.php');
+        return self::is_active('flexible-quantity-measurement-price-calculator-for-woocommerce/flexible-quantity-measurement-price-calculator-for-woocommerce.php');
     }
 }

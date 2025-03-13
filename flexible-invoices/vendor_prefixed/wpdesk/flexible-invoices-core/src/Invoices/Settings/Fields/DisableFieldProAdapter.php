@@ -3,6 +3,7 @@
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields;
 
 use WPDeskFIVendor\WPDesk\Forms\Field;
+use WPDeskFIVendor\WPDesk\Forms\Field\BasicField;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\InvoicesIntegration;
 /**
  * Disable field adapter.
@@ -24,9 +25,11 @@ class DisableFieldProAdapter
      */
     private $show_link;
     /**
-     * @param Field $field
+     * @param string $name
+     * @param BasicField $field
+     * @param bool $show_pro_link
      */
-    public function __construct(string $name, Field $field, bool $show_pro_link = \false)
+    public function __construct(string $name, Field\BasicField $field, bool $show_pro_link = \false)
     {
         $this->name = $name;
         $this->show_link = $show_pro_link;
@@ -41,7 +44,7 @@ class DisableFieldProAdapter
         if (!InvoicesIntegration::is_super()) {
             $this->field->set_disabled();
             $upgrade_link = '';
-            $upgrade_link_id = $this->field->get_ID();
+            $upgrade_link_id = $this->field->get_id();
             if ($this->show_link) {
                 $upgrade_pro_url = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/faktury-woocommerce/?utm_source=wp-admin-plugins&utm_medium=quick-link&utm_campaign=flexible-invoices-plugins-upgrade-link&utm_content=' . $upgrade_link_id : 'https://www.flexibleinvoices.com/products/flexible-invoices-woocommerce/?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-invoices-plugins-upgrade-link&utm_content=' . $upgrade_link_id;
                 $upgrade_link = '<span class="pro-url"><a style="color: #8f0350; font-weight: 700;" href="' . esc_url($upgrade_pro_url) . '" target="_blank">' . esc_html__('Upgrade to PRO &rarr;', 'flexible-invoices') . '</a></span>';

@@ -19,7 +19,14 @@ class InvoiceQuery
      */
     public function get_documents_by_type($type): \WP_Query
     {
-        $args = ['post_type' => 'inspire_invoice', 'meta_key' => '_type', 'meta_value' => $type, 'posts_per_page' => 50];
+        $args = [
+            'post_type' => 'inspire_invoice',
+            'meta_key' => '_type',
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+            'meta_value' => $type,
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+            'posts_per_page' => 50,
+        ];
         return new \WP_Query($args);
     }
     /**

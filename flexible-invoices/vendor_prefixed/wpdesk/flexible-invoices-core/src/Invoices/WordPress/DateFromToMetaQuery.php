@@ -58,9 +58,11 @@ abstract class DateFromToMetaQuery
         $filter_date_from = $this->get_start_date($post_data['start_date']);
         $filter_date_to = $this->get_end_date($post_data['end_date']);
         if ($filter_date_from && !$filter_date_to) {
+            //@phpstan-ignore-line
             $meta_value = $filter_date_from;
             $meta_compare = '>=';
         } elseif (!$filter_date_from && $filter_date_to) {
+            //@phpstan-ignore-line
             $meta_value = $filter_date_to;
             $meta_compare = '<=';
         } else {

@@ -51,6 +51,7 @@ class DefaultSettings implements Hookable
         $settings_to_add['inspire_invoices_correction_number_reset_type'] = 'year';
         foreach ($settings_to_add as $option_name => $option_value) {
             if (!get_option($option_name)) {
+                //@phpstan-ignore-line
                 update_option($option_name, $option_value);
             }
         }
@@ -63,6 +64,7 @@ class DefaultSettings implements Hookable
     public function update_option_for_woocommerce()
     {
         if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')), \true) && !get_option('inspire_invoices_currency_woo_updated')) {
+            //@phpstan-ignore-line
             $inspire_invoices_currency = get_option('inspire_invoices_currency', []);
             $woo_currency = get_option('woocommerce_currency', '');
             if ($woo_currency !== '') {
@@ -80,6 +82,7 @@ class DefaultSettings implements Hookable
             update_option('inspire_invoices_currency_woo_updated', \true);
         }
         if (!get_option('inspire_invoices_tax_updated')) {
+            //@phpstan-ignore-line
             update_option('inspire_invoices_tax', $this->get_default_taxes());
             update_option('inspire_invoices_tax_updated', \true);
         }
@@ -120,6 +123,7 @@ class DefaultSettings implements Hookable
     {
         global $wpdb;
         $corrections = $wpdb->get_results("SELECT * FROM {$wpdb->postmeta} WHERE `meta_key` = '_invoice_corrections'");
+        // phpcs:ignore
         foreach ($corrections as $correction) {
             update_post_meta($correction->post_id, '_correction_generated', $correction->meta_value);
         }

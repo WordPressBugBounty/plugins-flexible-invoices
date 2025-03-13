@@ -10,7 +10,7 @@ class Template
     /**
      * @param string $direction
      *
-     * @return mixed|string
+     * @return string
      */
     public static function rtl_align(string $direction): string
     {

@@ -68,7 +68,7 @@ class OrderDocumentDataSource extends AbstractDataSource
     public function get_date_of_pay(): int
     {
         $pay_date = $this->get_date_of_issue() + 60 * 60 * 24 * intval($this->settings->get($this->get_document_type() . '_default_due_time'), 0);
-        return (int) $pay_date;
+        return $pay_date;
     }
     /**
      * @return int
@@ -76,7 +76,7 @@ class OrderDocumentDataSource extends AbstractDataSource
     public function get_date_of_paid(): int
     {
         $paid_date = $this->order->get_meta('_paid_date', \true);
-        if ($paid_date) {
+        if (isset($paid_date)) {
             return strtotime($paid_date);
         }
         return strtotime(current_time('mysql'));
@@ -155,7 +155,7 @@ class OrderDocumentDataSource extends AbstractDataSource
     /**
      * @param string $name
      *
-     * @return Recipient
+     * @return DocumentRecipient
      */
     private function get_recipient_from_billing(string $name): Recipient
     {
@@ -172,7 +172,7 @@ class OrderDocumentDataSource extends AbstractDataSource
     /**
      * @param string $name
      *
-     * @return Recipient
+     * @return DocumentRecipient
      */
     private function get_recipient_from_shipping(string $name): Recipient
     {

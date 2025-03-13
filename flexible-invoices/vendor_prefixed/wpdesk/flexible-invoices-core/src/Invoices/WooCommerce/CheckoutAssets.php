@@ -59,7 +59,7 @@ class CheckoutAssets implements Hookable
     public function enqueue_scripts()
     {
         if (is_checkout() && $this->settings->get('woocommerce_add_invoice_ask_field') === 'yes') {
-            wp_enqueue_style('fiw-checkout', $this->assets_url . 'css/checkout.css', '', $this->scripts_version);
+            wp_enqueue_style('fiw-checkout', $this->assets_url . 'css/checkout.css', [], $this->scripts_version);
             wp_enqueue_script('fiw-checkout', $this->assets_url . 'js/checkout.js', ['jquery'], $this->scripts_version, \true);
         }
     }

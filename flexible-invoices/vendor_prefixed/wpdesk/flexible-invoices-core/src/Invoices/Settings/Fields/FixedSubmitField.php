@@ -12,6 +12,7 @@ class FixedSubmitField extends BasicField
     public function get_type()
     {
         return 'submit';
+        //@phpstan-ignore-line
     }
     public function should_override_form_template()
     {

@@ -97,7 +97,8 @@ class Dashboard implements Hookable
     public function new_invoice_default_title(string $post_title, WP_Post $post): string
     {
         if ($post->post_status === 'auto-draft' && $post->post_type === RegisterPostType::POST_TYPE_NAME) {
-            $document_type = $_GET['document_type'] ?? Invoice::DOCUMENT_TYPE;
+            $document_type = sanitize_text_field(wp_unslash($_GET['document_type'] ?? Invoice::DOCUMENT_TYPE));
+            //phpcs:ignore
             $this->document_factory->set_document_type($document_type);
             $creator = $this->document_factory->get_document_creator($post->ID);
             $document = $creator->get_document();
@@ -238,6 +239,7 @@ class Dashboard implements Hookable
                 $user = new WP_User((int) $user_id);
                 if (empty($user->billing_company)) {
                     $name = $user->billing_first_name . ' ' . $user->billing_last_name;
+                    //@phpstan-ignore-line
                 } else {
                     $name = $user->billing_company;
                 }
@@ -279,8 +281,8 @@ class Dashboard implements Hookable
                 2 => esc_html__('Custom field updated.', 'flexible-invoices'),
                 3 => esc_html__('Custom field deleted.', 'flexible-invoices'),
                 4 => esc_html__('Invoice updated.', 'flexible-invoices'),
-                // translators: %s revision ID.
-                5 => $revision !== null ? sprintf(esc_html__($singular . ' rolled back to revision %s.', 'flexible-invoices'), wp_post_revision_title((int) $revision, \false)) : \false,
+                // translators: %1$s invoice title, %2$s revision ID.
+                5 => $revision !== null ? sprintf(esc_html__('%1$s rolled back to revision %2$s.', 'flexible-invoices'), $singular, wp_post_revision_title((int) $revision, \false)) : \false,
                 6 => esc_html__('Invoice issued.', 'flexible-invoices'),
                 7 => esc_html__('Invoice saved.', 'flexible-invoices'),
                 8 => esc_html__('Invoice submitted.', 'flexible-invoices'),
@@ -299,7 +301,8 @@ class Dashboard implements Hookable
      */
     public function add_duplicated_filter(array $views): array
     {
-        $views['duplicated'] = sprintf(__('<a href="%s">Duplicated <span class="count">(%d)</span></a>', 'flexible-invoices'), admin_url('edit.php?post_type=' . RegisterPostType::POST_TYPE_NAME . '&filter=show_duplicated'), count($this->get_duplicated_posts_ids()));
+        // translators: %1$s url, %2$d count
+        $views['duplicated'] = sprintf(__('<a href="%1$s">Duplicated <span class="count">(%2$d)</span></a>', 'flexible-invoices'), admin_url('edit.php?post_type=' . RegisterPostType::POST_TYPE_NAME . '&filter=show_duplicated'), count($this->get_duplicated_posts_ids()));
         return $views;
     }
     /**
@@ -309,6 +312,7 @@ class Dashboard implements Hookable
     {
         global $wpdb;
         $post_ids = $wpdb->get_var($wpdb->prepare("SELECT GROUP_CONCAT(p.ID) FROM {$wpdb->posts} as p WHERE p.post_type = %s AND p.post_status = %s GROUP BY p.post_title HAVING COUNT( p.post_title ) > 1", RegisterPostType::POST_TYPE_NAME, 'publish'));
+        // phpcs:ignore
         if (!empty($post_ids)) {
             return explode(',', $post_ids);
         }

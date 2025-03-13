@@ -100,7 +100,7 @@ class SettingsForm implements Hookable
             /**
              * Fires after saving the tab settings.
              *
-             * @param string              $tab            Tab ID.
+             * @param SettingsTab              $tab            Tab ID.
              * @param PersistentContainer $data_container Persistent Container Object.
              */
             do_action('fi/core/settings/tabs/saved', $tab, $data_container);
@@ -210,7 +210,7 @@ class SettingsForm implements Hookable
         /**
          * Filters resolvers for setting templates.
          *
-         * @param Resolver $resolvers Resolvers.
+         * @param Resolver[] $resolvers Resolvers.
          *
          * @return array Array of Resolvers.
          *
@@ -218,6 +218,7 @@ class SettingsForm implements Hookable
          */
         $resolver_list = (array) apply_filters('fi/core/settings/settings_template_resolvers', [new DirResolver($this->template_dir . 'settings'), new DefaultFormFieldResolver()]);
         array_unshift($resolver_list, new DirResolver($this->template_dir . 'settings/' . $this->get_active_tab()->get_tab_slug()));
+        //@phpstan-ignore-line
         foreach ($resolver_list as $resolver) {
             $chain->appendResolver($resolver);
         }

@@ -33,6 +33,7 @@ final class MossSettingsFields implements SubTabInterface
     private function get_woocommerce_tax_classes(): array
     {
         $tax_classes = WC_Tax::get_tax_classes();
+        $classes_options = [];
         $classes_options['standard'] = esc_html__('Standard', 'flexible-invoices');
         foreach ($tax_classes as $class) {
             $classes_options[sanitize_title($class)] = esc_html($class);
@@ -48,6 +49,7 @@ final class MossSettingsFields implements SubTabInterface
         if (get_locale() === 'pl_PL') {
             $docs_url = 'https://wpde.sk/faktury-woocommerce-oss';
         }
+        /* translators: %1$s - open tag, %2$s - close tag */
         return sprintf('%2$s%1$s%3$s', sprintf(esc_html__('Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-invoices'), '<a href="' . $docs_url . '" target="_blank" style="color: #4BB04E; font-weight: 700;">', '</a>'), '<strong>', '</strong>');
     }
     /**

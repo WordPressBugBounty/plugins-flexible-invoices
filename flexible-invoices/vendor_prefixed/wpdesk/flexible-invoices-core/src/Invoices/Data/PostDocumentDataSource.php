@@ -112,6 +112,7 @@ class PostDocumentDataSource extends AbstractDataSource
      */
     public function get_items(): array
     {
+        // phpcs:ignore
         $products = [];
         if (count($this->products) > 0) {
             foreach ($this->products['name'] as $index => $name) {

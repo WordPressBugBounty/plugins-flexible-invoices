@@ -62,4 +62,5 @@ interface SettingsTab
      * @return array
      */
     public function get_data();
+    public function output_render(Renderer $renderer): void;
 }

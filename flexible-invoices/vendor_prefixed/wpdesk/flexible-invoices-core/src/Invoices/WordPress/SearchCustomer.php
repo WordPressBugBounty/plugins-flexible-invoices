@@ -62,13 +62,14 @@ class SearchCustomer implements Hookable
     private function should_get_user_data_from_post_meta($term): array
     {
         global $wpdb;
-        $search = is_integer($term) ? (int) $term : esc_sql($term);
+        $search = is_integer($term) ? $term : esc_sql($term);
         $sql_where = "`meta_key` = '_client_filter_field' AND `meta_value` LIKE '%" . $search . "%'";
         if (is_int($search)) {
             // Find as vat number.
             $sql_where = "`meta_key` = '_client_vat_number' AND `meta_value` LIKE '" . $search . "%'";
         }
         $results = $wpdb->get_results("SELECT MAX(meta_id) as meta_id, `meta_value`, `post_id` FROM {$wpdb->postmeta} WHERE {$sql_where} ");
+        //phpcs:ignore
         if (!empty($results)) {
             return $this->get_meta_data($results);
         }
@@ -86,7 +87,25 @@ class SearchCustomer implements Hookable
     private function prepare_user_data(\WP_User $user): array
     {
         if (WooCommerce::is_active()) {
-            $user_data = ['name' => empty($user->billing_company) ? $user->billing_first_name . ' ' . $user->billing_last_name : $user->billing_company, 'street' => $user->billing_address_1, 'street2' => !empty($user->billing_address_2) ? $user->billing_address_2 : '', 'postcode' => $user->billing_postcode, 'city' => $user->billing_city, 'nip' => $user->vat_number, 'country' => $user->billing_country, 'phone' => $user->billing_phone, 'email' => $user->user_email, 'state' => $user->billing_state];
+            $user_data = [
+                'name' => empty($user->billing_company) ? $user->billing_first_name . ' ' . $user->billing_last_name : $user->billing_company,
+                //@phpstan-ignore-line
+                'street' => $user->billing_address_1,
+                //@phpstan-ignore-line
+                'street2' => !empty($user->billing_address_2) ? $user->billing_address_2 : '',
+                'postcode' => $user->billing_postcode,
+                //@phpstan-ignore-line
+                'city' => $user->billing_city,
+                //@phpstan-ignore-line
+                'nip' => $user->vat_number,
+                //@phpstan-ignore-line
+                'country' => $user->billing_country,
+                //@phpstan-ignore-line
+                'phone' => $user->billing_phone,
+                //@phpstan-ignore-line
+                'email' => $user->user_email,
+                'state' => $user->billing_state,
+            ];
         } else {
             return ['name' => $user->first_name . ' ' . $user->last_name, 'street' => '', 'street2' => '', 'postcode' => '', 'city' => '', 'nip' => '', 'country' => '', 'phone' => '', 'email' => $user->user_email, 'state' => ''];
         }

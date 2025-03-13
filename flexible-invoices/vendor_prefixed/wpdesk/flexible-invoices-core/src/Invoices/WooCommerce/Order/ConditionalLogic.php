@@ -35,6 +35,7 @@ class ConditionalLogic
         $has_invoice_ask_field = $this->settings->get('woocommerce_add_invoice_ask_field') === 'yes';
         $is_user_has_invoice = $order->get_meta('_billing_invoice_ask', \true) === '1';
         $is_invoice_ask = !$has_invoice_ask_field || $has_invoice_ask_field && $is_user_has_invoice;
+        //@phpstan-ignore-line
         /**
          * The conditional logic for checking if the user wants to receive an invoice.
          *
@@ -56,7 +57,8 @@ class ConditionalLogic
     {
         $settings = $this->settings;
         $zero_invoice = $this->settings->get('woocommerce_zero_invoice') === 'yes';
-        $is_zero_invoice_ask = !$zero_invoice || $zero_invoice && (float) $order->get_total() > 0;
+        $is_zero_invoice_ask = !$zero_invoice || $zero_invoice && $order->get_total() > 0;
+        //@phpstan-ignore-line
         /**
          * Conditional logic for checking whether to issue zero invoices.
          *

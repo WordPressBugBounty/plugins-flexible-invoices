@@ -3,6 +3,7 @@
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration;
 
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCreator;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\AbstractDocumentCreator;
 /**
  * Register document creators.
  *
@@ -11,18 +12,18 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCrea
 class CreatorContainer
 {
     /**
-     * @var DocumentCreator[];
+     * @var AbstractDocumentCreator[];
      */
     private $creators = [];
     /**
-     * @param DocumentCreator $creator
+     * @param AbstractDocumentCreator $creator
      */
-    public function add_creator(DocumentCreator $creator)
+    public function add_creator(AbstractDocumentCreator $creator)
     {
         $this->creators[$creator->get_type()] = $creator;
     }
     /**
-     * @return DocumentCreator[]
+     * @return AbstractDocumentCreator[]
      */
     public function get_creators(): array
     {

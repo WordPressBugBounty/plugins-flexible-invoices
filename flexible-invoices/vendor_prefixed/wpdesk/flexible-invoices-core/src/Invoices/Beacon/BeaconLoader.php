@@ -36,7 +36,13 @@ class BeaconLoader implements Hookable
     public function init_beacon()
     {
         $beacon_id = '17f6054b-a2fb-4ee7-8bb5-0c3cbad1ef6a';
-        $beacon = new BeaconPro($beacon_id, new BeaconShowStrategy(), $this->plugin_info->get_plugin_url() . 'vendor_prefixed/wpdesk/wp-helpscout-beacon/assets/');
+        $beacon = new BeaconPro(
+            //@phpstan-ignore-line
+            $beacon_id,
+            new BeaconShowStrategy(),
+            $this->plugin_info->get_plugin_url() . 'vendor_prefixed/wpdesk/wp-helpscout-beacon/assets/'
+        );
         $beacon->hooks();
+        //@phpstan-ignore-line
     }
 }

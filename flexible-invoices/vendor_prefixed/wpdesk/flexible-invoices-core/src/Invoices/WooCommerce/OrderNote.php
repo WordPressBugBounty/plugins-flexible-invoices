@@ -21,6 +21,7 @@ class OrderNote implements Hookable
     public function get_note_meta(array $comment_data, WP_Comment $data): array
     {
         $is_fi_note = (bool) get_comment_meta($data->comment_ID, 'wpdesk_fi_note', \true);
+        //@phpstan-ignore-line
         $comment_data['fi_note'] = $is_fi_note ? 'yes' : 'no';
         return $comment_data;
     }

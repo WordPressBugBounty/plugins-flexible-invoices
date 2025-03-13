@@ -23,7 +23,7 @@ class Settings implements PersistentContainer
     }
     /**
      * @param string $id      Setting name.
-     * @param null   $default Default value.
+     * @param mixed   $default Default value.
      *
      * @return string|null
      */
@@ -54,7 +54,7 @@ class Settings implements PersistentContainer
     }
     /**
      * @param string $id    Setting name.
-     * @param null   $value Value.
+     * @param array|float|int|string   $value Value.
      *
      * @return bool
      */
@@ -81,7 +81,7 @@ class Settings implements PersistentContainer
     }
     /**
      * @param string $id
-     * @param null   $fallback
+     * @param mixed   $fallback
      *
      * @return mixed
      */

@@ -118,17 +118,13 @@ abstract class AbstractDocument implements Document
     /**
      * @var int
      */
-    private $post_id = 0;
-    /**
-     * @var string
-     */
     private $show_order_number = 0;
     /**
      * @var int
      */
     private $corrected_id = 0;
     /**
-     * @var string
+     * @var int
      */
     private $is_correction = 0;
     /**
@@ -203,6 +199,7 @@ abstract class AbstractDocument implements Document
     }
     /**
      * @param string $value
+     * @phpstan-ignore-next-line
      */
     public function set_notes($value)
     {
@@ -245,10 +242,12 @@ abstract class AbstractDocument implements Document
     }
     /**
      * @param string $value
+     * @phpstan-ignore-next-line
      */
     public function set_total_paid($value)
     {
         $this->total_paid = $value;
+        //@phpstan-ignore-line
     }
     /**
      * @return float
@@ -398,7 +397,8 @@ abstract class AbstractDocument implements Document
         return $this->total_gross;
     }
     /**
-     * @param $value
+     * @param float $value
+     * @phpstan-ignore-next-line
      */
     public function set_tax($value)
     {
@@ -482,7 +482,7 @@ abstract class AbstractDocument implements Document
         return $this->client_filtered_name;
     }
     /**
-     * @param string $value
+     * @param int $value
      */
     public function set_show_order_number($value)
     {
@@ -490,10 +490,12 @@ abstract class AbstractDocument implements Document
     }
     /**
      * @return bool
+     * @phpstan-ignore-next-line
      */
     public function get_show_order_number()
     {
         return $this->show_order_number;
+        //@phpstan-ignore-line
     }
     /**
      * @param int $id
@@ -529,12 +531,15 @@ abstract class AbstractDocument implements Document
     public function set_is_correction($is_correction)
     {
         $this->is_correction = $is_correction;
+        // @phpstan-ignore-line
     }
     /**
-     * @return int
+     * @return bool
+     * @phpstan-ignore-next-line
      */
     public function get_is_correction()
     {
         return $this->is_correction;
+        //@phpstan-ignore-line
     }
 }

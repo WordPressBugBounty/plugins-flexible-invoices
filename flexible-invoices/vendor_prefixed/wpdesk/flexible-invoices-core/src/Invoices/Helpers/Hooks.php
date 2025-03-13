@@ -135,11 +135,13 @@ class Hooks
         /**
          * Filters template totals section.
          *
+         * @param string   $default  Default value.
          * @param Document $document Document object (invoice, correction etc.).
          * @param array    $products Document products.
          * @param Customer $customer Customer object.
          */
-        return apply_filters('fi/core/template/invoice/exchange/vertical', '', $document, $products, $customer);
+        $default = '';
+        return apply_filters('fi/core/template/invoice/exchange/vertical', $default, $document, $products, $customer);
     }
     /**
      * @param string $wpml_user_lang
@@ -205,7 +207,7 @@ class Hooks
         do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);
     }
     /**
-     * @param bool   $email_heading Sent to admin.
+     * @param string   $email_heading Sent to admin.
      * @param string $email         Recipient email.
      */
     public static function woocommerce_email_header_hook($email_heading, string $email)

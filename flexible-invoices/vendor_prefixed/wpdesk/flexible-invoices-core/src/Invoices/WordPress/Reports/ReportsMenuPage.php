@@ -70,6 +70,7 @@ class ReportsMenuPage implements Hookable
         if (get_locale() === 'pl_PL') {
             $url = 'https://www.wpdesk.pl/docs/faktury-woocommerce-docs/?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=reports-free#raporty';
         }
+        // translators: %1$s - open tag, %2$s - close tag
         $docs_description = sprintf('%2$s%1$s%3$s', sprintf(esc_html__('Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-invoices'), '<a href="' . $url . '" target="_blank" style="color: #4BB04E; font-weight: 700;">', '</a>'), '<strong>', '</strong>');
         $content = '<div class="wrap"><h1 class="wp-heading-inline">' . esc_html__('Reports', 'flexible-invoices') . '</h1>';
         $content .= '<div class="support-url-wrapper">' . $docs_description . '</div>';

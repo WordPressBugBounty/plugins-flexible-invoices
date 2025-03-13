@@ -54,6 +54,7 @@ class Countries
             $output = '<select class="state-select2 medium hs-beacon-search" name="' . $name . '" id="customer_state" >';
             foreach ($states as $state_code => $state_name) {
                 $output .= '<option ' . selected($state_code, $value) . ' value="' . $state_code . '">' . $state_name . '</option>' . \PHP_EOL;
+                //@phpstan-ignore-line
             }
             $output .= '</select>' . \PHP_EOL;
         } else {

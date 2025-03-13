@@ -15,7 +15,20 @@ class Request
     private $parameters;
     public function __construct()
     {
-        $this->parameters = ['METHOD' => strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET'), 'GET' => $_GET, 'POST' => $_POST, 'FILES' => $_FILES, 'COOKIE' => $_COOKIE, 'SERVER' => $_SERVER, 'SESSION' => $_SESSION ?? [], 'INPUT' => file_get_contents("php://input")];
+        $this->parameters = [
+            'METHOD' => strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET'),
+            // phpcs:ignore
+            'GET' => $_GET,
+            // phpcs:ignore
+            'POST' => $_POST,
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            'FILES' => $_FILES,
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            'COOKIE' => $_COOKIE,
+            'SERVER' => $_SERVER,
+            'SESSION' => $_SESSION ?? [],
+            'INPUT' => file_get_contents('php://input'),
+        ];
     }
     /**
      * @param $param

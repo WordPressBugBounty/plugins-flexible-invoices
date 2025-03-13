@@ -3,6 +3,7 @@
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration;
 
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCreator;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\AbstractDocumentCreator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentExceptions\UnknownDocumentTypeException;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Invoice;
@@ -14,7 +15,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Invoice;
 class DocumentFactory
 {
     /**
-     * @var DocumentCreator[]
+     * @var AbstractDocumentCreator[]
      */
     private $creators;
     /**
@@ -34,7 +35,7 @@ class DocumentFactory
         $this->meta_type = new DocumentMetaType($this->creators);
     }
     /**
-     * @return DocumentCreator[]
+     * @return AbstractDocumentCreator[]
      */
     public function get_creators(): array
     {
@@ -51,11 +52,11 @@ class DocumentFactory
      * @param int    $document_id Post ID.
      * @param string $source_type Source type from document will be created.
      *
-     * @return DocumentCreator
+     * @return AbstractDocumentCreator
      *
      * @throws UnknownDocumentTypeException
      */
-    public function get_document_creator(int $document_id, string $source_type = DataSourceFactory::META_SOURCE): DocumentCreator
+    public function get_document_creator(int $document_id, string $source_type = DataSourceFactory::META_SOURCE): AbstractDocumentCreator
     {
         foreach ($this->creators as $document_creator) {
             $creator = clone $document_creator;
@@ -71,20 +72,9 @@ class DocumentFactory
      * @param int    $document_id
      * @param string $source_type
      *
-     * @return DocumentCreator
+     * @return AbstractDocumentCreator
      */
-    private function create_default_creator(int $document_id, string $source_type): DocumentCreator
-    {
-        $this->creators[Invoice::DOCUMENT_TYPE]->create_document_from_source($document_id, $source_type);
-        return $this->creators[Invoice::DOCUMENT_TYPE];
-    }
-    /**
-     * @param int    $document_id
-     * @param string $source_type
-     *
-     * @return DocumentCreator
-     */
-    public function get_creator(int $document_id, string $source_type, string $creator_type): DocumentCreator
+    public function get_creator(int $document_id, string $source_type, string $creator_type): AbstractDocumentCreator
     {
         $this->creators[$creator_type]->create_document_from_source($document_id, $source_type);
         return $this->creators[$creator_type];

@@ -8,7 +8,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Seller;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\AbstractSettingsStrategy;
 /**
  * Base decorator for document.
  *
@@ -21,7 +21,7 @@ class BaseDecorator implements Document
      */
     protected $document;
     /**
-     * @var SettingsStrategy
+     * @var AbstractSettingsStrategy
      */
     protected $strategy;
     /**
@@ -30,9 +30,9 @@ class BaseDecorator implements Document
     protected $currency_helper;
     /**
      * @param Document         $document
-     * @param SettingsStrategy $strategy
+     * @param AbstractSettingsStrategy $strategy
      */
-    public function __construct(Document $document, SettingsStrategy $strategy)
+    public function __construct(Document $document, AbstractSettingsStrategy $strategy)
     {
         $this->document = $document;
         $this->strategy = $strategy;
@@ -40,59 +40,75 @@ class BaseDecorator implements Document
     }
     /**
      * @param string $value
+     * @phpstan-ignore-next-line
      */
     public function set_date_of_paid($value)
     {
         $this->document->set_date_of_paid($value);
+        //@phpstan-ignore-line
     }
     /**
      * @return string
+     * @phpstan-ignore-next-line
      */
     public function get_date_of_paid(): string
     {
         return $this->document->get_date_of_paid();
+        //@phpstan-ignore-line
     }
     /**
      * @param string $value
+     * @phpstan-ignore-next-line
      */
     public function set_date_of_issue($value)
     {
         $this->document->set_date_of_issue($value);
+        //@phpstan-ignore-line
     }
     /**
      * @return string
+     * @phpstan-ignore-next-line
      */
     public function get_date_of_issue(): string
     {
         return $this->document->get_date_of_issue();
+        //@phpstan-ignore-line
     }
     /**
      * @param string $value
+     * @phpstan-ignore-next-line
      */
     public function set_date_of_sale($value)
     {
         $this->document->set_date_of_sale($value);
+        //@phpstan-ignore-line
     }
     /**
      * @return string
+     * @phpstan-ignore-next-line
      */
     public function get_date_of_sale(): string
     {
         return $this->document->get_date_of_sale();
+        //@phpstan-ignore-line
     }
     /**
      * @param string $value
+     * @phpstan-ignore-next-line
      */
     public function set_date_of_pay($value)
     {
         $this->document->set_date_of_pay($value);
+        //@phpstan-ignore-line
     }
     /**
      * @return string
+     * @phpstan-ignore-next-line
      */
     public function get_date_of_pay(): string
     {
         return $this->document->get_date_of_pay();
+        //@phpstan-ignore-line
     }
     /**
      * @return string
@@ -117,10 +133,12 @@ class BaseDecorator implements Document
     }
     /**
      * @param string $value
+     * @phpstan-ignore-next-line
      */
     public function set_total_gross($value)
     {
         $this->document->set_total_gross($value);
+        //@phpstan-ignore-line
     }
     /**
      * @param string $value
@@ -411,6 +429,7 @@ class BaseDecorator implements Document
         $order_id = $this->document->get_order_id();
         $order_number = $order_id;
         if ($order_id && WooCommerce::is_active()) {
+            // @phpstan-ignore-line
             $order = wc_get_order($order_id);
             if ($order) {
                 $order_number = $order->get_order_number();
@@ -434,17 +453,21 @@ class BaseDecorator implements Document
     }
     /**
      * @param string $value
+     * @phpstan-ignore-next-line
      */
     public function set_show_order_number($value)
     {
         $this->document->set_show_order_number($value);
+        //@phpstan-ignore-line
     }
     /**
      * @return bool
+     * @phpstan-ignore-next-line
      */
     public function get_show_order_number(): bool
     {
         return $this->document->get_show_order_number();
+        //@phpstan-ignore-line
     }
     /**
      * @param bool $is_correction
@@ -471,6 +494,7 @@ class BaseDecorator implements Document
         }
         $payment_method_slug = $this->document->get_payment_method();
         $payment_methods = $this->strategy->get_payment_methods();
+        $methods = [];
         foreach ($payment_methods as $methods_source) {
             foreach ($methods_source as $payment_method_key => $payment_method_title) {
                 $methods[$payment_method_key] = $payment_method_title;

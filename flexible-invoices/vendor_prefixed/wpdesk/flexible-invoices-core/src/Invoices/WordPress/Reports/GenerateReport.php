@@ -58,7 +58,7 @@ class GenerateReport extends DateFromToMetaQuery implements Hookable
     {
         add_action('wp_ajax_fiw_generate_report', [$this, 'generate_report_action']);
         if (!Plugin::is_active('flexible-invoices-reports/flexible-invoices-reports.php') && InvoicesIntegration::is_super()) {
-            add_filter('admin_init', [$this, 'advanced_report_settings_notice']);
+            add_action('admin_init', [$this, 'advanced_report_settings_notice']);
         }
     }
     /**
@@ -121,7 +121,7 @@ class GenerateReport extends DateFromToMetaQuery implements Hookable
      *
      * @return void
      */
-    public function advanced_report_settings_notice()
+    public function advanced_report_settings_notice(): void
     {
         $request = new Request();
         $post_type = $request->param('get.post_type')->get();

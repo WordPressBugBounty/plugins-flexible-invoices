@@ -117,15 +117,15 @@ abstract class AbstractDataSource implements SourceData
      */
     protected $tax = 0.0;
     /**
-     * @var Seller
+     * @var array
      */
     protected $seller;
     /**
-     * @var Customer
+     * @var array
      */
     protected $customer;
     /**
-     * @var Recipient
+     * @var array
      */
     protected $recipient;
     /**

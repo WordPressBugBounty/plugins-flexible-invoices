@@ -29,6 +29,10 @@ class OrderItems
      */
     private $settings;
     /**
+     * @var WC_Order
+     */
+    private $order;
+    /**
      * @param WC_Order $order
      */
     public function __construct(WC_Order $order)
@@ -106,6 +110,7 @@ class OrderItems
             if (is_a($item, WooProductItem::class)) {
                 if ('yes' === $this->settings->get('woocommerce_get_sku')) {
                     $item->set_sku($this->get_sku($order_item));
+                    // @phpstan-ignore-line
                 }
                 $item->set_wc_order_item_id($order_item->get_item_id())->set_wc_product_id($order_item->get_product_id())->set_product_attributes($this->get_product_attributes($order_item->get_product_id()));
                 $show_meta = $this->settings->get('woocommerce_add_variant_info') === 'yes';
@@ -161,7 +166,7 @@ class OrderItems
                 continue;
             }
             $rates[] = ['index' => $index, 'rate' => $tax['rate'], 'name' => $tax['name']];
-            $index++;
+            ++$index;
         }
         /**
          * Filters vat types.

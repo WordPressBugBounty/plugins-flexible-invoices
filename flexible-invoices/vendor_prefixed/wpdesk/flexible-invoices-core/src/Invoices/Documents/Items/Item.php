@@ -69,7 +69,7 @@ interface Item
      */
     public function set_vat_rate(float $vat_rate): Item;
     /**
-     * @param float $vat_rate_name
+     * @param string $vat_rate_name
      *
      * @return $this
      */

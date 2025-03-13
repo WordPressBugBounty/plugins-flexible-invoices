@@ -34,7 +34,7 @@ class PostTypeCapabilities
         $wp_roles = wp_roles();
         $roles_with_access = [GeneralSettings::ADMIN_ROLE];
         $new_roles = $this->settings->get('roles', [GeneralSettings::SHOP_MANAGER_ROLE]);
-        if ($new_roles && is_array($new_roles)) {
+        if (isset($new_roles) && is_array($new_roles)) {
             $roles_with_access = array_merge($roles_with_access, $new_roles);
         }
         foreach ($wp_roles->roles as $role_id => $role_structure) {

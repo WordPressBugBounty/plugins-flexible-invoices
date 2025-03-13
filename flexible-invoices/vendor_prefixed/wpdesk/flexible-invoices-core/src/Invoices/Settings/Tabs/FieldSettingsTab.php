@@ -54,7 +54,7 @@ abstract class FieldSettingsTab implements SettingsTab
      *
      * @return void
      */
-    public function output_render(Renderer $renderer)
+    public function output_render(Renderer $renderer): void
     {
         echo $this->get_form()->render_form($renderer);
         //phpcs:ignore
@@ -74,7 +74,7 @@ abstract class FieldSettingsTab implements SettingsTab
         $this->get_form()->handle_request($request);
     }
     /**
-     * @return array|null
+     * @return array
      */
     public function get_data()
     {

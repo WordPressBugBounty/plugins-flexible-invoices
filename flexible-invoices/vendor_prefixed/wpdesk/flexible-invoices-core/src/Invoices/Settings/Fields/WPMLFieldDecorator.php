@@ -2,7 +2,6 @@
 
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields;
 
-use WPDeskFIVendor\WPDesk\Forms\Field;
 use WPDeskFIVendor\WPDesk\Forms\Field\BasicField;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Translator;
 /**
@@ -22,9 +21,7 @@ class WPMLFieldDecorator
         $this->field = $field;
     }
     /**
-     * @param string $textdomain
-     *
-     * @return Field
+     * @return BasicField
      */
     public function get_field()
     {

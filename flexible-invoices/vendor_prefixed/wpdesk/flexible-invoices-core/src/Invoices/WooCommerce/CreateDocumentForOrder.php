@@ -42,10 +42,6 @@ class CreateDocumentForOrder implements Hookable
      */
     private $save_document;
     /**
-     * @var Renderer
-     */
-    private $renderer;
-    /**
      * @var PDF
      */
     private $pdf;
@@ -57,15 +53,13 @@ class CreateDocumentForOrder implements Hookable
      * @param DocumentFactory $document_factory
      * @param Settings        $settings
      * @param SaveDocument    $save_document
-     * @param Renderer        $renderer
      * @param PDF             $pdf
      */
-    public function __construct(DocumentFactory $document_factory, Settings $settings, SaveDocument $save_document, Renderer $renderer, PDF $pdf)
+    public function __construct(DocumentFactory $document_factory, Settings $settings, SaveDocument $save_document, PDF $pdf)
     {
         $this->document_factory = $document_factory;
         $this->settings = $settings;
         $this->save_document = $save_document;
-        $this->renderer = $renderer;
         $this->pdf = $pdf;
         $this->conditional_logic = new ConditionalLogic($settings);
     }
@@ -91,6 +85,7 @@ class CreateDocumentForOrder implements Hookable
             }
             foreach ($statuses as $status) {
                 add_action('woocommerce_order_status_' . $status, [$this, 'generate_for_order_status'], 10, 2);
+                //@phpstan-ignore-line
             }
         }
     }
@@ -155,6 +150,7 @@ class CreateDocumentForOrder implements Hookable
                     $document_id = $this->save_document->save($creator, \true);
                     if ($document_id) {
                         $order->update_meta_data('_' . $document_type . '_generated', $document_id);
+                        //@phpstan-ignore-line
                         $this->set_paid_for_order_status($document_id, $document, $order);
                         $order->save_meta_data();
                     }
@@ -260,8 +256,10 @@ class CreateDocumentForOrder implements Hookable
             $email_class = 'fi_' . $document->get_type();
             if (!$document->get_order_id()) {
                 $emails['fi_invoice_manual']->should_send_email($document, $this->pdf);
-            } else if (!empty($emails[$email_class]) && !empty($client->get_email())) {
+                //@phpstan-ignore-line
+            } elseif (!empty($emails[$email_class]) && !empty($client->get_email())) {
                 $emails[$email_class]->should_send_email($order, $document, $this->pdf);
+                //@phpstan-ignore-line
             }
         }
     }

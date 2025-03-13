@@ -38,6 +38,7 @@ class FQIntegration
         $fq_quantity = (float) $measurement_needed * (float) $measurement_qty;
         if ($fq_quantity === $this->order_item->get_quantity() && $measurement_unit) {
             return __($measurement_unit, $this->domain);
+            // phpcs:ignore
         }
         return $default;
     }

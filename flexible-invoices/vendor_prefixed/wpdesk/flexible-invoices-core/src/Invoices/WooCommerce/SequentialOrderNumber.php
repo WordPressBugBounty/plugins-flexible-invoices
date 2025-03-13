@@ -97,7 +97,7 @@ class SequentialOrderNumber implements Hookable
      * Set order num action
      *
      * @param int    $post_id Post ID.
-     * @param object $post    Post object.
+     * @param object $post_or_order    Post object.
      *
      * @internal You should not use this directly from another application
      */
@@ -110,10 +110,12 @@ class SequentialOrderNumber implements Hookable
         if ($order) {
             $order_number = $order->get_meta(self::META_NAME_ORDER_NUMBER);
             if (!$order_number) {
+                //@phpstan-ignore-line
                 if ($this->settings->get('woocommerce_sequential_orders') === 'yes') {
                     $this->is_hpos_active() ? $this->insert_order_number_to_order($order) : $this->insert_order_number_to_post($order);
                 } else {
                     $order->update_meta_data(self::META_NAME_ORDER_NUMBER, $order->get_id());
+                    //@phpstan-ignore-line
                     $order->save();
                 }
             }
@@ -139,7 +141,8 @@ class SequentialOrderNumber implements Hookable
         $order_id = $order->get_id();
         $success = \false;
         $wc_orders_meta = $wpdb->prefix . 'wc_orders_meta';
-        if ($wpdb->get_var("SHOW TABLES LIKE '{$wc_orders_meta}'") == $wc_orders_meta) {
+        if ($wpdb->get_var("SHOW TABLES LIKE '{$wc_orders_meta}'") === $wc_orders_meta) {
+            //phpcs:ignore
             for ($i = 0; $i < 3 && !$success; $i++) {
                 //phpcs:disable
                 // This seems to me like the safest way to avoid order number clashes.
@@ -163,11 +166,13 @@ class SequentialOrderNumber implements Hookable
     {
         $namespace = $this->is_hpos_active() ? self::NEW_NAMESPACE : self::OLD_NAMESPACE;
         if (!get_option($namespace)) {
+            //@phpstan-ignore-line
             $orders = wc_get_orders(['limit' => '10', 'paginate' => \false]);
             if (is_array($orders)) {
                 foreach ($orders as $order) {
                     if ($order->get_meta(self::META_NAME_ORDER_NUMBER) === '') {
                         $order->add_meta_data(self::META_NAME_ORDER_NUMBER, $order->get_id());
+                        //@phpstan-ignore-line
                         $order->save();
                     }
                 }
@@ -184,6 +189,7 @@ class SequentialOrderNumber implements Hookable
     {
         $namespace = $this->is_hpos_active() ? self::NEW_NAMESPACE : self::OLD_NAMESPACE;
         if (!get_option($namespace . '_reinstall_numbering')) {
+            //@phpstan-ignore-line
             delete_option($namespace);
             update_option($namespace . '_reinstall_numbering', 'yes');
         }

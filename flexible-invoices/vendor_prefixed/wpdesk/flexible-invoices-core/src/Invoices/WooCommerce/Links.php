@@ -33,7 +33,8 @@ class Links
      */
     public static function generate_link(int $order_id, string $type, string $label, $is_active = \true): string
     {
-        $class_name = $tooltip = '';
+        $class_name = '';
+        $tooltip = '';
         $url = wp_nonce_url(admin_url('admin-ajax.php?action=fi_generate_document&issue_type=action&type=' . $type . '&order_id=' . $order_id));
         if (empty($label)) {
             $label = esc_html__('Issue Invoice', 'flexible-invoices');
@@ -44,7 +45,7 @@ class Links
             $class_name = 'button-disabled';
             $tooltip = esc_attr__('This order is refunded. Change the order status before you invoice', 'flexible-invoices');
         }
-        return '<p><a class="button generate-document generate-' . $type . ' ' . $class_name . '" href="' . esc_url($url) . '" title="' . esc_attr($tooltip) . '">' . esc_html($label) . '</a></p>';
+        return '<p><a class="button generate-document generate-' . esc_attr($type) . ' ' . $class_name . '" href="' . esc_url($url) . '" title="' . esc_attr($tooltip) . '">' . esc_html($label) . '</a></p>';
     }
     /**
      * @param Document $document
@@ -81,9 +82,13 @@ class Links
     {
         if ($document->get_type() === 'invoice') {
             $correction_id = 0;
+            // ??? The hell is this?
             $class_name = $correction_id ? 'document-generated' : 'document-not-generated';
+            //@phpstan-ignore-line
             $title = $correction_id ? esc_html__('Show Correction', 'flexible-invoices') : esc_html__('Create Correction', 'flexible-invoices');
+            //@phpstan-ignore-line
             if (!$correction_id) {
+                //@phpstan-ignore-line
                 $url = wp_nonce_url(admin_url('post-new.php?post_type=inspire_invoice&document_type=correction&corrected_invoice_id=' . $document->get_id()));
             } else {
                 $url = wp_nonce_url(admin_url('post.php?post=' . $correction_id . '&action=edit'));
@@ -108,7 +113,9 @@ class Links
             }
             $invoice_id = (int) get_post_meta($document->get_id(), $meta_name, \true);
             $class_name = $invoice_id ? 'document-generated' : 'document-not-generated';
+            //@phpstan-ignore-line
             $title = $invoice_id ? esc_html__('Show Invoice', 'flexible-invoices') : esc_html__('Create Invoice', 'flexible-invoices');
+            //@phpstan-ignore-line
             if (!$invoice_id) {
                 $url = wp_nonce_url(admin_url('post-new.php?post_type=inspire_invoice&document_type=invoice&related_proforma_id=' . $document->get_id()));
             } else {

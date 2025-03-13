@@ -6,6 +6,7 @@ use Exception;
 use WPDeskFIVendor\Psr\Log\LoggerInterface;
 use RuntimeException;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentExceptions\UnknownDocumentTypeException;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\AbstractDocumentCreator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCreator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document;
@@ -14,6 +15,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Invoice;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\CalculateTotals;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\EmailStatus;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\AbstractSettingsStrategy;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType;
 use WPDeskFIVendor\WPDesk\Mutex\WordpressMySQLLockMutex;
@@ -32,11 +34,7 @@ class SaveDocument implements Hookable
      */
     private $document_factory;
     /**
-     * @var Settings
-     */
-    private $settings;
-    /**
-     * @var SettingsStrategy
+     * @var AbstractSettingsStrategy
      */
     private $strategy;
     /**
@@ -49,15 +47,13 @@ class SaveDocument implements Hookable
     private $plugin_version;
     /**
      * @param DocumentFactory  $document_factory
-     * @param Settings         $settings
-     * @param SettingsStrategy $strategy
+     * @param AbstractSettingsStrategy $strategy
      * @param LoggerInterface  $logger
      * @param string           $plugin_version
      */
-    public function __construct(DocumentFactory $document_factory, Settings $settings, SettingsStrategy $strategy, LoggerInterface $logger, string $plugin_version)
+    public function __construct(DocumentFactory $document_factory, AbstractSettingsStrategy $strategy, LoggerInterface $logger, string $plugin_version)
     {
         $this->document_factory = $document_factory;
-        $this->settings = $settings;
         $this->strategy = $strategy;
         $this->logger = $logger;
         $this->plugin_version = $plugin_version;
@@ -68,6 +64,7 @@ class SaveDocument implements Hookable
     public function hooks()
     {
         add_action('save_post', [$this, 'save_custom_fields_action'], 2, 2);
+        //@phpstan-ignore-line
     }
     /**
      * @param int     $post_id
@@ -90,7 +87,7 @@ class SaveDocument implements Hookable
             return \false;
         }
         try {
-            $type = $_REQUEST['document_type'] ?? Invoice::DOCUMENT_TYPE;
+            $type = sanitize_text_field(wp_unslash($_REQUEST['document_type'] ?? Invoice::DOCUMENT_TYPE));
             $creators = $this->document_factory->get_creators();
             if (isset($creators[$type])) {
                 $this->document_factory->set_document_type($type);
@@ -105,13 +102,13 @@ class SaveDocument implements Hookable
         return $post_id;
     }
     /**
-     * @param DocumentCreator $document_creator
+     * @param AbstractDocumentCreator $document_creator
      * @param bool            $should_insert_post
      *
      * @return int
      * @throws RuntimeException Throw exception for mutex lock.
      */
-    public function save(DocumentCreator $document_creator, $should_insert_post = \false)
+    public function save(AbstractDocumentCreator $document_creator, $should_insert_post = \false)
     {
         $document_id = 0;
         try {

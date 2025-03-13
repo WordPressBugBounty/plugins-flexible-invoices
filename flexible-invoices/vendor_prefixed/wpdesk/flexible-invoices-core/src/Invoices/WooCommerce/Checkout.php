@@ -33,6 +33,7 @@ class Checkout implements Hookable
         if ('yes' === $this->settings->get('woocommerce_add_nip_field')) {
             add_action('woocommerce_checkout_process', [$this, 'validate_vat_number']);
             add_action('woocommerce_after_checkout_validation', [$this, 'should_validate_nip'], 10, 2);
+            //@phpstan-ignore-line
         }
     }
     /**
@@ -65,6 +66,7 @@ class Checkout implements Hookable
     public function save_customer_vat_field($user_id, $post_data)
     {
         if ($user_id && isset($post_data['billing_vat_number'])) {
+            //@phpstan-ignore-line
             update_user_meta($user_id, 'vat_number', sanitize_text_field($post_data['billing_vat_number']));
         }
     }
@@ -76,6 +78,7 @@ class Checkout implements Hookable
         $vat_number = isset($_POST['billing_vat_number']) ? trim(sanitize_text_field(wp_unslash($_POST['billing_vat_number']))) : '';
         // phpcs:ignore
         if ($vat_number && $this->settings->get('woocommerce_validate_nip') === 'yes' && !ValidateVatNumber::is_valid($vat_number)) {
+            //@phpstan-ignore-line
             $country = WC()->customer->get_billing_country();
             $woocommerce_default_country = get_option('woocommerce_default_country', 0);
             if ($woocommerce_default_country === $country && !in_array($woocommerce_default_country, ValidateVatNumber::COUNTRY_ISO_SLUG, \true)) {

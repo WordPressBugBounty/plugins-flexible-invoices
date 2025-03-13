@@ -10,7 +10,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF;
 final class FontsData
 {
     /**
-     * @var \string[][]
+     * @var array[]
      */
     private $fonts_data = ['freeserif' => ['R' => 'FreeSerif.ttf', 'I' => 'FreeSerif.ttf', 'B' => 'FreeSerif-Bold.ttf', 'BI' => 'FreeSerif-Bold.ttf', 'useOTL' => 0xff, 'useKashida' => 75]];
     /**
@@ -74,7 +74,7 @@ final class FontsData
         return $this;
     }
     /**
-     * @return \string[][]
+     * @return array
      */
     public function get()
     {

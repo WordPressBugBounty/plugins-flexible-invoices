@@ -13,7 +13,7 @@ class EmailStatus
 {
     /**
      * @param Document $document
-     * @param WC_Order $order
+     * @param bool $is_send
      *
      * @return void
      */
@@ -24,7 +24,6 @@ class EmailStatus
     }
     /**
      * @param Document $document
-     * @param WC_Order $order
      *
      * @return string
      */
