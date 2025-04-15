@@ -56,7 +56,12 @@ class Assets implements Hookable
             $this->enqueue_post_type_scripts($screen);
             $this->enqueue_settings_scripts($screen);
             $this->enqueue_product_search_scripts($screen);
+            $this->enqueue_template_block_editor_scripts();
         }
+    }
+    private function enqueue_template_block_editor_scripts()
+    {
+        wp_enqueue_style('fitb-block-pdf-styles', $this->assets_url . 'css/blocks/block-pdf.css', [], $this->scripts_version);
     }
     /**
      * @param WP_Screen $screen

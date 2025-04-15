@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexible-invoices/number",
+	"version": "1.0.0",
+	"title": "Document number",
+	"category": "flexible-invoices",
+	"icon": "media-document",
+	"description": "Document formatted number. Contains prefix and suffix.",
+	"example": {},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"textdomain": "flexible-invoices",
+	"editorScript": "file:./index.js"
+}

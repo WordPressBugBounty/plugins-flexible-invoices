@@ -4,6 +4,8 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data;
 
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Recipient;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\ValueObjects\DocumentRecipient;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\PostType\TemplatesPostType;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\BlockTemplateEditor;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Seller;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Customer;
@@ -211,6 +213,10 @@ abstract class AbstractDataSource implements SourceData
      */
     public function get_notes(): string
     {
+        if (BlockTemplateEditor::is_block_template_editor_active()) {
+            $meta = get_post_meta(BlockTemplateEditor::get_active_template_id(), $this->get_document_type() . '_' . TemplatesPostType::NOTES_META, \true);
+            return (string) $meta;
+        }
         return $this->settings->get($this->get_document_type() . '_notes', '');
     }
     /**

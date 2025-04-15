@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexible-invoices/payment-status",
+	"version": "1.0.0",
+	"title": "Payment status",
+	"category": "flexible-invoices",
+	"icon": "post-status",
+	"description": "Payment status of the invoice.",
+	"example": {},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"textdomain": "flexible-invoices",
+	"editorScript": "file:./index.js"
+}

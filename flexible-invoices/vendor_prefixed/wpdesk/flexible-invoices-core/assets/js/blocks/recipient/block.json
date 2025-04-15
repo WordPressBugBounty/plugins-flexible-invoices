@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexible-invoices/recipient",
+	"version": "1.0.0",
+	"title": "Recipient",
+	"category": "flexible-invoices",
+	"icon": "admin-users",
+	"description": "Preset of elements containing recipient data",
+	"example": {},
+	"supports": {
+		"lock": false,
+		"html": false,
+		"customClassName": false
+	},
+	"textdomain": "flexible-invoices",
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
+}

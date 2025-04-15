@@ -215,7 +215,7 @@ final class DashboardWidget
     {
         $widget_data = $this->get_widget_data();
         if (!empty($widget_data)) {
-            echo '<div class="wpdesk_ltv_dashboard_widget">';
+            echo '<div class="flexible-invoices">';
             if ($this->show_widget_header && $widget_data['header']) {
                 echo wp_kses_post($widget_data['header']);
             }

@@ -14,6 +14,8 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\AbstractSettingsStrategy;
 use WPDeskFIVendor\Mpdf\Mpdf;
 use WPDeskFIVendor\Mpdf\MpdfException;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\TemplateRenderers\PHPTemplateRenderer;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\TemplateRenderers\TemplateRendererInterface;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Translator;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 use WPDeskFIVendor\WPDesk\View\Renderer\Renderer;
@@ -25,7 +27,7 @@ class GeneratePDF implements PdfPrinter, Hookable
     /**
      * @var LibraryInfo
      */
-    private $library_info;
+    protected $library_info;
     /**
      * @var Renderer
      */
@@ -33,15 +35,15 @@ class GeneratePDF implements PdfPrinter, Hookable
     /**
      * @var DocumentFactory
      */
-    private $document_factory;
+    protected $document_factory;
     /**
      * @var AbstractSettingsStrategy
      */
-    private $strategy;
+    protected $strategy;
     /**
      * @var Settings
      */
-    private $settings;
+    protected $settings;
     /**
      * @param LibraryInfo      $library_info
      * @param Renderer         $renderer
@@ -149,8 +151,8 @@ class GeneratePDF implements PdfPrinter, Hookable
         /**
          * Filters the settings for the MPDF library.
          *
-         * @param array  $config_data Config data.
-         * @param Config $config      Config class.
+         * @param array $config_data Config data.
+         * @param Config $config Config class.
          *
          * @return array
          *
@@ -170,10 +172,8 @@ class GeneratePDF implements PdfPrinter, Hookable
         if (is_rtl()) {
             $mpdf->SetDirectionality('rtl');
         }
-        if ($this->settings->get('pdf_numbering') === 'yes') {
-            $mpdf->SetFooter('{PAGENO}/{nbpg}');
-        }
-        $mpdf->img_dpi = 200;
+        $this->maybe_enable_page_numbering($mpdf);
+        $this->set_img_dpi($mpdf, 200);
         if (!is_a($document, TemplateDocumentDecorator::class)) {
             $document = new TemplateDocumentDecorator($document, $this->strategy);
         }
@@ -184,6 +184,20 @@ class GeneratePDF implements PdfPrinter, Hookable
         }
         $mpdf->WriteHTML($html);
         return $mpdf->Output(str_replace(['/'], ['_'], $document->get_formatted_number()) . '.pdf', 'S');
+    }
+    protected function maybe_enable_page_numbering(Mpdf $mpdf): void
+    {
+        if ($this->settings->get('pdf_numbering') === 'yes') {
+            $this->enable_page_numbering($mpdf);
+        }
+    }
+    protected function enable_page_numbering(Mpdf $mpdf)
+    {
+        $mpdf->SetFooter('{PAGENO}/{nbpg}');
+    }
+    private function set_img_dpi(Mpdf $mpdf, $dpi)
+    {
+        $mpdf->img_dpi = $dpi;
     }
     /**
      * @param Document $document
@@ -289,10 +303,16 @@ class GeneratePDF implements PdfPrinter, Hookable
         $document_name = $this->get_template_name($document->get_type());
         do_action('fi/core/pdf/generate/before', $document, $this->settings, $document_name);
         try {
-            return $this->renderer->render('documents/' . $document_name, ['invoice' => $document, 'currency_helper' => new Helpers\Currency($document->get_currency()), 'meta' => new MetaPostContainer($document->get_id()), 'translator' => new Translator(), 'library_info' => $this->library_info, 'settings' => $this->strategy->get_settings(), 'corrected_invoice' => $corrected_invoice_pdf, 'layout_name' => $this->get_layout_name(), 'order' => $document->get_order_id()]);
+            $invoice_atts = ['invoice' => $document, 'currency_helper' => new Helpers\Currency($document->get_currency()), 'meta' => new MetaPostContainer($document->get_id()), 'translator' => new Translator(), 'library_info' => $this->library_info, 'settings' => $this->strategy->get_settings(), 'corrected_invoice' => $corrected_invoice_pdf, 'layout_name' => $this->get_layout_name(), 'order' => $document->get_order_id()];
+            $template_renderer = $this->get_template_renderer();
+            return $template_renderer->render(['document_name' => $document_name, 'invoice_atts' => $invoice_atts]);
         } catch (Exception $e) {
             return $e->getMessage();
         }
+    }
+    protected function get_template_renderer(): TemplateRendererInterface
+    {
+        return new PHPTemplateRenderer($this->renderer);
     }
     /**
      * @return string

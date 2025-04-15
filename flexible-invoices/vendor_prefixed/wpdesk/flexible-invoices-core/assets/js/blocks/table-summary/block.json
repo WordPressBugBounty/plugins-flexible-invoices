@@ -1,0 +1,178 @@
+{
+	"apiVersion": 2,
+	"name": "flexible-invoices/table-summary",
+	"title": "Summary table",
+	"category": "flexible-invoices",
+	"icon": "table-row-after",
+	"description": "Table containing summary and tax information.",
+	"keywords": [
+		"table",
+		"summary",
+		"sum"
+	],
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"textdomain": "flexible-invoices",
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php",
+	"attributes": {
+		"headers": {
+			"type": "array",
+			"default": [
+				"Total",
+				"{SummaryTotalNet}",
+				"Tax name",
+				"{SummaryTotalTax}",
+				"{SummaryTotalGross}"
+			]
+		},
+		"rows": {
+			"type": "array",
+			"default": [
+				"Including",
+				"{SummaryTaxNet}",
+				"{SummaryTaxName}",
+				"{SummaryTax}",
+				"{SummaryTaxGross}"
+			]
+		},
+		"states": {
+			"type": "array",
+			"default": [
+				true,
+				true,
+				true,
+				true,
+				true
+			]
+		},
+		"headerBackground": {
+			"type": "string",
+			"default": "rgba(192, 192, 192, 1)"
+		},
+		"headerTextColor": {
+			"type": "string",
+			"default": "rgba(64, 64, 64, 1)"
+		},
+		"headerTextAlign": {
+			"type": "string",
+			"default": "center"
+		},
+		"headerTextDecoration": {
+			"type": "string",
+			"default": "none"
+		},
+		"headerFontWeight": {
+			"type": "string",
+			"default": "normal"
+		},
+		"headerFontStyle": {
+			"type": "string",
+			"default": "normal"
+		},
+		"headerFontSize": {
+			"type": "string",
+			"default": "1em"
+		},
+
+		"multipleBodyBackground": {
+			"type": "boolean",
+			"default": false
+		},
+		"bodyBackground": {
+			"type": "string",
+			"default": "rgba(255, 255, 255, 1)"
+		},
+		"bodyBackgroundEven": {
+			"type": "string",
+			"default": "#rgba(255, 255, 255, 1)"
+		},
+		"bodyTextColorEven": {
+			"type": "string",
+			"default": "rgba(128, 128, 128, 1)"
+		},
+		"bodyTextColor": {
+			"type": "string",
+			"default": "rgba(128, 128, 128, 1)"
+		},
+		"bodyTextAlign": {
+			"type": "string",
+			"default": "left"
+		},
+		"bodyTextDecoration": {
+			"type": "string",
+			"default": "none"
+		},
+		"bodyFontWeight": {
+			"type": "string",
+			"default": "normal"
+		},
+		"bodyFontStyle": {
+			"type": "string",
+			"default": "normal"
+		},
+		"bodyFontSize": {
+			"type": "string",
+			"default": "1em"
+		},
+
+		"headerBorderColumnColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"headerBorderColumnWidthLeft": {
+			"type": "string",
+			"default": "0px"
+		},
+		"headerBorderColumnWidthRight": {
+			"type": "string",
+			"default": "0px"
+		},
+		"headerBorderRowColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"headerBorderRowWidthTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"headerBorderRowWidthBottom": {
+			"type": "string",
+			"default": "0px"
+		},
+		"tableBorderColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"tableBorderWidth": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderColumnColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"bodyBorderColumnWidthLeft": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderColumnWidthRight": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderRowColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"bodyBorderRowWidthTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderRowWidthBottom": {
+			"type": "string",
+			"default": "0px"
+		}
+	}
+}

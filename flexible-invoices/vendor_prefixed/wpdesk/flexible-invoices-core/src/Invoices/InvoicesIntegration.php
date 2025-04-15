@@ -4,10 +4,14 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore;
 
 use WPDeskFIVendor\Psr\Log\LoggerInterface;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Beacon\BeaconLoader;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\BlockTemplate\SampleTemplates\SampleTemplateInserter;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\AbstractDocumentCreator;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\EditorBlocks\RegisterEditorBlocks;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\PostType\TemplatesPostType;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\InvoiceCreator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Creator\DocumentCreator;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\BlockPDFGenerator;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\GeneratePDF;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\SettingsForm;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\AbstractSettingsStrategy;
@@ -228,7 +232,12 @@ class InvoicesIntegration implements Hookable
      */
     private function set_pdf_writer()
     {
-        $this->pdf = new PDF($this->library_info, $this->renderer, $this->document_factory, $this->strategy);
+        if (Helpers\BlockTemplateEditor::is_block_template_editor_active()) {
+            $pdf = new BlockPDFGenerator($this->library_info, $this->renderer, $this->document_factory, $this->strategy);
+        } else {
+            $pdf = new PDF($this->library_info, $this->renderer, $this->document_factory, $this->strategy);
+        }
+        $this->pdf = $pdf;
     }
     /**
      * @return PDF
@@ -312,6 +321,7 @@ class InvoicesIntegration implements Hookable
         $this->add_hookable(new WordPress\RegisterMetaBoxes($this->strategy, $this->document_factory, $this->renderer, $this->settings));
         $this->add_hookable(new WordPress\PostTypeColumns($this->strategy, $this->document_factory));
         $this->add_hookable(new WordPress\Dashboard($this->document_factory, $this->strategy, $capabilities, $this->renderer, $this->settings));
+        $this->add_hookable(new SampleTemplateInserter($this->renderer));
         $this->add_hookable(new WordPress\BulkActions());
         $this->add_hookable(new WordPress\User());
         $this->add_hookable(new WordPress\FindProducts($this->settings));
@@ -322,6 +332,8 @@ class InvoicesIntegration implements Hookable
         $this->add_hookable(new WordPress\Download\BatchDocumentsDownload($this->get_pdf_writer(), $this->document_factory));
         $this->add_hookable(new WordPress\SearchCustomer());
         $this->add_hookable(new BeaconLoader($this->library_info));
+        $this->add_hookable(new TemplatesPostType($this->library_info));
+        $this->add_hookable(new RegisterEditorBlocks($this->library_info));
         $this->add_hookable($this->save_document);
         $this->add_hookable($this->get_pdf_writer());
     }

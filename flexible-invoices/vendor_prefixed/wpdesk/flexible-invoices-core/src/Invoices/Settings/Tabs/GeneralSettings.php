@@ -10,6 +10,7 @@ use WPDeskFIVendor\WPDesk\Forms\Field\NoOnceField;
 use WPDeskFIVendor\WPDesk\Forms\Field\SelectField;
 use WPDeskFIVendor\WPDesk\Forms\Field\SubmitField;
 use WPDeskFIVendor\WPDesk\Forms\Field\TextAreaField;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields\FICheckboxField;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\SettingsForm;
 /**
  * General Settings Tab Page.

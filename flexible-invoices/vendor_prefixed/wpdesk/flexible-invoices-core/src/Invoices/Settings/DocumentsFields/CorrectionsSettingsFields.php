@@ -3,6 +3,7 @@
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\DocumentsFields;
 
 use WPDeskFIVendor\WPDesk\Forms\Field\TextAreaField;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\BlockTemplateEditor;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Plugin;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\InvoicesIntegration;
@@ -21,17 +22,34 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields\WPMLField
  */
 final class CorrectionsSettingsFields implements DocumentsFieldsInterface
 {
-    /**
-     * @return string
-     */
-    private function get_doc_link()
+    public function get_fields(): array
+    {
+        $invoice_beacon = $this->get_beacon_translations();
+        return array_merge([(new SubStartField())->set_label(esc_html__('Correction', 'flexible-invoices'))->set_name('correction'), (new Header())->set_label(esc_html__('Correction Settings', 'flexible-invoices'))->set_description($this->get_doc_link()), (new DisableFieldProAdapter('enable_corrections', (new FICheckboxField())->set_name('')->set_label(esc_html__('Automatic Corrections', 'flexible-invoices'))->set_sublabel(esc_html__('Enable automatic corrections generation for order refunds.', 'flexible-invoices'))->add_class('hs-beacon-search')->set_attribute('data-beacon_search', $invoice_beacon)))->get_field()], $this->get_fields_for_disabled_template_editor($invoice_beacon), [(new SubEndField())->set_label('')]);
+    }
+    private function get_fields_for_disabled_template_editor($invoice_beacon): array
+    {
+        if (BlockTemplateEditor::is_block_template_editor_active()) {
+            return [];
+        }
+        return [(new DisableFieldProAdapter('correction_number_reset_type', (new SelectField())->set_name('')->set_label(esc_html__('Number Reset', 'flexible-invoices'))->set_description(esc_html__('Select when to reset the correction number to 1.', 'flexible-invoices'))->set_options(['year' => esc_html__('Yearly', 'flexible-invoices'), 'month' => esc_html__('Monthly', 'flexible-invoices'), 'none' => esc_html__('None', 'flexible-invoices')])->add_class('hs-beacon-search')->set_attribute('data-beacon_search', $invoice_beacon)))->get_field(), (new DisableFieldProAdapter('correction_start_number', (new InputTextField())->set_name('')->set_label(esc_html__('Next Number', 'flexible-invoices'))->set_description(esc_html__('Enter the next correction number. The default value is 1 and changes every time a correction is issued. Existing corrections won\'t be changed.', 'flexible-invoices'))->add_class('regular-text edit_disabled_field hs-beacon-search')->set_attribute('type', 'number')->set_attribute('data-beacon_search', $invoice_beacon)))->get_field(), (new DisableFieldProAdapter('correction_number_prefix', (new WPMLFieldDecorator((new InputTextField())->set_name('')->set_label(esc_html__('Prefix', 'flexible-invoices'))->set_default_value('1')->set_default_value(esc_html__('Corrected invoice', 'flexible-invoices'))->add_class('regular-text hs-beacon-search')->set_description(wp_kses(__('For prefixes use the following short tags: <code>{DD}</code> for day, <code>{MM}</code> for month, <code>{YYYY}</code> for year.', 'flexible-invoices'), ['code' => []]))->set_attribute('data-beacon_search', $invoice_beacon)))->get_field()))->get_field(), (new DisableFieldProAdapter('correction_number_suffix', (new WPMLFieldDecorator((new InputTextField())->set_name('')->set_label(esc_html__('Suffix', 'flexible-invoices'))->set_default_value(esc_html__('/{MM}/{YYYY}', 'flexible-invoices'))->add_class('regular-text hs-beacon-search')->set_description(wp_kses(__('For suffixes use the following short tags: <code>{DD}</code> for day, <code>{MM}</code> for month, <code>{YYYY}</code> for year.', 'flexible-invoices'), ['code' => []]))->set_attribute('data-beacon_search', $invoice_beacon)))->get_field()))->get_field(), (new DisableFieldProAdapter('correction_default_due_time', (new InputTextField())->set_name('')->set_label(esc_html__('Default Due Time', 'flexible-invoices'))->set_default_value('0')->set_attribute('type', 'number')->add_class('regular-text hs-beacon-search')->set_attribute('data-beacon_search', $invoice_beacon)))->get_field(), (new DisableFieldProAdapter('correction_notes', (new WPMLFieldDecorator((new TextAreaField())->set_name('')->set_label(esc_html__('Reason', 'flexible-invoices'))->set_default_value(esc_attr__('Refund', 'flexible-invoices'))->add_class('large-text hs-beacon-search')->set_attribute('data-beacon_search', $invoice_beacon)))->get_field()))->get_field()];
+    }
+    public static function get_tab_slug(): string
+    {
+        return 'corrections';
+    }
+    public function get_tab_name(): string
+    {
+        return esc_html__('Corrections', 'flexible-invoices');
+    }
+    private function get_doc_link(): string
     {
         if (InvoicesIntegration::is_super()) {
             $docs_link = 'https://docs.flexibleinvoices.com/article/802-manual-issuing-corrections?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=settings-docs-link';
             if (get_locale() === 'pl_PL') {
                 $docs_link = 'https://www.wpdesk.pl/docs/faktury-korygujace-woocommerce/?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=settings-docs-link';
             }
-            // translators: %1$s: link, %2$s: strong, %3$s: /strong
+            // translators: %1 link, %2 strong open tag, %3 strong close tag
             return sprintf('%2$s%1$s%3$s', sprintf(esc_html__('Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-invoices'), '<a href="' . $docs_link . '" target="_blank" style="color: #4BB04E; font-weight: 700;">', '</a>'), '<strong>', '</strong>');
         } else {
             return sprintf('<a href="%1$s&utm_content=correction" target="_blank" style="color: #8f0350; font-weight: 700;">%2$s</a>', Plugin::upgrade_to_pro_url(), esc_html__('Upgrade to PRO and enable options below →', 'flexible-invoices'));
@@ -40,27 +58,5 @@ final class CorrectionsSettingsFields implements DocumentsFieldsInterface
     private function get_beacon_translations(): string
     {
         return esc_html__('Correction Settings', 'flexible-invoices');
-    }
-    /**
-     * @return array|\WPDesk\Forms\Field[]
-     */
-    public function get_fields()
-    {
-        $invoice_beacon = $this->get_beacon_translations();
-        return [(new SubStartField())->set_label(esc_html__('Correction', 'flexible-invoices'))->set_name('correction'), (new Header())->set_label(esc_html__('Correction Settings', 'flexible-invoices'))->set_description($this->get_doc_link()), (new DisableFieldProAdapter('enable_corrections', (new FICheckboxField())->set_name('')->set_label(esc_html__('Automatic Corrections', 'flexible-invoices'))->set_sublabel(esc_html__('Enable automatic corrections generation for order refunds.', 'flexible-invoices'))->add_class('hs-beacon-search')->set_attribute('data-beacon_search', $invoice_beacon)))->get_field(), (new DisableFieldProAdapter('correction_number_reset_type', (new SelectField())->set_name('')->set_label(esc_html__('Number Reset', 'flexible-invoices'))->set_description(esc_html__('Select when to reset the correction number to 1.', 'flexible-invoices'))->set_options(['year' => esc_html__('Yearly', 'flexible-invoices'), 'month' => esc_html__('Monthly', 'flexible-invoices'), 'none' => esc_html__('None', 'flexible-invoices')])->add_class('hs-beacon-search')->set_attribute('data-beacon_search', $invoice_beacon)))->get_field(), (new DisableFieldProAdapter('correction_start_number', (new InputTextField())->set_name('')->set_label(esc_html__('Next Number', 'flexible-invoices'))->set_description(esc_html__('Enter the next correction number. The default value is 1 and changes every time a correction is issued. Existing corrections won\'t be changed.', 'flexible-invoices'))->add_class('regular-text edit_disabled_field hs-beacon-search')->set_attribute('type', 'number')->set_attribute('data-beacon_search', $invoice_beacon)))->get_field(), (new DisableFieldProAdapter('correction_number_prefix', (new WPMLFieldDecorator((new InputTextField())->set_name('')->set_label(esc_html__('Prefix', 'flexible-invoices'))->set_default_value('1')->set_default_value(esc_html__('Corrected invoice', 'flexible-invoices'))->add_class('regular-text hs-beacon-search')->set_description(wp_kses(__('For prefixes use the following short tags: <code>{DD}</code> for day, <code>{MM}</code> for month, <code>{YYYY}</code> for year.', 'flexible-invoices'), ['code' => []]))->set_attribute('data-beacon_search', $invoice_beacon)))->get_field()))->get_field(), (new DisableFieldProAdapter('correction_number_suffix', (new WPMLFieldDecorator((new InputTextField())->set_name('')->set_label(esc_html__('Suffix', 'flexible-invoices'))->set_default_value(esc_html__('/{MM}/{YYYY}', 'flexible-invoices'))->add_class('regular-text hs-beacon-search')->set_description(wp_kses(__('For suffixes use the following short tags: <code>{DD}</code> for day, <code>{MM}</code> for month, <code>{YYYY}</code> for year.', 'flexible-invoices'), ['code' => []]))->set_attribute('data-beacon_search', $invoice_beacon)))->get_field()))->get_field(), (new DisableFieldProAdapter('correction_default_due_time', (new InputTextField())->set_name('')->set_label(esc_html__('Default Due Time', 'flexible-invoices'))->set_default_value('0')->set_attribute('type', 'number')->add_class('regular-text hs-beacon-search')->set_attribute('data-beacon_search', $invoice_beacon)))->get_field(), (new DisableFieldProAdapter('correction_notes', (new WPMLFieldDecorator((new TextAreaField())->set_name('')->set_label(esc_html__('Reason', 'flexible-invoices'))->set_default_value(esc_attr__('Refund', 'flexible-invoices'))->add_class('large-text hs-beacon-search')->set_attribute('data-beacon_search', $invoice_beacon)))->get_field()))->get_field(), (new SubEndField())->set_label('')];
-    }
-    /**
-     * @inheritDoc
-     */
-    public static function get_tab_slug()
-    {
-        return 'corrections';
-    }
-    /**
-     * @inheritDoc
-     */
-    public function get_tab_name()
-    {
-        return esc_html__('Corrections', 'flexible-invoices');
     }
 }

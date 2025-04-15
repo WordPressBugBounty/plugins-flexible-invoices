@@ -1,0 +1,16 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexible-invoices/dates",
+	"version": "1.0.0",
+	"title": "Dates",
+	"description": "Preset of elements containing invoice dates",
+	"category": "flexible-invoices",
+	"icon": "calendar-alt",
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"textdomain": "flexible-invoices",
+	"editorScript": "file:./index.js"
+}

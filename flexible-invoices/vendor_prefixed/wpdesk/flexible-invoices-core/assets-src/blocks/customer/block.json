@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexible-invoices/customer",
+	"version": "1.0.0",
+	"title": "Customer",
+	"description": "Preset of elements containing customer data",
+	"category": "flexible-invoices",
+	"icon": "businessman",
+	"example": {},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"textdomain": "flexible-invoices",
+	"editorScript": "file:./index.js"
+}

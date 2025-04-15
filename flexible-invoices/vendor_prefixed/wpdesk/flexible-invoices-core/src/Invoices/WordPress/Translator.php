@@ -35,9 +35,7 @@ class Translator
     public static function switch_lang($lang)
     {
         if (self::is_function_exists('icl_get_languages')) {
-            //TODO: Add method stubs for icl functions. phpstan.
             if (array_key_exists($lang, icl_get_languages())) {
-                //@phpstan-ignore-line
                 Hooks::wpml_switch_language_hook($lang);
             }
         }
@@ -59,7 +57,6 @@ class Translator
             if (empty(get_option('flexible-invoices-register-strings'))) {
                 foreach (self::STRINGS as $string) {
                     icl_register_string(self::$text_domain, self::$text_domain . ' - ' . $string, $string, \false, self::DEFAULT_LANG);
-                    //@phpstan-ignore-line
                 }
                 update_option('flexible-invoices-register-strings', 1);
             }
@@ -71,7 +68,6 @@ class Translator
             if (empty(get_option('flexible-invoices-register-woocommerce-strings'))) {
                 foreach (self::STRINGS_WOO as $string) {
                     icl_register_string(self::$text_domain, self::$text_domain . ' - ' . $string, $string, \false, self::DEFAULT_LANG);
-                    //@phpstan-ignore-line
                 }
                 update_option('flexible-invoices-register-woocommerce-strings', 1);
             }
@@ -85,7 +81,6 @@ class Translator
                 foreach (self::FIELDS as $meta_key => $meta_val) {
                     $value = get_option($meta_key, __($meta_val, self::$text_domain));
                     icl_register_string(self::$text_domain, $meta_key, $value, \true, $sitepress->get_default_language());
-                    //@phpstan-ignore-line
                 }
             }
         }
@@ -104,7 +99,6 @@ class Translator
         if (self::is_function_exists('icl_get_string_translations')) {
             $loaded_mo = self::load_mo_translations($text_domain);
             foreach (icl_get_string_translations() as $string_id => $icl_string) {
-                //@phpstan-ignore-line
                 if ($icl_string['context'] === $text_domain) {
                     if (array_key_exists($icl_string['name'], $fields)) {
                         self::translate_registered_meta_string($loaded_mo, $text_domain, $string_id, $icl_string, $fields);
@@ -112,7 +106,6 @@ class Translator
                         self::translate_registered_string($loaded_mo, $text_domain, $string_id, $icl_string);
                     }
                     icl_update_string_status($string_id);
-                    //@phpstan-ignore-line
                 }
             }
         }
@@ -207,7 +200,6 @@ class Translator
     {
         if (self::is_function_exists('icl_get_languages')) {
             if (array_key_exists($lang, icl_get_languages())) {
-                //@phpstan-ignore-line
                 self::$force_lang = $lang;
             }
         }
@@ -257,15 +249,7 @@ class Translator
                 unset($l10n[$textdomain]);
                 $l10n[$textdomain] = $lang_array;
                 $icl_st_complete = __($icl_string['value'] ?? '', $textdomain) !== $icl_string['value'] ? ICL_TM_COMPLETE : ICL_TM_NOT_TRANSLATED;
-                //@phpstan-ignore-line
-                icl_add_string_translation(
-                    //@phpstan-ignore-line
-                    $string_id,
-                    $lang_key,
-                    stripslashes(__($icl_string['value'] ?? '', $textdomain)),
-                    $icl_st_complete,
-                    $translator_id
-                );
+                icl_add_string_translation($string_id, $lang_key, stripslashes(__($icl_string['value'] ?? '', $textdomain)), $icl_st_complete, $translator_id);
             }
         }
         $l10n[$textdomain] = $backup;
@@ -283,27 +267,11 @@ class Translator
                     unset($l10n[$textdomain]);
                     $l10n[$textdomain] = $lang_array;
                     $icl_st_complete = __($icl_string['value'], $textdomain) !== $icl_string['value'] ? ICL_TM_COMPLETE : ICL_TM_NOT_TRANSLATED;
-                    //@phpstan-ignore-line
-                    icl_add_string_translation(
-                        //@phpstan-ignore-line
-                        $string_id,
-                        $lang_key,
-                        stripslashes(__($icl_string['value'], $textdomain)),
-                        $icl_st_complete,
-                        $translator_id
-                    );
+                    icl_add_string_translation($string_id, $lang_key, stripslashes(__($icl_string['value'], $textdomain)), $icl_st_complete, $translator_id);
                 }
             }
             if (\false === $is_en_lang) {
-                icl_add_string_translation(
-                    //@phpstan-ignore-line
-                    $string_id,
-                    self::DEFAULT_LANG,
-                    stripslashes($fields[$icl_string['name']]),
-                    ICL_TM_COMPLETE,
-                    //@phpstan-ignore-line
-                    $translator_id
-                );
+                icl_add_string_translation($string_id, self::DEFAULT_LANG, stripslashes($fields[$icl_string['name']]), ICL_TM_COMPLETE, $translator_id);
             }
         }
         $l10n[$textdomain] = $backup;

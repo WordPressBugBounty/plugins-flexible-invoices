@@ -3,6 +3,8 @@
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data;
 
 use WP_Post;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\PostType\TemplatesPostType;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\BlockTemplateEditor;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\CalculateTotals;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\PriceFormatter;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\MetaPostContainer;
@@ -73,7 +75,12 @@ class PostMetaDocumentDataSource extends AbstractDataSource
      */
     public function get_date_of_pay(): int
     {
-        return (int) $this->meta->get_fallback('_date_pay', $this->get_date_of_issue() + 60 * 60 * 24 * intval($this->settings->get($this->get_document_type() . '_default_due_time'), 0));
+        if (BlockTemplateEditor::is_block_template_editor_active()) {
+            $default_due_time = get_post_meta(BlockTemplateEditor::get_active_template_id(), $this->get_document_type() . '_' . TemplatesPostType::DEFAULT_DUE_META, \true);
+        } else {
+            $default_due_time = $this->settings->get($this->get_document_type() . '_default_due_time');
+        }
+        return (int) $this->meta->get_fallback('_date_pay', $this->get_date_of_issue() + 60 * 60 * 24 * (int) $default_due_time);
     }
     /**
      * @return int

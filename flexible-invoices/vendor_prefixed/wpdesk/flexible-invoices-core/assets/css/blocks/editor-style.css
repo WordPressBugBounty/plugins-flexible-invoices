@@ -1,0 +1,168 @@
+/* Styles for template editor. These styles are not visible on pdf file. */
+.editor-styles-wrapper .wp-block {
+	max-width: 100rem !important;
+}
+
+.wp-block.is-selected, .is-selected, .rich-text:focus{
+	outline: 1px solid #8f0350;
+}
+
+.wp-block:hover, .is-hovered{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	z-index: 10 !important;
+	position: relative;
+	outline: 1px solid #8f035080;
+}
+.fi-field-label-wrapper{
+	margin-bottom:12px;
+}
+
+.fi-table-button-wrapper{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.fi-row *{
+	font-family: sans-serif;
+	margin: 0;
+}
+.fi-row table th, .fi-row table td{
+	padding:10px 5px;
+}
+
+.fi-row table {
+	table-layout:fixed;
+}
+
+.fi-row table td {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-wrap: break-word;
+}
+
+.fi-settings-toggle{
+	display:flex;
+	flex-direction:row;
+	gap:12px;
+	align-items: center;
+	justify-content: space-between;
+	transition:0.1s;
+	padding: 12px 6px;
+	cursor: grab;
+}
+.fi-settings-toggle:hover{
+	background:#eee;
+}
+.fi-settings-toggle-header span.dashicons-ellipsis{
+	color:#bbb;
+	transform: rotate(90deg) scale(0.7);
+}
+.fi-settings-toggle-header{
+	display:flex;
+	flex-direction:row;
+	gap:4px;
+	align-items: flex-start;
+}
+.fi-color-preview{
+	cursor: pointer;
+}
+.fi-settings-toggle .components-toggle-control{
+	margin-bottom: 0;
+}
+.fi-quatro-fields-wrapper{
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+.fi-quatro-fields-wrapper .fi-quatro-fields{
+	display:flex;
+	flex-direction:row;
+	flex-wrap:nowrap;
+	gap:4px;
+	justify-content: center;
+}
+.fi-quatro-fields-wrapper .fi-quatro-fields input.fi-quatro-field-input{
+	max-width:64px;
+}
+
+
+
+.has-dashicons *{
+	font-family: dashicons !important;
+}
+button.fi-btn-active{
+	background:#eee;
+	color: var(--wp-components-color-accent,var(--wp-admin-theme-color,#3858e9));
+}
+.fi-field-wrapper{
+	padding: 12px 0;
+	margin-bottom: 12px;
+	border-bottom: 1px solid #efefef;
+}
+.fi-quatro-fields .fi-field-wrapper, .fi-duo-fields .fi-field-wrapper{
+	padding: 0;
+	margin-bottom: 0;
+	border-bottom: 0;
+	max-width:128px;
+}
+
+.fi-quatro-fields .fi-field-wrapper .fi-quatro-field > div {
+	padding: 0;
+	margin-bottom: 0;
+}
+
+.fi-text-group{
+	padding:8px;
+}
+
+.fi-input-with-columns{
+	display: flex;
+	max-width: 216px;
+	border:1px solid #aaa;
+}
+div.fi-input-with-columns * {
+	border: none !important;
+	margin-bottom: 0 !important;
+}
+div.fi-input-with-columns *:focus {
+	border: none !important;
+	box-shadow: none !important;
+	margin-bottom: 0 !important;
+	border-radius: 0;
+	background:#efefef;
+}
+.block-editor-block-list__block .block-list-appender{
+	width:auto;
+	position:relative;
+	padding: 12px;
+}
+
+.wp-block-columns {
+	border: 1px solid #888 !important;
+	padding: 2px 2px !important;
+}
+
+.wp-block-column {
+	border: 1px dashed #888 !important;
+	padding: 5px 5px !important;
+}
+
+.editor-styles-wrapper .wp-block {
+	max-width: 100rem !important;
+}
+
+.fi-quatro-fields-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.fi-quatro-fields-wrapper .fi-quatro-fields {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	gap: 4px;
+}

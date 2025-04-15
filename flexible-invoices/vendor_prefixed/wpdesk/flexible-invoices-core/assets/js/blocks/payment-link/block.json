@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexible-invoices/payment-link",
+	"version": "1.0.0",
+	"title": "Payment link",
+	"category": "flexible-invoices",
+	"icon": "admin-links",
+	"description": "Order payment link. Displays clickable payment link for order.",
+	"example": {},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"textdomain": "flexible-invoices",
+	"editorScript": "file:./index.js"
+}

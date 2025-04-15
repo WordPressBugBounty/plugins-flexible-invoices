@@ -1,0 +1,46 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexible-invoices/wrapper",
+	"title": "Wrapper",
+	"category": "flexible-invoices",
+	"icon": "slides",
+	"description": "Column used as parent for all elements. Insert other blocks into column.",
+	"parent": [
+		"flexible-invoices/row"
+	],
+	"supports": {
+		"customClassName": false
+	},
+	"editorScript": "file:./index.js",
+	"attributes": {
+		"columnAmount": {
+			"type": "number",
+			"default": 1
+		},
+		"backgroundColor": {
+			"type": "string",
+			"default": "rgba(255, 255, 255, 0)"
+		},
+		"marginTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"marginBottom": {
+			"type": "string",
+			"default": "0px"
+		},
+		"paddingTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"paddingBottom": {
+			"type": "string",
+			"default": "0px"
+		}
+	},
+	"usesContext": [
+		"flexible-invoices/columnAmount",
+		"flexible-invoices/gapSize"
+	]
+}

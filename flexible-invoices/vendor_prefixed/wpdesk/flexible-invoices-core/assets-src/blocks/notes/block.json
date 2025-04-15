@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexible-invoices/notes",
+	"version": "1.0.0",
+	"title": "Notes",
+	"category": "flexible-invoices",
+	"icon": "list-view",
+	"description": "Element containing document notes",
+	"example": {},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"textdomain": "flexible-invoices",
+	"editorScript": "file:./index.js"
+}

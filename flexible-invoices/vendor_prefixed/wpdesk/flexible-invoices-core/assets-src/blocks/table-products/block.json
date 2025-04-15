@@ -1,0 +1,199 @@
+{
+	"apiVersion": 3,
+	"name": "flexible-invoices/table-products",
+	"title": "Products Table",
+	"category": "flexible-invoices",
+	"icon": "products",
+	"description": "Table containing document items.",
+	"keywords": [
+		"table",
+		"invoice",
+		"item",
+		"product"
+	],
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"textdomain": "flexible-invoices",
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php",
+	"attributes": {
+		"headers": {
+			"type": "array",
+			"default": [
+				"#",
+				"Name",
+				"Unit",
+				"SKU",
+				"Discount",
+				"Quantity",
+				"Net price",
+				"Net amount",
+				"Tax rate",
+				"Tax amount",
+				"Gross amount"
+			]
+		},
+		"rows": {
+			"type": "array",
+			"default": [
+				"{Number}",
+				"{ProductName}",
+				"{ProductUnit}",
+				"{ProductSKU}",
+				"{ProductDiscount}",
+				"{ProductQty}",
+				"{ProductNetPrice}",
+				"{ProductNetAmount}",
+				"{ProductTaxRate}",
+				"{ProductTaxAmount}",
+				"{ProductGrossAmount}"
+			]
+		},
+		"states": {
+			"type": "array",
+			"default": [
+				true,
+				true,
+				true,
+				true,
+				true,
+				true,
+				true,
+				true,
+				true,
+				true,
+				true
+			]
+		},
+		"headerBackground": {
+			"type": "string",
+			"default": "rgba(192, 192, 192, 1)"
+		},
+		"headerTextColor": {
+			"type": "string",
+			"default": "rgba(64, 64, 64, 1)"
+		},
+		"headerTextAlign": {
+			"type": "string",
+			"default": "center"
+		},
+		"headerTextDecoration": {
+			"type": "string",
+			"default": "none"
+		},
+		"headerFontWeight": {
+			"type": "string",
+			"default": "normal"
+		},
+		"headerFontStyle": {
+			"type": "string",
+			"default": "normal"
+		},
+		"headerFontSize": {
+			"type": "string",
+			"default": "1em"
+		},
+		"multipleBodyBackground": {
+			"type": "boolean",
+			"default": false
+		},
+		"bodyBackground": {
+			"type": "string",
+			"default": "rgba(255, 255, 255, 1)"
+		},
+		"bodyBackgroundEven": {
+			"type": "string",
+			"default": "#rgba(255, 255, 255, 1)"
+		},
+		"bodyTextColor": {
+			"type": "string",
+			"default": "rgba(128, 128, 128, 1)"
+		},
+		"bodyTextColorEven": {
+			"type": "string",
+			"default": "rgba(128, 128, 128, 1)"
+		},
+		"bodyTextAlign": {
+			"type": "string",
+			"default": "left"
+		},
+		"bodyTextDecoration": {
+			"type": "string",
+			"default": "none"
+		},
+		"bodyFontWeight": {
+			"type": "string",
+			"default": "normal"
+		},
+		"bodyFontStyle": {
+			"type": "string",
+			"default": "normal"
+		},
+		"bodyFontSize": {
+			"type": "string",
+			"default": "1em"
+		},
+
+		"bodyBorderColumnColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"bodyBorderColumnWidthLeft": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderColumnWidthRight": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderRowColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"bodyBorderRowWidthTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderRowWidthBottom": {
+			"type": "string",
+			"default": "0px"
+		},
+
+
+		"headerBorderColumnColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"headerBorderColumnWidthLeft": {
+			"type": "string",
+			"default": "0px"
+		},
+		"headerBorderColumnWidthRight": {
+			"type": "string",
+			"default": "0px"
+		},
+		"headerBorderRowColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"headerBorderRowWidthTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"headerBorderRowWidthBottom": {
+			"type": "string",
+			"default": "0px"
+		},
+
+		"tableBorderColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"tableBorderWidth": {
+			"type": "string",
+			"default": "0px"
+		}
+	}
+}

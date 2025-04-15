@@ -177,7 +177,7 @@ class PdfReader
                 $object = $this->parser->getIndirectObject($reference->value);
                 $type = PdfDictionary::get($object->value, 'Type');
                 if ($type->value === 'Pages') {
-                    $readPages(PdfDictionary::get($object->value, 'Kids'), PdfDictionary::get($object->value, 'Count'));
+                    $readPages(PdfType::resolve(PdfDictionary::get($object->value, 'Kids'), $this->parser), PdfType::resolve(PdfDictionary::get($object->value, 'Count'), $this->parser));
                 } else {
                     $this->pages[] = $object;
                 }

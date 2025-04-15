@@ -1,0 +1,128 @@
+{
+	"apiVersion": 2,
+	"name": "flexible-invoices/text",
+	"title": "Text",
+	"category": "flexible-invoices",
+	"icon": "editor-paragraph",
+	"description": "Text block used to display custom text.",
+	"textdomain": "flexible-invoices",
+	"supports": {
+		"customClassName": false
+	},
+	"attributes": {
+		"content": {
+			"type": "string",
+			"source": "html",
+			"selector": "p"
+		},
+		"placeholder": {
+			"type": "string",
+			"source": "html",
+			"selector": "p",
+			"default": "Enter text..."
+		},
+		"level": {
+			"type": "string",
+			"default": "p"
+		},
+		"textColor": {
+			"type": "string",
+			"default": "rgba(0, 0, 0)"
+		},
+		"borderColor": {
+			"type": "string",
+			"default": "rgba(255, 255, 255)"
+		},
+		"backgroundColor": {
+			"type": "string",
+			"default": "rgba(255, 255, 255, 0)"
+		},
+		"textAlign": {
+			"type": "string",
+			"default": "left"
+		},
+		"textDecoration": {
+			"type": "string",
+			"default": "none"
+		},
+		"fontWeight": {
+			"type": "string",
+			"default": "normal"
+		},
+		"fontStyle": {
+			"type": "string",
+			"default": "normal"
+		},
+		"fontSize": {
+			"type": "string",
+			"default": "1em"
+		},
+		"paddingLeft": {
+			"type": "string",
+			"default": "0px"
+		},
+		"paddingRight": {
+			"type": "string",
+			"default": "0px"
+		},
+		"paddingTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"paddingBottom": {
+			"type": "string",
+			"default": "0px"
+		},
+		"marginLeft": {
+			"type": "string",
+			"default": "0px"
+		},
+		"marginRight": {
+			"type": "string",
+			"default": "0px"
+		},
+		"marginTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"marginBottom": {
+			"type": "string",
+			"default": "0px"
+		},
+
+		"borderWidthLeft": {
+			"type": "string",
+			"default": "0px"
+		},
+		"borderWidthRight": {
+			"type": "string",
+			"default": "0px"
+		},
+		"borderWidthTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"borderWidthBottom": {
+			"type": "string",
+			"default": "0px"
+		},
+
+		"borderRadiusTopLeft": {
+			"type": "string",
+			"default": "0px"
+		},
+		"borderRadiusTopRight": {
+			"type": "string",
+			"default": "0px"
+		},
+		"borderRadiusBottomLeft": {
+			"type": "string",
+			"default": "0px"
+		},
+		"borderRadiusBottomRight": {
+			"type": "string",
+			"default": "0px"
+		}
+	},
+	"editorScript": "file:./index.js"
+}

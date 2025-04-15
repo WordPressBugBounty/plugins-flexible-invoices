@@ -1,0 +1,143 @@
+/* Register fonts needed for block editor. */
+/* FreeSerif */
+@font-face {
+	font-family: 'freeserif';
+	src: url('../../fonts/FreeSerif.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}@font-face {
+	font-family: 'freeserif';
+	src: url('../../fonts/FreeSerif-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+/* DejaVuSans */
+@font-face {
+	font-family: 'dejavusans';
+	src: url('../../fonts/DejaVuSans.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}@font-face {
+	font-family: 'dejavusans';
+	src: url('../../fonts/DejaVuSans-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+/* DejaVuSerif */
+@font-face {
+	font-family: 'dejavuserif';
+	src: url('../../fonts/DejaVuSerif.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}@font-face {
+	font-family: 'dejavuserif';
+	src: url('../../fonts/DejaVuSerif-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+/* DejaVuSansCondensed */
+@font-face {
+	font-family: 'dejavusanscondensed';
+	src: url('../../fonts/DejaVuSansCondensed.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}@font-face {
+	font-family: 'dejavusanscondensed';
+	src: url('../../fonts/DejaVuSansCondensed-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+/* Montserrat */
+@font-face {
+	font-family: 'montserrat';
+	src: url('../../fonts/Montserrat.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}@font-face {
+	font-family: 'montserrat';
+	src: url('../../fonts/Montserrat-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+/* OpenSans */
+@font-face {
+	font-family: 'opensans';
+	src: url('../../fonts/OpenSans.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}@font-face {
+	font-family: 'opensans';
+	src: url('../../fonts/OpenSans-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+/* OpenSansCondensed */
+@font-face {
+	font-family: 'opensanscondensed';
+	src: url('../../fonts/OpenSansCondensed.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}@font-face {
+	font-family: 'opensanscondensed';
+	src: url('../../fonts/OpenSansCondensed-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+/* Roboto */
+@font-face {
+	font-family: 'roboto';
+	src: url('../../fonts/Roboto.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}@font-face {
+	font-family: 'roboto';
+	src: url('../../fonts/Roboto-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+/* RobotoSlab */
+@font-face {
+	font-family: 'robotoslab';
+	src: url('../../fonts/RobotoSlab.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}@font-face {
+	font-family: 'robotoslab';
+	src: url('../../fonts/RobotoSlab-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+/* Rubik */
+@font-face {
+	font-family: 'rubik';
+	src: url('../../fonts/Rubik.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+} @font-face {
+	font-family: 'rubik';
+	src: url('../../fonts/Rubik-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+/* TitilliumWeb */
+@font-face {
+	font-family: 'titilliumweb';
+	src: url('../../fonts/TitilliumWeb.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}  @font-face {
+	font-family: 'titilliumweb';
+	src: url('../../fonts/TitilliumWeb-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}

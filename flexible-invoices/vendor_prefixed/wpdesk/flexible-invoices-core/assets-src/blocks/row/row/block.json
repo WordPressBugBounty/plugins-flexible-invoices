@@ -1,0 +1,55 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexible-invoices/row",
+	"title": "Row",
+	"category": "flexible-invoices",
+	"icon": "align-wide",
+	"description": "Row block used to contain all document elements. Use it to group elements together in columns. Change amount of columns using slider.",
+	"keywords": [
+		"columns",
+		"layout",
+		"float"
+	],
+	"attributes": {
+		"columns": {
+			"type": "number",
+			"default": 2
+		},
+		"backgroundColor": {
+			"type": "string",
+			"default": "rgba(255, 255, 255, 0)"
+		},
+		"marginTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"marginBottom": {
+			"type": "string",
+			"default": "0px"
+		},
+		"paddingTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"paddingBottom": {
+			"type": "string",
+			"default": "0px"
+		}
+	},
+	"editorScript": "file:./index.js",
+	"providesContext": {
+		"flexible-invoices/columnAmount": "columnAmount",
+		"flexible-invoices/gapSize": "gapSize"
+	},
+	"supports": {
+		"align": false,
+		"html": false,
+		"reusable": true,
+		"multiple": true,
+		"movable": true,
+		"deletable": true,
+		"duplicate": true,
+		"customClassName": false
+	}
+}

@@ -6,6 +6,8 @@ use Exception;
 use WC_Order;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Recipient;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\ValueObjects\DocumentRecipient;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\PostType\TemplatesPostType;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\BlockTemplateEditor;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\OrderItems;
@@ -67,8 +69,12 @@ class OrderDocumentDataSource extends AbstractDataSource
      */
     public function get_date_of_pay(): int
     {
-        $pay_date = $this->get_date_of_issue() + 60 * 60 * 24 * intval($this->settings->get($this->get_document_type() . '_default_due_time'), 0);
-        return $pay_date;
+        if (BlockTemplateEditor::is_block_template_editor_active()) {
+            $default_due_time = get_post_meta(BlockTemplateEditor::get_active_template_id(), $this->get_document_type() . '_' . TemplatesPostType::DEFAULT_DUE_META, \true);
+        } else {
+            $default_due_time = $this->settings->get($this->get_document_type() . '_default_due_time');
+        }
+        return $this->get_date_of_issue() + 60 * 60 * 24 * (int) $default_due_time;
     }
     /**
      * @return int

@@ -3,15 +3,18 @@
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators;
 
 use Exception;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Containers\MetaContainer;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\DocumentGetters;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\DocumentSetters;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\DocumentsMeta\CustomMeta;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\DocumentsMeta\NullCustomMeta;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Containers\MetaContainer;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Email\DocumentEmail;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentNumber;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\DocumentGetters;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\DocumentSetters;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\BlockTemplateEditor;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentNumbers\BlockTemplateDocumentNumber;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentNumbers\DocumentNumber;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\BlockTemplate\BlockTemplate;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 /**
  * Abstract document creator.
@@ -126,6 +129,10 @@ abstract class AbstractDocumentCreator implements Creator
      */
     public function get_document_numbering(Document $document): DocumentNumber
     {
+        if (BlockTemplateEditor::is_block_template_editor_active()) {
+            $block_template = new BlockTemplate();
+            return new BlockTemplateDocumentNumber($this->source_factory->get_settings(), $document, $this->get_name(), $block_template);
+        }
         return new DocumentNumber($this->source_factory->get_settings(), $document, $this->get_name());
     }
     /**

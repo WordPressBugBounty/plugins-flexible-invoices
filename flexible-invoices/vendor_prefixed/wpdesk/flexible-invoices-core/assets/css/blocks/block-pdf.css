@@ -1,0 +1,4 @@
+/* Styles common for editor and final pdf file */
+.fi-row * {
+	font-family: sans-serif;
+}

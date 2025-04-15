@@ -1,0 +1,261 @@
+{
+	"apiVersion": 3,
+	"name": "flexible-invoices/table-of-conversion",
+	"title": "Table of conversion",
+	"category": "flexible-invoices",
+	"icon": "randomize",
+	"description": "",
+	"keywords": [
+		"table",
+		"fi",
+		"currency",
+		"exchange",
+		"conversion",
+		"table"
+	],
+	"supports": {
+		"html": false
+	},
+	"textdomain": "flexible-invoices",
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php",
+	"attributes": {
+		"headers": {
+			"type": "array",
+			"default": [
+				"Tax rate",
+				"Tax amount",
+				"Net price",
+				"Gross price"
+			]
+		},
+		"rows": {
+			"type": "array",
+			"default": [
+				"{ConversionTaxRate}",
+				"{ConversionTaxAmount}",
+				"{ConversionNetPrice}",
+				"{ConversionGrossPrice}"
+			]
+		},
+		"states": {
+			"type": "array",
+			"default": [
+				true,
+				true,
+				true,
+				true
+			]
+		},
+		"footers": {
+			"type": "array",
+			"default": [
+				"{ConversionShopCurrency} = {ConversionCurrency}",
+				"Exchange rate European Central Bank of the day: {ConversionDate}"
+			]
+		},
+		"headerBackground": {
+			"type": "string",
+			"default": "rgba(192, 192, 192, 1)"
+		},
+		"headerTextColor": {
+			"type": "string",
+			"default": "rgba(64, 64, 64, 1)"
+		},
+		"headerTextAlign": {
+			"type": "string",
+			"default": "center"
+		},
+		"headerTextDecoration": {
+			"type": "string",
+			"default": "none"
+		},
+		"headerFontWeight": {
+			"type": "string",
+			"default": "normal"
+		},
+		"headerFontStyle": {
+			"type": "string",
+			"default": "normal"
+		},
+		"headerFontSize": {
+			"type": "string",
+			"default": "1em"
+		},
+
+		"headerBorderRowWidthTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"headerBorderRowWidthLeft": {
+			"type": "string",
+			"default": "0px"
+		},
+		"headerBorderRowWidthRight": {
+			"type": "string",
+			"default": "0px"
+		},
+		"headerBorderRowWidthBottom": {
+			"type": "string",
+			"default": "0px"
+		},
+		"headerBorderRowColor": {
+			"type": "string",
+			"default": "rgba(0, 0, 0, 0)"
+		},
+
+		"headerBorderCellWidthTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"headerBorderCellWidthLeft": {
+			"type": "string",
+			"default": "0px"
+		},
+		"headerBorderCellWidthRight": {
+			"type": "string",
+			"default": "0px"
+		},
+		"headerBorderCellWidthBottom": {
+			"type": "string",
+			"default": "0px"
+		},
+		"headerBorderCellColor": {
+			"type": "string",
+			"default": "rgba(0, 0, 0, 0)"
+		},
+
+		"multipleBodyBackground": {
+			"type": "boolean",
+			"default": false
+		},
+		"bodyBackground": {
+			"type": "string",
+			"default": "rgba(255, 255, 255, 1)"
+		},
+		"bodyBackgroundEven": {
+			"type": "string",
+			"default": "#rgba(255, 255, 255, 1)"
+		},
+		"bodyTextColor": {
+			"type": "string",
+			"default": "rgba(128, 128, 128, 1)"
+		},
+		"bodyTextColorEven": {
+			"type": "string",
+			"default": "rgba(128, 128, 128, 1)"
+		},
+		"bodyTextAlign": {
+			"type": "string",
+			"default": "left"
+		},
+		"bodyTextDecoration": {
+			"type": "string",
+			"default": "none"
+		},
+		"bodyFontWeight": {
+			"type": "string",
+			"default": "normal"
+		},
+		"bodyFontStyle": {
+			"type": "string",
+			"default": "normal"
+		},
+		"bodyFontSize": {
+			"type": "string",
+			"default": "1em"
+		},
+
+		"bodyBorderRowWidthTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderRowWidthLeft": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderRowWidthRight": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderRowWidthBottom": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderRowColor": {
+			"type": "string",
+			"default": "rgba(0, 0, 0, 0)"
+		},
+
+		"bodyBorderCellWidthTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderCellWidthLeft": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderCellWidthRight": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderCellWidthBottom": {
+			"type": "string",
+			"default": "0px"
+		},
+		"bodyBorderCellColor": {
+			"type": "string",
+			"default": "rgba(0, 0, 0, 0)"
+		},
+
+		"footerBackground": {
+			"type": "string",
+			"default": "rgba(255, 255, 255, 1)"
+		},
+		"footerTextColor": {
+			"type": "string",
+			"default": "rgba(128, 128, 128, 1)"
+		},
+		"footerTextAlign": {
+			"type": "string",
+			"default": "left"
+		},
+		"footerTextDecoration": {
+			"type": "string",
+			"default": "none"
+		},
+		"footerFontWeight": {
+			"type": "string",
+			"default": "normal"
+		},
+		"footerFontStyle": {
+			"type": "string",
+			"default": "normal"
+		},
+		"footerFontSize": {
+			"type": "string",
+			"default": "1em"
+		},
+
+		"footerBorderWidthTop": {
+			"type": "string",
+			"default": "0px"
+		},
+		"footerBorderWidthLeft": {
+			"type": "string",
+			"default": "0px"
+		},
+		"footerBorderWidthRight": {
+			"type": "string",
+			"default": "0px"
+		},
+		"footerBorderWidthBottom": {
+			"type": "string",
+			"default": "0px"
+		},
+		"footerBorderColor": {
+			"type": "string",
+			"default": "rgba(0, 0, 0, 0)"
+		}
+	}
+}

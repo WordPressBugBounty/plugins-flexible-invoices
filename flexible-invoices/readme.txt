@@ -5,7 +5,7 @@ Tags: invoice, eu vat, woocommerce pdf invoices, vat invoice, woocommerce invoic
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 5.7.15
+Stable tag: 6.0.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -21,13 +21,15 @@ Flexible PDF Invoices for WooCommerce & WordPress is a plugin that allows you to
 
 See the main features of the free version:
 
+* **NEW** Create your own invoice templates in Gutenberg editor,
+* **NEW** Use one of predefined invoices template to speed up start of invoicing,
 * Issue PDF invoices for WooCommerce orders,
 * Create vat invoices in WooCommerce and WordPress manually,
 * Issue, save, and download PDF invoices,
 * Add, edit and delete invoices (invoices are stored as Custom Post Types),
 * Send invoices manually,
 * Manage currencies, tax rates, and payment methods,
-* Create PDF invoices custom templates ready for VAT taxpayers and VAT-exempt entities,
+* Create PDF invoices ready for VAT taxpayers and VAT-exempt entities,
 * Generate and download WooCommerce invoices in bulk by a date range,
 * Add EU VAT number in the checkout, order data, and to your WooCommerce invoice,
 * Add payment info & additional notes in the invoice footer,
@@ -300,6 +302,9 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 64. Send PDF invoices automatically for additional email recipients (PRO add-on).
 
 == Changelog ==
+
+= 6.0.0 - 2025-04-15 =
+* Added visual document template editor.
 
 = 5.7.15 - 2025-03-13 =
 * Fixed translations in dashboard and download link in PDF invoice email

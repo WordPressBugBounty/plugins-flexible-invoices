@@ -1,0 +1,1 @@
+jQuery((function(e){e(".fi-block-template-toggle").on("change",(function(){var o=e(this).data("post-id");e(".fi-block-template-toggle").prop("checked",!1),e(this).prop("checked",!0),e.post(fiInvoicesCore.ajax_url,{action:"fi_toggle_template_enabled",post_id:o,nonce:fiInvoicesCore.nonce})}))}));

@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexible-invoices/company",
+	"version": "1.0.0",
+	"title": "Company",
+	"category": "flexible-invoices",
+	"icon": "businessman",
+	"description": "Preset of elements containing seller info",
+	"example": {},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"textdomain": "flexible-invoices",
+	"editorScript": "file:./index.js"
+}

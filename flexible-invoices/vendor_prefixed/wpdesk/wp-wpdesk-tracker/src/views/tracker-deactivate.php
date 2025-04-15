@@ -123,7 +123,7 @@ if (!\defined('ABSPATH')) {
 			jQuery('#other').show();
 		}
 		jQuery('.wpdesk_tracker_deactivate .button-deactivate').html( '<?php 
-\esc_html_e("Submit &amp; Deactivate", "wpdesk-tracker");
+\esc_html_e("Submit &amp; Deactivate", "flexible-invoices");
 ?>' );
 	})
 	jQuery('.button-deactivate').click(function(e){

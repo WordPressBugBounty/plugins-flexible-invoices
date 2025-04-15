@@ -11,11 +11,13 @@ use Exception;
 use WP_Post;
 use WP_Query;
 use WP_User;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Invoice;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\BlockTemplateEditor;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Infrastructure\Request;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentNumber;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentNumbers\BlockTemplateDocumentNumber;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentNumbers\DocumentNumber;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\BlockTemplate\BlockTemplate;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
@@ -102,7 +104,12 @@ class Dashboard implements Hookable
             $this->document_factory->set_document_type($document_type);
             $creator = $this->document_factory->get_document_creator($post->ID);
             $document = $creator->get_document();
-            $numbering = new DocumentNumber($this->settings, $document, $creator->get_name());
+            if (BlockTemplateEditor::is_block_template_editor_active()) {
+                $block_template = new BlockTemplate();
+                $numbering = new BlockTemplateDocumentNumber($this->settings, $document, $creator->get_name(), $block_template);
+            } else {
+                $numbering = new DocumentNumber($this->settings, $document, $creator->get_name());
+            }
             return $numbering->get_formatted_number();
         }
         return $post_title;

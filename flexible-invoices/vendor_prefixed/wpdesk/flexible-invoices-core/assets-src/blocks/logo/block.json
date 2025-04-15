@@ -1,0 +1,54 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexible-invoices/logo",
+	"version": "1.0.0",
+	"title": "Logo",
+	"description": "Image element. Select image from media library or upload a new one.",
+	"category": "flexible-invoices",
+	"icon": "format-image",
+	"example": {},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"textdomain": "flexible-invoices",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"attributes": {
+		"imgUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"imgAlt": {
+			"type": "string",
+			"default": ""
+		},
+		"imgId": {
+			"type": "integer",
+			"default": null
+		},
+		"imgWidth":{
+			"type":"string",
+			"default": "100px"
+		},
+		"imgHeight": {
+			"type": "string",
+			"default": "100px"
+		},
+		"autoHeight": {
+			"type": "boolean",
+			"default": true
+		},
+		"autoWidth": {
+			"type": "boolean",
+			"default": true
+		},
+		"align": {
+			"type": "string",
+			"default": "left"
+		}
+	}
+}

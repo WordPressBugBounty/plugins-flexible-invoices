@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexible-invoices/order-number",
+	"version": "1.0.0",
+	"title": "Order number",
+	"category": "flexible-invoices",
+	"icon": "editor-ol-rtl",
+	"description": "Elements containing order number connected to invoice",
+	"example": {},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"textdomain": "flexible-invoices",
+	"editorScript": "file:./index.js"
+}
