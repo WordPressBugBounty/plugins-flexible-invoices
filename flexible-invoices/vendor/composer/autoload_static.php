@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit5ddc4861c76e0ad92229edaea1c88526
+class ComposerStaticInit85bd790a0107eb72be67d63a135f5e15
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -633,6 +633,7 @@ class ComposerStaticInit5ddc4861c76e0ad92229edaea1c88526
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\TemplateRenderers\\BlockEditorTemplateRenderer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/TemplateRenderers/BlockEditorTemplateRenderer.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\TemplateRenderers\\PHPTemplateRenderer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/TemplateRenderers/PHPTemplateRenderer.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\TemplateRenderers\\TemplateRendererInterface' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/TemplateRenderers/TemplateRendererInterface.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerceSubscriptions\\MyAccountUpdateHandler' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerceSubscriptions/MyAccountUpdateHandler.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\Checkout' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/Checkout.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\CheckoutAssets' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/CheckoutAssets.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\CreateDocumentForOrder' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/CreateDocumentForOrder.php',
@@ -918,9 +919,9 @@ class ComposerStaticInit5ddc4861c76e0ad92229edaea1c88526
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit5ddc4861c76e0ad92229edaea1c88526::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit5ddc4861c76e0ad92229edaea1c88526::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit5ddc4861c76e0ad92229edaea1c88526::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit85bd790a0107eb72be67d63a135f5e15::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit85bd790a0107eb72be67d63a135f5e15::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit85bd790a0107eb72be67d63a135f5e15::$classMap;
 
         }, null, ClassLoader::class);
     }

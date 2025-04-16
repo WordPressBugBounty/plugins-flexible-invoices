@@ -618,6 +618,7 @@ return array(
     'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\TemplateRenderers\\BlockEditorTemplateRenderer' => $baseDir . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/TemplateRenderers/BlockEditorTemplateRenderer.php',
     'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\TemplateRenderers\\PHPTemplateRenderer' => $baseDir . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/TemplateRenderers/PHPTemplateRenderer.php',
     'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\TemplateRenderers\\TemplateRendererInterface' => $baseDir . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/TemplateRenderers/TemplateRendererInterface.php',
+    'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerceSubscriptions\\MyAccountUpdateHandler' => $baseDir . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerceSubscriptions/MyAccountUpdateHandler.php',
     'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\Checkout' => $baseDir . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/Checkout.php',
     'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\CheckoutAssets' => $baseDir . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/CheckoutAssets.php',
     'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\CreateDocumentForOrder' => $baseDir . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/CreateDocumentForOrder.php',

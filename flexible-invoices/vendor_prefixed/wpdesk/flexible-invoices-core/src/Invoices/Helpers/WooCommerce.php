@@ -16,6 +16,11 @@ class WooCommerce
     {
         return defined('WC_VERSION');
     }
+    public static function is_wsc_active(): bool
+    {
+        $class = 'WC_Subscriptions';
+        return class_exists($class);
+    }
     /**
      * Gets an array of countries in the EU.
      *

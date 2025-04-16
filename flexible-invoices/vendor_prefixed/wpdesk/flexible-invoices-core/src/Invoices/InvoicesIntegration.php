@@ -18,6 +18,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\Abstract
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields\InvoiceAsk;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields\VatNumber;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\OrderNote;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerceSubscriptions\MyAccountUpdateHandler;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\PDF;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\HookableParent;
@@ -305,6 +306,9 @@ class InvoicesIntegration implements Hookable
         if (Helpers\WooCommerce::is_active()) {
             $this->woocommerce_integration_hooks();
         }
+        if (Helpers\WooCommerce::is_wsc_active()) {
+            $this->woocommerce_subscriptions_integration_hooks();
+        }
         $this->hooks_on_hookable_objects();
         add_action('init', [$this, 'fire_external_integration_actions']);
     }
@@ -359,6 +363,10 @@ class InvoicesIntegration implements Hookable
         $this->add_hookable(new Email\EmailIntegration($this->document_factory, $this->get_pdf_writer(), $order_note));
         $this->add_hookable(new WooCommerce\Checkout($this->settings));
         $this->add_checkout_fields();
+    }
+    private function woocommerce_subscriptions_integration_hooks()
+    {
+        $this->add_hookable(new MyAccountUpdateHandler());
     }
     /**
      * Add checkout fields
