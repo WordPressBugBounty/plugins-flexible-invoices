@@ -2,4 +2,4 @@
 
 namespace WPDeskFIVendor;
 
-return array('dependencies' => array('react', 'wp-components', 'wp-data', 'wp-edit-post', 'wp-i18n', 'wp-plugins'), 'version' => 'eef0d15b290133c48e40');
+return array('dependencies' => array('react', 'wp-components', 'wp-data', 'wp-edit-post', 'wp-i18n', 'wp-plugins'), 'version' => 'b17669590018e04ba8cd');

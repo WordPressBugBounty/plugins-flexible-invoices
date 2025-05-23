@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit85bd790a0107eb72be67d63a135f5e15
+class ComposerStaticInit1184c8ed092b881600df9f8744d1d705
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -369,6 +369,7 @@ class ComposerStaticInit85bd790a0107eb72be67d63a135f5e15
         'WPDeskFIVendor\\Mpdf\\Writer\\OptionalContentWriter' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Writer/OptionalContentWriter.php',
         'WPDeskFIVendor\\Mpdf\\Writer\\PageWriter' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Writer/PageWriter.php',
         'WPDeskFIVendor\\Mpdf\\Writer\\ResourceWriter' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Writer/ResourceWriter.php',
+        'WPDeskFIVendor\\Psr\\Clock\\ClockInterface' => __DIR__ . '/../..' . '/vendor_prefixed/psr/clock/src/ClockInterface.php',
         'WPDeskFIVendor\\Psr\\Container\\ContainerExceptionInterface' => __DIR__ . '/../..' . '/vendor_prefixed/psr/container/src/ContainerExceptionInterface.php',
         'WPDeskFIVendor\\Psr\\Container\\ContainerInterface' => __DIR__ . '/../..' . '/vendor_prefixed/psr/container/src/ContainerInterface.php',
         'WPDeskFIVendor\\Psr\\Container\\NotFoundExceptionInterface' => __DIR__ . '/../..' . '/vendor_prefixed/psr/container/src/NotFoundExceptionInterface.php',
@@ -403,6 +404,9 @@ class ComposerStaticInit85bd790a0107eb72be67d63a135f5e15
         'WPDeskFIVendor\\Psr\\Log\\Test\\DummyTest' => __DIR__ . '/../..' . '/vendor_prefixed/psr/log/Psr/Log/Test/DummyTest.php',
         'WPDeskFIVendor\\Psr\\Log\\Test\\LoggerInterfaceTest' => __DIR__ . '/../..' . '/vendor_prefixed/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
         'WPDeskFIVendor\\Psr\\Log\\Test\\TestLogger' => __DIR__ . '/../..' . '/vendor_prefixed/psr/log/Psr/Log/Test/TestLogger.php',
+        'WPDeskFIVendor\\Psr\\SimpleCache\\CacheException' => __DIR__ . '/../..' . '/vendor_prefixed/psr/simple-cache/src/CacheException.php',
+        'WPDeskFIVendor\\Psr\\SimpleCache\\CacheInterface' => __DIR__ . '/../..' . '/vendor_prefixed/psr/simple-cache/src/CacheInterface.php',
+        'WPDeskFIVendor\\Psr\\SimpleCache\\InvalidArgumentException' => __DIR__ . '/../..' . '/vendor_prefixed/psr/simple-cache/src/InvalidArgumentException.php',
         'WPDeskFIVendor\\WPDesk\\Beacon\\Beacon' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-helpscout-beacon/src/Beacon/Beacon.php',
         'WPDeskFIVendor\\WPDesk\\Beacon\\BeaconGetShouldShowStrategy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-helpscout-beacon/src/Beacon/BeaconGetShouldShowStrategy.php',
         'WPDeskFIVendor\\WPDesk\\Beacon\\BeaconPro' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-helpscout-beacon/src/Beacon/BeaconPro.php',
@@ -576,7 +580,6 @@ class ComposerStaticInit85bd790a0107eb72be67d63a135f5e15
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Integration\\CreatorContainer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Integration/CreatorContainer.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Integration\\DocumentFactory' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Integration/DocumentFactory.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Integration\\DocumentMetaType' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Integration/DocumentMetaType.php',
-        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Integration\\DocumentNumber' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Integration/DocumentNumber.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Integration\\DocumentNumbers\\BlockTemplateDocumentNumber' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Integration/DocumentNumbers/BlockTemplateDocumentNumber.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Integration\\DocumentNumbers\\DocumentNumber' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Integration/DocumentNumbers/DocumentNumber.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Integration\\ExternalPluginsAccess' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Integration/ExternalPluginsAccess.php',
@@ -919,9 +922,9 @@ class ComposerStaticInit85bd790a0107eb72be67d63a135f5e15
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit85bd790a0107eb72be67d63a135f5e15::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit85bd790a0107eb72be67d63a135f5e15::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit85bd790a0107eb72be67d63a135f5e15::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit1184c8ed092b881600df9f8744d1d705::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit1184c8ed092b881600df9f8744d1d705::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit1184c8ed092b881600df9f8744d1d705::$classMap;
 
         }, null, ClassLoader::class);
     }

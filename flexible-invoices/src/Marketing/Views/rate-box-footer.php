@@ -13,7 +13,7 @@ if ( ! $rate_box ) {
 <script id="fi_rate_box" type="text/template">
 	<?php
 	$is_PL       = get_locale() === 'pl_PL' ? 'https://wpdesk.pl' : 'https://wpdesk.net';
-	$review_link = 'https://wpde.sk/fi-footer-review-link';
+	$review_link = 'https://wpdesk.link/fi-footer-review-link';
 	//phpcs:disable
 	echo $rate_box->render(
 		$review_link,

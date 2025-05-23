@@ -39,9 +39,9 @@ class SendingTab extends FieldSettingsTab {
 	}
 
 	public function get_docs_url(): string {
-		$docs_url = 'https://wpde.sk/fi-sending-docs';
+		$docs_url = 'https://wpdesk.link/fi-sending-docs';
 		if ( get_locale() === 'pl_PL' ) {
-			$docs_url = 'https://wpde.sk/fi-sending-docs-pl';
+			$docs_url = 'https://wpdesk.link/fi-sending-docs-pl';
 		}
 
 		// translators: 1: link, strong tag open, 2: url, strong close tag

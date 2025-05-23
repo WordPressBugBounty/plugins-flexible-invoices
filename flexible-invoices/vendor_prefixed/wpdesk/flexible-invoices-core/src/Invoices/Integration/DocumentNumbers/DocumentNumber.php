@@ -66,7 +66,9 @@ class DocumentNumber
     protected function get_number_from_option(): int
     {
         global $wpdb;
-        $number = get_option('inspire_invoices_' . $this->type . '_start_number', \true);
+        // phpcs:disable
+        $number = (int) $wpdb->get_var($wpdb->prepare("SELECT `option_value` FROM {$wpdb->options} WHERE `option_name` = '%s' ", 'inspire_invoices_' . $this->type . '_start_number'));
+        // phpcs:enable
         if (!$number) {
             return 1;
         }
@@ -77,7 +79,10 @@ class DocumentNumber
      */
     protected function update_number(int $value)
     {
-        update_option('inspire_invoices_' . $this->type . '_start_number', $value);
+        global $wpdb;
+        // phpcs:disable
+        $wpdb->update($wpdb->options, array('option_value' => $value), array('option_name' => 'inspire_invoices_' . $this->type . '_start_number'));
+        // phpcs:enable
     }
     /**
      * @return int

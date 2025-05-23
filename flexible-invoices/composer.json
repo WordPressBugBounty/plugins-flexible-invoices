@@ -53,7 +53,7 @@
 		"phpunit/phpunit": "^9",
 		"psr/container": "^1",
 		"psr/log": "^1.1.4",
-		"wpdesk/flexible-invoices-core": "^4.0.1",
+		"wpdesk/flexible-invoices-core": "^4.0",
 		"wpdesk/ltv-dashboard-widget": "^1",
 		"wpdesk/phpstan-rules": "1.1.4",
 		"wpdesk/wp-codeception": "^2",
@@ -63,7 +63,8 @@
 		"wpdesk/wp-plugin-flow-free": "^1",
 		"wpdesk/wp-show-decision": "^1.0",
 		"wpdesk/wp-wpdesk-composer": "^3.1.0",
-		"wpdesk/wp-wpdesk-marketing": "^1"
+		"wpdesk/wp-wpdesk-marketing": "^1",
+		"lucatume/wp-browser": "3.2"
 	},
 	"scripts": {
 		"test": "echo composer is alive",

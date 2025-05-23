@@ -179,7 +179,7 @@ const TemplateSettings = () => {
 					key='correction_next_number'
 					label={__('Next document number', 'flexible-invoices')}
 					help={__('Enter the next document number. The default value is 1 and changes every time an invoice is issued. Existing documents won\'t be changed.', 'flexible-invoices')}
-					value={getMetaValue('hide_tax_number', 1)}
+					value={getMetaValue('correction_next_number', 1)}
 					onChange={(newValue) => handleMetaChange('correction_next_number', newValue)}
 				/>
 
