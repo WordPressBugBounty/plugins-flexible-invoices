@@ -6,8 +6,8 @@ use Exception;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Containers\MetaContainer;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\DocumentGetters;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\DocumentSetters;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\AbstractDocument;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\DocumentsMeta\CustomMeta;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\DocumentsMeta\NullCustomMeta;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Email\DocumentEmail;
@@ -123,15 +123,15 @@ abstract class AbstractDocumentCreator implements Creator
         return \true;
     }
     /**
-     * @param Document $document
+     * @param AbstractDocument $document
      *
      * @return DocumentNumber
      */
     public function get_document_numbering(Document $document): DocumentNumber
     {
         if (BlockTemplateEditor::is_block_template_editor_active()) {
-            $block_template = new BlockTemplate();
-            return new BlockTemplateDocumentNumber($this->source_factory->get_settings(), $document, $this->get_name(), $block_template);
+            $block_template = new BlockTemplate($document->get_template_id());
+            return new BlockTemplateDocumentNumber($this->source_factory->get_settings(), $document, $block_template, $this->get_name());
         }
         return new DocumentNumber($this->source_factory->get_settings(), $document, $this->get_name());
     }
@@ -143,7 +143,7 @@ abstract class AbstractDocumentCreator implements Creator
         return \true;
     }
     /**
-     * @param Document $document
+     * @param AbstractDocument $document
      * @param int             $post_id
      * @param string          $source_type
      *
@@ -180,6 +180,7 @@ abstract class AbstractDocumentCreator implements Creator
         $document->set_show_order_number($data->get_show_order_number());
         $document->set_order_id($data->get_order_id());
         $document->set_corrected_id($data->get_corrected_id());
+        $document->set_template_id($data->get_template_id());
         $this->document = $document;
     }
     /**

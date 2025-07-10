@@ -19,7 +19,7 @@ class Hooks
         /**
          * Filters the default signature users passed to select in general settings.
          *
-         * @param array $users      An array of prepared users.
+         * @param array $users An array of prepared users.
          * @param array $site_users An array of site users.
          *
          * @return array
@@ -29,19 +29,19 @@ class Hooks
     }
     /**
      * @param Document $document
-     * @param string   $client_country
-     * @param bool     $hide_vat
-     * @param bool     $hide_vat_number
+     * @param string $client_country
+     * @param bool $hide_vat
+     * @param bool $hide_vat_number
      */
     public static function template_correction_after_notes(Document $document, string $client_country, bool $hide_vat, bool $hide_vat_number)
     {
         /**
          * Fire hook after correction notes (deprecated - use fi/core/template/correction/after_notes).
          *
-         * @param string   $client_country  Client country.
-         * @param bool     $hide_vat        Hide vat?.
-         * @param bool     $hide_vat_number Hide vat number?.
-         * @param Document $document        Document object.
+         * @param string $client_country Client country.
+         * @param bool $hide_vat Hide vat?.
+         * @param bool $hide_vat_number Hide vat number?.
+         * @param Document $document Document object.
          *
          * @deprecated
          *
@@ -51,10 +51,10 @@ class Hooks
         /**
          * Fire hook after correction notes.
          *
-         * @param Document $document        Document object.
-         * @param string   $client_country  Client country.
-         * @param bool     $hide_vat        Hide vat?.
-         * @param bool     $hide_vat_number Hide vat number?.
+         * @param Document $document Document object.
+         * @param string $client_country Client country.
+         * @param bool $hide_vat Hide vat?.
+         * @param bool $hide_vat_number Hide vat number?.
          *
          * @since 3.0.0
          */
@@ -62,19 +62,19 @@ class Hooks
     }
     /**
      * @param Document $document
-     * @param string   $client_country
-     * @param bool     $hide_vat
-     * @param bool     $hide_vat_number
+     * @param string $client_country
+     * @param bool $hide_vat
+     * @param bool $hide_vat_number
      */
     public static function template_invoice_after_notes(Document $document, string $client_country, bool $hide_vat, bool $hide_vat_number)
     {
         /**
          * Fire hook after invoice notes (deprecated - use fi/core/template/invoice/after_notes).
          *
-         * @param string   $client_country  Client country.
-         * @param bool     $hide_vat        Hide vat?.
-         * @param bool     $hide_vat_number Hide vat number?.
-         * @param Document $document        Document object.
+         * @param string $client_country Client country.
+         * @param bool $hide_vat Hide vat?.
+         * @param bool $hide_vat_number Hide vat number?.
+         * @param Document $document Document object.
          *
          * @deprecated
          *
@@ -84,17 +84,17 @@ class Hooks
         /**
          * Fire hook after invoice notes.
          *
-         * @param Document $document        Document object.
-         * @param string   $client_country  Client country.
-         * @param bool     $hide_vat        Hide vat?.
-         * @param bool     $hide_vat_number Hide vat number?.
+         * @param Document $document Document object.
+         * @param string $client_country Client country.
+         * @param bool $hide_vat Hide vat?.
+         * @param bool $hide_vat_number Hide vat number?.
          *
          * @since 3.0.0
          */
         do_action('fi/core/template/invoice/after_notes', $document, $client_country, $hide_vat, $hide_vat_number);
     }
     /**
-     * @param string   $output_street
+     * @param string $output_street
      * @param Customer $customer
      *
      * @return string
@@ -104,8 +104,8 @@ class Hooks
         /**
          * Filters client street.
          *
-         * @param string   $output_street Customer street.
-         * @param Customer $customer      Customer object.
+         * @param string $output_street Customer street.
+         * @param Customer $customer Customer object.
          *
          * @since 3.0.0
          */
@@ -125,7 +125,7 @@ class Hooks
     }
     /**
      * @param Document $document Document object (invoice, correction etc.)
-     * @param array    $products Products.
+     * @param array $products Products.
      * @param Customer $customer Customer object
      *
      * @return mixed|void
@@ -135,9 +135,9 @@ class Hooks
         /**
          * Filters template totals section.
          *
-         * @param string   $default  Default value.
+         * @param string $default Default value.
          * @param Document $document Document object (invoice, correction etc.).
-         * @param array    $products Document products.
+         * @param array $products Document products.
          * @param Customer $customer Customer object.
          */
         $default = '';
@@ -172,51 +172,51 @@ class Hooks
     }
     /**
      * @param WC_Order $order
-     * @param bool     $sent_to_admin
-     * @param string   $plain_text
-     * @param string   $email
+     * @param bool $sent_to_admin
+     * @param string $plain_text
+     * @param string|null $email
      */
-    public static function woocommerce_email_after_order_table_hook(WC_Order $order, bool $sent_to_admin, string $plain_text, string $email)
+    public static function woocommerce_email_after_order_table_hook(WC_Order $order, bool $sent_to_admin, string $plain_text, ?string $email)
     {
         /**
          * Fires in email template.
          *
-         * @param WC_Order $order         Order.
-         * @param bool     $sent_to_admin Sent to admin.
-         * @param string   $plain_text    Plain text,
-         * @param string   $email         Recipient email.
+         * @param WC_Order $order Order.
+         * @param bool $sent_to_admin Sent to admin.
+         * @param string $plain_text Plain text,
+         * @param string $email Recipient email.
          */
         do_action('woocommerce_email_after_order_table', $order, $sent_to_admin, $plain_text, $email);
     }
     /**
      * @param WC_Order $order
-     * @param bool     $sent_to_admin
-     * @param string   $plain_text
-     * @param string   $email
+     * @param bool $sent_to_admin
+     * @param string $plain_text
+     * @param string|null $email
      */
-    public static function woocommerce_email_order_meta_hook(WC_Order $order, bool $sent_to_admin, string $plain_text, string $email)
+    public static function woocommerce_email_order_meta_hook(WC_Order $order, bool $sent_to_admin, string $plain_text, ?string $email)
     {
         /**
          * Fires in email template.
          *
-         * @param WC_Order $order         Order.
-         * @param bool     $sent_to_admin Sent to admin.
-         * @param string   $plain_text    Plain text,
-         * @param string   $email         Recipient email.
+         * @param WC_Order $order Order.
+         * @param bool $sent_to_admin Sent to admin.
+         * @param string $plain_text Plain text,
+         * @param string $email Recipient email.
          */
         do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);
     }
     /**
-     * @param string   $email_heading Sent to admin.
-     * @param string $email         Recipient email.
+     * @param string $email_heading Sent to admin.
+     * @param string|null $email Recipient email.
      */
-    public static function woocommerce_email_header_hook($email_heading, string $email)
+    public static function woocommerce_email_header_hook($email_heading, ?string $email)
     {
         /**
          * Fires in email template.
          *
          * @param string $email_heading Email heading.
-         * @param string $email         Recipient email.
+         * @param string|null $email Recipient email.
          */
         do_action('woocommerce_email_header', $email_heading, $email);
     }

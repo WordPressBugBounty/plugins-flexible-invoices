@@ -10,8 +10,8 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\EditorBlocks\
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\PostType\TemplatesPostType;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\InvoiceCreator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\BlockTemplateGuard;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\BlockPDFGenerator;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\GeneratePDF;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\SettingsForm;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\AbstractSettingsStrategy;
@@ -338,6 +338,7 @@ class InvoicesIntegration implements Hookable
         $this->add_hookable(new BeaconLoader($this->library_info));
         $this->add_hookable(new TemplatesPostType($this->library_info));
         $this->add_hookable(new RegisterEditorBlocks($this->library_info));
+        $this->add_hookable(new BlockTemplateGuard());
         $this->add_hookable($this->save_document);
         $this->add_hookable($this->get_pdf_writer());
     }

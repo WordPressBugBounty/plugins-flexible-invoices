@@ -15,7 +15,7 @@ class BlockTemplateDocumentNumber extends DocumentNumber
 {
     private BlockTemplate $block_template;
     private string $document_type;
-    public function __construct(Settings $settings, Document $document, string $name = 'Document', BlockTemplate $block_template)
+    public function __construct(Settings $settings, Document $document, BlockTemplate $block_template, string $name = 'Document')
     {
         $this->block_template = $block_template;
         $this->document_type = $document->get_type();

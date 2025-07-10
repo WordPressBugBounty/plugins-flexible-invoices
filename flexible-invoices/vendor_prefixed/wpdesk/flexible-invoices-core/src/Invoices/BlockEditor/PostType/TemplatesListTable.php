@@ -13,13 +13,25 @@ class TemplatesListTable extends \WP_List_Table
         $this->table_data = $this->get_table_data();
         $data = [];
         foreach ($this->table_data as $post) {
-            $data[] = ['id' => $post->ID, 'name' => empty($post->post_title) ? $this->get_edit_link($post->ID, __('(no title)', 'flexible-invoices')) : $this->get_edit_link($post->ID, $post->post_title), 'status' => $this->get_toggle_button($post->ID, get_post_meta($post->ID, 'template_enabled', \true))];
+            $data[] = ['id' => $post->ID, 'name' => (empty($post->post_title) ? $this->get_edit_link($post->ID, __('(no title)', 'flexible-invoices')) : $this->get_edit_link($post->ID, $post->post_title)) . ' ' . $this->get_user_friendly_status($post->ID), 'status' => $this->get_toggle_button($post->ID, get_post_meta($post->ID, 'template_enabled', \true))];
         }
         $columns = $this->get_columns();
         $hidden = [];
         $sortable = [];
         $this->_column_headers = [$columns, $hidden, $sortable];
         $this->items = $data;
+    }
+    private function get_user_friendly_status(int $template_id): string
+    {
+        $post_status = get_post_status($template_id);
+        switch ($post_status) {
+            case 'draft':
+                return __('(draft)', 'flexible-invoices');
+            case 'private':
+                return __('(private)', 'flexible-invoices');
+            default:
+                return '';
+        }
     }
     public function extra_tablenav($which)
     {
@@ -38,6 +50,9 @@ class TemplatesListTable extends \WP_List_Table
     public function column_name($item)
     {
         $actions = ['edit' => $this->get_edit_link($item['id'], __('Edit', 'flexible-invoices')), 'delete' => $this->get_delete_link($item['id'], __('Delete', 'flexible-invoices')), 'view' => $this->get_preview_link($item['id'], __('Preview', 'flexible-invoices')), 'duplicate' => $this->get_duplicate_link($item['id'], __('Duplicate', 'flexible-invoices'))];
+        if (count($this->table_data) <= 1) {
+            unset($actions['delete']);
+        }
         return sprintf('%1$s %2$s', $item['name'], $this->row_actions($actions, \true));
     }
     public function get_columns()

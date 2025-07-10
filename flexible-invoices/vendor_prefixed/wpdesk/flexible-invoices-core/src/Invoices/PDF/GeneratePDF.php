@@ -304,13 +304,13 @@ class GeneratePDF implements PdfPrinter, Hookable
         do_action('fi/core/pdf/generate/before', $document, $this->settings, $document_name);
         try {
             $invoice_atts = ['invoice' => $document, 'currency_helper' => new Helpers\Currency($document->get_currency()), 'meta' => new MetaPostContainer($document->get_id()), 'translator' => new Translator(), 'library_info' => $this->library_info, 'settings' => $this->strategy->get_settings(), 'corrected_invoice' => $corrected_invoice_pdf, 'layout_name' => $this->get_layout_name(), 'order' => $document->get_order_id()];
-            $template_renderer = $this->get_template_renderer();
+            $template_renderer = $this->get_template_renderer($document);
             return $template_renderer->render(['document_name' => $document_name, 'invoice_atts' => $invoice_atts]);
         } catch (Exception $e) {
             return $e->getMessage();
         }
     }
-    protected function get_template_renderer(): TemplateRendererInterface
+    protected function get_template_renderer(Document $document): TemplateRendererInterface
     {
         return new PHPTemplateRenderer($this->renderer);
     }

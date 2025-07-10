@@ -2,6 +2,7 @@
 
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\PostType;
 
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\BlockTemplateEditor;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\LibraryInfo;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 class TemplatesPostType implements Hookable
@@ -75,6 +76,7 @@ class TemplatesPostType implements Hookable
     }
     public function enqueue_admin_scripts()
     {
+        wp_enqueue_script('fi-template-delete-handler', $this->lib_url . '/assets/js/admin/template-delete-handler.js', ['jquery'], $this->lib_version, \true);
         wp_enqueue_script('fi-template-editor-toggler', $this->lib_url . '/assets/js/admin/template-toggle-manager.js', ['jquery'], $this->lib_version, \true);
         wp_localize_script('fi-template-editor-toggler', 'fiInvoicesCore', ['ajax_url' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce(self::TOGGLE_TEMPLATE_NONCE)]);
         wp_enqueue_style('fi-template-editor-toggler-styles', $this->lib_url . '/assets/css/admin/template-toggle.css', [], $this->lib_version);
@@ -136,7 +138,7 @@ class TemplatesPostType implements Hookable
             wp_send_json_error(__('Missing post id.', 'flexible-invoices'));
         }
         $post_id = (int) sanitize_key($_POST['post_id']);
-        update_post_meta($post_id, self::ENABLED_TEMPLATE_OPTION_KEY, \true);
+        BlockTemplateEditor::activate_template($post_id);
         $query = new \WP_Query(['post_type' => self::POST_TYPE_SLUG, 'post__not_in' => [$post_id], 'posts_per_page' => -1, 'fields' => 'ids']);
         foreach ($query->posts as $post_id) {
             //@phpstan-ignore-line

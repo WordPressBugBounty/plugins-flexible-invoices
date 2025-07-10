@@ -252,7 +252,6 @@ tr.signature-user {
 	.fixed .column-pay,
 	.fixed .column-sale,
 	.fixed .column-order,
-	.fixed .column-status,
 	.fixed .column-currency {
 		display: none ! important;
 	}

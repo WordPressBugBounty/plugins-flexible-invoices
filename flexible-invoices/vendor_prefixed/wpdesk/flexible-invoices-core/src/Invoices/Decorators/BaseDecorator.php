@@ -483,6 +483,10 @@ class BaseDecorator implements Document
     {
         return $this->document->get_is_correction();
     }
+    public function get_template_id(): int
+    {
+        return $this->document->get_template_id();
+    }
     /**
      * @return string
      */

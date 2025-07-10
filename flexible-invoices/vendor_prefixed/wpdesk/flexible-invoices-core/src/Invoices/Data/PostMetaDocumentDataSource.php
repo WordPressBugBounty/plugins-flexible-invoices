@@ -38,6 +38,7 @@ class PostMetaDocumentDataSource extends AbstractDataSource
         $this->post_id = (int) $post_id;
         $this->meta = new MetaPostContainer($post_id);
         $this->post = get_post($this->post_id);
+        $this->template_id = (int) $this->meta->get_fallback('_template_id', BlockTemplateEditor::get_active_template_id());
         $this->customer = $this->meta->get_fallback('_client', []);
         $this->recipient = $this->meta->get_fallback('_recipient', []);
         $this->seller = $this->meta->get_fallback('_owner', []);
@@ -234,5 +235,9 @@ class PostMetaDocumentDataSource extends AbstractDataSource
     public function get_show_order_number(): int
     {
         return (int) $this->meta->get_fallback('_add_order_id', 0);
+    }
+    public function get_template_id(): int
+    {
+        return (int) $this->meta->get_fallback('_template_id', 0);
     }
 }

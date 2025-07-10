@@ -106,7 +106,7 @@ class Dashboard implements Hookable
             $document = $creator->get_document();
             if (BlockTemplateEditor::is_block_template_editor_active()) {
                 $block_template = new BlockTemplate();
-                $numbering = new BlockTemplateDocumentNumber($this->settings, $document, $creator->get_name(), $block_template);
+                $numbering = new BlockTemplateDocumentNumber($this->settings, $document, $block_template, $creator->get_name());
             } else {
                 $numbering = new DocumentNumber($this->settings, $document, $creator->get_name());
             }

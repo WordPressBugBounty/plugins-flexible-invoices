@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit1184c8ed092b881600df9f8744d1d705
+class ComposerStaticInit913ecb7fc610d44eba69cb4800da41c4
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -565,6 +565,7 @@ class ComposerStaticInit1184c8ed092b881600df9f8744d1d705
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Email\\EmailManualInvoice' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Email/EmailManualInvoice.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Email\\RegisterEmails' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Email/RegisterEmails.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Helpers\\BlockTemplateEditor' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Helpers/BlockTemplateEditor.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Helpers\\BlockTemplateGuard' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Helpers/BlockTemplateGuard.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Helpers\\CalculateTotals' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Helpers/CalculateTotals.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Helpers\\Countries' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Helpers/Countries.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Helpers\\Currency' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Helpers/Currency.php',
@@ -605,6 +606,7 @@ class ComposerStaticInit1184c8ed092b881600df9f8744d1d705
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\AttributesSubStartField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/AttributesSubStartField.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\Col' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/Col.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\ColorPickerField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/ColorPickerField.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\CustomField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/CustomField.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\DisableFieldProAdapter' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/DisableFieldProAdapter.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\DisableTemplateFieldAdapter' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/DisableTemplateFieldAdapter.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\FICheckboxField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/FICheckboxField.php',
@@ -922,9 +924,9 @@ class ComposerStaticInit1184c8ed092b881600df9f8744d1d705
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit1184c8ed092b881600df9f8744d1d705::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit1184c8ed092b881600df9f8744d1d705::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit1184c8ed092b881600df9f8744d1d705::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit913ecb7fc610d44eba69cb4800da41c4::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit913ecb7fc610d44eba69cb4800da41c4::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit913ecb7fc610d44eba69cb4800da41c4::$classMap;
 
         }, null, ClassLoader::class);
     }

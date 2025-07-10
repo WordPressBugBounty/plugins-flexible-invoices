@@ -58,7 +58,7 @@ if ($order->get_billing_phone()) {
 	<?php 
 echo $order->get_billing_phone() . "\n";
 // phpcs:ignore
-\wc_get_template('emails/plain/email-addresses.php', ['order' => $order]);
+\wc_get_template('emails/plain/email-addresses.php', ['order' => $order, 'sent_to_admin' => $sent_to_admin]);
 echo "\n****************************************************\n\n";
 echo \apply_filters('woocommerce_email_footer_text', \get_option('woocommerce_email_footer_text'));
 // phpcs:ignore

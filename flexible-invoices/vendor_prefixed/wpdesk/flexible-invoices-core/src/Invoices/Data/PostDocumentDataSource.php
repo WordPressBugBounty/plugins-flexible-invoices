@@ -41,6 +41,7 @@ class PostDocumentDataSource extends AbstractDataSource
         $this->recipient = $this->source->param('post.recipient')->get_as_array();
         $this->seller = $this->source->param('post.owner')->get_as_array();
         $this->products = $this->source->param('post.product')->get_as_array();
+        $this->template_id = (int) $this->source->param('post.template_id')->get();
         $this->post_meta_data = new PostMetaDocumentDataSource($post_id, $options_container, $document_type);
     }
     public function get_id(): int

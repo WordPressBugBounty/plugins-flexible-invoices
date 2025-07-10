@@ -132,4 +132,5 @@ interface SourceData
      * @return int
      */
     public function get_corrected_id(): int;
+    public function get_template_id(): int;
 }

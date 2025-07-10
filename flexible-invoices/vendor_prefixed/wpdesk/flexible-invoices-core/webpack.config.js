@@ -47,6 +47,7 @@ module.exports = {
 
 		//Template post type toggle handler.
 		'admin/template-toggle-manager': '/assets-src/admin/template-toggle-manager.js',
+		'admin/template-delete-handler': '/assets-src/admin/template-delete-handler.js',
 
 		//Block editor.
 		'blocks/post-meta/template-settings/index': '/assets-src/sidebar/template-settings/sidebar-settings.js',

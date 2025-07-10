@@ -58,8 +58,10 @@ class BlockEditorTemplateRenderer implements TemplateRendererInterface
          */
         $invoice = $invoice_atts['invoice'];
         $template_html = $this->block_template->get_template_content();
-        $template_html .= '<style>' . $this->get_document_styles($this->block_template) . '</style>';
-        return $this->prepare_invoice_html($template_html, $invoice);
+        $template_html .= $this->get_document_styles($this->block_template);
+        $final_html = $this->prepare_invoice_html($template_html, $invoice);
+        $final_html = preg_replace('/rgba\((\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*)\)/i', 'rgba($1, 1)', $final_html);
+        return $final_html;
     }
     private function prepare_invoice_html(string $template_html, TemplateDocumentDecorator $invoice_atts): string
     {

@@ -142,6 +142,7 @@ abstract class AbstractDataSource implements SourceData
      * @var int
      */
     protected $post_id = 0;
+    protected int $template_id = 0;
     /**
      * @param Settings $settings
      * @param string   $document_type
@@ -400,5 +401,16 @@ abstract class AbstractDataSource implements SourceData
     public function get_is_correction(): int
     {
         return 0;
+    }
+    public function get_template_id(): int
+    {
+        if ($this->template_id === 0) {
+            return BlockTemplateEditor::get_active_template_id();
+        }
+        return $this->template_id;
+    }
+    public function set_template_id(int $template_id): void
+    {
+        $this->template_id = $template_id;
     }
 }

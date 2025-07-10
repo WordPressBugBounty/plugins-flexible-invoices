@@ -104,6 +104,9 @@ class CreateDocumentForOrder implements Hookable
         if (!InvoicesIntegration::is_super()) {
             return \false;
         }
+        if (apply_filters('fi/core/automation/cancel_document_issuing', \false, $order)) {
+            return \false;
+        }
         foreach ($creators as $creator) {
             if ($this->lock_process($creator->get_type(), $order->get_id())) {
                 $auto_create_status = $creator->get_auto_create_statuses();

@@ -124,7 +124,7 @@ if ($order->get_billing_phone()) {
 ?>
 
 <?php 
-\wc_get_template('emails/email-addresses.php', ['order' => $order]);
+\wc_get_template('emails/email-addresses.php', ['order' => $order, 'sent_to_admin' => $sent_to_admin]);
 ?>
 
 <?php 

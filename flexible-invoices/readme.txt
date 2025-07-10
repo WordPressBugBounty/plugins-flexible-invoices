@@ -5,7 +5,7 @@ Tags: invoice, eu vat, woocommerce pdf invoices, vat invoice, woocommerce invoic
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 6.0.3
+Stable tag: 6.0.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -144,6 +144,10 @@ You can install the plugin like any other WordPress plugin.
 3. Activate the plugin through the Plugins menu in the WordPress Administration.
 
 You can also use WordPress uploader to upload the plugin zip file in WordPress menu Plugins -> Add New -> Upload Plugin. Then go directly to point 3.
+
+== Data use policy ==
+
+Learn about [Use of Data Policy by WP Desk Plugins](https://flexibleinvoices.com/terms/use-of-data-collected-by-wp-desk-plugins/?utm_source=wporg&utm_medium=link&utm_campaign=data-use-policy)
 
 == Frequently Asked Questions ==
 
@@ -300,8 +304,19 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 62. Correction invoice settings (PRO). The free version of the plugin gives you one free invoice template.
 63. Issue correction invoices for WooCommerce orders (PRO).
 64. Send PDF invoices automatically for additional email recipients (PRO add-on).
+65. Show additional information on the invoice template (Gutenberg invoice template editor).
+66. Choosing blocks on the invoice template within the Gutenberg editor.
+67. Invoice number formatting inside the visual editor for the invoice template.
 
 == Changelog ==
+
+= 6.0.4 - 2025-07-10 =
+* Fixed status column on smaller screens
+* Fixed Sample Template 5
+* Fixed email preview
+* Template post status is now visible in settings post table
+* Deleting active template now results in enabling first on the list
+* Selected template is now saved inside document meta
 
 = 6.0.3 - 2025-05-23 =
 * Fixed urls

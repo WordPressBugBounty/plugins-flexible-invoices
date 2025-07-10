@@ -7,8 +7,8 @@ use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 use WPDeskFIVendor\WPDesk\View\Renderer\Renderer;
 class SampleTemplateInserter implements Hookable
 {
-    private const DEFAULT_POST_STATUS = 'draft';
-    private const ALREADY_ADDED_OPTION_KEY = 'sample_fi_templates_posts_added';
+    private const DEFAULT_POST_STATUS = 'publish';
+    public const ALREADY_ADDED_OPTION_KEY = 'sample_fi_templates_posts_added';
     private Renderer $renderer;
     public function __construct(Renderer $renderer)
     {

@@ -2,12 +2,8 @@
 
 namespace WPDeskFIVendor\WPDesk\Composer\Codeception\Commands;
 
-use WPDeskFIVendor\Composer\Downloader\FilesystemException;
-use WPDeskFIVendor\Symfony\Component\Console\Input\InputArgument;
 use WPDeskFIVendor\Symfony\Component\Console\Input\InputInterface;
 use WPDeskFIVendor\Symfony\Component\Console\Output\OutputInterface;
-use WPDeskFIVendor\Symfony\Component\Yaml\Exception\ParseException;
-use WPDeskFIVendor\Symfony\Component\Yaml\Yaml;
 /**
  * Codeception tests run command.
  *

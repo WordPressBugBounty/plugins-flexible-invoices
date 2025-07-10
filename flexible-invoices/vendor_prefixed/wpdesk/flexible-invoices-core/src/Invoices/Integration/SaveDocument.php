@@ -162,6 +162,7 @@ class SaveDocument implements Hookable
             $meta->set('_wc_order_id', $document->get_order_id());
             $meta->set('_version', $this->plugin_version);
             $meta->set('_corrected_invoice_id', $document->get_corrected_id());
+            $meta->set('_template_id', $document->get_template_id());
             $this->save_tax_items($meta, $document->get_items());
             $this->save_client_meta($meta, $document->get_customer_as_array());
             EmailStatus::save($document);

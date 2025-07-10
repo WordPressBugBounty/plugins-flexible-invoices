@@ -127,6 +127,7 @@ abstract class AbstractDocument implements Document
      * @var int
      */
     private $is_correction = 0;
+    private int $template_id = 0;
     /**
      * @param string $value
      */
@@ -541,5 +542,13 @@ abstract class AbstractDocument implements Document
     {
         return $this->is_correction;
         //@phpstan-ignore-line
+    }
+    public function get_template_id(): int
+    {
+        return apply_filters('fi/core/blocks/invoice_template', $this->template_id, $this);
+    }
+    public function set_template_id(int $template_id)
+    {
+        $this->template_id = $template_id;
     }
 }

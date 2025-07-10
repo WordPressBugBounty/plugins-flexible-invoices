@@ -81,7 +81,7 @@ class ValidateVatNumber
                 break;
             case 'CY':
                 // CYPRUS.
-                $is_valid = (bool) preg_match('/^(CY)([0-5|9]\d{7}[A-Z])$/', $vat_number);
+                $is_valid = (bool) preg_match('/^(CY)(\d{8}[A-Z])$/', $vat_number);
                 break;
             case 'CZ':
                 // CZECH REPUBLIC.
