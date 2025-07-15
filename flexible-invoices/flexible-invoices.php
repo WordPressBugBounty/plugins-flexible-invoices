@@ -3,7 +3,7 @@
  * Plugin Name: Flexible Invoices for WooCommerce and WordPress
  * Plugin URI: https://wordpress.org/plugins/flexible-invoices/
  * Description: Flexible Invoices for WooCommerce and WordPress made simple. Available <a href="https://www.flexibleinvoices.com/?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-invoices-plugins-upgrade-link&utm_content=plugin-list-description" target="_blank">PRO extension</a> with automations and different types of documents.
- * Version: 6.0.4
+ * Version: 6.0.5
  * Author: WP Desk
  * Author URI: https://www.flexibleinvoices.com/
  * Text Domain: flexible-invoices
@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 /* THESE TWO VARIABLES CAN BE CHANGED AUTOMATICALLY */
-$plugin_version = '6.0.4';
+$plugin_version = '6.0.5';
 $plugin_release_timestamp = '2023-11-27 10:37';
 
 $plugin_name        = 'Flexible Invoices for WooCommerce and WordPress';
@@ -67,3 +67,18 @@ if ( ! function_exists( 'flexible_invoices_deactivation_translate' ) ) {
 		\WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Translator::reset_translations();
 	}
 }
+
+/**
+ * Add option flag to ensure rewrite rules flush
+ */
+register_activation_hook( __FILE__, function (){
+	update_option( \WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\PostType\TemplatesPostType::FLUSH_REWRITE_RULES_OPTION, true );
+} );
+
+/**
+ * Flush rewrite rules after deactivating Flexible Invoices
+ */
+register_deactivation_hook( __FILE__, function (){
+	flush_rewrite_rules();
+} );
+

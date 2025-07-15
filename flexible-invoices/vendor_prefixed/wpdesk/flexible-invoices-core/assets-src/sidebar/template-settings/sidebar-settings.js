@@ -131,7 +131,8 @@ const TemplateSettings = () => {
 					help={__('Select when to reset the invoice number to 1.', 'flexible-invoices')}
 					options={[
 						{label: __('Yearly', 'flexible-invoices'), value: 'year'},
-						{label: __('Monthly', 'flexible-invoices'), value: 'month'}]
+						{label: __('Monthly', 'flexible-invoices'), value: 'month'},
+						{label: __('None', 'flexible-invoices'), value: 'none'}]
 					}
 					onChange={(newValue) => handleMetaChange('invoice_number_reset_type', newValue)}
 				/>
@@ -190,7 +191,8 @@ const TemplateSettings = () => {
 					help={__('Select when to reset the invoice number to 1.', 'flexible-invoices')}
 					options={[
 						{label: __('Yearly', 'flexible-invoices'), value: 'year'},
-						{label: __('Monthly', 'flexible-invoices'), value: 'month'}]
+						{label: __('Monthly', 'flexible-invoices'), value: 'month'},
+						{label: __('None', 'flexible-invoices'), value: 'none'}]
 					}
 					onChange={(newValue) => handleMetaChange('correction_number_reset_type', newValue)}
 				/>
@@ -249,7 +251,8 @@ const TemplateSettings = () => {
 					help={__('Select when to reset the invoice number to 1.', 'flexible-invoices')}
 					options={[
 						{label: __('Yearly', 'flexible-invoices'), value: 'year'},
-						{label: __('Monthly', 'flexible-invoices'), value: 'month'}]
+						{label: __('Monthly', 'flexible-invoices'), value: 'month'},
+						{label: __('None', 'flexible-invoices'), value: 'none'}]
 					}
 					onChange={(newValue) => handleMetaChange('proforma_number_reset_type', newValue)}
 				/>

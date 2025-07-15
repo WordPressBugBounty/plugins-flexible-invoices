@@ -27,6 +27,7 @@ class TemplatesPostType implements Hookable
     private const WELCOME_DISMISS_META = 'welcome_dismissed';
     public const PAGE_NUMBERING_META = 'enable_page_numbering';
     public const WOOCOMMERCE_SHIPPING = 'woocommerce_shipping_address';
+    public const FLUSH_REWRITE_RULES_OPTION = 'fi_templatept_rewrite_rules_flushed';
     private string $lib_url;
     private string $plugin_path;
     private string $lib_version;
@@ -34,20 +35,30 @@ class TemplatesPostType implements Hookable
     {
         $this->lib_url = $library_info->get_library_url();
         $this->plugin_path = $library_info->get_plugin_dir();
-        $this->lib_version = (string) time();
-        //todo: use this instead of time. $this->lib_version = $library_info->get_plugin_version();
+        $this->lib_version = $library_info->get_plugin_version();
     }
     public function hooks()
     {
         add_action('init', [$this, 'register_post_type']);
         add_action('init', [$this, 'register_meta_fields']);
-        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
         add_action('init', [$this, 'register_editor_assets']);
+        add_action('init', [$this, 'maybe_flush_rewrite_rules'], 20);
+        add_action('admin_init', [$this, 'redirect_user_from_legacy_post_type_page']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
         add_action('enqueue_block_editor_assets', [$this, 'enqueue_editor_assets']);
         add_filter('preview_post_link', [$this, 'edit_view_post_type_link'], 10, 2);
         add_filter('post_type_link', [$this, 'edit_view_post_type_link'], 10, 2);
         add_action('wp_ajax_fi_toggle_template_enabled', [$this, 'toggle_template_enabled']);
-        add_action('admin_init', [$this, 'redirect_user_from_legacy_post_type_page']);
+    }
+    /**
+     * Flush rewrite rules to prevent "404" after deactivating plugin.
+     */
+    public function maybe_flush_rewrite_rules()
+    {
+        if (!get_option(self::FLUSH_REWRITE_RULES_OPTION)) {
+            flush_rewrite_rules();
+            update_option(self::FLUSH_REWRITE_RULES_OPTION, \true);
+        }
     }
     /**
      * Don't allow user to get into the legacy post type page, redirect him to fi settings with custom invoice table instead
