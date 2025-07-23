@@ -43,7 +43,7 @@ class BlockTemplate
     }
     public function get_number_prefix(string $document_type): string
     {
-        return $this->get_meta($document_type . '_' . TemplatesPostType::NUMBER_PREFIX_META) . ' ';
+        return $this->get_meta($document_type . '_' . TemplatesPostType::NUMBER_PREFIX_META);
     }
     public function get_number_suffix(string $document_type): string
     {
