@@ -62,7 +62,7 @@ class ProductTableReplacer extends AbstractBasicReplacer
         $table_body = '';
         $items = $invoice->get_items();
         foreach ($items as $key => $item) {
-            $product_table_hints = ['{Number}' => $key + 1, '{ProductName}' => $item['name'], '{ProductUnit}' => $item['unit'], '{ProductSKU}' => $item['sku'] ?? '', '{ProductDiscount}' => $item['discount'] ?? '', '{ProductQty}' => $item['quantity'], '{ProductNetPrice}' => $this->currency_helper->string_as_money($item['net_price']), '{ProductNetAmount}' => $this->currency_helper->string_as_money($item['net_price_sum']), '{ProductTaxRate}' => $item['vat_type_name'], '{ProductTaxAmount}' => $this->currency_helper->string_as_money($item['vat_sum']), '{ProductGrossAmount}' => $this->currency_helper->string_as_money($item['total_price'])];
+            $product_table_hints = ['{Number}' => $key + 1, '{ProductName}' => $item['name'], '{ProductUnit}' => $item['unit'], '{ProductSKU}' => $item['sku'] ?? '', '{ProductDiscount}' => $this->currency_helper->string_as_money($item['discount'] ?? ''), '{ProductQty}' => $item['quantity'], '{ProductNetPrice}' => $this->currency_helper->string_as_money($item['net_price']), '{ProductNetAmount}' => $this->currency_helper->string_as_money($item['net_price_sum']), '{ProductTaxRate}' => $item['vat_type_name'], '{ProductTaxAmount}' => $this->currency_helper->string_as_money($item['vat_sum']), '{ProductGrossAmount}' => $this->currency_helper->string_as_money($item['total_price'])];
             $shortcodes = array_keys($product_table_hints);
             $values = array_values($product_table_hints);
             $row = str_replace($shortcodes, $values, $row_template);
