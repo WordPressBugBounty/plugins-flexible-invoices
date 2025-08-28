@@ -1,0 +1,1 @@
+jQuery((function(e){e(document).on("click",".delete a",(function(t){e(this).closest("tr").find(".fi-block-template-toggle").is(":checked")&&(t.preventDefault(),!0===confirm("Are you sure you want to delete this template?")&&(window.location.href=e(this).attr("href")))}))}));

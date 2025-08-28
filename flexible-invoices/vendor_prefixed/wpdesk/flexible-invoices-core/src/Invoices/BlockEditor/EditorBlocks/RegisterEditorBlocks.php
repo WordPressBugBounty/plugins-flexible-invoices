@@ -34,7 +34,11 @@ class RegisterEditorBlocks implements Hookable
     }
     public function filter_gutenberg_blocks($allowed_block_types, $editor_context)
     {
-        if ($editor_context->post->post_type === self::POST_TYPE_SLUG) {
+        $post_type = null;
+        if (isset($editor_context->post) && is_object($editor_context->post)) {
+            $post_type = $editor_context->post->post_type;
+        }
+        if ($post_type === self::POST_TYPE_SLUG) {
             $fi_blocks = array_map(function ($block) {
                 return self::BLOCKS_NAMESPACE . '/' . $block;
             }, $this->blocks);
