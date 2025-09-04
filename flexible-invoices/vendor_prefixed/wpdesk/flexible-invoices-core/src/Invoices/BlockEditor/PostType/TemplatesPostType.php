@@ -87,6 +87,16 @@ class TemplatesPostType implements Hookable
     }
     public function enqueue_admin_scripts()
     {
+        $post_type = isset($_GET['post_type']) ? sanitize_text_field(wp_unslash($_GET['post_type'])) : '';
+        //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
+        //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $tab = isset($_GET['tab']) ? sanitize_text_field(wp_unslash($_GET['tab'])) : '';
+        //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $is_invoice_template_settings = $post_type === 'inspire_invoice' && $page === 'invoices_settings' && $tab === 'invoice-template';
+        if (!$is_invoice_template_settings) {
+            return;
+        }
         wp_enqueue_script('fi-template-delete-handler', $this->lib_url . '/assets/js/admin/template-delete-handler.js', ['jquery'], $this->lib_version, \true);
         wp_enqueue_script('fi-template-editor-toggler', $this->lib_url . '/assets/js/admin/template-toggle-manager.js', ['jquery'], $this->lib_version, \true);
         wp_localize_script('fi-template-editor-toggler', 'fiInvoicesCore', ['ajax_url' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce(self::TOGGLE_TEMPLATE_NONCE)]);
@@ -134,7 +144,7 @@ class TemplatesPostType implements Hookable
     public function register_post_type()
     {
         $labels = ['name' => _x('Templates', 'Post type general name', 'flexible-invoices'), 'singular_name' => _x('Templates', 'Post type singular name', 'flexible-invoices'), 'menu_name' => _x('Templates', 'Admin Menu text', 'flexible-invoices'), 'name_admin_bar' => _x('Templates', 'Add New on Toolbar', 'flexible-invoices'), 'add_new' => __('Add New', 'flexible-invoices'), 'add_new_item' => __('Add New', 'flexible-invoices'), 'new_item' => __('New Template', 'flexible-invoices'), 'edit_item' => __('Edit Template', 'flexible-invoices'), 'view_item' => __('View Template', 'flexible-invoices'), 'all_items' => __('Templates', 'flexible-invoices'), 'search_items' => __('Search Templates', 'flexible-invoices')];
-        $args = ['labels' => $labels, 'public' => \true, 'show_in_rest' => \true, 'publicly_queryable' => \true, 'show_ui' => \true, 'show_in_menu' => \false, 'query_var' => \true, 'capability_type' => 'post', 'has_archive' => \true, 'hierarchical' => \false, 'supports' => ['title', 'editor', 'custom-fields']];
+        $args = ['labels' => $labels, 'public' => \true, 'show_in_menu' => \false, 'capability_type' => 'post', 'hierarchical' => \false, 'publicly_queryable' => \false, 'rewrite' => \false, 'exclude_from_search' => \true, 'has_archive' => \false, 'show_ui' => \true, 'show_in_rest' => \true, 'show_in_nav_menus' => \false, 'map_meta_cap' => \true, 'query_var' => 'fi_template', 'supports' => ['title', 'editor', 'custom-fields']];
         register_post_type(self::POST_TYPE_SLUG, $args);
     }
     public function toggle_template_enabled()

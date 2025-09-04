@@ -83,14 +83,20 @@ class TemplatesListTable extends \WP_List_Table
         }
         $action = sanitize_text_field(wp_unslash($_REQUEST['action']));
         //phpcs:ignore WordPress.Security.NonceVerification.Recommended
-        if (self::BULK_ACTION_DELETE === $action) {
-            $post_ids = isset($_REQUEST['fi_template']) ? wp_unslash($_REQUEST['fi_template']) : [];
-            //phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-            if (!empty($post_ids) && is_array($post_ids)) {
-                foreach ($post_ids as $post_id) {
-                    wp_delete_post($post_id, \true);
-                }
+        if (self::BULK_ACTION_DELETE !== $action) {
+            return;
+        }
+        $post_ids = isset($_REQUEST['fi_template']) ? wp_unslash($_REQUEST['fi_template']) : [];
+        //phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        if (!is_array($post_ids) || empty($post_ids)) {
+            return;
+        }
+        foreach ($post_ids as $post_id) {
+            $is_enabled = get_post_meta($post_id, TemplatesPostType::ENABLED_TEMPLATE_OPTION_KEY, \true);
+            if ($is_enabled) {
+                continue;
             }
+            wp_delete_post($post_id, \true);
         }
     }
     public function handle_duplicate()
