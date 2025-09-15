@@ -3,6 +3,7 @@
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentNumbers;
 
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\Documents\Document;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\DuplicationChecker;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Translator;
 /**
@@ -135,7 +136,22 @@ class DocumentNumber
          * @since 3.0.0
          */
         $number_array = apply_filters('fi/core/numbering/formatted_number', $number_array, $this->document);
-        return implode('', $number_array);
+        $checker = new DuplicationChecker();
+        $invoice_title = implode('', $number_array);
+        if (apply_filters('fi/core/numbering/enable_duplicate_guard', \false)) {
+            $max_attempts = apply_filters('fi/core/numbering/duplicate_guard_max_attemps', 5);
+            for ($attempt = 1; $attempt < $max_attempts; $attempt++) {
+                $invoice_title = implode('', $number_array);
+                if ($checker->invoice_with_title_exists($invoice_title)) {
+                    $this->document_number = $number_array[1];
+                    $this->increase_number();
+                    $number_array[1] = $this->get_number_from_option();
+                } else {
+                    break;
+                }
+            }
+        }
+        return $invoice_title;
     }
     /**
      * @return int

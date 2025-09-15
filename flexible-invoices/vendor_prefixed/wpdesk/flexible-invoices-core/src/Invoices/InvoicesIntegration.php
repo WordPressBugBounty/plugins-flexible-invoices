@@ -11,6 +11,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\PostType\Temp
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\InvoiceCreator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\BlockTemplateGuard;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\DuplicationChecker;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\BlockPDFGenerator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\SettingsForm;
@@ -318,6 +319,7 @@ class InvoicesIntegration implements Hookable
     private function wordpress_integration_hooks()
     {
         $capabilities = new WordPress\PostTypeCapabilities($this->settings);
+        $duplication_checker = new DuplicationChecker();
         $this->add_hookable(new WordPress\DefaultSettings());
         $this->add_hookable(new WordPress\Assets($this->library_info->get_assets_url()));
         $this->add_hookable(new SettingsForm($this->strategy, $this->library_info->get_template_dir(), $this->library_info->get_assets_url()));
@@ -329,7 +331,7 @@ class InvoicesIntegration implements Hookable
         $this->add_hookable(new WordPress\BulkActions());
         $this->add_hookable(new WordPress\User());
         $this->add_hookable(new WordPress\FindProducts($this->settings));
-        $this->add_hookable(new WordPress\DuplicatesNotice());
+        $this->add_hookable(new WordPress\DuplicatesNotice($duplication_checker));
         $this->add_hookable(new WordPress\Reports\GenerateReport($this->get_settings(), $this->document_factory, $this->renderer, $this->library_info));
         $this->add_hookable(new WordPress\Reports\ReportsMenuPage($this->library_info->get_template_dir()));
         $this->add_hookable(new WordPress\Download\DownloadMenuPage($this->library_info->get_template_dir()));

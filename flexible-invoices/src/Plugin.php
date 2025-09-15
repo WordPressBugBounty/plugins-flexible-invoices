@@ -9,6 +9,7 @@ namespace WPDesk\FlexibleInvoices;
 
 use WPDesk\FlexibleInvoices\Addons\Filters\AdvancedFiltersAddon;
 use WPDesk\FlexibleInvoices\Addons\Sending\SendingSettingsAddon;
+use WPDesk\FlexibleInvoices\Addons\Validation\ValidateInvoice;
 use WPDesk\FlexibleInvoices\Block\VatNumber\RegisterCheckoutBlock;
 use WPDesk\FlexibleInvoices\Marketing\SupportLinks;
 use WPDesk\FlexibleInvoices\Marketing\SupportMenuPage;
@@ -93,6 +94,7 @@ class Plugin extends AbstractPlugin implements LoggerAwareInterface, HookableCol
 				$this->add_hookable( $integration );
 				$this->add_hookable( new SupportMenuPage( $this->plugin_url . '/assets/' ) );
 				$this->add_hookable( new SupportLinks() );
+				$this->add_hookable( new ValidateInvoice() );
 
 				if ( WooCommerce::is_active() ) {
 					$this->add_hookable( new RegisterCheckoutBlock( $this->plugin_info, $integration->get_settings() ) );

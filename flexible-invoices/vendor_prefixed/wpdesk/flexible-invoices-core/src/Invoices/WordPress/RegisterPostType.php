@@ -15,8 +15,8 @@ use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
  */
 class RegisterPostType implements Hookable
 {
-    const POST_TYPE_NAME = 'inspire_invoice';
-    const POST_TYPE_MENU_URL = 'edit.php?post_type=' . self::POST_TYPE_NAME;
+    public const POST_TYPE_NAME = 'inspire_invoice';
+    public const POST_TYPE_MENU_URL = 'edit.php?post_type=' . self::POST_TYPE_NAME;
     /**
      * @var PostTypeCapabilities
      */
