@@ -45,6 +45,7 @@ class TemplatesListTable extends \WP_List_Table
             ?></a>
 			</div>
 			<?php 
+            wp_nonce_field('fi_bulk_delete_templates_action', 'fi_security_nonce');
         }
     }
     public function column_name($item)
@@ -78,22 +79,22 @@ class TemplatesListTable extends \WP_List_Table
             wp_die(esc_html__('You do not have permission to perform this action.', 'flexible-invoices'));
         }
         if (!isset($_REQUEST['action'])) {
-            //phpcs:ignore WordPress.Security.NonceVerification.Recommended
             return;
         }
         $action = sanitize_text_field(wp_unslash($_REQUEST['action']));
-        //phpcs:ignore WordPress.Security.NonceVerification.Recommended
         if (self::BULK_ACTION_DELETE !== $action) {
             return;
         }
+        check_admin_referer('fi_bulk_delete_templates_action', 'fi_security_nonce');
         $post_ids = isset($_REQUEST['fi_template']) ? wp_unslash($_REQUEST['fi_template']) : [];
-        //phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         if (!is_array($post_ids) || empty($post_ids)) {
             return;
         }
         foreach ($post_ids as $post_id) {
-            $is_enabled = get_post_meta($post_id, TemplatesPostType::ENABLED_TEMPLATE_OPTION_KEY, \true);
-            if ($is_enabled) {
+            $is_enabled = filter_var(get_post_meta($post_id, TemplatesPostType::ENABLED_TEMPLATE_OPTION_KEY, \true), \FILTER_VALIDATE_BOOLEAN);
+            $post_template = (string) get_post_type($post_id);
+            if ($is_enabled || $post_template !== TemplatesPostType::POST_TYPE_SLUG) {
                 continue;
             }
             wp_delete_post($post_id, \true);
