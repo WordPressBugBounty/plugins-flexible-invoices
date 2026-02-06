@@ -4,10 +4,7 @@ namespace WPDeskFIVendor\WPDesk\Forms\Field;
 
 class MultipleInputTextField extends InputTextField
 {
-    /**
-     * @return string
-     */
-    public function get_template_name()
+    public function get_template_name(): string
     {
         return 'input-text-multiple';
     }

@@ -4,14 +4,8 @@ namespace WPDeskFIVendor\WPDesk\Forms;
 
 interface Validator
 {
-    /**
-     * @param mixed $value
-     *
-     * @return bool
-     */
-    public function is_valid($value);
-    /**
-     * @return string[]
-     */
-    public function get_messages();
+    /** @param mixed $value */
+    public function is_valid($value): bool;
+    /** @return string[] */
+    public function get_messages(): array;
 }

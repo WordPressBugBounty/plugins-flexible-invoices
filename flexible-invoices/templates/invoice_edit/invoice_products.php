@@ -12,18 +12,18 @@ $items = $invoice->get_items();
 	<table class="wp-list-table widefat fixed products invoice-products-table">
 		<thead>
 		<tr>
-			<th class="product-title"><?php esc_html_e( 'Product', 'flexible-invoices-woocommerce' ); ?></th>
-			<th class="sku-label"><?php esc_html_e( 'SKU', 'flexible-invoices-woocommerce' ); ?></th>
-			<th class="unit-label"><?php esc_html_e( 'Unit', 'flexible-invoices-woocommerce' ); ?></th>
-			<th class="qty-label"><?php esc_html_e( 'Quantity', 'flexible-invoices-woocommerce' ); ?></th>
-			<th class="net-price-label"><?php esc_html_e( 'Net price', 'flexible-invoices-woocommerce' ); ?></th>
+			<th class="product-title"><?php esc_html_e( 'Product', 'flexible-invoices' ); ?></th>
+			<th class="sku-label"><?php esc_html_e( 'SKU', 'flexible-invoices' ); ?></th>
+			<th class="unit-label"><?php esc_html_e( 'Unit', 'flexible-invoices' ); ?></th>
+			<th class="qty-label"><?php esc_html_e( 'Quantity', 'flexible-invoices' ); ?></th>
+			<th class="net-price-label"><?php esc_html_e( 'Net price', 'flexible-invoices' ); ?></th>
 			<?php if ( $show_discount && InvoicesIntegration::is_super() ): ?>
-				<th class="discount-label"><?php esc_html_e( 'Discount', 'flexible-invoices-woocommerce' ); ?></th>
+				<th class="discount-label"><?php esc_html_e( 'Discount', 'flexible-invoices' ); ?></th>
 			<?php endif; ?>
-			<th class="net-price-label"><?php esc_html_e( 'Net amount', 'flexible-invoices-woocommerce' ); ?></th>
-			<th class="tax-rate-label"><?php esc_html_e( 'Tax rate', 'flexible-invoices-woocommerce' ); ?></th>
-			<th class="tax-price-label"><?php esc_html_e( 'Tax amount', 'flexible-invoices-woocommerce' ); ?></th>
-			<th class="gross-price-label"><?php esc_html_e( 'Gross amount', 'flexible-invoices-woocommerce' ); ?></th>
+			<th class="net-price-label"><?php esc_html_e( 'Net amount', 'flexible-invoices' ); ?></th>
+			<th class="tax-rate-label"><?php esc_html_e( 'Tax rate', 'flexible-invoices' ); ?></th>
+			<th class="tax-price-label"><?php esc_html_e( 'Tax amount', 'flexible-invoices' ); ?></th>
+			<th class="gross-price-label"><?php esc_html_e( 'Gross amount', 'flexible-invoices' ); ?></th>
 			<th class="product-actions"></th>
 		</tr>
 		</thead>
@@ -35,7 +35,7 @@ $items = $invoice->get_items();
 				<?php
 				$item_name          = $product['name'] ?? '';
 				$item_sku           = $product['sku'] ?? '';
-				$item_unit          = $product['unit'] ?? esc_html_x( 'item', 'Units Of Measure For Items In Inventory', 'flexible-invoices-woocommerce' );
+				$item_unit          = $product['unit'] ?? esc_html_x( 'item', 'Units Of Measure For Items In Inventory', 'flexible-invoices' );
 				$item_qty           = $product['quantity'] ?? 1;
 				$item_net_price     = $product['net_price'] ?? 0.0;
 				$item_discount      = $product['discount'] ?? 0.0;
@@ -61,7 +61,7 @@ $items = $invoice->get_items();
 							<?php endif; ?>
 						</div>
 						<a style="float:right; margin-top: 5px; <?php echo WooCommerce::is_active() ? '' : 'display:none;'; ?>" href="#" class="edit_item_name"
-						   title="<?php esc_attr_e( 'Click to enter item name manually', 'flexible-invoices-woocommerce' ); ?>">
+						   title="<?php esc_attr_e( 'Click to enter item name manually', 'flexible-invoices' ); ?>">
 							<span class="dashicons dashicons-edit"></span>
 						</a>
 
@@ -178,7 +178,7 @@ $items = $invoice->get_items();
 						</label>
 					</td>
 					<td>
-						<a class="remove_product" href="#" title="<?php esc_html_e( 'Delete product', 'flexible-invoices-woocommerce' ); ?>"><span class="dashicons dashicons-no"></span></a>
+						<a class="remove_product" href="#" title="<?php esc_html_e( 'Delete product', 'flexible-invoices' ); ?>"><span class="dashicons dashicons-no"></span></a>
 					</td>
 				</tr>
 			<?php endforeach; ?>
@@ -188,7 +188,7 @@ $items = $invoice->get_items();
 	</table>
 
 	<div class="product-actions">
-		<button class="button add_product add_document_product" data-type="product"><?php esc_html_e( 'Add product', 'flexible-invoices-woocommerce' ); ?></button>
+		<button class="button add_product add_document_product" data-type="product"><?php esc_html_e( 'Add product', 'flexible-invoices' ); ?></button>
 	</div>
 </div>
 <style>
@@ -216,7 +216,7 @@ $items = $invoice->get_items();
 				<?php endif; ?>
 			</div>
 			<a style="float:right; margin-top: 5px; <?php echo WooCommerce::is_active() ? '' : 'display:none;'; ?>" href="#" class="edit_item_name"
-			   title="<?php esc_html_e( 'Click to enter item name manually', 'flexible-invoices-woocommerce' ); ?>">
+			   title="<?php esc_html_e( 'Click to enter item name manually', 'flexible-invoices' ); ?>">
 				<span class="dashicons dashicons-edit"></span>
 			</a>
 		</td>
@@ -236,7 +236,7 @@ $items = $invoice->get_items();
 					class="hs-beacon-search"
 					type="text"
 					name="product[unit][]"
-					value="<?php echo esc_attr_x( 'item', 'Units Of Measure For Items In Inventory', 'flexible-invoices-woocommerce' ); ?>"
+					value="<?php echo esc_attr_x( 'item', 'Units Of Measure For Items In Inventory', 'flexible-invoices' ); ?>"
 				/>
 			</label>
 		</td>
@@ -313,7 +313,7 @@ $items = $invoice->get_items();
 				/>
 			</label></td>
 		<td>
-			<a class="remove_product" href="#" title="<?php esc_html_e( 'Delete product', 'flexible-invoices-woocommerce' ); ?>">
+			<a class="remove_product" href="#" title="<?php esc_html_e( 'Delete product', 'flexible-invoices' ); ?>">
 				<span class="dashicons dashicons-no"></span>
 			</a>
 		</td>

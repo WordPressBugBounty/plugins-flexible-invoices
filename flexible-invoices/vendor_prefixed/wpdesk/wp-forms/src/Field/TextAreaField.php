@@ -4,12 +4,11 @@ namespace WPDeskFIVendor\WPDesk\Forms\Field;
 
 class TextAreaField extends BasicField
 {
-    public function __construct()
+    public function get_type(): string
     {
-        parent::__construct();
-        $this->set_default_value('');
+        return 'textarea';
     }
-    public function get_template_name()
+    public function get_template_name(): string
     {
         return 'textarea';
     }

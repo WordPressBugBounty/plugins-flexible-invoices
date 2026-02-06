@@ -116,7 +116,7 @@ $filter_vat_number      = 0;
 			<div class="row submit-filters">
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 					<?php
-					$bundle_link = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/faktury-woocommerce-zaawansowane-filtry/?utm_source=wp-admin-plugins&utm_medium=button&utm_campaign=flexible-invoices-advanced-filters' : 'https://flexibleinvoices.com/products/advanced-filters-for-flexible-invoices/?utm_source=wp-admin-plugins&utm_medium=button&utm_campaign=flexible-invoices-advanced-filters';
+					$bundle_link = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sk/flexible-invoices-bund-pl' : 'https://flexibleinvoices.com/sk/flexible-invoices-bund-en';
 					?>
 					<p><a style="background-color: #900351; border-color: #900351;" target="_blank" class="button button-primary" href="<?php echo esc_url( $bundle_link ); ?>"><?php esc_html_e( 'Buy Advanced Filters Add-on &rarr;', 'flexible-invoices' ); ?></a></p>
 				</div>

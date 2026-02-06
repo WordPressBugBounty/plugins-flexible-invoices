@@ -17,7 +17,7 @@ if ( ! $boxes ) {
 
 		<div class="marketing-buttons">
 			<a class="button button-primary button-support confirm" data-confirm="confirm-support" href="#"><?php esc_html_e( 'Get support', 'flexible-invoices' ); ?></a>
-			<a class="button button-primary button-idea" href="https://flexibleinvoices.com/ideas/?utm_source=fi-support-tab&utm_campaign=fi-support-tab&utm_medium=button"><?php esc_html_e( 'Share idea', 'flexible-invoices' ); ?></a>
+			<a class="button button-primary button-idea" href="https://flexibleinvoices.com/sk/flexible-invoices-idea"><?php esc_html_e( 'Share idea', 'flexible-invoices' ); ?></a>
 		</div>
 
 		<div class="wpdesk-tooltip-shadow"></div>
@@ -28,7 +28,7 @@ if ( ! $boxes ) {
 				<li><?php esc_html_e( 'Prepare the information about the version of WordPress, WooCommerce, and Flexible Invoices (preferably your system status from WooCommerce->Status)', 'flexible-invoices' ); ?></li>
 				<li><?php esc_html_e( 'Describe the issue you have', 'flexible-invoices' ); ?></li>
 				<li><?php esc_html_e( 'Attach any log files & printscreens of the issue', 'flexible-invoices' ); ?></li>
-				<li><?php echo wp_kses_post( __( 'Read also <a target="_blank" href="https://wpdesk.link/fi-support-tab-common">common issues in WordPress & WooCommerce</a>', 'flexible-invoices' ) ); ?></li>
+				<li><?php echo wp_kses_post( __( 'Read also <a target="_blank" href="https://flexibleinvoices.com/sk/fi-support-tab-common">common issues in WordPress & WooCommerce</a>', 'flexible-invoices' ) ); ?></li>
 			</ul>
 			<div class="confirm-buttons">
 				<a target="_blank" href="https://wpdesk.link/fi-support-tab-contact" class="confirm-url"><?php esc_html_e( 'Ok, take me to support', 'flexible-invoices' ); ?></a>

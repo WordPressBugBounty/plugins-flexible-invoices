@@ -45,9 +45,9 @@ final class CorrectionsSettingsFields implements DocumentsFieldsInterface
     private function get_doc_link(): string
     {
         if (InvoicesIntegration::is_super()) {
-            $docs_link = 'https://docs.flexibleinvoices.com/article/802-manual-issuing-corrections?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=settings-docs-link';
+            $docs_link = 'https://flexibleinvoices.com/sk/flexible-invoices-issuing-docs-en';
             if (get_locale() === 'pl_PL') {
-                $docs_link = 'https://www.wpdesk.pl/docs/faktury-korygujace-woocommerce/?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=settings-docs-link';
+                $docs_link = 'https://www.wpdesk.pl/sk/flexible-invoices-issuing-docs-pl';
             }
             // translators: %1 link, %2 strong open tag, %3 strong close tag
             return sprintf('%2$s%1$s%3$s', sprintf(esc_html__('Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-invoices'), '<a href="' . $docs_link . '" target="_blank" style="color: #4BB04E; font-weight: 700;">', '</a>'), '<strong>', '</strong>');

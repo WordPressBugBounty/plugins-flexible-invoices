@@ -3,16 +3,11 @@
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\Reports;
 
 use WP_Query;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Plugin;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Infrastructure\Request;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\InvoicesIntegration;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\LibraryInfo;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\DateFromToMetaQuery;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType;
-use WPDeskFIVendor\WPDesk\Notice\Notice;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 use WPDeskFIVendor\WPDesk\View\Renderer\Renderer;
 /**
@@ -57,9 +52,6 @@ class GenerateReport extends DateFromToMetaQuery implements Hookable
     public function hooks()
     {
         add_action('wp_ajax_fiw_generate_report', [$this, 'generate_report_action']);
-        if (!Plugin::is_active('flexible-invoices-reports/flexible-invoices-reports.php') && InvoicesIntegration::is_super()) {
-            add_action('admin_init', [$this, 'advanced_report_settings_notice']);
-        }
     }
     /**
      * @param string $currency
@@ -114,20 +106,6 @@ class GenerateReport extends DateFromToMetaQuery implements Hookable
                 $this->renderer->output_render('report/report', ['plugin' => $this, 'library_info' => $this->library_info, 'currency_decimal_separator' => $currency_decimal_separator, 'documents' => $documents, 'settings' => $this->settings, 'post_data' => $post_data]);
             }
             die;
-        }
-    }
-    /**
-     * Show notice for advanced report settings tab.
-     *
-     * @return void
-     */
-    public function advanced_report_settings_notice(): void
-    {
-        $request = new Request();
-        $post_type = $request->param('get.post_type')->get();
-        $page = $request->param('get.page')->get();
-        if ($post_type === RegisterPostType::POST_TYPE_NAME && $page === 'flexible-invoices-reports-settings') {
-            new Notice($this->renderer->render('wordpress/advanced-reports-ad', []), Notice::NOTICE_TYPE_SUCCESS, \true);
         }
     }
 }

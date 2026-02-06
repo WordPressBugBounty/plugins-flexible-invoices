@@ -2,7 +2,7 @@
 
 	jQuery( document ).ready( function ( $ ) {
 		$('.color-picker').wpColorPicker();
-		
+
 		jQuery(document).find('.color-picker.disabled').each(function (index, item) {
 			let container = jQuery(this).closest('.wp-picker-container');
 			container.find('.wp-color-result').attr('disabled', 'disabled');
@@ -14,19 +14,26 @@
 			e.preventDefault();
 			return false;
 		}
-		
+
 		jQuery( '.select-images' ).find( 'label' ).removeClass( 'checked-image' );
 		jQuery( this ).addClass( 'checked-image' );
 	} );
 
 	jQuery( '.select-images a.zoom' ).click( function ( e ) {
-		jQuery( this ).closest( '.select-images' ).find( '.large-view' ).hide();
+		var $container = jQuery( this ).closest( '.select-images' );
+		$container.find( 'label' ).removeClass( 'active-preview' );
+		$container.find( '.large-view' ).hide();
+
+		var $parentLabel = jQuery( this ).closest( 'label' );
+		$parentLabel.addClass( 'active-preview' );
+
 		jQuery( this ).parent().find( '.large-view' ).show();
 		return false;
 	} );
 
-	jQuery( '.large-view' ).click( function ( e ) {
-		jQuery( this ).parent().find( '.large-view' ).hide();
+	jQuery( '.large-view .close' ).click( function ( e ) {
+		jQuery( this ).closest( 'label' ).removeClass( 'active-preview' );
+		jQuery( this ).parent().parent().find( '.large-view' ).hide();
 		return false;
 	} );
 

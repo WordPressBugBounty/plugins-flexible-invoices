@@ -11,10 +11,7 @@ use WPDeskFIVendor\WPDesk\Forms\Field;
  */
 class WysiwygField extends Field\WyswigField {
 
-	/**
-	 * @return string
-	 */
-	public function get_template_name() {
+	public function get_template_name(): string {
 		return 'wysiwyg';
 	}
 

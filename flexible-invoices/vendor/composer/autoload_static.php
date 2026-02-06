@@ -4,17 +4,17 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit465b93caf35767050f8f15fcd42249a3
+class ComposerStaticInitc92084c60d5264fec1d5498b16e69eee
 {
     public static $prefixLengthsPsr4 = array (
-        'W' => 
+        'W' =>
         array (
             'WPDesk\\FlexibleInvoices\\' => 24,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'WPDesk\\FlexibleInvoices\\' => 
+        'WPDesk\\FlexibleInvoices\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
@@ -447,6 +447,7 @@ class ComposerStaticInit465b93caf35767050f8f15fcd42249a3
         'WPDeskFIVendor\\WPDesk\\Forms\\Field\\Header' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/Header.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Field\\HiddenField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/HiddenField.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Field\\ImageInputField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/ImageInputField.php',
+        'WPDeskFIVendor\\WPDesk\\Forms\\Field\\InputEmailField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/InputEmailField.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Field\\InputNumberField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/InputNumberField.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Field\\InputTextField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/InputTextField.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Field\\MultipleInputTextField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/MultipleInputTextField.php',
@@ -459,24 +460,24 @@ class ComposerStaticInit465b93caf35767050f8f15fcd42249a3
         'WPDeskFIVendor\\WPDesk\\Forms\\Field\\SubmitField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/SubmitField.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Field\\TextAreaField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/TextAreaField.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Field\\TimepickerField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/TimepickerField.php',
+        'WPDeskFIVendor\\WPDesk\\Forms\\Field\\ToggleField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/ToggleField.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Field\\Traits\\HtmlAttributes' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/Traits/HtmlAttributes.php',
+        'WPDeskFIVendor\\WPDesk\\Forms\\Field\\WPEditorField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/WPEditorField.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Field\\WooSelect' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/WooSelect.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Field\\WyswigField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Field/WyswigField.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\FieldsDataReceiver' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/FieldsDataReceiver.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Form' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Form.php',
-        'WPDeskFIVendor\\WPDesk\\Forms\\Form\\AbstractForm' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Form/AbstractForm.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Form\\FormWithFields' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Form/FormWithFields.php',
-        'WPDeskFIVendor\\WPDesk\\Forms\\Form\\FormsCollection' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Form/FormsCollection.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Persistence\\FieldPersistenceStrategy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Persistence/FieldPersistenceStrategy.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Renderer\\JsonNormalizedRenderer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Renderer/JsonNormalizedRenderer.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Resolver\\DefaultFormFieldResolver' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Resolver/DefaultFormFieldResolver.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Sanitizer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Sanitizer.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Sanitizer\\CallableSanitizer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Sanitizer/CallableSanitizer.php',
+        'WPDeskFIVendor\\WPDesk\\Forms\\Sanitizer\\EmailSanitizer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Sanitizer/EmailSanitizer.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Sanitizer\\NoSanitize' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Sanitizer/NoSanitize.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Sanitizer\\TextFieldSanitizer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Sanitizer/TextFieldSanitizer.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Serializer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Serializer.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Serializer\\JsonSerializer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Serializer/JsonSerializer.php',
-        'WPDeskFIVendor\\WPDesk\\Forms\\Serializer\\NoSerialize' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Serializer/NoSerialize.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Serializer\\ProductSelectSerializer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Serializer/ProductSelectSerializer.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Serializer\\SerializeSerializer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Serializer/SerializeSerializer.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Validator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Validator.php',
@@ -607,20 +608,26 @@ class ComposerStaticInit465b93caf35767050f8f15fcd42249a3
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\AttributesSubStartField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/AttributesSubStartField.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\Col' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/Col.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\ColorPickerField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/ColorPickerField.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\ColumnsField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/ColumnsField.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\CustomField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/CustomField.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\DisableFieldProAdapter' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/DisableFieldProAdapter.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\DisableTemplateFieldAdapter' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/DisableTemplateFieldAdapter.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\FICheckboxField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/FICheckboxField.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\FixedSubmitField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/FixedSubmitField.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\GroupedFields' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/GroupedFields.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\GroupedSubmitFields' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/GroupedSubmitFields.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\ResetField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/ResetField.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\Row' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/Row.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\Select2' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/Select2.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\SelectImageField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/SelectImageField.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\SubEndField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/SubEndField.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\SubStartField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/SubStartField.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\TableGroupedFields' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/TableGroupedFields.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\TemplateListField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/TemplateListField.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Fields\\WPMLFieldDecorator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Fields/WPMLFieldDecorator.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Menus\\GeneralSettingsMenu' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Menus/GeneralSettingsMenu.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Menus\\KSeFDummyMenu' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Menus/KSeFDummyMenu.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Menus\\ReportsMenu' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Menus/ReportsMenu.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Settings' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Settings.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\SettingsForm' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/SettingsForm.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Tabs\\CurrencySettings' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Tabs/CurrencySettings.php',
@@ -629,6 +636,8 @@ class ComposerStaticInit465b93caf35767050f8f15fcd42249a3
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Tabs\\FormWithFieldsWPML' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Tabs/FormWithFieldsWPML.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Tabs\\GeneralSettings' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Tabs/GeneralSettings.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Tabs\\InvoiceTemplate' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Tabs/InvoiceTemplate.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Tabs\\Reports\\KSeFDummyTab' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Tabs/Reports/KSeFDummyTab.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Tabs\\Reports\\ReportTab' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Tabs/Reports/ReportTab.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Tabs\\SettingsTab' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Tabs/SettingsTab.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Tabs\\TaxRatesSettings' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Tabs/TaxRatesSettings.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\Settings\\Tabs\\WooCommerceSettings' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/Settings/Tabs/WooCommerceSettings.php',
@@ -676,7 +685,6 @@ class ComposerStaticInit465b93caf35767050f8f15fcd42249a3
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\RegisterMetaBoxes' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/RegisterMetaBoxes.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\RegisterPostType' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/RegisterPostType.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\Reports\\GenerateReport' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/Reports/GenerateReport.php',
-        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\Reports\\ReportsMenuPage' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/Reports/ReportsMenuPage.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\SearchCustomer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/SearchCustomer.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\Translator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/Translator.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\User' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/User.php',
@@ -926,9 +934,9 @@ class ComposerStaticInit465b93caf35767050f8f15fcd42249a3
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit465b93caf35767050f8f15fcd42249a3::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit465b93caf35767050f8f15fcd42249a3::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit465b93caf35767050f8f15fcd42249a3::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitc92084c60d5264fec1d5498b16e69eee::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitc92084c60d5264fec1d5498b16e69eee::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitc92084c60d5264fec1d5498b16e69eee::$classMap;
 
         }, null, ClassLoader::class);
     }

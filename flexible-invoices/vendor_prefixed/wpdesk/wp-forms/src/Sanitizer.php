@@ -7,7 +7,7 @@ interface Sanitizer
     /**
      * @param mixed $value
      *
-     * @return string
+     * @return mixed
      */
     public function sanitize($value);
 }

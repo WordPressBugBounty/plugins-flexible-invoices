@@ -1,32 +1,47 @@
 input[type="checkbox"].fi-toggle-button {
-	all:unset;
-	background: #fff;
-	border:1px solid #949494;
-	width:32px;
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+
+	width: 32px;
 	height: 16px;
+
+	background: #fff;
+	border: 1px solid #949494;
+	border-radius: 200px;
+
 	position: relative;
 	cursor: pointer;
-	border-radius: 200px;
+
+	box-sizing: content-box;
+	padding: 0;
+	margin: 0;
+	line-height: 0;
 }
+
 input[type="checkbox"].fi-toggle-button::before {
-	all:unset;
 	content: "";
-	display: block !important;
-	height: 14px;
-	width:14px;
-	background: #1c1c1c;
-	border-radius: 100%;
 	position: absolute;
+	width: 14px;
+	height: 14px;
+
+	background: #1c1c1c;
+	border-radius: 50%;
+
 	left: 1px;
-	top:1px;
-	transition: 0.25s;
-	transition-timing-function: ease-out;
+	top: 50%;
+	transform: translateY(-50%);
+
+	transition: left 0.25s ease-out, background 0.25s ease-out;
 }
+
 input[type="checkbox"].fi-toggle-button:checked {
 	background: var(--wp-admin-theme-color, #1851e0);
 	border-color: var(--wp-admin-theme-color, #1851e0);
 }
-input[type="checkbox"].fi-toggle-button:checked:before {
-	left: 17px;
+
+input[type="checkbox"].fi-toggle-button:checked::before {
 	background: #fff;
+	left: 21px;
+	top: 11px;
 }

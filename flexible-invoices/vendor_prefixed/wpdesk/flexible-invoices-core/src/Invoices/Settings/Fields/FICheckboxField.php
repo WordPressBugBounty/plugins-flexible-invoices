@@ -16,10 +16,13 @@ class FICheckboxField extends BasicField
     // Backward compatibility.
     public function __construct()
     {
-        parent::__construct();
         $this->set_attribute('type', 'checkbox');
     }
-    public function get_template_name()
+    public function get_type(): string
+    {
+        return 'checkbox';
+    }
+    public function get_template_name(): string
     {
         return 'input-checkbox';
     }

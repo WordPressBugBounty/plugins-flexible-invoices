@@ -2,33 +2,23 @@
 
 namespace WPDesk\FlexibleInvoices\Addons\Sending;
 
-use WPDesk\FlexibleInvoices\Addons\Sending\Fields\SendingAddonURL;
-use WPDesk\FlexibleInvoices\Addons\Sending\Fields\MultipleInputTextField;
 use WPDesk\FlexibleInvoices\Addons\Sending\Fields\WysiwygField;
-use WPDeskFIVendor\WPDesk\Forms\Field\BasicField;
 use WPDeskFIVendor\WPDesk\Forms\Field\CheckboxField;
 use WPDeskFIVendor\WPDesk\Forms\Field\Header;
 use WPDeskFIVendor\WPDesk\Forms\Field\InputTextField;
+use WPDeskFIVendor\WPDesk\Forms\Field\MultipleInputTextField;
 use WPDeskFIVendor\WPDesk\Forms\Field\SelectField;
 use WPDeskFIVendor\WPDesk\Forms\Field\SubmitField;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\FieldSettingsTab;
 
 class SendingTab extends FieldSettingsTab {
 
-	const TAX_NAME = 'name';
-	const TAX_RATE = 'rate';
 
-	/**
-	 * Get disabled data value.
-	 *
-	 * @return string
-	 */
-	private function get_disabled(): string {
-		return 'yes';
-	}
+	public const REPORTS_BODY_WYSIWYG = 'dummy_sending_reports_body';
+	public const INVOICE_BODY_WYSIWYG = 'dummy_sending_invoice_body';
 
 	private function get_doc_link(): string {
-		$pro_url = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/faktury-woocommerce-zaawansowana-wysylka/?utm_source=wp-admin-plugins&utm_medium=button&utm_campaign=flexible-invoices-adavanced-sending' : 'https://flexibleinvoices.com/products/advanced-sending-for-flexible-invoices/?utm_source=wp-admin-plugins&utm_medium=button&utm_campaign=flexible-invoices-advanced-sending';
+		$pro_url = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sk/flexible-invoices-as-pl' : 'https://flexibleinvoices.com/sk/flexible-invoices-as-en';
 
 		// translators: 1: link label, 2: open url tag, 3: url close tag
 		$doc_link = sprintf( esc_html__( 'To automate emails with invoices to your accountant buy the %2$s%1$s%3$s', 'flexible-invoices' ), esc_html__( 'Advanced Sending add-on for Flexible Invoices &rarr;', 'flexible-invoices' ), '<a target="_blank" href="' . $pro_url . '" style="color: #8f0350; font-weight: 700;">', '</a>' );
@@ -39,9 +29,9 @@ class SendingTab extends FieldSettingsTab {
 	}
 
 	public function get_docs_url(): string {
-		$docs_url = 'https://wpdesk.link/fi-sending-docs';
+		$docs_url = 'https://flexibleinvoices.com/sk/fi-sending-docs';
 		if ( get_locale() === 'pl_PL' ) {
-			$docs_url = 'https://wpdesk.link/fi-sending-docs-pl';
+			$docs_url = 'https://wpdesk.pl/sk/fi-sending-docs-pl';
 		}
 
 		// translators: 1: link, strong tag open, 2: url, strong close tag
@@ -56,35 +46,35 @@ class SendingTab extends FieldSettingsTab {
 	protected function get_fields() {
 		return [
 			( new Header() )
-				->set_name( 'no_value' )
+				->set_name( 'sending_invoices_header' )
 				->set_description( $this->get_doc_link() )
 				->set_label( esc_html__( 'Sending invoices', 'flexible-invoices' ) )
 				->set_disabled(),
 			( new CheckboxField() )
-				->set_name( 'no_value' )
+				->set_name( 'dummy_enable_sending' )
 				->set_label( esc_html__( 'Sending invoices to customers', 'flexible-invoices' ) )
 				->set_default_value( 'on' )
 				->set_sublabel( esc_html__( 'Enable automatic mailing of invoices to customers', 'flexible-invoices' ) )
 				->set_disabled(),
 			( new CheckboxField() )
-				->set_name( 'no_value' )
+				->set_name( 'dummy_enable_attachments' )
 				->set_label( esc_html__( 'Attachments in the e-mail', 'flexible-invoices' ) )
 				->set_sublabel( esc_html__( 'Attach PDF file to invoice email', 'flexible-invoices' ) )
 				->set_disabled(),
 			( new Header() )
-				->set_name( 'no_value' )
+				->set_name( 'cyclical_sending_invoices_header' )
 				->set_label( esc_html__( 'Cyclical sending of invoices', 'flexible-invoices' ) )
 				->set_description( esc_html__( 'Below you will set up a cyclical sending of ZIP files with invoices.', 'flexible-invoices' ) . ' ' . $this->get_docs_url() )
 				->set_disabled(),
 			( new MultipleInputTextField() )
-				->set_name( 'no_value' )
+				->set_name( 'dummy_additional_invoice_recipients' )
 				->set_label( esc_html__( 'Additional recipients', 'flexible-invoices' ) )
 				->set_placeholder( esc_html__( 'E-mail address', 'flexible-invoices' ) )
-				->set_description( esc_html__( 'Add additional recipients', 'flexible-invoices' ) )
-				->set_disabled(),
+				->set_disabled()
+				->set_description( esc_html__( 'Add additional recipients', 'flexible-invoices' ) ),
 			( new SelectField() )
 				->set_label( esc_html__( 'Schedule for sending documents', 'flexible-invoices' ) )
-				->set_name( 'no_value' )
+				->set_name( 'dummy_schedule_for_sending_documents' )
 				->set_description( esc_html__( 'Choose the period for which you want sent documents to the address from the "Additional Recipients" setting.', 'flexible-invoices' ) )
 				->set_options(
 					[
@@ -97,34 +87,33 @@ class SendingTab extends FieldSettingsTab {
 				->set_default_value( 'none' )
 				->set_disabled(),
 			( new InputTextField() )
-				->set_name( 'no_value' )
+				->set_name( 'dummy_invoice_email_subject' )
 				->set_label( esc_html__( 'Email subject', 'flexible-invoices' ) )
 				->set_placeholder( esc_html__( 'Invoices from {from_date} to {to_date}', 'flexible-invoices' ) )
 				->set_default_value( EmailStrings::get_email_invoice_subject() )
 				->set_description( esc_html__( 'You can use the following shortcodes: {site_title}, {site_url}, {admin_email}, {current_date}, {site_description}, {from_date}, {to_date}.', 'flexible-invoices' ) )
 				->set_disabled(),
 			( new WysiwygField() )
-				->set_name( 'no_value' )
+				->set_name( self::INVOICE_BODY_WYSIWYG )
 				->set_label( esc_html__( 'E-mail body', 'flexible-invoices' ) )
 				->set_default_value( EmailStrings::get_email_invoice_body() )
 				->set_description( esc_html__( 'You can use the following shortcodes: {site_title}, {site_url}, {admin_email}, {current_date}, {site_description}, {from_date}, {to_date}.', 'flexible-invoices' ) )
 				->set_disabled(),
 
 			( new Header() )
-				->set_name( 'no_value' )
+				->set_name( 'cyclical_sending_reports_header' )
 				->set_label( esc_html__( 'Cyclical sending of reports', 'flexible-invoices' ) )
 				->set_description( esc_html__( 'Below you will set up a cyclical sending of reports.', 'flexible-invoices' ) . ' ' . $this->get_docs_url() )
 				->set_disabled(),
 			( new MultipleInputTextField() )
-				->set_name( 'no_value' )
+				->set_name( 'dummy_additional_reports_recipients' )
 				->set_label( esc_html__( 'Additional recipients', 'flexible-invoices' ) )
 				->set_placeholder( esc_html__( 'E-mail address', 'flexible-invoices' ) )
-				->set_description( esc_html__( 'Add additional recipients.', 'flexible-invoices' ) )
-				->set_attribute( 'data-disabled', $this->get_disabled() )
-				->set_disabled(),
+				->set_disabled()
+				->set_description( esc_html__( 'Add additional recipients.', 'flexible-invoices' ) ),
 			( new SelectField() )
 				->set_label( esc_html__( 'Schedule for sending reports', 'flexible-invoices' ) )
-				->set_name( 'no_value' )
+				->set_name( 'dummy_schedule_for_sending_reports' )
 				->set_description( esc_html__( 'Choose the period for which you want the report automatically sent to the address from the "Additional Recipients" setting.', 'flexible-invoices' ) )
 				->set_options(
 					[
@@ -135,22 +124,22 @@ class SendingTab extends FieldSettingsTab {
 					]
 				)
 				->set_default_value( 'none' )
-				->set_attribute( 'data-disabled', $this->get_disabled() )
+				->set_attribute( 'data-disabled', 'yes' )
 				->set_disabled(),
 			( new InputTextField() )
-				->set_name( 'no_value' )
+				->set_name( 'dummy_reports_email_subject' )
 				->set_label( esc_html__( 'Email subject', 'flexible-invoices' ) )
 				->set_placeholder( esc_html__( 'Report from {from_date} to {to_date} ', 'flexible-invoices' ) )
 				->set_default_value( EmailStrings::get_email_report_subject() )
 				->set_description( esc_html__( 'You can use the following shortcodes: {site_title}, {site_url}, {admin_email}, {current_date}, {site_description}, {from_date}, {to_date}.', 'flexible-invoices' ) )
-				->set_attribute( 'data-disabled', $this->get_disabled() )
+				->set_attribute( 'data-disabled', 'yes' )
 				->set_disabled(),
 			( new WysiwygField() )
-				->set_name( 'no_value' )
+				->set_name( self::REPORTS_BODY_WYSIWYG )
 				->set_label( esc_html__( 'E-mail body', 'flexible-invoices' ) )
 				->set_description( esc_html__( 'You can use the following shortcodes: {site_title}, {site_url}, {admin_email}, {current_date}, {site_description}, {from_date}, {to_date}.', 'flexible-invoices' ) )
 				->set_default_value( EmailStrings::get_email_report_body() )
-				->set_attribute( 'data-disabled', $this->get_disabled() )
+				->set_readonly()
 				->set_disabled(),
 			( new SubmitField() )
 				->set_name( 'no_value' )

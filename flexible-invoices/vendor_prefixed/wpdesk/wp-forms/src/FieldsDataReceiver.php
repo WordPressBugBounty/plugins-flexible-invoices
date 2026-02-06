@@ -14,8 +14,6 @@ interface FieldsDataReceiver
     /**
      * Set values corresponding to fields.
      *
-     * @param ContainerInterface $data
-     *
      * @return void
      */
     public function update_fields_data(ContainerInterface $data);

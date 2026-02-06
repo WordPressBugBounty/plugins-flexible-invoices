@@ -18,34 +18,32 @@ class FieldPersistenceStrategy
     {
         $this->persistence = $persistence;
     }
-    /**
-     * Save fields data.
-     *
-     * @param FieldProvider $fields_provider
-     * @param array $data
-     */
+    /** @return void */
     public function persist_fields(FieldProvider $fields_provider, array $data)
     {
         foreach ($fields_provider->get_fields() as $field) {
             $field_key = $field->get_name();
-            $this->persistence->set($field_key, $field->get_serializer()->serialize($data[$field_key]));
+            if ($field->has_serializer()) {
+                $this->persistence->set($field_key, $field->get_serializer()->serialize($data[$field_key]));
+            } else {
+                $this->persistence->set($field_key, $data[$field_key]);
+            }
         }
     }
-    /**
-     * Load fields data.
-     *
-     * @return array
-     */
-    public function load_fields(FieldProvider $fields_provider)
+    /** @return void */
+    public function load_fields(FieldProvider $fields_provider): array
     {
         $data = [];
         foreach ($fields_provider->get_fields() as $field) {
             $field_key = $field->get_name();
             try {
-                $data[$field_key] = $field->get_serializer()->unserialize($this->persistence->get($field_key));
+                if ($field->has_serializer()) {
+                    $data[$field_key] = $field->get_serializer()->unserialize($this->persistence->get($field_key));
+                } else {
+                    $data[$field_key] = $this->persistence->get($field_key);
+                }
             } catch (NotFoundExceptionInterface $not_found) {
-                // TODO: Logger
-                //				LoggerFactory::get_logger()->info( "FieldPersistenceStrategy:: Field {$field_key} not found" );
+                //phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
             }
         }
         return $data;

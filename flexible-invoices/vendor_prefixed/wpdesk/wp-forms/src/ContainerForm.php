@@ -16,11 +16,9 @@ interface ContainerForm
      *
      * @return void
      */
-    public function set_data($data);
+    public function set_data(ContainerInterface $data);
     /**
      * Put data from form into a container.
-     *
-     * @param PersistentContainer $container Target container.
      *
      * @return void
      */

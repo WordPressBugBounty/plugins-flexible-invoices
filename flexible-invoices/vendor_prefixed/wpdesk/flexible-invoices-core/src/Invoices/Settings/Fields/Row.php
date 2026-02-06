@@ -22,12 +22,8 @@ class Row extends BasicField
             $row_type = 'close';
         }
         $this->row_type = $row_type;
-        parent::__construct();
     }
-    /**
-     * @return string
-     */
-    public function get_template_name()
+    public function get_template_name(): string
     {
         return 'row-' . $this->row_type;
     }

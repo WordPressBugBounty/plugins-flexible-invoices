@@ -16,10 +16,7 @@ class SubEndField extends Header
         $this->set_default_value('');
         $this->set_attribute('type', 'text');
     }
-    /**
-     * @return string
-     */
-    public function get_template_name()
+    public function get_template_name(): string
     {
         return 'sub-end';
     }

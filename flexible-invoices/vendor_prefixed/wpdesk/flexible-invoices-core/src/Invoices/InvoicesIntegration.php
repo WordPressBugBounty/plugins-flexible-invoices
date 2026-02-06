@@ -13,8 +13,10 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Data\DataSourceFactory;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\BlockTemplateGuard;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\DuplicationChecker;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\BlockPDFGenerator;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Menus\GeneralSettingsMenu;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Menus\KSeFDummyMenu;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Menus\ReportsMenu;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\SettingsForm;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\AbstractSettingsStrategy;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields\InvoiceAsk;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields\VatNumber;
@@ -37,6 +39,7 @@ class InvoicesIntegration implements Hookable
 {
     const VAT_NUMBER_FIELD_ID = 'vat_number';
     const PLUGIN_NAME = 'flexible-invoices-woocommerce';
+    const PLUGIN_NAME_FREE = 'flexible-invoices';
     use HookableParent;
     /**
      * @var Renderer
@@ -262,6 +265,17 @@ class InvoicesIntegration implements Hookable
     {
         return self::$is_super;
     }
+    final public static function get_short_link(string $phrase): string
+    {
+        $plugin_slug = self::is_super() ? self::PLUGIN_NAME : self::PLUGIN_NAME_FREE;
+        $locale = '-en';
+        $domain = 'https://flexibleinvoices.com/sk/';
+        if (get_locale() === 'pl_PL') {
+            $locale = '-pl';
+            $domain = 'https://www.wpdesk.pl/sk/';
+        }
+        return $domain . $plugin_slug . '-' . $phrase . $locale;
+    }
     /**
      * Set document saver.
      */
@@ -322,7 +336,9 @@ class InvoicesIntegration implements Hookable
         $duplication_checker = new DuplicationChecker();
         $this->add_hookable(new WordPress\DefaultSettings());
         $this->add_hookable(new WordPress\Assets($this->library_info->get_assets_url()));
-        $this->add_hookable(new SettingsForm($this->strategy, $this->library_info->get_template_dir(), $this->library_info->get_assets_url()));
+        $this->add_hookable(new GeneralSettingsMenu($this->strategy, $this->library_info->get_template_dir(), $this->library_info->get_assets_url()));
+        $this->add_hookable(new ReportsMenu($this->strategy, $this->library_info->get_template_dir(), $this->library_info->get_assets_url()));
+        $this->add_hookable(new KSeFDummyMenu($this->strategy, $this->library_info->get_template_dir(), $this->library_info->get_assets_url()));
         $this->add_hookable(new WordPress\RegisterPostType($capabilities));
         $this->add_hookable(new WordPress\RegisterMetaBoxes($this->strategy, $this->document_factory, $this->renderer, $this->settings));
         $this->add_hookable(new WordPress\PostTypeColumns($this->strategy, $this->document_factory));
@@ -333,7 +349,6 @@ class InvoicesIntegration implements Hookable
         $this->add_hookable(new WordPress\FindProducts($this->settings));
         $this->add_hookable(new WordPress\DuplicatesNotice($duplication_checker));
         $this->add_hookable(new WordPress\Reports\GenerateReport($this->get_settings(), $this->document_factory, $this->renderer, $this->library_info));
-        $this->add_hookable(new WordPress\Reports\ReportsMenuPage($this->library_info->get_template_dir()));
         $this->add_hookable(new WordPress\Download\DownloadMenuPage($this->library_info->get_template_dir()));
         $this->add_hookable(new WordPress\Download\BatchDocumentsDownload($this->get_pdf_writer(), $this->document_factory));
         $this->add_hookable(new WordPress\SearchCustomer());

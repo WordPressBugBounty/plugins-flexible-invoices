@@ -20,11 +20,12 @@ if ($field->has_classes()) {
     ?>
 					class="<?php 
     echo \esc_attr($field->get_classes());
-    ?>"<?php 
+    ?>"
+				<?php 
 }
 ?>
 				<?php 
-foreach ($field->get_attributes([]) as $key => $value) {
+foreach ($field->get_attributes() as $key => $value) {
     ?>
 					<?php 
     echo \esc_attr($key);
@@ -42,30 +43,9 @@ echo \esc_attr($name_prefix);
 ?>[<?php 
 echo \esc_attr($field->get_name());
 ?>]"
-				id="<?php 
-echo \esc_attr($field->get_id());
-?>"
 				value="<?php 
 echo \esc_html($field->get_label());
 ?>"
-				<?php 
-if ($field->is_required()) {
-    ?>
-					required="required"<?php 
-}
-?>
-				<?php 
-if ($field->is_disabled()) {
-    ?>
-					disabled="disabled"<?php 
-}
-?>
-				<?php 
-if ($field->is_readonly()) {
-    ?>
-					readonly="readonly"<?php 
-}
-?>
 			/>
 		</p>
 	</td>

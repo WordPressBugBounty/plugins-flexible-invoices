@@ -4,6 +4,12 @@ namespace WPDeskFIVendor\WPDesk\Forms;
 
 interface Serializer
 {
-    public function serialize($value);
-    public function unserialize($value);
+    /**
+     * @param mixed $value
+     */
+    public function serialize($value): string;
+    /**
+     * @return mixed
+     */
+    public function unserialize(string $value);
 }

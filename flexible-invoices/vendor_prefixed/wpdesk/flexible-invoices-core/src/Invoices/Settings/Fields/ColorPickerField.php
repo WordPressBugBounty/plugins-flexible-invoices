@@ -10,10 +10,7 @@ use WPDeskFIVendor\WPDesk\Forms\Field\InputTextField;
  */
 class ColorPickerField extends InputTextField
 {
-    /**
-     * @return string
-     */
-    public function get_template_name()
+    public function get_template_name(): string
     {
         return 'color-picker-input';
     }

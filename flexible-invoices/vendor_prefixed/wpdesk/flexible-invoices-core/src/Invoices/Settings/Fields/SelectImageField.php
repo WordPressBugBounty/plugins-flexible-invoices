@@ -10,7 +10,7 @@ use WPDeskFIVendor\WPDesk\Forms\Field\BasicField;
  */
 class SelectImageField extends BasicField
 {
-    public function get_template_name()
+    public function get_template_name(): string
     {
         return 'select-image-field';
     }

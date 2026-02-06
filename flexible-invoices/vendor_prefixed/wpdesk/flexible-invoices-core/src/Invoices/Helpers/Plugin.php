@@ -67,7 +67,7 @@ class Plugin
      */
     public static function upgrade_to_pro_url(): string
     {
-        return get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/faktury-woocommerce/?utm_source=wp-admin-plugins&utm_medium=quick-link&utm_campaign=flexible-invoices-plugins-upgrade-link' : 'https://www.flexibleinvoices.com/products/flexible-invoices-woocommerce/?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-invoices-plugins-upgrade-link';
+        return get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sk/flexible-invoices-core-pro-pl' : 'https://www.flexibleinvoices.com/sk/flexible-invoices-core-pro-en';
     }
     /**
      * @return bool

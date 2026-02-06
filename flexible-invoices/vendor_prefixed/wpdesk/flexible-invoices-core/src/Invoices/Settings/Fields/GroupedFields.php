@@ -11,7 +11,6 @@ class GroupedFields extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
     private $grouped_fields;
     public function __construct()
     {
-        parent::__construct();
         $this->set_default_value('');
         $this->set_attribute('type', 'text');
     }
@@ -32,10 +31,7 @@ class GroupedFields extends \WPDeskFIVendor\WPDesk\Forms\Field\BasicField
     {
         return $this->grouped_fields;
     }
-    /**
-     * @return string
-     */
-    public function get_template_name()
+    public function get_template_name(): string
     {
         return 'grouped-fields';
     }

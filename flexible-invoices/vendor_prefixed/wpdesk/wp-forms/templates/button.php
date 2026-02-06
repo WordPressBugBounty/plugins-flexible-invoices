@@ -12,24 +12,6 @@ namespace WPDeskFIVendor;
 ?>
 
 <button
-<?php 
-if ($field->has_classes()) {
-    ?>
-	class="<?php 
-    echo \esc_attr($field->get_classes());
-    ?>"
-<?php 
-}
-?>
-
-<?php 
-foreach ($field->get_attributes([]) as $key => $val) {
-    ?>
-	<?php 
-    echo \esc_attr($key) . '="' . \esc_attr($val) . '"';
-}
-?>
-
 	type="<?php 
 echo \esc_attr($field->get_type());
 ?>"
@@ -42,17 +24,22 @@ echo \esc_attr($field->get_id());
 	value="<?php 
 echo \esc_html($value);
 ?>"
-
 	<?php 
-if ($field->is_disabled()) {
+if ($field->has_classes()) {
     ?>
-		disabled="disabled"<?php 
+		class="<?php 
+    echo \esc_attr($field->get_classes());
+    ?>"
+	<?php 
 }
 ?>
 	<?php 
-if ($field->is_readonly()) {
+foreach ($field->get_attributes() as $key => $val) {
     ?>
-		readonly="readonly"<?php 
+		<?php 
+    echo \esc_attr($key) . '="' . \esc_attr($val) . '"';
+    ?>
+	<?php 
 }
 ?>
 

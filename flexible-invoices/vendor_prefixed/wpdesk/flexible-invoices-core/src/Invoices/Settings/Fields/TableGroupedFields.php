@@ -11,7 +11,6 @@ class TableGroupedFields extends BasicField
     private $empty_values = [];
     public function __construct()
     {
-        parent::__construct();
         $this->attributes['multiple'] = \true;
         $this->set_attribute('type', 'text');
     }
@@ -41,10 +40,7 @@ class TableGroupedFields extends BasicField
     {
         return isset($this->meta['items']) && is_array($this->meta['items']) ? $this->meta['items'] : [];
     }
-    /**
-     * @return string
-     */
-    public function get_template_name()
+    public function get_template_name(): string
     {
         return 'table-grouped-fields';
     }

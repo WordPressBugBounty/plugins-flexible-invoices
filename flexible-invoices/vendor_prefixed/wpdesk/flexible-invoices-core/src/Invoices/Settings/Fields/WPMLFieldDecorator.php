@@ -25,11 +25,9 @@ class WPMLFieldDecorator
      */
     public function get_field()
     {
-        if (Translator::is_default_language()) {
-            return $this->field;
-        } else {
+        if (!Translator::is_default_language()) {
             $this->field->set_disabled();
-            return $this->field;
         }
+        return $this->field;
     }
 }

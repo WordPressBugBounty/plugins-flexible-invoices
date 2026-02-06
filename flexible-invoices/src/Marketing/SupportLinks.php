@@ -23,9 +23,9 @@ class SupportLinks implements Hookable {
 
 	public function add_support_link_on_invoice_listing() {
 		$screen = get_current_screen();
-		$url    = 'https://docs.flexibleinvoices.com/article/801-managing-editing-proforma-and-invoices?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=all-invoices';
+		$url    = 'https://flexibleinvoices.com/sk/flexible-invoices-proform-en';
 		if ( get_locale() === 'pl_PL' ) {
-			$url = 'https://www.wpdesk.pl/docs/faktury-woocommerce-docs/?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=all-invoices#zarzadzanie-fakturami';
+			$url = 'https://www.wpdesk.pl/sk/flexible-invoices-proform-pl';
 		}
 
 		if ( isset( $screen->id ) && $screen->id === self::INVOICE_LISTING_PAGE ) {
@@ -42,9 +42,9 @@ class SupportLinks implements Hookable {
 	public function add_support_link_on_invoice_add() {
 		$screen = get_current_screen();
 		if ( ( isset( $screen->id ) && $screen->id === self::INVOICE_EDIT_PAGE ) && ( isset( $screen->action ) && $screen->action === self::INVOICE_ADD_ACTION ) ) {
-			$url = 'https://docs.flexibleinvoices.com/article/803-manual-issuing-proforma-and-invoices?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=add-invoice';
+			$url = 'https://flexibleinvoices.com/sk/flexible-invoices-is-en';
 			if ( get_locale() === 'pl_PL' ) {
-				$url = 'https://www.wpdesk.pl/docs/faktury-woocommerce-docs/?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=add-invoice#reczne-wystawianie-faktur';
+				$url = 'https://www.wpdesk.pl/sk/flexible-invoices-is-pl';
 			}
 			?>
 			<script>
@@ -59,9 +59,9 @@ class SupportLinks implements Hookable {
 	public function add_support_link_on_invoice_edit() {
 		$screen = get_current_screen();
 		if ( isset( $screen->id ) && $screen->id === self::INVOICE_EDIT_PAGE && empty( $screen->action ) ) {
-			$url = 'https://docs.flexibleinvoices.com/article/801-managing-editing-proforma-and-invoices?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=edit-invoice';
+			$url = 'https://flexibleinvoices.com/sk/flexible-invoices-proform-e-en';
 			if ( get_locale() === 'pl_PL' ) {
-				$url = 'https://www.wpdesk.pl/docs/faktury-woocommerce-docs/?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=edit-invoice#edycja-faktur';
+				$url = 'https://www.wpdesk.pl/sk/flexible-invoices-proform-e-pl';
 			}
 			?>
 			<script>

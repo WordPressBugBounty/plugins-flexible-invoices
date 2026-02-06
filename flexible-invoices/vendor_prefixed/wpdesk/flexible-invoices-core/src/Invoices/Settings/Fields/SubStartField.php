@@ -16,14 +16,7 @@ class SubStartField extends Header
         $this->set_default_value('');
         $this->set_attribute('type', 'text');
     }
-    public function get_name()
-    {
-        return $this->attributes['name'];
-    }
-    /**
-     * @return string
-     */
-    public function get_template_name()
+    public function get_template_name(): string
     {
         return 'sub-start';
     }

@@ -2,8 +2,6 @@
 
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\EditorBlocks\Replacers;
 
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\ValueObjects\DocumentCustomer;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\ValueObjects\DocumentSeller;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Decorators\TemplateDocumentDecorator;
 class OrderNumberReplacer extends AbstractBasicReplacer
 {
@@ -13,7 +11,7 @@ class OrderNumberReplacer extends AbstractBasicReplacer
     }
     protected function get_shortcodes_to_replace(TemplateDocumentDecorator $invoice): array
     {
-        return ['{OrderNumber}' => $invoice->get_order_id()];
+        return ['{OrderNumber}' => $invoice->get_order_number()];
     }
     public function modify_content(TemplateDocumentDecorator $invoice, string $content): string
     {

@@ -1,0 +1,237 @@
+<?php
+
+namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Menus;
+
+use WPDeskFIVendor\WPDesk\Forms\Resolver\DefaultFormFieldResolver;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Tabs\SettingsTab;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType;
+use WPDeskFIVendor\WPDesk\Notice\Notice;
+use WPDeskFIVendor\WPDesk\Persistence\Adapter\WordPress\WordpressOptionsContainer;
+use WPDeskFIVendor\WPDesk\Persistence\PersistentContainer;
+use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
+use WPDeskFIVendor\WPDesk\View\Renderer\Renderer;
+use WPDeskFIVendor\WPDesk\View\Renderer\SimplePhpRenderer;
+use WPDeskFIVendor\WPDesk\View\Resolver\ChainResolver;
+use WPDeskFIVendor\WPDesk\View\Resolver\DirResolver;
+use WPDeskFIVendor\WPDesk\View\Resolver\Resolver;
+use const ARRAY_FILTER_USE_BOTH;
+class GeneralSettingsMenu implements Hookable
+{
+    const NONCE_ACTION = 'save_settings';
+    const NONCE_NAME = 'settings_nonce';
+    /**
+     * @var string
+     */
+    private const SETTINGS_SLUG = 'invoices_settings';
+    /**
+     * @var SettingsStrategy
+     */
+    private $strategy;
+    /**
+     * @var string
+     */
+    private $template_dir;
+    /**
+     * @var string
+     */
+    private $assets_url;
+    /**
+     * @param SettingsStrategy $strategy
+     * @param string           $template_dir
+     * @param string           $assets_url
+     */
+    public function __construct(SettingsStrategy $strategy, string $template_dir, string $assets_url)
+    {
+        $this->strategy = $strategy;
+        $this->template_dir = $template_dir;
+        $this->assets_url = $assets_url;
+    }
+    /**
+     * Get URL to plugin settings, optionally to specific tab.
+     */
+    protected function get_url(?string $tab_slug = null): string
+    {
+        $url = admin_url(add_query_arg(['page' => $this->get_settings_slug()], RegisterPostType::POST_TYPE_MENU_URL));
+        if ($tab_slug !== null) {
+            $url = add_query_arg(['tab' => $tab_slug], $url);
+        }
+        return $url;
+    }
+    /**
+     * Fires hooks.
+     */
+    public function hooks()
+    {
+        add_action('admin_menu', function () {
+            add_submenu_page(RegisterPostType::POST_TYPE_MENU_URL, esc_html__('Settings', 'flexible-invoices'), esc_html__('Settings', 'flexible-invoices'), 'manage_options', $this->get_settings_slug(), [$this, 'render_page_action'], 40);
+        }, 999);
+        add_action('admin_init', [$this, 'save_settings_action'], 5);
+        add_action('admin_notices', [$this, 'show_settings_saved_notice']);
+    }
+    public function show_settings_saved_notice()
+    {
+        if (isset($_GET['page']) && $_GET['page'] === $this->get_settings_slug() && isset($_GET['settings-updated']) && $_GET['settings-updated'] === 'true') {
+            //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            new Notice(esc_html__('Your settings have been saved.', 'flexible-invoices'), Notice::NOTICE_TYPE_SUCCESS);
+        }
+    }
+    protected function get_settings_slug(): string
+    {
+        return self::SETTINGS_SLUG;
+    }
+    /**
+     * Save POST tab data. Before render.
+     *
+     * @return void
+     */
+    public function save_settings_action()
+    {
+        if (isset($_GET['page']) && $_GET['page'] !== $this->get_settings_slug()) {
+            return;
+        }
+        $tab = $this->get_active_tab();
+        $data_container = $this->get_settings_persistence();
+        do_action('fi/core/settings/tabs/save_init', $tab, $data_container);
+        $tab_data = isset($_POST[$tab::get_tab_slug()]) ? wp_unslash($_POST[$tab::get_tab_slug()]) : '';
+        //phpcs:ignore
+        $nonce_value = $tab_data[self::NONCE_NAME] ?? '';
+        $nonce = wp_verify_nonce($nonce_value, self::NONCE_ACTION);
+        $can_edit = current_user_can('edit_flexible_invoices');
+        if (!empty($tab_data) && $nonce && $can_edit) {
+            do_action('fi/core/settings/tabs/saving', $tab, $data_container);
+            $tab->handle_request($tab_data);
+            $this->save_tab_data($tab_data, $data_container);
+        } else {
+            $tab->set_data($data_container);
+        }
+        /**
+         * Fires after saving the settings.
+         */
+        do_action('fi/core/settings/ready');
+    }
+    /**
+     * Render
+     *
+     * @return void
+     */
+    public function render_page_action()
+    {
+        $tab = $this->get_active_tab();
+        $renderer = $this->get_renderer();
+        $renderer->output_render('menu', ['base_url' => $this->get_url(), 'menu_items' => $this->get_tabs_menu_items(), 'selected' => $this->get_active_tab()->get_tab_slug()]);
+        $tab->output_render($renderer);
+        $renderer->output_render('footer');
+    }
+    /**
+     * @return SettingsTab
+     */
+    protected function get_active_tab(): SettingsTab
+    {
+        $selected_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : null;
+        //phpcs:ignore
+        $tabs = $this->get_settings_tabs();
+        if (!empty($selected_tab) && isset($tabs[$selected_tab])) {
+            return $tabs[$selected_tab];
+        }
+        return reset($tabs);
+    }
+    /**
+     * @return SettingsTab[]
+     */
+    protected function get_settings_tabs(): array
+    {
+        static $tabs = [];
+        if (empty($tabs)) {
+            $tabs[Tabs\GeneralSettings::get_tab_slug()] = new Tabs\GeneralSettings();
+            $tabs[Tabs\DocumentsSettings::get_tab_slug()] = new Tabs\DocumentsSettings($this->strategy);
+            if (WooCommerce::is_active()) {
+                $tabs[Tabs\WooCommerceSettings::get_tab_slug()] = new Tabs\WooCommerceSettings();
+            }
+            $tabs[Tabs\CurrencySettings::get_tab_slug()] = new Tabs\CurrencySettings();
+            $tabs[Tabs\TaxRatesSettings::get_tab_slug()] = new Tabs\TaxRatesSettings();
+            $tabs[Tabs\InvoiceTemplate::get_tab_slug()] = new Tabs\InvoiceTemplate($this->assets_url);
+            /**
+             * Filters setting tabs.
+             *
+             * @param array $tabs .
+             *
+             * @return array
+             *
+             * @since 3.0.0
+             */
+            $tabs = apply_filters('fi/core/settings/tabs', $tabs);
+        }
+        return $tabs;
+    }
+    protected function get_settings_persistence()
+    {
+        return new WordpressOptionsContainer('inspire_invoices_');
+    }
+    /**
+     * Save data from tab to persistent container.
+     *
+     * @param array               $post_data
+     * @param PersistentContainer $container
+     */
+    protected function save_tab_data(array $post_data, PersistentContainer $container)
+    {
+        foreach ($post_data as $key => $value) {
+            if ($key === '_empty_value' || $key === '') {
+                continue;
+                // Prevent save values for pro field.
+            }
+            if (is_array($value)) {
+                $value = array_filter($value, static function ($v) {
+                    return !empty($v);
+                }, ARRAY_FILTER_USE_BOTH);
+            }
+            $container->set($key, $value);
+        }
+        if (!empty($_SERVER['REQUEST_URI'])) {
+            $redirect_url = remove_query_arg('settings-updated', wp_unslash($_SERVER['REQUEST_URI']));
+            //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+            $redirect_url = add_query_arg('settings-updated', 'true', $redirect_url);
+            wp_safe_redirect($redirect_url);
+            exit;
+        }
+    }
+    /**
+     * @return Renderer
+     */
+    protected function get_renderer()
+    {
+        $chain = new ChainResolver();
+        /**
+         * Filters resolvers for setting templates.
+         *
+         * @param Resolver[] $resolvers Resolvers.
+         *
+         * @return array Array of Resolvers.
+         *
+         * @since 3.0.0
+         */
+        $resolver_list = (array) apply_filters('fi/core/settings/settings_template_resolvers', [new DirResolver($this->template_dir . 'settings'), new DefaultFormFieldResolver()]);
+        array_unshift($resolver_list, new DirResolver($this->template_dir . 'settings/' . $this->get_active_tab()->get_tab_slug()));
+        //@phpstan-ignore-line
+        foreach ($resolver_list as $resolver) {
+            $chain->appendResolver($resolver);
+        }
+        return new SimplePhpRenderer($chain);
+    }
+    /**
+     * @return string[]
+     */
+    protected function get_tabs_menu_items(): array
+    {
+        $menu_items = [];
+        foreach ($this->get_settings_tabs() as $tab) {
+            if ($tab::is_active()) {
+                $menu_items[$tab::get_tab_slug()] = $tab->get_tab_name();
+            }
+        }
+        return $menu_items;
+    }
+}

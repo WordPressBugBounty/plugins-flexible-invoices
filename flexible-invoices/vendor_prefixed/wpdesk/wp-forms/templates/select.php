@@ -39,31 +39,6 @@ foreach ($field->get_attributes() as $key => $attr_val) {
 	<?php 
 }
 ?>
-
-	<?php 
-if ($field->is_required()) {
-    ?>
-		required="required"<?php 
-}
-?>
-	<?php 
-if ($field->is_disabled()) {
-    ?>
-		disabled="disabled"<?php 
-}
-?>
-	<?php 
-if ($field->is_readonly()) {
-    ?>
-		readonly="readonly"<?php 
-}
-?>
-	<?php 
-if ($field->is_multiple()) {
-    ?>
-		multiple="multiple"<?php 
-}
-?>
 >
 	<?php 
 if ($field->has_placeholder()) {

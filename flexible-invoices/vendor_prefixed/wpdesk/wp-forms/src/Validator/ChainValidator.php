@@ -7,6 +7,7 @@ class ChainValidator implements Validator
 {
     /** @var Validator[] */
     private $validators;
+    /** @var array */
     private $messages;
     public function __construct()
     {
@@ -18,12 +19,12 @@ class ChainValidator implements Validator
      *
      * @return $this
      */
-    public function attach(Validator $validator)
+    public function attach(Validator $validator): self
     {
         $this->validators[] = $validator;
         return $this;
     }
-    public function is_valid($value)
+    public function is_valid($value): bool
     {
         $result = \true;
         $messages = [[]];
@@ -36,7 +37,7 @@ class ChainValidator implements Validator
         $this->messages = array_merge(...$messages);
         return $result;
     }
-    public function get_messages()
+    public function get_messages(): array
     {
         return $this->messages;
     }

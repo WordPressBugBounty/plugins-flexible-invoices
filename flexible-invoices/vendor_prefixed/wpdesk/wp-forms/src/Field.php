@@ -2,7 +2,6 @@
 
 namespace WPDeskFIVendor\WPDesk\Forms;
 
-use WPDeskFIVendor\WPDesk\Forms\Field\BasicField;
 /**
  * The idea is that from the moment the factory returns this interface it's values cannot be changed.
  * And that is why here are only the getters.
@@ -13,122 +12,52 @@ use WPDeskFIVendor\WPDesk\Forms\Field\BasicField;
  */
 interface Field
 {
-    /** @return string */
-    public function get_name();
+    public function get_name(): string;
     /** @return mixed */
     public function get_default_value();
-    /** @return string */
-    public function get_template_name();
-    /**
-     * When this field is used on form this field will force it's own template.
-     *
-     * return bool
-     */
-    public function should_override_form_template();
-    /**
-     * HTML label.
-     *
-     * @return string
-     */
-    public function get_label();
-    /** bool */
-    public function has_label();
-    /**
-     * Description for field. It can be shown near the field.
-     *
-     * @return string
-     */
-    public function get_description();
-    /**
-     * Additional field description that should be shown in optional hover tip.
-     *
-     * @return string
-     */
-    public function get_description_tip();
-    /** @return bool */
-    public function has_description_tip();
-    /** @return bool */
-    public function has_description();
-    /**
-     * @return bool
-     */
-    public function is_readonly();
-    /** @return bool */
-    public function is_disabled();
-    /** @return string */
-    public function get_id();
-    /** @bool */
-    public function is_required();
-    /** @return bool */
-    public function has_placeholder();
-    /** @return string */
-    public function get_placeholder();
+    public function get_template_name(): string;
+    /** When this field is used on form this field will force it's own template. */
+    public function should_override_form_template(): bool;
+    /** HTML label. */
+    public function get_label(): string;
+    public function has_label(): bool;
+    public function get_description(): string;
+    /** Additional field description that should be shown in optional hover tip. */
+    public function get_description_tip(): string;
+    public function has_description_tip(): bool;
+    public function has_description(): bool;
+    public function is_readonly(): bool;
+    public function is_disabled(): bool;
+    public function get_id(): string;
+    public function is_required(): bool;
+    public function has_placeholder(): bool;
+    public function get_placeholder(): string;
     /**
      * @param string[] $except
      *
      * @return string[] name->value
      */
-    public function get_attributes($except = []);
-    /**
-     * @param string $name
-     * @param string $default
-     *
-     * @return string
-     */
-    public function get_attribute($name, $default = null);
-    /** @return bool */
-    public function is_attribute_set($name);
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    public function get_meta_value($name);
-    /** @return bool */
-    public function is_meta_value_set($name);
-    /**
-     * @return string
-     */
-    public function get_classes();
-    /** bool */
-    public function has_classes();
-    /** @return bool */
-    public function is_class_set($name);
-    /** bool */
-    public function has_data();
-    /**
-     * @return array
-     */
-    public function get_data();
-    /**
-     * @param string $data_name
-     * @param string $data_value
-     *
-     * @return $this
-     */
-    public function add_data($data_name, $data_value);
-    /**
-     * @param string $data_name
-     *
-     * @return $this
-     */
-    public function unset_data($data_name);
-    /**
-     * @return mixed
-     */
+    public function get_attributes(array $except = []): array;
+    public function get_attribute(string $name, ?string $default = null): string;
+    public function is_attribute_set(string $name): bool;
+    /** @return mixed */
+    public function get_meta_value(string $name);
+    public function is_meta_value_set(string $name): bool;
+    public function get_classes(): string;
+    public function get_type(): string;
+    public function has_classes(): bool;
+    public function is_class_set(string $name): bool;
+    public function has_data(): bool;
+    /** @return array<string|int> */
+    public function get_data(): array;
+    public function add_data(string $data_name, string $data_value): Field;
+    public function unset_data(string $data_name): Field;
+    /** @return mixed */
     public function get_possible_values();
-    /**
-     * @return bool
-     */
-    public function is_multiple();
-    /**
-     * @return Validator
-     */
-    public function get_validator();
-    /**
-     * @return Sanitizer
-     */
-    public function get_sanitizer();
-    /** @return Serializer */
-    public function get_serializer();
+    public function is_multiple(): bool;
+    public function get_validator(): Validator;
+    public function get_sanitizer(): Sanitizer;
+    public function get_serializer(): Serializer;
+    public function has_serializer(): bool;
+    public function get_priority(): int;
 }

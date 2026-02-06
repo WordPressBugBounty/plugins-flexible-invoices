@@ -42,9 +42,9 @@ final class InvoicesSettingsFields implements DocumentsFieldsInterface
     }
     private function get_doc_link(): string
     {
-        $docs_link = 'https://docs.flexibleinvoices.com/article/794-invoice-settings?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link';
+        $docs_link = 'https://flexibleinvoices.com/sk/flexible-invoices-invoice-settings-en';
         if (get_locale() === 'pl_PL') {
-            $docs_link = 'https://www.wpdesk.pl/docs/faktury-woocommerce-docs/?utm_source=wp-admin-plugins&utm_medium=quick-link&utm_campaign=flexible-invoices-docs-link#faktury';
+            $docs_link = 'https://www.wpdesk.pl/sk/flexible-invoices-invoice-settings-pl';
         }
         // translators: %1 link, %2 strong open tag, %3 strong close tag
         return sprintf('%2$s%1$s%3$s', sprintf(esc_html__('Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-invoices'), '<a href="' . $docs_link . '" target="_blank" style="color: #4BB04E; font-weight: 700;">', '</a>'), '<strong>', '</strong>');

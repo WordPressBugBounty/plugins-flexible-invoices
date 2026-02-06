@@ -46,7 +46,7 @@ class DisableTemplateFieldAdapter
             $this->field->set_disabled();
             $upgrade_link = '';
             if ($this->show_link) {
-                $upgrade_pro_url = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/faktury-woocommerce/?utm_source=wp-admin-plugins&utm_medium=quick-link&utm_campaign=flexible-invoices-plugins-upgrade-link' : 'https://www.flexibleinvoices.com/products/flexible-invoices-woocommerce/?utm_source=wp-admin-plugins&utm_medium=link&utm_campaign=flexible-invoices-plugins-upgrade-link';
+                $upgrade_pro_url = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sk/flexible-invoices-disabled-pro-pl' : 'https://www.flexibleinvoices.com/sk/flexible-invoices-disabled-pro-en';
                 $upgrade_link = '<span class="pro-url"><a href="' . esc_url($upgrade_pro_url) . '" target="_blank">' . esc_html__('Upgrade to PRO &rarr;', 'flexible-invoices') . '</a></span>';
             }
             if ($field_description) {

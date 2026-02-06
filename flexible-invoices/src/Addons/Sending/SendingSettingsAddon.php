@@ -80,7 +80,7 @@ class SendingSettingsAddon implements Hookable {
 	 * @return array
 	 */
 	public function teeny_mce_before_init( array $args, string $id ): array {
-		if ( $id === 'wyswig_fias_report_mail_body' || $id === 'wyswig_fias_document_mail_body' ) {
+		if ( $id === 'wyswig_' . SendingTab::INVOICE_BODY_WYSIWYG || $id === 'wyswig_' . SendingTab::REPORTS_BODY_WYSIWYG ) {
 			$args['readonly']   = 1;
 			$args['body_class'] = 'body-disabled';
 		}

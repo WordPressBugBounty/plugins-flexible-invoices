@@ -9,10 +9,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields;
  */
 class AttributesSubEndField extends SubEndField
 {
-    /**
-     * @return string
-     */
-    public function get_template_name()
+    public function get_template_name(): string
     {
         return 'attributes-sub-end';
     }

@@ -45,10 +45,7 @@ final class MossSettingsFields implements SubTabInterface
      */
     private function get_moss_link(): string
     {
-        $docs_url = 'https://wpdesk.link/flexible-invoices-oss';
-        if (get_locale() === 'pl_PL') {
-            $docs_url = 'https://wpdesk.link/faktury-woocommerce-oss';
-        }
+        $docs_url = InvoicesIntegration::get_short_link('oss');
         /* translators: %1$s - open tag, %2$s - close tag */
         return sprintf('%2$s%1$s%3$s', sprintf(esc_html__('Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-invoices'), '<a href="' . $docs_url . '" target="_blank" style="color: #4BB04E; font-weight: 700;">', '</a>'), '<strong>', '</strong>');
     }

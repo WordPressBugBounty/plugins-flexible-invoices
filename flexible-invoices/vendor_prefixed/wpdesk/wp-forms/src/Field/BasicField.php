@@ -2,254 +2,38 @@
 
 namespace WPDeskFIVendor\WPDesk\Forms\Field;
 
+use BadMethodCallException;
 use WPDeskFIVendor\WPDesk\Forms\Field;
+use WPDeskFIVendor\WPDesk\Forms\Sanitizer;
 use WPDeskFIVendor\WPDesk\Forms\Sanitizer\NoSanitize;
 use WPDeskFIVendor\WPDesk\Forms\Serializer;
-use WPDeskFIVendor\WPDesk\Forms\Serializer\NoSerialize;
+use WPDeskFIVendor\WPDesk\Forms\Validator;
 use WPDeskFIVendor\WPDesk\Forms\Validator\ChainValidator;
 use WPDeskFIVendor\WPDesk\Forms\Validator\RequiredValidator;
 /**
  * Base class for fields. Is responsible for settings all required field values and provides standard implementation for
  * the field interface.
- *
- * @package WPDesk\Forms
  */
 abstract class BasicField implements Field
 {
     use Field\Traits\HtmlAttributes;
-    /** @var array[] */
-    protected $meta;
-    protected $default_value;
-    public function __construct()
+    const DEFAULT_PRIORITY = 10;
+    /** @var array{default_value: string, possible_values?: string[], sublabel?: string, priority: int, label: string, description: string, description_tip: string, data: array<string|int>} */
+    protected $meta = ['priority' => self::DEFAULT_PRIORITY, 'default_value' => '', 'label' => '', 'description' => '', 'description_tip' => '', 'data' => [], 'type' => 'text'];
+    public function should_override_form_template(): bool
     {
-        $this->meta['class'] = [];
+        return \false;
     }
-    public function get_label()
+    public function get_type(): string
     {
-        return $this->meta['label'];
+        return $this->meta['type'];
     }
-    /**
-     * @param string $value
-     *
-     * @return $this
-     */
-    public function set_label($value)
+    public function set_type(string $type): self
     {
-        $this->meta['label'] = $value;
+        $this->meta['type'] = $type;
         return $this;
     }
-    public function get_description_tip()
-    {
-        return $this->meta['description_tip'];
-    }
-    public function has_description_tip()
-    {
-        return isset($this->meta['description_tip']);
-    }
-    public function should_override_form_template()
-    {
-        return isset($this->attributes['overrite_template']) ? $this->attributes['overrite_template'] : \false;
-    }
-    public function get_description()
-    {
-        return $this->meta['description'];
-    }
-    public function has_label()
-    {
-        return isset($this->meta['label']);
-    }
-    public function has_description()
-    {
-        return isset($this->meta['description']);
-    }
-    public function set_description($value)
-    {
-        $this->meta['description'] = $value;
-        return $this;
-    }
-    public function set_description_tip($value)
-    {
-        $this->meta['description_tip'] = $value;
-        return $this;
-    }
-    /**
-     * @return array
-     *
-     * @deprecated not sure if needed. TODO: Check later.
-     */
-    public function get_type()
-    {
-        return $this->attributes['type'];
-    }
-    /**
-     * @param string $value
-     *
-     * @return $this
-     */
-    public function set_placeholder($value)
-    {
-        $this->meta['placeholder'] = $value;
-        return $this;
-    }
-    public function has_placeholder()
-    {
-        return isset($this->meta['placeholder']);
-    }
-    public function get_placeholder()
-    {
-        return $this->meta['placeholder'];
-    }
-    /**
-     * @param string $name
-     *
-     * @return $this
-     */
-    public function set_name($name)
-    {
-        $this->attributes['name'] = $name;
-        return $this;
-    }
-    public function get_meta_value($name)
-    {
-        return $this->meta[$name];
-    }
-    public function get_classes()
-    {
-        return implode(' ', $this->meta['class']);
-    }
-    public function has_classes()
-    {
-        return !empty($this->meta['class']);
-    }
-    public function has_data()
-    {
-        return !empty($this->meta['data']);
-    }
-    /**
-     * @return array
-     */
-    public function get_data()
-    {
-        return empty($this->meta['data']) ? [] : $this->meta['data'];
-    }
-    public function get_possible_values()
-    {
-        return isset($this->meta['possible_values']) ? $this->meta['possible_values'] : [];
-    }
-    public function get_id()
-    {
-        return isset($this->attributes['id']) ? $this->attributes['id'] : sanitize_title($this->get_name());
-    }
-    public function get_name()
-    {
-        return $this->attributes['name'];
-    }
-    public function is_multiple()
-    {
-        return isset($this->attributes['multiple']) ? $this->attributes['multiple'] : \false;
-    }
-    /**
-     * @return $this
-     */
-    public function set_disabled()
-    {
-        $this->attributes['disabled'] = \true;
-        return $this;
-    }
-    public function is_disabled()
-    {
-        return isset($this->attributes['disabled']) ? $this->attributes['disabled'] : \false;
-    }
-    /**
-     * @return $this
-     */
-    public function set_readonly()
-    {
-        $this->attributes['readonly'] = \true;
-        return $this;
-    }
-    public function is_readonly()
-    {
-        return isset($this->attributes['readonly']) ? $this->attributes['readonly'] : \false;
-    }
-    /**
-     * @return $this
-     */
-    public function set_required()
-    {
-        $this->meta['required'] = \true;
-        return $this;
-    }
-    /**
-     * @param string $class_name
-     *
-     * @return $this
-     */
-    public function add_class($class_name)
-    {
-        $this->meta['class'][$class_name] = $class_name;
-        return $this;
-    }
-    /**
-     * @param string $class_name
-     *
-     * @return $this
-     */
-    public function unset_class($class_name)
-    {
-        unset($this->meta['class'][$class_name]);
-        return $this;
-    }
-    /**
-     * @param string $data_name
-     * @param string $data_value
-     *
-     * @return $this
-     */
-    public function add_data($data_name, $data_value)
-    {
-        if (!isset($this->meta['data'])) {
-            $this->meta['data'] = [];
-        }
-        $this->meta['data'][$data_name] = $data_value;
-        return $this;
-    }
-    /**
-     * @param string $data_name
-     *
-     * @return $this
-     */
-    public function unset_data($data_name)
-    {
-        unset($this->meta['data'][$data_name]);
-        return $this;
-    }
-    public function is_meta_value_set($name)
-    {
-        return isset($this->meta[$name]);
-    }
-    public function is_class_set($name)
-    {
-        return isset($this->meta['class'][$name]);
-    }
-    public function get_default_value()
-    {
-        return $this->default_value;
-    }
-    /**
-     * @param string $value
-     *
-     * @return $this
-     */
-    public function set_default_value($value)
-    {
-        $this->default_value = $value;
-        return $this;
-    }
-    /**
-     * @return ChainValidator
-     */
-    public function get_validator()
+    public function get_validator(): Validator
     {
         $chain = new ChainValidator();
         if ($this->is_required()) {
@@ -257,27 +41,190 @@ abstract class BasicField implements Field
         }
         return $chain;
     }
-    public function is_required()
-    {
-        return isset($this->meta['required']) ? $this->meta['required'] : \false;
-    }
-    public function get_sanitizer()
+    public function get_sanitizer(): Sanitizer
     {
         return new NoSanitize();
     }
-    /**
-     * @return Serializer
-     */
-    public function get_serializer()
+    public function has_serializer(): bool
     {
-        if (isset($this->meta['serializer']) && $this->meta['serializer'] instanceof Serializer) {
-            return $this->meta['serializer'];
-        }
-        return new NoSerialize();
+        return \false;
     }
-    public function set_serializer(Serializer $serializer)
+    public function get_serializer(): Serializer
     {
-        $this->meta['serializer'] = $serializer;
+        throw new BadMethodCallException('You must define your serializer in a child class.');
+    }
+    final public function get_name(): string
+    {
+        return $this->attributes['name'] ?? '';
+    }
+    final public function get_label(): string
+    {
+        return $this->meta['label'] ?? '';
+    }
+    final public function set_label(string $value): self
+    {
+        $this->meta['label'] = $value;
+        return $this;
+    }
+    final public function get_description_tip(): string
+    {
+        return $this->meta['description_tip'] ?? '';
+    }
+    final public function has_description_tip(): bool
+    {
+        return !empty($this->meta['description_tip']);
+    }
+    final public function get_description(): string
+    {
+        return $this->meta['description'] ?? '';
+    }
+    final public function has_label(): bool
+    {
+        return !empty($this->meta['label']);
+    }
+    final public function has_description(): bool
+    {
+        return !empty($this->meta['description']);
+    }
+    final public function set_description(string $value): self
+    {
+        $this->meta['description'] = $value;
+        return $this;
+    }
+    final public function set_description_tip(string $value): self
+    {
+        $this->meta['description_tip'] = $value;
+        return $this;
+    }
+    final public function set_placeholder(string $value): self
+    {
+        $this->attributes['placeholder'] = $value;
+        return $this;
+    }
+    final public function has_placeholder(): bool
+    {
+        return !empty($this->attributes['placeholder']);
+    }
+    final public function get_placeholder(): string
+    {
+        return $this->attributes['placeholder'] ?? '';
+    }
+    final public function set_name(string $name): self
+    {
+        $this->attributes['name'] = $name;
+        return $this;
+    }
+    final public function get_meta_value(string $name)
+    {
+        return $this->meta[$name] ?? '';
+    }
+    final public function get_classes(): string
+    {
+        return implode(' ', $this->attributes['class'] ?? []);
+    }
+    final public function has_classes(): bool
+    {
+        return !empty($this->attributes['class']);
+    }
+    final public function has_data(): bool
+    {
+        return !empty($this->meta['data']);
+    }
+    final public function get_data(): array
+    {
+        return $this->meta['data'] ?? [];
+    }
+    final public function get_possible_values()
+    {
+        return !empty($this->meta['possible_values']) ? $this->meta['possible_values'] : [];
+    }
+    final public function get_id(): string
+    {
+        return $this->attributes['id'] ?? sanitize_title($this->get_name());
+    }
+    final public function is_multiple(): bool
+    {
+        return isset($this->attributes['multiple']);
+    }
+    final public function set_disabled(): self
+    {
+        $this->attributes['disabled'] = 'disabled';
+        return $this;
+    }
+    final public function is_disabled(): bool
+    {
+        return $this->attributes['disabled'] ?? \false;
+    }
+    final public function set_readonly(): self
+    {
+        $this->attributes['readonly'] = 'readonly';
+        return $this;
+    }
+    final public function is_readonly(): bool
+    {
+        return $this->attributes['readonly'] ?? \false;
+    }
+    final public function set_required(): self
+    {
+        $this->attributes['required'] = 'required';
+        return $this;
+    }
+    final public function add_class(string $class_name): self
+    {
+        $this->attributes['class'][$class_name] = $class_name;
+        return $this;
+    }
+    final public function unset_class(string $class_name): self
+    {
+        unset($this->attributes['class'][$class_name]);
+        return $this;
+    }
+    final public function add_data(string $data_name, string $data_value): Field
+    {
+        if (empty($this->meta['data'])) {
+            $this->meta['data'] = [];
+        }
+        $this->meta['data'][$data_name] = $data_value;
+        return $this;
+    }
+    final public function unset_data(string $data_name): Field
+    {
+        unset($this->meta['data'][$data_name]);
+        return $this;
+    }
+    final public function is_meta_value_set(string $name): bool
+    {
+        return !empty($this->meta[$name]);
+    }
+    final public function is_class_set(string $name): bool
+    {
+        return !empty($this->attributes['class'][$name]);
+    }
+    final public function get_default_value(): string
+    {
+        return $this->meta['default_value'] ?? '';
+    }
+    final public function set_default_value(string $value): self
+    {
+        $this->meta['default_value'] = $value;
+        return $this;
+    }
+    final public function is_required(): bool
+    {
+        return isset($this->attributes['required']);
+    }
+    final public function get_priority(): int
+    {
+        return $this->meta['priority'];
+    }
+    /**
+     * Fields are sorted by lowest priority value first, when getting FormWithFields
+     *
+     * @see FormWithFields::get_fields()
+     */
+    final public function set_priority(int $priority): self
+    {
+        $this->meta['priority'] = $priority;
         return $this;
     }
 }

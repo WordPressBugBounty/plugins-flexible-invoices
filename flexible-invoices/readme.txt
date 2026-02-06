@@ -1,11 +1,11 @@
 === Flexible PDF Invoices for WooCommerce & WordPress ===
 Contributors: wpdesk,piotrpo,marcinkolanko
-Donate link: https://www.wpdesk.net/flexible-invoices-woocommerce/
+Donate link: https://flexibleinvoices.com/sk/flexible-invoices-donate/
 Tags: invoice, eu vat, woocommerce pdf invoices, vat invoice, woocommerce invoices
 Requires at least: 6.0
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.0.14
+Stable tag: 6.2.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -39,13 +39,13 @@ See the main features of the free version:
 * Translate WooCommerce invoices into the languages of your customers by using WPML,
 * Compatible with the [Flexible Quantity – Measurement Price Calculator for WooCommerce plugin](https://wordpress.org/plugins/flexible-quantity-measurement-price-calculator-for-woocommerce/). Sell with **new units of measure** and show them on your WooCommerce PDF invoices!
 
-**Visit** [Flexible Invoices Docs](https://docs.flexibleinvoices.com/) to see all features of the plugin and how to issue, edit, download, and manage WooCommerce invoices.
+**Visit** [Flexible Invoices Docs](https://flexibleinvoices.com/sk/flexible-invoices-rm-docs/) to see all features of the plugin and how to issue, edit, download, and manage WooCommerce invoices.
 
 [youtube https://www.youtube.com/watch?v=BvsXrdtebUk&t=8s]
 
 ### PRO Features
 
-Generate and send WooCommerce PDF invoices in your store automatically with Flexible Invoices for WooCommerce PRO: [Flexible Invoices for WooCommerce PRO](https://flexibleinvoices.com/products/flexible-invoices-woocommerce/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-invoices).
+Generate and send WooCommerce PDF invoices in your store automatically with Flexible Invoices for WooCommerce PRO: [Flexible Invoices for WooCommerce PRO](https://flexibleinvoices.com/sk/flexible-invoices-rm-pro).
 
 **See some of its features:**
 
@@ -57,7 +57,7 @@ Generate and send WooCommerce PDF invoices in your store automatically with Flex
 * [PRO] Conversion of VAT on the WooCommerce invoice into local currency,
 * [PRO] Support for [Price Based on Country for WooCommerce](https://wordpress.org/plugins/woocommerce-product-price-based-on-countries/)
 
-[Upgrade to PRO Now &rarr;](https://flexibleinvoices.com/products/flexible-invoices-woocommerce/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-invoices-pro)
+[Upgrade to PRO Now &rarr;](https://flexibleinvoices.com/sk/flexible-invoices-rm-pro)
 
 ### Live Demo
 
@@ -72,7 +72,7 @@ For the PRO version, you can also use add-ons to customize the invoices and get 
 * Email WooCommerce invoices automatically daily, weekly or monthly, for example, to your accounting office,
 * Send CSV reports from your store to the accounting office automatically on a daily, weekly, and monthly basis,
 
-[Find it in Flexible Invoices - Advanced Sending add-on &rarr;](https://flexibleinvoices.com/products/advanced-sending-for-flexible-invoices/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-invoices-advanced-sending)
+[Find it in Flexible Invoices - Advanced Sending add-on &rarr;](https://flexibleinvoices.com/sk/flexible-invoices-rm-as)
 
 #### 2️⃣ Flexible Invoices - Advanced Filters
 
@@ -80,7 +80,7 @@ For the PRO version, you can also use add-ons to customize the invoices and get 
 * Sort WooCommerce invoices in the list by date ranges and prices,
 * Use additional data columns to manage your WooCommerce invoices,
 
-[Find it in Flexible Invoices - Advanced Filters add-on &rarr;](https://flexibleinvoices.com/products/advanced-filters-for-flexible-invoices/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-invoices-advanced-filters)
+[Find it in Flexible Invoices - Advanced Filters add-on &rarr;](https://flexibleinvoices.com/sk/flexible-invoices-rm-af)
 
 #### 3️⃣ Flexible Invoices - Advanced Templates
 
@@ -88,7 +88,7 @@ For the PRO version, you can also use add-ons to customize the invoices and get 
 * Use or adjust several invoice templates to your needs,
 * Personalize the invoice template to match your store's design,
 
-[Find it in Advanced Templates for Flexible Invoices PRO add-on &rarr;](https://flexibleinvoices.com/products/advanced-templates-for-flexible-invoices/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-invoices-advanced-templates)
+[Find it in Advanced Templates for Flexible Invoices PRO add-on &rarr;](https://flexibleinvoices.com/sk/flexible-invoices-rm-at)
 
 #### 4️⃣ Flexible Invoices - Advanced Reports
 
@@ -97,19 +97,19 @@ For the PRO version, you can also use add-ons to customize the invoices and get 
 * Adjust columns, and filter or sort by issue date, sale date, payment date,
 * Include WooCommerce invoices based on tax rates, currencies, countries, and dates.
 
-[Find it in Advanced Reports for Flexible Invoices PRO add-on &rarr;](https://flexibleinvoices.com/products/advanced-reports-for-flexible-invoices/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-invoices-advanced-reports)
+[Find it in Advanced Reports for Flexible Invoices PRO add-on &rarr;](https://flexibleinvoices.com/sk/flexible-invoices-rm-ar)
 
 #### ⭐ Flexible Invoices - All Plugins Bundle
 
-Get the PRO version of Flexible Invoices and all its add-ons with the [Flexible Invoices All Plugins Bundle &rarr;](https://flexibleinvoices.com/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-invoices-bundle).
+Get the PRO version of Flexible Invoices and all its add-ons with the [Flexible Invoices All Plugins Bundle &rarr;](https://flexibleinvoices.com/sk/flexible-invoices-rm-bundle).
 
 ### Docs
 
-[View Flexible Invoices for WooCommerce PRO Docs](https://docs.flexibleinvoices.com/)
+[View Flexible Invoices for WooCommerce PRO Docs](https://flexibleinvoices.com/sk/flexible-invoices-rm-docs/)
 
 ### Support Policy
 
-We provide limited support for the free version in the [plugin Support Forum](https://wordpress.org/support/plugin/flexible-invoices/). Please purchase a WooCommerce extension to receive priority e-mail support as well as all e-commerce PRO features. [Upgrade Now &rarr;](https://flexibleinvoices.com/products/flexible-invoices-woocommerce/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-invoices-pro)
+We provide limited support for the free version in the [plugin Support Forum](https://wordpress.org/support/plugin/flexible-invoices/). Please purchase a WooCommerce extension to receive priority e-mail support as well as all e-commerce PRO features. [Upgrade Now &rarr;](https://flexibleinvoices.com/sk/flexible-invoices-rm-pro)
 
 ### Languages
 
@@ -147,17 +147,21 @@ You can also use WordPress uploader to upload the plugin zip file in WordPress m
 
 == Data use policy ==
 
-Learn about [Use of Data Policy by WP Desk Plugins](https://flexibleinvoices.com/terms/use-of-data-collected-by-wp-desk-plugins/?utm_source=wporg&utm_medium=link&utm_campaign=data-use-policy)
+Learn about [Use of Data Policy by WP Desk Plugins](https://flexibleinvoices.com/sk/flexible-invoices-rm-privacy)
 
 == Frequently Asked Questions ==
 
+= Where do I report security bugs found in this plugin? =
+
+Please report security bugs found in the source code of the Flexible PDF Invoices for WooCommerce &amp; WordPress plugin through the [Patchstack Vulnerability Disclosure  Program](https://patchstack.com/database/vdp/b94db619-b768-4a28-8655-900871264fd9). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 = Can I issue PDF invoices in WordPress? =
 
-Yes. [Read the docs to see how to issue an invoice in WordPress](https://docs.flexibleinvoices.com/article/803-manual-issuing-proforma-and-invoices). You can use the plugin with or without WooCommerce.
+Yes. [Read the docs to see how to issue an invoice in WordPress](https://flexibleinvoices.com/sk/flexible-invoices-rm-manual-issuing). You can use the plugin with or without WooCommerce.
 
 = How to issue invoices for WooCommerce orders? =
 
-You may issue a WooCommerce invoice manually directly from the order edit screen. Also, you may generate pdf invoices from the all Orders screen with a button. [Read more in the plugin documentation to see how to issue a WooCommerce invoice manually](https://docs.flexibleinvoices.com/article/803-manual-issuing-proforma-and-invoices). If you want to issue WooCommerce PDF invoices automatically, [check out the automatic sending option in the documentation](https://docs.flexibleinvoices.com/article/794-invoice-settings) that is available in the PRO version of the plugin.
+You may issue a WooCommerce invoice manually directly from the order edit screen. Also, you may generate pdf invoices from the all Orders screen with a button. [Read more in the plugin documentation to see how to issue a WooCommerce invoice manually](https://flexibleinvoices.com/sk/flexible-invoices-rm-manual-issuing). If you want to issue WooCommerce PDF invoices automatically, [check out the automatic sending option in the documentation](https://flexibleinvoices.com/sk/flexible-invoices-rm-invoice-settings) that is available in the PRO version of the plugin.
 
 = How to edit a WooCommerce invoice? =
 
@@ -165,33 +169,33 @@ Go to Invoices -> All Invoices and click on the invoice you want to edit. You ma
 
 = How to download an invoice in WooCommerce? =
 
-Thanks to the Flexible Invoices you may use the download invoice button right in the invoice editing screen, on the Orders screen, and the All invoices screen. You may also download all/ WooCommerce invoices in bulk for a chosen date range. Please read the article about [printing and downloading documents](https://docs.flexibleinvoices.com/article/804-printing-and-downloading-documents).
+Thanks to the Flexible Invoices you may use the download invoice button right in the invoice editing screen, on the Orders screen, and the All invoices screen. You may also download all/ WooCommerce invoices in bulk for a chosen date range. Please read the article about [printing and downloading documents](https://flexibleinvoices.com/sk/flexible-invoices-rm-print).
 
 = How to create the custom invoice template for WooCommerce invoices? =
 
-[See how to make changes and customize WooCommerce pdf invoices templates](https://docs.flexibleinvoices.com/article/790-how-to-create-custom-templates-of-invoices).
+[See how to make changes and customize WooCommerce pdf invoices templates](https://flexibleinvoices.com/sk/flexible-invoices-rm-custom-templates).
 
 = Where do I find the plugin documentation and support? =
 
-[View Flexible Invoices for WooCommerce PRO Docs](https://docs.flexibleinvoices.com/)
+[View Flexible Invoices for WooCommerce PRO Docs](https://flexibleinvoices.com/sk/flexible-invoices-rm-docs)
 
-We provide limited support for the free version in the [plugin Support Forum](https://wordpress.org/support/plugin/flexible-invoices/). Please purchase a WooCommerce extension to receive priority e-mail support as well as all e-commerce PRO features. [Upgrade Now &rarr;](https://flexibleinvoices.com/products/flexible-invoices-woocommerce/?utm_source=wordpress-org&utm_medium=link&utm_campaign=flexible-invoices-pro)
+We provide limited support for the free version in the [plugin Support Forum](https://wordpress.org/support/plugin/flexible-invoices/). Please purchase a WooCommerce extension to receive priority e-mail support as well as all e-commerce PRO features. [Upgrade Now &rarr;](https://flexibleinvoices.com/sk/flexible-invoices-rm-pro)
 
 = Can I generate the correction for a WooCommerce invoice? =
 
-This option is available in the PRO version. You may read about the PRO feature in the article about [issuing correction invoice for WooCommerce orders](https://flexibleinvoices.com/blog/woocommerce-invoice-corrections/).
+This option is available in the PRO version. You may read about the PRO feature in the article about [issuing correction invoice for WooCommerce orders](https://flexibleinvoices.com/sk/flexible-invoices-rm-correct/).
 
-Also, you can look at how to generate [manual correction invoices](https://flexibleinvoices.com/blog/manual-invoice-corrections-in-woocommerce/) in PRO.
+Also, you can look at how to generate [manual correction invoices](https://flexibleinvoices.com/sk/flexible-invoices-rm-cr-inv/) in PRO.
 
 = Is the plugin compliant with EU law? =
 
-Yes. The plugin is compatible with EU law (EU vat, VAT number field, vat exemption, reverse charge, VAT validation in the VIES database, OSS support, currency exchange table on the WooCommerce invoice). You may read more about the plugin's PRO features in the [Flexible Invoices for WooCommerce following the EU law article!](https://flexibleinvoices.com/blog/flexible-invoices-woocommerce-following-the-eu-law/)
+Yes. The plugin is compatible with EU law (EU vat, VAT number field, vat exemption, reverse charge, VAT validation in the VIES database, OSS support, currency exchange table on the WooCommerce invoice). You may read more about the plugin's PRO features in the [Flexible Invoices for WooCommerce following the EU law article!](https://flexibleinvoices.com/sk/flexible-invoices-rm-eu/)
 
-Also, check out our [EU Omnibus Directive plugin for WooCommerce](https://wpdesk.net/products/wp-desk-omnibus/?utm_medium=link&utm_source=flexibleinvoices&utm_campaign=OmnibusFi&utm_content=wordpress-org).
+Also, check out our [EU Omnibus Directive plugin for WooCommerce](https://wpdesk.net/sk/flexible-invoices-omni).
 
 = Can the plugin show vat number on WooCommerce invoices? =
 
-Yes. You may turn on the VAT number in the [plugin's settings of the WooCommerce checkout](https://docs.flexibleinvoices.com/article/811-checkout-form). The WooCommerce invoice will then receive the VAT number automatically.
+Yes. You may turn on the VAT number in the [plugin's settings of the WooCommerce checkout](https://flexibleinvoices.com/sk/flexible-invoices-rm-checkout-form). The WooCommerce invoice will then receive the VAT number automatically.
 
 = How to issue a WooCommerce invoice when selling digital products under MOSS and OSS? =
 
@@ -199,13 +203,13 @@ The plugin generates PDF invoices with WooCommerce order positions according to 
 
 The plugin in the PRO version allows you to create both reverse charge invoices and WooCommerce invoices with the correct VAT according to the customer type (individual or company) **100% automatically**! This is possible thanks to the built-in EU VAT number validation for the WooCommerce invoice (let's call this feature an EU vat invoice checker).
 
-You may read more on these PRO features on [how to invoice in the European Union using WooCommerce](https://flexibleinvoices.com/blog/how-to-invoice-in-the-european-union-using-woocommerce/) article. There is also the reverse charge vat invoice example.
+You may read more on these PRO features on [how to invoice in the European Union using WooCommerce](https://flexibleinvoices.com/sk/flexible-invoices-rm-invoice-in-eu/) article. There is also the reverse charge vat invoice example.
 
 = Can I issue a WooCommerce invoice with a different currency? =
 
-Yes. You may [set currencies in the plugin's settings for WordPress](https://docs.flexibleinvoices.com/article/787-currencies-for-invoicing-in-wordpress) to use them for invoices. When WooCommerce is activated the plugin will use its currency settings and the current store's currency when issuing an invoice.
+Yes. You may [set currencies in the plugin's settings for WordPress](https://flexibleinvoices.com/sk/flexible-invoices-rm-cur) to use them for invoices. When WooCommerce is activated the plugin will use its currency settings and the current store's currency when issuing an invoice.
 
-In the PRO version, you may also benefit from the currency exchange table on the WooCommerce PDF invoice with VAT. Currency conversion rates are taken from the European Central Bank automatically. You may read more on [how to issue currency invoices in WooCommerce](https://flexibleinvoices.com/blog/currency-invoices-woocommerce/) article.
+In the PRO version, you may also benefit from the currency exchange table on the WooCommerce PDF invoice with VAT. Currency conversion rates are taken from the European Central Bank automatically. You may read more on [how to issue currency invoices in WooCommerce](https://flexibleinvoices.com/sk/flexible-invoices-rm-cur/) article.
 
 = Can I show different units of measure on the PDF invoices? =
 
@@ -215,7 +219,7 @@ Yes. You can sell based on weight, dimension, area, density, and volume with the
 
 Yes. You may translate it and also add your [translation for other users of the plugin](https://translate.wordpress.org/projects/wp-plugins/flexible-invoices).
 
-The plugin supports WPML as well. Read more about [translating documents and Flexible Invoices](https://docs.flexibleinvoices.com/article/791-translating-documents).
+The plugin supports WPML as well. Read more about [translating documents and Flexible Invoices](https://docs.flexibleinvoices.com/sk/flexible-invoices-rm-trans).
 
 = Do you offer more free plugins? =
 
@@ -236,7 +240,7 @@ You can also choose one from the list below.
 
 == Roadmap ==
 
-There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce & WordPress invoices will evolve according to your expectations! Let us know what you need from the plugin, and we'll include it in our plans for plugin development. [You can vote for a feature you like or create your own here](https://flexibleinvoices.com/ideas/).
+There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce & WordPress invoices will evolve according to your expectations! Let us know what you need from the plugin, and we'll include it in our plans for plugin development. [You can vote for a feature you like or create your own here](https://flexibleinvoices.com/sk/flexible-invoices-rm-ideas/).
 
 == Screenshots ==
 
@@ -309,6 +313,51 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 67. Invoice number formatting inside the visual editor for the invoice template.
 
 == Changelog ==
+
+= 6.2.5 - 2026-02-05 =
+* Minor UI improvements
+
+= 6.2.4 - 2026-02-02 =
+* fixed KSeF menu visibility
+* fixed layout templates z-index
+
+= 6.2.3 - 2026-01-28 =
+* Using order number instead of order id in Order Number block
+
+= 6.2.2 - 2026-01-22 =
+* Fixed compatibility issues with php 8.4 and newer
+
+= 6.2.1 - 2025-12-29 =
+* Fixes, improvements with KSeF compatibility
+* Fixed some urls
+* Fixed dummy pages
+
+= 6.2.0 - 2025-12-16 =
+* Support for KSeF QR codes
+
+= 6.1.5 - 2025-12-15 =
+* Vat number country prefix validation on woocommerce block checkout
+
+= 6.1.4 - 2025-12-04 =
+* Fixed block checkout NIP field
+
+= 6.1.3 - 2025-12-03 =
+* Added support for WordPress 6.9
+* Added support for WooCommerce 10.4
+
+= 6.1.2 - 2025-11-19 =
+* Fixed fatal error on KSeF settings page with WooCommerce disabled
+* Fixed some translations
+* Fixed toggle buttons appearance on firefox
+
+= 6.1.1 - 2025-10-16 =
+* Changed plugin links
+
+= 6.1.0 - 2025-10-15 =
+* KSeF Support
+
+= 6.0.15 - 2025-10-07 =
+* Added support for WooCommerce 10.3
 
 = 6.0.14 - 2025-10-02 =
 * Security fixes

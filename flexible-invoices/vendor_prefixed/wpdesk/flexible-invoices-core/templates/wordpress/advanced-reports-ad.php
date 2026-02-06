@@ -30,8 +30,8 @@ namespace WPDeskFIVendor;
 			</ul>
 		</td>
         <?php 
-$pl = 'https://www.wpdesk.pl/sklep/faktury-zaawansowane-raporty/?utm_source=flexible-invoices&utm_campaign=flexible-invoices-reports&utm_medium=button';
-$en = 'https://flexibleinvoices.com/products/advanced-reports-for-flexible-invoices/?utm_source=flexible-invoices&utm_medium=button&utm_campaign=flexible-invoices-reports';
+$pl = 'https://www.wpdesk.pl/sk/flexible-invoices-reports-add-pl';
+$en = 'https://flexibleinvoices.com/sk/flexible-invoices-reports-add-en';
 $buy_url = \esc_url(\get_locale() === 'pl_PL' ? $pl : $en, array('https'));
 ?>
 		<td>

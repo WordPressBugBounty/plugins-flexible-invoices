@@ -9,10 +9,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Fields;
  */
 class AttributesSubStartField extends SubStartField
 {
-    /**
-     * @return string
-     */
-    public function get_template_name()
+    public function get_template_name(): string
     {
         return 'attributes-sub-start';
     }

@@ -2,7 +2,6 @@
 
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings;
 
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\BlockTemplateEditor;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType;
@@ -26,10 +25,7 @@ class SettingsForm implements Hookable
 {
     const NONCE_ACTION = 'save_settings';
     const NONCE_NAME = 'settings_nonce';
-    /**
-     * @var string
-     */
-    private static $settings_slug = 'invoices_settings';
+    private string $settings_slug = 'invoices_settings';
     /**
      * @var SettingsStrategy
      */
@@ -55,14 +51,10 @@ class SettingsForm implements Hookable
     }
     /**
      * Get URL to plugin settings, optionally to specific tab.
-     *
-     * @param string|null $tab_slug When null returns URL to general settings.
-     *
-     * @return string
      */
-    public static function get_url(string $tab_slug = null): string
+    protected function get_url(?string $tab_slug = null): string
     {
-        $url = admin_url(add_query_arg(['page' => self::$settings_slug], RegisterPostType::POST_TYPE_MENU_URL));
+        $url = admin_url(add_query_arg(['page' => $this->settings_slug], RegisterPostType::POST_TYPE_MENU_URL));
         if ($tab_slug !== null) {
             $url = add_query_arg(['tab' => $tab_slug], $url);
         }
@@ -74,7 +66,7 @@ class SettingsForm implements Hookable
     public function hooks()
     {
         add_action('admin_menu', function () {
-            add_submenu_page(RegisterPostType::POST_TYPE_MENU_URL, esc_html__('Settings', 'flexible-invoices'), esc_html__('Settings', 'flexible-invoices'), 'manage_options', self::$settings_slug, [$this, 'render_page_action'], 40);
+            add_submenu_page(RegisterPostType::POST_TYPE_MENU_URL, esc_html__('Settings', 'flexible-invoices'), esc_html__('Settings', 'flexible-invoices'), 'manage_options', $this->settings_slug, [$this, 'render_page_action'], 40);
         }, 999);
         add_action('admin_init', [$this, 'save_settings_action'], 5);
     }
@@ -85,7 +77,7 @@ class SettingsForm implements Hookable
      */
     public function save_settings_action()
     {
-        if (isset($_GET['page']) && $_GET['page'] !== self::$settings_slug) {
+        if (isset($_GET['page']) && $_GET['page'] !== $this->settings_slug) {
             return;
         }
         $tab = $this->get_active_tab();
@@ -123,7 +115,7 @@ class SettingsForm implements Hookable
     {
         $tab = $this->get_active_tab();
         $renderer = $this->get_renderer();
-        $renderer->output_render('menu', ['base_url' => self::get_url(), 'menu_items' => $this->get_tabs_menu_items(), 'selected' => $this->get_active_tab()->get_tab_slug()]);
+        $renderer->output_render('menu', ['base_url' => $this->get_url(), 'menu_items' => $this->get_tabs_menu_items(), 'selected' => $this->get_active_tab()->get_tab_slug()]);
         $tab->output_render($renderer);
         $renderer->output_render('footer');
     }

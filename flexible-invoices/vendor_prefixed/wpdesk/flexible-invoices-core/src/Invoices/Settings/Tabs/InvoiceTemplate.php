@@ -65,28 +65,33 @@ final class InvoiceTemplate extends FieldSettingsTab
      */
     private function get_doc_link(): string
     {
-        $docs_link = 'https://docs.flexibleinvoices.com/article/1017-customizing-the-invoice-template?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=template';
+        $docs_link = 'https://flexibleinvoices.com/sk/flexible-invoices-customizing-docs-en';
         if (get_locale() === 'pl_PL') {
-            $docs_link = 'https://www.wpdesk.pl/docs/faktury-woocommerce-docs/?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=template#szablon-faktury';
+            $docs_link = 'https://www.wpdesk.pl/sk/flexible-invoices-customizing-docs-pl';
         }
         /* translators: %1$s docs link, %2$s strong, %3$s /strong */
         $output = sprintf('%2$s%1$s%3$s', sprintf(esc_html__('Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-invoices'), '<a href="' . $docs_link . '" target="_blank" style="color: #4BB04E; font-weight: 700;">', '</a>'), '<strong>', '</strong>');
         if (get_locale() !== 'pl_PL') {
-            $docs_link1 = 'https://docs.flexibleinvoices.com/article/790-how-to-create-custom-templates-of-invoices?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=custom-template';
-            $docs_link2 = 'https://docs.flexibleinvoices.com/article/789-how-to-add-custom-fields-for-generated-invoice-pdf?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=custom-fields';
-            $docs_link3 = 'https://docs.flexibleinvoices.com/article/791-translating-documents?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=translations';
+            $docs_link1 = 'https://flexibleinvoices.com/sk/flexible-invoices-custom-template-en';
+            $docs_link2 = 'https://flexibleinvoices.com/sk/flexible-invoices-custom-fields-en';
+            $docs_link3 = 'https://flexibleinvoices.com/sk/flexible-invoices-translating-en';
         } else {
-            $docs_link1 = 'https://www.wpdesk.pl/docs/faktury-woocommerce-docs/?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=custom-template#wlasny-szablon-faktury-w-folderze-motywu';
-            $docs_link2 = 'https://www.wpdesk.pl/docs/faktury-woocommerce-docs/?utm_source=flexible-invoices-settings&utm_medium=link&utm_campaign=flexible-invoices-docs-link&utm_content=gtu-invoice#gtu-na-fakturach';
-            $docs_link3 = '';
+            $docs_link1 = 'https://wpdesk.link/docs-advanced-sending-pl';
+            $docs_link2 = 'https://wpdesk.link/docs-advances-sending-blocks';
+            $docs_link3 = 'https://wpdesk.link/advanced-sending-wpml';
         }
+        $a_tag = '<a href="%s" target="_blank" style="color: #4BB04E; font-weight: 700;">';
+        $link_adjust_template = sprintf($a_tag, $docs_link1);
+        $link_adjust_more_data = sprintf($a_tag, $docs_link2);
+        $link_manage_translations = sprintf($a_tag, $docs_link3);
         $output .= '<br/>';
         $output .= sprintf(
-            /* translators: %1$s docs link, %2$s docs link, %3$s docs link*/
-            __('Also, learn how to <a href="%1$s" target="_blank" style="color: #4BB04E; font-weight: 700;">adjust the invoice template</a>, add <a href="%2$s" target="_blank" style="color: #4BB04E; font-weight: 700; ">more data</a> and <a href="%3$s" target="_blank" style="color: #4BB04E; font-weight: 700; ">manage translations</a>.', 'flexible-invoices'),
-            $docs_link1,
-            $docs_link2,
-            $docs_link3
+            /* translators: %1$s closing a tag, %2$s link to adjusting template doc, %3$s link to adjusting more data doc %4$s link to managing translations doc */
+            esc_html__('Also, learn how to %2$sadjust the invoice template%1$s, add %3$smore data%1$s and %4$smanage translations%1$s.', 'flexible-invoices'),
+            '</a>',
+            $link_adjust_template,
+            $link_adjust_more_data,
+            $link_manage_translations
         );
         return '<span style="font-weight: 700;">' . $output . '</span>';
     }
@@ -149,7 +154,7 @@ final class InvoiceTemplate extends FieldSettingsTab
     }
     private function get_classic_templates_fields(array $beacon): array
     {
-        $pro_url = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sklep/zaawansowane-szablony-faktur-woocommerce/?utm_source=wp-admin-plugins&utm_medium=button&utm_campaign=flexible-invoices-advanced-templates' : 'https://flexibleinvoices.com/products/advanced-templates-for-flexible-invoices/?utm_source=wp-admin-plugins&utm_medium=button&utm_campaign=flexible-invoices-advanced-templates';
+        $pro_url = get_locale() === 'pl_PL' ? 'https://www.wpdesk.pl/sk/flexible-invoices-template-pro-pl' : 'https://flexibleinvoices.com/sk/flexible-invoices-template-pro-en';
         $pro_description = '';
         if (Plugin::is_template_addon_is_disabled()) {
             /* translators: %1$s link, %2$s strong, %3$s /strong */

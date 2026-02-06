@@ -10,10 +10,7 @@ use WPDeskFIVendor\WPDesk\Forms\Serializer;
  */
 class ProductSelectSerializer implements Serializer
 {
-    /**
-     * @param $value
-     */
-    public function serialize($value)
+    public function serialize($value): string
     {
         $products_with_names = [];
         if (is_array($value)) {
@@ -25,9 +22,9 @@ class ProductSelectSerializer implements Serializer
                 }
             }
         }
-        return $products_with_names;
+        return implode(' ', $products_with_names);
     }
-    public function unserialize($value)
+    public function unserialize(string $value)
     {
         return $value;
     }

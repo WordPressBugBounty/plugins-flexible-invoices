@@ -2,6 +2,8 @@
 
 namespace WPDeskFIVendor\WPDesk\Forms\Field\Traits;
 
+use WPDeskFIVendor\WPDesk\Forms\Field;
+use WPDeskFIVendor\WPDesk\Forms\Form;
 /**
  * Implementation of HTML attributes like id, name, action etc.
  *
@@ -9,59 +11,50 @@ namespace WPDeskFIVendor\WPDesk\Forms\Field\Traits;
  */
 trait HtmlAttributes
 {
-    /** @var string[] */
-    protected $attributes;
+    /** @var array{placeholder: string, name: string, id: string, class: string[]} */
+    protected $attributes = [];
     /**
      * Get list of all attributes except given.
      *
      * @param string[] $except
      *
-     * @return string[]
+     * @return array<string[]|string|bool>
      */
-    public function get_attributes($except = ['name', 'type'])
+    final public function get_attributes(array $except = ['name', 'class']): array
     {
-        return array_filter($this->attributes, function ($value, $key) use ($except) {
+        return array_filter($this->attributes, static function ($key) use ($except) {
             return !in_array($key, $except, \true);
-        }, \ARRAY_FILTER_USE_BOTH);
+        }, \ARRAY_FILTER_USE_KEY);
     }
     /**
-     * @param string $name
-     * @param string $value
+     * @param string               $name
+     * @param string[]|string|bool $value
      *
-     * @return $this
+     * @return Field|Form
      */
-    public function set_attribute($name, $value)
+    final public function set_attribute(string $name, $value)
     {
         $this->attributes[$name] = $value;
         return $this;
     }
     /**
-     * @param string $name
-     *
-     * @return $this
+     * @return HtmlAttributes
      */
-    public function unset_attribute($name)
+    final public function unset_attribute(string $name)
     {
         unset($this->attributes[$name]);
         return $this;
     }
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function is_attribute_set($name)
+    final public function is_attribute_set(string $name): bool
     {
-        return isset($this->attributes[$name]);
+        return !empty($this->attributes[$name]);
     }
-    /**
-     * @param string $name
-     * @param mixed $default
-     *
-     * @return string
-     */
-    public function get_attribute($name, $default = null)
+    final public function get_attribute(string $name, ?string $default = null): string
     {
-        return $this->attributes[$name] ?? $default;
+        if (is_array($this->attributes[$name])) {
+            // Be aware of coercing - if implode returns string(0) '', then return $default value.
+            return implode(' ', $this->attributes[$name]) ?: $default ?? '';
+        }
+        return (string) ($this->attributes[$name] ?? $default ?? '');
     }
 }

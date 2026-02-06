@@ -12,7 +12,7 @@ if ( ! $rate_box ) {
 ?>
 <script id="fi_rate_box" type="text/template">
 	<?php
-	$is_PL       = get_locale() === 'pl_PL' ? 'https://wpdesk.pl' : 'https://wpdesk.net';
+	$is_PL       = get_locale() === 'pl_PL' ? 'https://wpdesk.pl/sk/flexible-invoices-rate-pl' : 'https://wpdesk.net/sk/flexible-invoices-rate-en';
 	$review_link = 'https://wpdesk.link/fi-footer-review-link';
 	//phpcs:disable
 	echo $rate_box->render(

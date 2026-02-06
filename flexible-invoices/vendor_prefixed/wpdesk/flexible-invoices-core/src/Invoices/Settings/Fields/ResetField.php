@@ -10,11 +10,7 @@ use WPDeskFIVendor\WPDesk\Forms\Field\SubmitField;
  */
 class ResetField extends SubmitField
 {
-    /**
-     * @return string
-     */
-    //@phpstan-ignore-next-line
-    public function get_type()
+    public function get_type(): string
     {
         return 'button';
     }

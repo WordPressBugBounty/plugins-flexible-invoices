@@ -94,6 +94,7 @@
 	color: #FFF;
 	padding: 4px;
 	display: inline-block;
+	cursor: pointer;
 }
 
 .reset-pdf-template {
@@ -107,5 +108,11 @@
 }
 
 .select-images label {
-	z-index: 9999!important;
+	z-index: 9999;
 }
+
+.select-images label.active-preview {
+	z-index: 10000;
+	filter: none;
+}
+

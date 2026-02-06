@@ -6,7 +6,7 @@ use WPDeskFIVendor\WPDesk\Forms\Field\BasicField;
 class CustomField extends BasicField
 {
     private string $content = '';
-    public function get_template_name()
+    public function get_template_name(): string
     {
         return 'custom-field';
     }
