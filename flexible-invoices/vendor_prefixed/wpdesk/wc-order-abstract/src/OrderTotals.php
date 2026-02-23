@@ -35,7 +35,10 @@ class OrderTotals
     public function get_totals(): Totals
     {
         $totals = new Totals();
-        $total_net = $total_vat = $total_qty = $total_gross = 0;
+        $total_net = 0;
+        $total_vat = 0;
+        $total_qty = 0;
+        $total_gross = 0;
         if (count($this->order_items) > 0) {
             foreach ($this->order_items as $item) {
                 $total_net += $item->get_net_price();

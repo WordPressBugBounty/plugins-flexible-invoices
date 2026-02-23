@@ -57,7 +57,7 @@ class OrderItems
     private $product_items = [];
     /**
      * @param WC_Order $order WC Order.
-     * @param array    $types Item types: ['line_item', 'shipping', 'coupon', 'tax' ].
+     * @param array $types Item types: ['line_item', 'shipping', 'coupon', 'tax' ].
      */
     public function __construct(WC_Order $order, array $types)
     {
@@ -81,22 +81,30 @@ class OrderItems
             switch ($order_item->get_type()) {
                 case self::LINE_ITEM:
                     if ($order_item instanceof WC_Order_Item_Product) {
-                        $items[] = $this->product_items[] = $this->get_product_item($order_item);
+                        $product_item = $this->get_product_item($order_item);
+                        $items[] = $product_item;
+                        $this->product_items[] = $product_item;
                     }
                     break;
                 case self::SHIPPING_ITEM:
                     if ($order_item instanceof WC_Order_Item_Shipping) {
-                        $items[] = $this->shipping_items[] = $this->get_shipping_item($order_item);
+                        $shipping_item = $this->get_shipping_item($order_item);
+                        $items[] = $shipping_item;
+                        $this->shipping_items[] = $shipping_item;
                     }
                     break;
                 case self::COUPON_ITEM:
                     if ($order_item instanceof WC_Order_Item_Coupon) {
-                        $items[] = $this->product_items[] = $this->get_coupon_item($order_item);
+                        $coupon_item = $this->get_coupon_item($order_item);
+                        $items[] = $coupon_item;
+                        $this->product_items[] = $coupon_item;
                     }
                     break;
                 case self::FEE_ITEM:
                     if ($order_item instanceof WC_Order_Item_Fee) {
-                        $items[] = $this->product_items[] = $this->get_fee_item($order_item);
+                        $fee_item = $this->get_fee_item($order_item);
+                        $items[] = $fee_item;
+                        $this->product_items[] = $fee_item;
                     }
                     break;
             }
@@ -179,11 +187,61 @@ class OrderItems
         $item->set_currency_symbol($this->currency_symbol);
         $taxes = $order_item->get_taxes();
         $tax_rate = new GetRateFromTaxTotal($taxes);
-        $item->set_rate($tax_rate->get_rate());
-        $item->set_tax_class($tax_rate->get_class());
-        $item->set_tax_id($tax_rate->get_rate_id());
+        $final_rate = $tax_rate->get_rate();
+        $final_class = $tax_rate->get_class();
+        $final_id = $tax_rate->get_rate_id();
+        if ($final_id === 0) {
+            $highest_product_tax = $this->get_highest_tax_from_products();
+            if (!empty($highest_product_tax)) {
+                $final_rate = $highest_product_tax['rate'];
+                $final_class = $highest_product_tax['class'];
+                $final_id = $highest_product_tax['id'];
+            }
+        }
+        $item->set_rate($final_rate);
+        $item->set_tax_class($final_class);
+        $item->set_tax_id($final_id);
         $item->set_item_object($order_item);
         return $item;
+    }
+    /**
+     * Helper method to find the highest tax rate among all products in the order.
+     * Used when shipping tax rate is missing (e.g. free shipping in shortcode checkout).
+     */
+    private function get_highest_tax_from_products()
+    {
+        $highest_rate_data = null;
+        $max_rate_val = -1.0;
+        $products = $this->order->get_items(self::LINE_ITEM);
+        foreach ($products as $product) {
+            $taxes = $product->get_taxes();
+            $tax_rate_calc = new GetRateFromTaxTotal($taxes);
+            $current_rate = $tax_rate_calc->get_rate();
+            $current_id = $tax_rate_calc->get_rate_id();
+            if ($current_id !== 0 && $current_rate > $max_rate_val) {
+                if ($this->is_tax_rate_shippable($current_id)) {
+                    $max_rate_val = $current_rate;
+                    $highest_rate_data = ['rate' => $current_rate, 'class' => $tax_rate_calc->get_class(), 'id' => $current_id];
+                }
+            }
+        }
+        return $highest_rate_data;
+    }
+    private function is_tax_rate_shippable(int $rate_id): bool
+    {
+        $cache_key = 'fi_tax_shippable_' . $rate_id;
+        $cache_group = 'flexible_invoices';
+        $is_shippable = wp_cache_get($cache_key, $cache_group);
+        if (\false === $is_shippable) {
+            global $wpdb;
+            $result = $wpdb->get_var(
+                //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+                $wpdb->prepare('SELECT tax_rate_shipping FROM %i WHERE tax_rate_id = %d', $wpdb->prefix . 'woocommerce_tax_rates', $rate_id)
+            );
+            $is_shippable = (int) $result;
+            wp_cache_set($cache_key, $is_shippable, $cache_group, 3600);
+        }
+        return (int) $is_shippable === 1;
     }
     /**
      * @param WC_Order_Item_Coupon $order_item
@@ -306,6 +364,6 @@ class OrderItems
      */
     private function order_item_types(): array
     {
-        return array('line_item', 'tax', 'shipping', 'fee', 'coupon');
+        return ['line_item', 'tax', 'shipping', 'fee', 'coupon'];
     }
 }
