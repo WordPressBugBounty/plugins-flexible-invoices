@@ -143,6 +143,10 @@ class InvoicesIntegration implements Hookable
     {
         self::$plugin_url = trailingslashit($plugin);
     }
+    public function get_library_info(): LibraryInfo
+    {
+        return $this->library_info;
+    }
     /**
      * @return LoggerInterface
      */

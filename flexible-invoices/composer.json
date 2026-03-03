@@ -53,7 +53,7 @@
 		"phpunit/phpunit": "^9",
 		"psr/container": "^1",
 		"psr/log": "^1.1.4",
-		"wpdesk/flexible-invoices-core": "^4.3.7",
+		"wpdesk/flexible-invoices-core": "^4.3.8",
 		"wpdesk/ltv-dashboard-widget": "^1",
 		"wpdesk/phpstan-rules": "1.1.4",
 		"wpdesk/wp-codeception": "^2",
@@ -71,6 +71,7 @@
 		"phpcs": "phpcs",
 		"phpstan": "php -d memory_limit=1G vendor/bin/phpstan",
 		"phpcbf": "phpcbf src",
+		"combo": "phpcbf src; phpcs; php -d memory_limit=2G vendor/bin/phpstan",
 		"phpunit-unit": "phpunit --configuration phpunit-unit.xml --coverage-text --colors=never",
 		"phpunit-unit-fast": "phpunit --configuration phpunit-unit.xml --no-coverage",
 		"phpunit-integration": "phpunit --configuration phpunit-integration.xml --coverage-text --colors=never",
@@ -102,6 +103,6 @@
 			"url": "https://gitlab.wpdesk.dev/api/v4/group/wpdesk/-/packages/composer/"
 		}
 	},
-	"version": "6.2.7",
+	"version": "6.2.8",
 	"type": "wordpress-plugin"
 }

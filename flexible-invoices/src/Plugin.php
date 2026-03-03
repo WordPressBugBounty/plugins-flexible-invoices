@@ -92,7 +92,7 @@ class Plugin extends AbstractPlugin implements LoggerAwareInterface, HookableCol
 			function () {
 				$integration = new InvoicesIntegration( $this->plugin_info, $this->logger );
 				$this->add_hookable( $integration );
-				$this->add_hookable( new SupportMenuPage( $this->plugin_url . '/assets/' ) );
+				$this->add_hookable( new SupportMenuPage( $this->plugin_url . '/assets/', $integration->get_library_info()->get_template_dir() . '/' ) );
 				$this->add_hookable( new SupportLinks() );
 				$this->add_hookable( new ValidateInvoice() );
 

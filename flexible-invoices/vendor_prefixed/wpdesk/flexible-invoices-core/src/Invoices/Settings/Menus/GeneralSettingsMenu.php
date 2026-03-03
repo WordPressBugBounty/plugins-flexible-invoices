@@ -123,7 +123,7 @@ class GeneralSettingsMenu implements Hookable
         $renderer = $this->get_renderer();
         $renderer->output_render('menu', ['base_url' => $this->get_url(), 'menu_items' => $this->get_tabs_menu_items(), 'selected' => $this->get_active_tab()->get_tab_slug()]);
         $tab->output_render($renderer);
-        $renderer->output_render('footer');
+        $renderer->output_render('rate_footer');
     }
     /**
      * @return SettingsTab

@@ -27,7 +27,14 @@ class KSeFDummyMenu extends GeneralSettingsMenu
         $tab = $this->get_active_tab();
         $renderer = $this->get_renderer();
         $tab->output_render($renderer);
-        $renderer->output_render('footer');
+        $is_PL = get_locale() === 'pl_PL' ? 'https://wpdesk.pl/sk/flexible-invoices-woocommerce-rate-pl' : 'https://wpdesk.net/sk/flexible-invoices-woocommerce-rate-en';
+        $renderer->output_render('rate_footer', ['description' => sprintf(
+            // translators: %1$s icon,  %2$s open url tag, %3$s close url tag.
+            esc_html__('Created with %1$s by %2$sWP Desk%3$s - if you like KSeF Add-on rate us &rarr;', 'flexible-invoices'),
+            '<span class="love"><span class="dashicons dashicons-heart"></span></span>',
+            '<a target="_blank" href="' . esc_url($is_PL) . '">',
+            '</a>'
+        ), 'rate_url' => 'https://wordpress.org/support/plugin/ksef-for-flexible-invoices/reviews/']);
     }
     private function should_display_ksef_menu(): bool
     {

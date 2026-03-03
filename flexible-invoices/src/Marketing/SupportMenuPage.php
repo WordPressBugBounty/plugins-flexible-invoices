@@ -26,8 +26,11 @@ class SupportMenuPage implements Hookable {
 	 */
 	private $renderer;
 
-	public function __construct( string $assets_url ) {
-		$this->assets_url = $assets_url;
+	private $core_template_dir;
+
+	public function __construct( string $assets_url, string $core_template_dir ) {
+		$this->core_template_dir = $core_template_dir;
+		$this->assets_url        = $assets_url;
 		$this->init_renderer();
 	}
 
@@ -48,19 +51,16 @@ class SupportMenuPage implements Hookable {
 			999
 		);
 
-		add_action( 'admin_footer', [ $this, 'append_plugin_rate' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ] );
 
 		Assets::enqueue_assets();
 		Assets::enqueue_owl_assets();
 	}
 
-	/**
-	 * Init renderer.
-	 */
 	private function init_renderer() {
 		$resolver = new ChainResolver();
 		$resolver->appendResolver( new DirResolver( __DIR__ . '/Views/' ) );
+		$resolver->appendResolver( new DirResolver( $this->core_template_dir ) );
 		$this->renderer = new SimplePhpRenderer( $resolver );
 	}
 
@@ -70,26 +70,8 @@ class SupportMenuPage implements Hookable {
 			$local = 'en';
 		}
 		$boxes = new MarketingBoxes( self::PLUGIN_SLUG, $local );
-		echo $this->renderer->render( 'marketing-page', [ 'boxes' => $boxes ] ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	}
-
-	/**
-	 * @return bool
-	 */
-	private function should_show_rate_notice(): bool {
-		global $current_screen;
-
-		return $current_screen->post_type === 'inspire_invoice';
-	}
-
-	/**
-	 * Add plugin rate box to settings & support page
-	 */
-	public function append_plugin_rate() {
-		if ( $this->should_show_rate_notice() ) {
-			$rate_box = new RateBox();
-			echo $this->renderer->render( 'rate-box-footer', [ 'rate_box' => $rate_box ] ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		}
+		$this->renderer->output_render( 'marketing-page', [ 'boxes' => $boxes ] );
+		$this->renderer->output_render( 'settings/rate_footer' );
 	}
 
 	/**
