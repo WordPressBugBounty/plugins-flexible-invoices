@@ -8,7 +8,19 @@ namespace WPDeskFIVendor;
  */
 $table_id = \esc_attr(\uniqid('table'));
 $headers = $attributes['headers'];
+$default_headers = ['Total' => \__('Total', 'flexible-invoices'), 'Tax name' => \__('Tax name', 'flexible-invoices')];
+foreach ($headers as $index => $header_value) {
+    if (isset($default_headers[$header_value])) {
+        $headers[$index] = $default_headers[$header_value];
+    }
+}
 $rows = $attributes['rows'];
+$default_rows = ['Including' => \__('Including', 'flexible-invoices')];
+foreach ($rows as $index => $row_value) {
+    if (isset($default_rows[$row_value])) {
+        $rows[$index] = $default_rows[$row_value];
+    }
+}
 $states = $attributes['states'];
 $styles = ['table' => ['borderColor' => $attributes['tableBorderColor'], 'borderWidth' => $attributes['tableBorderWidth']], 'header' => ['color' => $attributes['headerTextColor'], 'background' => $attributes['headerBackground'], 'textAlign' => $attributes['headerTextAlign'], 'fontStyle' => $attributes['headerFontStyle'], 'fontSize' => $attributes['headerFontSize'], 'fontWeight' => $attributes['headerFontWeight'], 'borders' => ['rowWidthTop' => $attributes['headerBorderRowWidthTop'], 'rowWidthBottom' => $attributes['headerBorderRowWidthBottom'], 'rowColor' => $attributes['headerBorderRowColor'], 'columnWidthLeft' => $attributes['headerBorderColumnWidthLeft'], 'columnWidthRight' => $attributes['headerBorderColumnWidthRight'], 'columnColor' => $attributes['headerBorderColumnColor']]], 'body' => ['color' => $attributes['bodyTextColor'], 'background' => $attributes['bodyBackground'], 'backgroundEven' => $attributes['multipleBodyBackground'] ? $attributes['bodyBackgroundEven'] : $attributes['bodyBackground'], 'colorEven' => $attributes['multipleBodyBackground'] ? $attributes['bodyTextColorEven'] : $attributes['bodyTextColor'], 'textAlign' => $attributes['bodyTextAlign'], 'fontStyle' => $attributes['bodyFontStyle'], 'fontSize' => $attributes['bodyFontSize'], 'fontWeight' => $attributes['bodyFontWeight'], 'borders' => ['rowWidthTop' => $attributes['bodyBorderRowWidthTop'], 'rowWidthBottom' => $attributes['bodyBorderRowWidthBottom'], 'rowColor' => $attributes['bodyBorderRowColor'], 'columnWidthLeft' => $attributes['bodyBorderColumnWidthLeft'], 'columnWidthRight' => $attributes['bodyBorderColumnWidthRight'], 'columnColor' => $attributes['bodyBorderColumnColor']]]];
 ?>
