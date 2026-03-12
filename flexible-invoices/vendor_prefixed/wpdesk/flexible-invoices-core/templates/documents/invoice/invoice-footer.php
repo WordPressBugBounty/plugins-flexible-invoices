@@ -8,7 +8,7 @@ namespace WPDeskFIVendor;
 ?>
 <div class="fix"></div>
 <?php 
-if (\is_plugin_active('faktury-ksef/faktury-ksef.php')) {
+if (\is_plugin_active('ksef-for-flexible-invoices/faktury-ksef.php')) {
     $shortcode = \sprintf('[fiksef_document_qrcode document_id="%d"]', $invoice->get_id());
     echo \do_shortcode($shortcode);
 }

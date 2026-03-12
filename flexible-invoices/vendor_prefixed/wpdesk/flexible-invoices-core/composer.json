@@ -81,6 +81,8 @@
         "phpcs": "phpcs",
         "phpstan": "php -d memory_limit=2G vendor\/bin\/phpstan",
         "phpcbf": "phpcbf src",
+        "combo": "phpcbf src; phpcs; php -d memory_limit=2G vendor\/bin\/phpstan",
+        "regen-phpstan-baseline": "vendor\/bin\/phpstan analyze -c phpstan.neon.dist --generate-baseline .phpstan-baseline.php --memory-limit=1G",
         "phpunit-unit": "phpunit --configuration phpunit-unit.xml --coverage-text --colors=never",
         "phpunit-unit-fast": "phpunit --configuration phpunit-unit.xml --no-coverage",
         "phpunit-integration": "phpunit --configuration phpunit-integration.xml --coverage-text --colors=never",
