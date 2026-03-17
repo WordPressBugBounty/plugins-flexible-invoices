@@ -24,6 +24,9 @@ $document_issuing = 'Manual Issuing Proforma and Invoices';
 ?>
 <div class="form-wrap inspire-panel invoice-edit-display">
     <div class="display">
+		<?php 
+\do_action('fi/core/layout/metabox/owner/display/before', $invoice, $params);
+?>
         <div class="inspire_invoices_owner_logo">
             <img src="<?php 
 echo \esc_url($seller->get_logo());
@@ -66,8 +69,15 @@ if ($seller->get_signature_user()) {
 ?>: <span><?php 
 echo \esc_html($signature_name);
 ?></span></div>
+		<?php 
+\do_action('fi/core/layout/metabox/owner/display/after', $invoice, $params);
+?>
     </div>
     <div class="edit_data">
+				<?php 
+\do_action('fi/core/layout/metabox/owner/before', $invoice, $params);
+?>
+
         <div class="form-field form-required">
             <label for="inspire_invoices_owner_name"><?php 
 \esc_html_e('Company Name', 'flexible-invoices');
@@ -191,6 +201,9 @@ foreach ($signature_users as $signature_user_id => $signature_user_name) {
 ?>
             </select>
         </div>
+		<?php 
+\do_action('fi/core/layout/metabox/owner/after', $invoice, $params);
+?>
     </div>
 </div>
 <?php 

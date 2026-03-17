@@ -20,6 +20,9 @@ $client = $params['client'];
 ?>
 <div class="form-wrap inspire-panel invoice-edit-display">
 	<div class="display">
+		<?php 
+\do_action('fi/core/layout/metabox/client/display/before', $invoice, $params);
+?>
 		<div class="inspire_invoices_client_name">
 			<?php 
 \esc_html_e('Company Name', 'flexible-invoices');
@@ -95,6 +98,9 @@ echo \esc_html($client->get_phone());
 echo \esc_html($client->get_email());
 ?></span>
 		</div>
+		<?php 
+\do_action('fi/core/layout/metabox/client/display/after', $invoice, $params);
+?>
 	</div>
 	<div class="edit_data">
 		<?php 

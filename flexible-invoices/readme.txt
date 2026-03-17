@@ -5,7 +5,7 @@ Tags: invoice, eu vat, woocommerce pdf invoices, vat invoice, woocommerce invoic
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.2.11
+Stable tag: 6.2.12
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -313,6 +313,10 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 67. Invoice number formatting inside the visual editor for the invoice template.
 
 == Changelog ==
+= 6.2.12 - 2026-03-17 =
+* Fixed problem with styles in WordPress 7.0
+* Added filters for modifying buyer/seller/recipient edit columns
+
 = 6.2.11 - 2026-03-12 =
 * Fixed problem with KSeF QR codes on invoices
 

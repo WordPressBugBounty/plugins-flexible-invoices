@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'wpdesk/flexible-invoices',
-        'pretty_version' => '6.2.11',
-        'version' => '6.2.11.0',
-        'reference' => 'bda0e66568f58843aa036996b28808136fed0dab',
+        'pretty_version' => '6.2.12',
+        'version' => '6.2.12.0',
+        'reference' => '2de0d3b379f63ca557cc957330aa8764702f1c53',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'wpdesk/flexible-invoices' => array(
-            'pretty_version' => '6.2.11',
-            'version' => '6.2.11.0',
-            'reference' => 'bda0e66568f58843aa036996b28808136fed0dab',
+            'pretty_version' => '6.2.12',
+            'version' => '6.2.12.0',
+            'reference' => '2de0d3b379f63ca557cc957330aa8764702f1c53',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

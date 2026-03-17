@@ -414,6 +414,12 @@ body.post-type-inspire_invoice #minor-publishing {
 body.post-type-inspire_invoice #major-publishing-actions {
 	margin: 0 0;
 	padding: 0 0;
+	display:block;
+	align-items: normal;
+}
+
+body.post-type-inspire_invoice #major-publishing-actions #delete-action{
+	float:left
 }
 
 body.post-type-inspire_invoice #delete-action,

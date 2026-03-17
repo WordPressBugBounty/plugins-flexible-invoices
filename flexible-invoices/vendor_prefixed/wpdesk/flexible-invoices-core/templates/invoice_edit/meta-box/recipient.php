@@ -21,6 +21,9 @@ $recipient = $params['recipient'];
 
 <div class="form-wrap inspire-panel invoice-edit-display">
 	<div class="display">
+		<?php 
+\do_action('fi/core/layout/metabox/recipient/display/before', $invoice, $params);
+?>
 		<div class="inspire_invoices_recipient_name"><?php 
 \esc_html_e('Company Name', 'flexible-invoices');
 ?>: <span><?php 
@@ -61,8 +64,15 @@ echo Helpers\Countries::get_country_label($recipient->get_country());
 ?>: <span><?php 
 echo Helpers\Countries::get_country_state_label($recipient->get_state(), $recipient->get_country());
 ?></span></div>
+		<?php 
+\do_action('fi/core/layout/metabox/recipient/display/after', $invoice, $params);
+?>
+
     </div>
 	<div class="edit_data">
+		<?php 
+\do_action('fi/core/layout/metabox/recipient/before', $invoice, $params);
+?>
 		<?php 
 $document_issuing = 'Manual Issuing Proforma and Invoices';
 ?>
@@ -228,6 +238,9 @@ if (Helpers\WooCommerce::is_active()) {
 }
 ?>
 		</div>
+		<?php 
+\do_action('fi/core/layout/metabox/recipient/after', $invoice, $params);
+?>
 	</div>
 </div>
 <?php 
