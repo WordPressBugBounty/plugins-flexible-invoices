@@ -62,33 +62,34 @@ jQuery.noConflict();
 		$( '.net_price', $productHandle ).trigger( 'change' );
 	}
 
+	function getDiscount( $productHandle ) {
+		if( $( 'input.discount', $productHandle ).length > 0 ) {
+			let discount = parseFloatLocal( $( 'input.discount', $productHandle ).val() );
+			return isNaN( discount ) ? 0 : discount;
+		}
+		return 0;
+	}
+
 	function invoiceRefreshProductVatRate( $productHandle ) {
 		let vatType = getVatRateFromField( $( '.vat_type', $productHandle ) );
-		let discount = 0;
+		let vatFactor = isNaN( vatType ) ? 0 : vatType;
+		let discount = getDiscount( $productHandle );
 
-		if( $( '.discount', $productHandle ).length > 0 ) {
-			discount = parseFloatLocal( $( '.discount', $productHandle ).val() );
-		}
+		let rawNet = parseFloatLocal( $( '.net_price_sum', $productHandle ).val() );
+		let effectiveNet = rawNet - discount;
 
-		let net_price_sum = parseFloatLocal( $( '.net_price_sum', $productHandle ).val() );
+		$( '.net_price_sum', $productHandle ).val( effectiveNet.toFixed( 2 ) );
 
-		if( discount > 0 ) {
-			net_price_sum = net_price_sum - discount;
-			$( '.net_price_sum', $productHandle ).val( net_price_sum.toFixed( 2 ) );
-		}
-
-		let vat_sum = moneyMultiply(
-			net_price_sum,
-			( isNaN( vatType ) ? 0 : vatType ) / 100
-		);
-
+		let vat_sum = moneyMultiply( effectiveNet, vatFactor / 100 );
 		$( '.vat_sum', $productHandle ).val( vat_sum.toFixed( 2 ) );
 		invoiceRefreshProductTotal( $productHandle );
 	}
 
 	function invoiceRefreshProductTotal( $productHandle ) {
+		let net_price_sum = parseFloatLocal( $( '.net_price_sum', $productHandle ).val() );
+		let vat_sum = parseFloatLocal( $( '.vat_sum', $productHandle ).val() );
+		let total = net_price_sum + vat_sum;
 
-		let total = parseFloatLocal( $( '.vat_sum', $productHandle ).val() ) + parseFloatLocal( $( '.net_price_sum', $productHandle ).val() );
 		$( '.total_price', $productHandle ).val(
 			(
 				( isNaN( total ) ? 0 : total ).toFixed( 2 )
@@ -131,6 +132,21 @@ jQuery.noConflict();
 	}
 
 	$( 'body.post-type-inspire_invoice .products_metabox' )
+		.on( 'input', '.net_price, .quantity, input.discount, .net_price_sum, .vat_sum, .total_price', function () {
+			let val = $( this ).val();
+			let sanitized = val.replace( /,/g, '.' ).replace( /[^0-9.\-]/g, '' );
+
+			sanitized = sanitized.replace( /(?!^)-/g, '' );
+
+			let parts = sanitized.split( '.' );
+			if ( parts.length > 2 ) {
+				sanitized = parts.shift() + '.' + parts.join( '' );
+			}
+
+			if ( val !== sanitized ) {
+				$( this ).val( sanitized );
+			}
+		} )
 		.on( 'click', '.remove_product', function ( e ) {
 			e.preventDefault();
 

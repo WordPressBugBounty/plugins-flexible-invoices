@@ -122,7 +122,8 @@ class PostDocumentDataSource extends AbstractDataSource
                 if (empty($qty) && $this->get_document_type() !== 'correction') {
                     $qty = 1;
                 }
-                $products[] = ['name' => $name, 'sku' => $this->products['sku'][$index], 'unit' => $this->products['unit'][$index], 'quantity' => $qty, 'net_price' => PriceFormatter::string_to_float($this->products['net_price'][$index]), 'discount' => $this->products['discount'][$index] ?? '', 'net_price_sum' => PriceFormatter::string_to_float($this->products['net_price_sum'][$index]), 'vat_type' => $vat_type[1] ?? '0', 'vat_type_index' => $vat_type[0] ?? '0', 'vat_type_name' => $vat_type[2] ?? '0', 'vat_rate' => $this->calculate_vat_rate($qty, $index), 'vat_sum' => PriceFormatter::string_to_float($this->products['vat_sum'][$index]), 'total_price' => PriceFormatter::string_to_float($this->products['total_price'][$index]), 'wc_item_type' => $this->products['wc_item_type'][$index] ?? '', 'wc_order_item_id' => $this->products['wc_order_item_id'][$index] ?? '', 'wc_product_id' => $this->products['wc_product_id'][$index] ?? '', 'wc_variation_id' => $this->products['wc_variation_id'][$index] ?? ''];
+                $qty_float = PriceFormatter::string_to_float($qty);
+                $products[] = ['name' => $name, 'sku' => $this->products['sku'][$index], 'unit' => $this->products['unit'][$index], 'quantity' => $qty_float, 'net_price' => PriceFormatter::string_to_float($this->products['net_price'][$index]), 'discount' => PriceFormatter::string_to_float($this->products['discount'][$index] ?? ''), 'net_price_sum' => PriceFormatter::string_to_float($this->products['net_price_sum'][$index]), 'vat_type' => $vat_type[1] ?? '0', 'vat_type_index' => $vat_type[0] ?? '0', 'vat_type_name' => $vat_type[2] ?? '0', 'vat_rate' => $this->calculate_vat_rate($qty_float, $index), 'vat_sum' => PriceFormatter::string_to_float($this->products['vat_sum'][$index]), 'total_price' => PriceFormatter::string_to_float($this->products['total_price'][$index]), 'wc_item_type' => $this->products['wc_item_type'][$index] ?? '', 'wc_order_item_id' => $this->products['wc_order_item_id'][$index] ?? '', 'wc_product_id' => $this->products['wc_product_id'][$index] ?? '', 'wc_variation_id' => $this->products['wc_variation_id'][$index] ?? ''];
             }
         }
         // Backward compatibility.
@@ -145,10 +146,10 @@ class PostDocumentDataSource extends AbstractDataSource
         }
         return $products;
     }
-    private function calculate_vat_rate(int $product_quantity, int $index): float
+    private function calculate_vat_rate(float $product_quantity, int $index): float
     {
         if ($product_quantity > 0) {
-            return PriceFormatter::string_to_float($this->products['vat_sum'][$index]) / PriceFormatter::string_to_float($product_quantity);
+            return PriceFormatter::string_to_float($this->products['vat_sum'][$index]) / $product_quantity;
         }
         return 0;
     }

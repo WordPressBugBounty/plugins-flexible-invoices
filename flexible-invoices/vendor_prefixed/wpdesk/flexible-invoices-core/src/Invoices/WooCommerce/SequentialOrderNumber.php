@@ -107,7 +107,7 @@ class SequentialOrderNumber implements Hookable
             return;
         }
         $order = \wc_get_order($post_id);
-        if ($order) {
+        if ($order && 'shop_order' === $order->get_type() && 'auto-draft' !== $order->get_status()) {
             $order_number = $order->get_meta(self::META_NAME_ORDER_NUMBER);
             if (!$order_number) {
                 //@phpstan-ignore-line
@@ -167,10 +167,10 @@ class SequentialOrderNumber implements Hookable
         $namespace = $this->is_hpos_active() ? self::NEW_NAMESPACE : self::OLD_NAMESPACE;
         if (!get_option($namespace)) {
             //@phpstan-ignore-line
-            $orders = wc_get_orders(['limit' => '10', 'paginate' => \false]);
+            $orders = wc_get_orders(['limit' => 10, 'paginate' => \false, 'type' => 'shop_order']);
             if (is_array($orders)) {
                 foreach ($orders as $order) {
-                    if ($order->get_meta(self::META_NAME_ORDER_NUMBER) === '') {
+                    if ('shop_order' === $order->get_type() && $order->get_meta(self::META_NAME_ORDER_NUMBER) === '') {
                         $order->add_meta_data(self::META_NAME_ORDER_NUMBER, $order->get_id());
                         //@phpstan-ignore-line
                         $order->save();

@@ -2,8 +2,6 @@
 
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\EditorBlocks\Replacers;
 
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\ValueObjects\DocumentCustomer;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\ValueObjects\DocumentSeller;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Decorators\TemplateDocumentDecorator;
 class NotesReplacer extends AbstractBasicReplacer
 {
@@ -13,7 +11,21 @@ class NotesReplacer extends AbstractBasicReplacer
     }
     protected function get_shortcodes_to_replace(TemplateDocumentDecorator $invoice): array
     {
-        return ['{Notes}' => $invoice->get_notes()];
+        $notes = $invoice->get_notes();
+        $filters = '';
+        //We have to catch ob content as it is action and not a filter :(
+        if ($invoice->get_type() === 'invoice') {
+            ob_start();
+            do_action('fi/core/template/invoice/after_notes', $invoice);
+            $filters = ob_get_contents();
+            ob_end_clean();
+        } elseif ($invoice->get_type() === 'proforma') {
+            ob_start();
+            do_action('fi/core/template/proforma/after_notes', $invoice);
+            $filters = ob_get_contents();
+            ob_end_clean();
+        }
+        return ['{Notes}' => $notes . $filters];
     }
     public function modify_content(TemplateDocumentDecorator $invoice, string $content): string
     {

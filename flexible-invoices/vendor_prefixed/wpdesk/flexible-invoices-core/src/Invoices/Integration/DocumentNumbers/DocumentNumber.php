@@ -123,7 +123,7 @@ class DocumentNumber
     {
         $number_array = $this->get_number_array_for_formatting();
         foreach ($number_array as &$value) {
-            $value = str_replace(['{DD}', '{MM}', '{YYYY}', '{AAAA}'], [wp_date('d', $this->issue_date), wp_date('m', $this->issue_date), wp_date('Y', $this->issue_date), wp_date('Y', $this->issue_date)], $value);
+            $value = str_replace(['{DD}', '{MM}', '{YYYY}', '{AAAA}'], [date('d', $this->issue_date), date('m', $this->issue_date), date('Y', $this->issue_date), date('Y', $this->issue_date)], $value);
         }
         /**
          * Filters the numbering for the document.

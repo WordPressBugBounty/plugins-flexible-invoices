@@ -12,6 +12,8 @@ class PriceFormatter
     public static function string_to_float($price): float
     {
         if (is_string($price)) {
+            // Remove any characters other than digits, '.', ',', '-'
+            $price = preg_replace('/[^0-9\.,\-]/', '', $price);
             return (float) str_replace(',', '.', $price);
         }
         return (float) $price;

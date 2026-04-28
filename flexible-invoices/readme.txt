@@ -5,7 +5,7 @@ Tags: invoice, eu vat, woocommerce pdf invoices, vat invoice, woocommerce invoic
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.2.12
+Stable tag: 6.2.14
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -313,6 +313,15 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 67. Invoice number formatting inside the visual editor for the invoice template.
 
 == Changelog ==
+= 6.2.14 - 2026-04-28 =
+* Fixed problem with timezones while issuing invoices at the end of the month.
+* Fixed lack of reverse charge notes while using block editor. Now Notes blocks uses the same filters as php templates.
+* Patched calculating discounts on invoice edit page. Value typed in discount column is now applied to gross, net and tax amounts.
+* Added automatic change ',' to '.' on edit page input fields.
+
+= 6.2.13 - 2026-04-07 =
+* Added support for WooCommerce 10.7
+
 = 6.2.12 - 2026-03-17 =
 * Fixed problem with styles in WordPress 7.0
 * Added filters for modifying buyer/seller/recipient edit columns
