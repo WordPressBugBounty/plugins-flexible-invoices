@@ -279,7 +279,7 @@ class OrderDocumentDataSource extends AbstractDataSource
     public function get_payment_status(): string
     {
         $payment_method = $this->order->get_payment_method();
-        if ($payment_method !== 'cod' && in_array($this->order->get_status(), self::ORDER_PAYMENT_STATUSES, \true) && $this->settings->get('woocommerce_auto_paid_status') === 'yes') {
+        if ($payment_method !== 'cod' && in_array($this->order->get_status(), self::ORDER_PAYMENT_STATUSES, \true) && $this->settings->get('invoice_auto_paid_status') === 'yes') {
             return self::ORDER_PAYMENT_PAID_STATUS;
         }
         if ($payment_method === 'cod' && $this->order->get_status() === 'completed' && $this->settings->get('invoice_auto_paid_status') === 'yes') {
