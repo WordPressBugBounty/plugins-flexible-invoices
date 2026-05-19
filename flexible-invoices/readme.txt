@@ -3,9 +3,9 @@ Contributors: wpdesk,piotrpo,marcinkolanko
 Donate link: https://flexibleinvoices.com/sk/flexible-invoices-donate/
 Tags: invoice, eu vat, woocommerce pdf invoices, vat invoice, woocommerce invoices
 Requires at least: 6.0
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 6.2.16
+Stable tag: 6.2.17
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -313,6 +313,9 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 67. Invoice number formatting inside the visual editor for the invoice template.
 
 == Changelog ==
+
+= 6.2.17 - 2026-05-19 =
+* Added support for WordPress 7.0
 
 = 6.2.16 - 2026-05-07 =
 * Added support for WooCommerce 10.8
