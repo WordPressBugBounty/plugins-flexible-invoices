@@ -98,6 +98,7 @@ interface Item
      * @return $this
      */
     public function set_meta(array $item_meta): Item;
+    public function set_item_type(string $item_type): Item;
     /**
      * @return array
      */

@@ -76,7 +76,7 @@ class FindProducts implements Hookable
         if (isset($_POST['name'], $_POST['security']) && wp_verify_nonce(sanitize_key(wp_unslash($_POST['security'])), 'fiw_search_products')) {
             $name = sanitize_text_field(wp_unslash($_POST['name']));
             if (!empty($name)) {
-                $posts = get_posts(['post_type' => 'product', 'post_status' => 'publish', 's' => esc_sql($name), 'posts_per_page' => (int) apply_filters('fi/core/find/products/posts_per_page', 100)]);
+                $posts = get_posts(['post_type' => ['product', 'product_variation'], 'post_status' => 'publish', 's' => esc_sql($name), 'posts_per_page' => (int) apply_filters('fi/core/find/products/posts_per_page', 100)]);
                 foreach ($posts as $post) {
                     $product = wc_get_product($post->ID);
                     $line_price = (float) $product->get_price();
@@ -98,7 +98,13 @@ class FindProducts implements Hookable
                         $gross_price = round($value, wc_get_price_decimals());
                         $tax_amount = round(array_sum($add_taxes), wc_get_price_decimals());
                     }
-                    $finded_posts[$post->ID] = ['id' => $post->post_title, 'text' => $post->post_title, 'price' => $net_price, 'net_price' => $net_price, 'gross_price' => $gross_price, 'tax' => $product->get_tax_class(), 'sku' => $product->get_sku(), 'qty' => 1, 'tax_amount' => $tax_amount, 'tax_rate' => $tax_rate, 'country' => $country];
+                    $product_id = $product->get_id();
+                    $variation_id = 0;
+                    if ($product->get_parent_id()) {
+                        $product_id = $product->get_parent_id();
+                        $variation_id = $product->get_id();
+                    }
+                    $finded_posts[$post->ID] = ['id' => $post->post_title, 'text' => $post->post_title, 'price' => $net_price, 'net_price' => $net_price, 'gross_price' => $gross_price, 'tax' => $product->get_tax_class(), 'sku' => $product->get_sku(), 'qty' => 1, 'tax_amount' => $tax_amount, 'tax_rate' => $tax_rate, 'country' => $country, 'product_id' => $product_id, 'variation_id' => $variation_id, 'type' => $product->get_type(), 'item_type' => $product->is_virtual() ? 'service' : 'product'];
                 }
                 wp_send_json(['items' => array_values($finded_posts)]);
             }

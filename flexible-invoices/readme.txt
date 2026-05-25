@@ -5,7 +5,7 @@ Tags: invoice, eu vat, woocommerce pdf invoices, vat invoice, woocommerce invoic
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 6.2.17
+Stable tag: 6.2.18
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -314,11 +314,16 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 
 == Changelog ==
 
+= 6.2.18 - 2026-05-25 =
+* Added product metabox for defining product type (KSeF only)
+* Fixed problem with vanishing WooCommerce meta data after updating invoice
+
 = 6.2.17 - 2026-05-19 =
 * Added support for WordPress 7.0
 
 = 6.2.16 - 2026-05-07 =
 * Added support for WooCommerce 10.8
+
 = 6.2.15 - 2026-05-04 =
 * Fixed problem with payment status on KSeF documents
 

@@ -106,7 +106,7 @@ class OrderItems
                 $discount = 0.0;
             }
             $net_price_sum = $order_item->get_net_price();
-            $item->set_name($title)->set_net_price($net_price)->set_net_price_sum($net_price_sum)->set_discount($discount)->set_gross_price($order_item->get_gross_price())->set_vat_rate($tax_rate['rate'] ?? 0)->set_vat_rate_name($tax_rate['name'] ?? 'VAT')->set_vat_type_index($tax_rate['index'] ?? '')->set_vat_sum($order_item->get_vat_price())->set_qty($order_item->get_qty())->set_unit($fq->get_item_unit($this->unit))->set_meta($order_item->get_meta_data());
+            $item->set_name($title)->set_net_price($net_price)->set_net_price_sum($net_price_sum)->set_discount($discount)->set_gross_price($order_item->get_gross_price())->set_vat_rate($tax_rate['rate'] ?? 0)->set_vat_rate_name($tax_rate['name'] ?? 'VAT')->set_vat_type_index($tax_rate['index'] ?? '')->set_vat_sum($order_item->get_vat_price())->set_qty($order_item->get_qty())->set_unit($fq->get_item_unit($this->unit))->set_meta($order_item->get_meta_data())->set_item_type($this->get_item_type($order_item));
             if (is_a($item, WooProductItem::class)) {
                 if ('yes' === $this->settings->get('woocommerce_get_sku')) {
                     $item->set_sku($this->get_sku($order_item));
@@ -237,5 +237,31 @@ class OrderItems
             return ' (' . implode(', ', $variation_data) . ')';
         }
         return '';
+    }
+    /**
+     * @param OrderItem $order_item
+     *
+     * @return string
+     */
+    private function get_item_type(OrderItem $order_item): string
+    {
+        $type = $order_item->get_type();
+        $item_type = 'product';
+        if ($type === 'shipping') {
+            $item_type = 'shipping';
+        }
+        if ($type === 'fee') {
+            $item_type = 'service';
+        }
+        if ($type === 'line_item') {
+            $wc_order_item = $order_item->get_item_object();
+            if (is_callable([$wc_order_item, 'get_product'])) {
+                $product = $wc_order_item->get_product();
+                if ($product && $product->is_virtual()) {
+                    $item_type = 'service';
+                }
+            }
+        }
+        return $item_type;
     }
 }

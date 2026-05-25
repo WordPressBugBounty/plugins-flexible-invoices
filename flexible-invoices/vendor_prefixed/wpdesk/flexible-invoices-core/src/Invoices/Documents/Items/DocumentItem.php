@@ -8,7 +8,7 @@ abstract class DocumentItem implements Item
     /**
      * @var array
      */
-    protected $data = ['type' => 'item', 'name' => '', 'unit' => 'item', 'quantity' => 1, 'net_price' => 0.0, 'discount' => 0.0, 'net_price_sum' => 0.0, 'vat_rate' => 0.0, 'vat_sum' => 0.0, 'vat_type' => 0, 'vat_type_name' => '0%', 'vat_type_index' => 0, 'total_price' => 0.0, 'sku' => '', 'product_attributes' => [], 'item_meta' => []];
+    protected $data = ['type' => 'item', 'name' => '', 'unit' => 'item', 'quantity' => 1, 'net_price' => 0.0, 'discount' => 0.0, 'net_price_sum' => 0.0, 'vat_rate' => 0.0, 'vat_sum' => 0.0, 'vat_type' => 0, 'vat_type_name' => '0%', 'vat_type_index' => 0, 'total_price' => 0.0, 'sku' => '', 'product_attributes' => [], 'item_meta' => [], 'item_type' => 'product'];
     public function __construct()
     {
         $this->set_type(static::TYPE);
@@ -171,6 +171,16 @@ abstract class DocumentItem implements Item
     public function set_meta(array $item_meta): Item
     {
         $this->data['item_meta'] = $item_meta;
+        return $this;
+    }
+    /**
+     * @param string $item_type
+     *
+     * @return $this
+     */
+    public function set_item_type(string $item_type): Item
+    {
+        $this->data['item_type'] = $item_type;
         return $this;
     }
     /**
