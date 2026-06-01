@@ -65,9 +65,22 @@ class Checkout implements Hookable
      */
     public function save_customer_vat_field($user_id, $post_data)
     {
-        if ($user_id && isset($post_data['billing_vat_number'])) {
-            //@phpstan-ignore-line
-            update_user_meta($user_id, 'vat_number', sanitize_text_field($post_data['billing_vat_number']));
+        if ($user_id) {
+            $invoice_ask_field_enabled = 'yes' === $this->settings->get('woocommerce_add_invoice_ask_field');
+            $is_invoice_requested = \true;
+            if ($invoice_ask_field_enabled) {
+                $invoice_ask = !empty($post_data['billing_invoice_ask']) && filter_var($post_data['billing_invoice_ask'], \FILTER_VALIDATE_BOOLEAN) ? '1' : '0';
+                update_user_meta($user_id, 'invoice_ask', $invoice_ask);
+                update_user_meta($user_id, 'billing_invoice_ask', $invoice_ask);
+                $is_invoice_requested = $invoice_ask === '1';
+            }
+            if (!$invoice_ask_field_enabled || $is_invoice_requested) {
+                if (isset($post_data['billing_vat_number'])) {
+                    $vat_number = sanitize_text_field($post_data['billing_vat_number']);
+                    update_user_meta($user_id, 'vat_number', $vat_number);
+                    update_user_meta($user_id, 'billing_vat_number', $vat_number);
+                }
+            }
         }
     }
     /**

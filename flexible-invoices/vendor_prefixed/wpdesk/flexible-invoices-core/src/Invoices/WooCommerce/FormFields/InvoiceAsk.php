@@ -67,7 +67,16 @@ class InvoiceAsk extends FormField
      */
     protected function prepare_checkout_field($field_priority = null): array
     {
-        return ['label' => $this->label, 'required' => $this->get_required(), 'class' => ['form-row-wide'], 'type' => 'checkbox', 'clear' => \true, 'priority' => $field_priority];
+        $user_id = get_current_user_id();
+        $default = '0';
+        if ($user_id) {
+            $invoice_ask_meta = get_user_meta($user_id, 'billing_invoice_ask', \true);
+            if ('' === $invoice_ask_meta) {
+                $invoice_ask_meta = get_user_meta($user_id, $this->get_field_id(), \true);
+            }
+            $default = filter_var($invoice_ask_meta, \FILTER_VALIDATE_BOOLEAN);
+        }
+        return ['label' => $this->label, 'required' => $this->get_required(), 'class' => ['form-row-wide'], 'type' => 'checkbox', 'clear' => \true, 'priority' => $field_priority, 'default' => $default];
     }
     /**
      * Prepare admin field.

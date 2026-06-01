@@ -349,7 +349,7 @@ class InvoicesIntegration implements Hookable
         $this->add_hookable(new WordPress\Dashboard($this->document_factory, $this->strategy, $capabilities, $this->renderer, $this->settings));
         $this->add_hookable(new SampleTemplateInserter($this->renderer));
         $this->add_hookable(new WordPress\BulkActions());
-        $this->add_hookable(new WordPress\User());
+        $this->add_hookable(new WordPress\User($this->renderer));
         $this->add_hookable(new WordPress\FindProducts($this->settings));
         $this->add_hookable(new WordPress\DuplicatesNotice($duplication_checker));
         $this->add_hookable(new WordPress\Reports\GenerateReport($this->get_settings(), $this->document_factory, $this->renderer, $this->library_info));

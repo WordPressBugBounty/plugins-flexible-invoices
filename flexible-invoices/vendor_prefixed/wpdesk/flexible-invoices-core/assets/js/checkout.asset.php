@@ -2,4 +2,4 @@
 
 namespace WPDeskFIVendor;
 
-return array('dependencies' => array(), 'version' => '5e3b304703fdcbe6c4eb');
+return array('dependencies' => array(), 'version' => '3120b75a6b59efefc1a6');

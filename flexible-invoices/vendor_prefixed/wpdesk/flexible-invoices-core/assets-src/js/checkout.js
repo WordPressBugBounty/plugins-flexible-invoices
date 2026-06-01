@@ -11,7 +11,8 @@ if ( invoice_ask_field.length ) {
 		}
 	} );
 	jQuery( document ).ready( function () {
-		if ( vat_number_field.val().length > 2 ) {
+		var invoice_ask_pref = invoice_ask_field.attr( 'data-invoice-ask' ) || invoice_ask_field.closest( 'label' ).attr( 'data-invoice-ask' );
+		if ( vat_number_field.val().length > 2 && invoice_ask_pref !== '0' ) {
 			invoice_ask_field.prop( 'checked', true );
 		}
 		invoice_ask_field.trigger( 'change' );

@@ -32,6 +32,8 @@ class RegisterCheckoutBlock implements Hookable {
 	public function hooks() {
 		add_action( 'woocommerce_blocks_checkout_block_registration', [ $this, 'register_block' ] );
 		add_action( 'woocommerce_store_api_checkout_update_order_from_request', [ $this, 'update_order_data_from_request' ], 5, 2 );
+		add_action( 'woocommerce_store_api_checkout_order_processed', [ $this, 'update_user_data_from_order' ] );
+
 		$this->extend_store();
 	}
 
@@ -71,9 +73,17 @@ class RegisterCheckoutBlock implements Hookable {
 		$user_id             = get_current_user_id();
 		$billing_invoice_ask = false;
 		$billing_vat_number  = '';
-		if ( $user_id ) {
-			$billing_invoice_ask = '1' === get_user_meta( $user_id, 'invoice_ask', true );
-			$billing_vat_number  = get_user_meta( $user_id, 'vat_number', true );
+		if ( 0 !== $user_id ) {
+			$invoice_ask_meta = get_user_meta( $user_id, 'billing_invoice_ask', true );
+			if ( '' === $invoice_ask_meta ) {
+				$invoice_ask_meta = get_user_meta( $user_id, 'invoice_ask', true );
+			}
+			$billing_invoice_ask = filter_var( $invoice_ask_meta, FILTER_VALIDATE_BOOLEAN );
+
+			$billing_vat_number = get_user_meta( $user_id, 'billing_vat_number', true );
+			if ( ! is_string( $billing_vat_number ) || '' === $billing_vat_number ) {
+				$billing_vat_number = get_user_meta( $user_id, 'vat_number', true );
+			}
 		}
 
 		return [
@@ -86,15 +96,52 @@ class RegisterCheckoutBlock implements Hookable {
 	 * @return array
 	 */
 	public function get_checkout_data_callback(): array {
+		$invoice_ask = WC()->session->get( 'invoice_ask' );
+		$vat_number  = WC()->session->get( 'vat_number' );
+
+		$user_id = get_current_user_id();
+
+		if ( 0 !== $user_id ) {
+			if ( null === $invoice_ask || false === $invoice_ask || '' === $invoice_ask ) {
+				$invoice_ask_meta = get_user_meta( $user_id, 'billing_invoice_ask', true );
+				if ( '' === $invoice_ask_meta ) {
+					$invoice_ask_meta = get_user_meta( $user_id, 'invoice_ask', true );
+				}
+				$invoice_ask = filter_var( $invoice_ask_meta, FILTER_VALIDATE_BOOLEAN );
+			}
+
+			if ( ! is_string( $vat_number ) || '' === $vat_number ) {
+				$vat_number = get_user_meta( $user_id, 'billing_vat_number', true );
+				if ( ! is_string( $vat_number ) || '' === $vat_number ) {
+					$vat_number = get_user_meta( $user_id, 'vat_number', true );
+				}
+			}
+		}
+
 		return [
-			'billing_vat_number'  => '',
-			'billing_invoice_ask' => false,
+			'billing_invoice_ask' => (bool) $invoice_ask,
+			'billing_vat_number'  => (string) $vat_number,
 		];
 	}
 
-	/**
-	 * @return array[]
-	 */
+	public function update_user_data_from_order( $order ) {
+		if ( ! $order instanceof WC_Order ) {
+			return;
+		}
+
+		$invoice_ask = $order->get_meta( '_billing_invoice_ask', true );
+		$vat_number  = $order->get_meta( '_billing_vat_number', true );
+
+		$user_id = $order->get_user_id();
+		if ( 0 !== $user_id ) {
+			update_user_meta( $user_id, 'billing_invoice_ask', (bool) $invoice_ask ? '1' : '0' );
+			update_user_meta( $user_id, 'invoice_ask', $invoice_ask );
+
+			update_user_meta( $user_id, 'billing_vat_number', $vat_number );
+			update_user_meta( $user_id, 'vat_number', $vat_number );
+		}
+	}
+
 	public function get_schema_callback(): array {
 		return [
 			'billing_vat_number'  => [
@@ -124,7 +171,7 @@ class RegisterCheckoutBlock implements Hookable {
 		$order->update_meta_data( '_billing_invoice_ask', $data['billing_invoice_ask'] );
 
 		$user_id = get_current_user_id();
-		if ( $user_id ) {
+		if ( 0 !== $user_id ) {
 			update_user_meta( $user_id, 'invoice_ask', $data['billing_invoice_ask'] );
 			update_user_meta( $user_id, 'vat_number', $data['billing_vat_number'] );
 		}

@@ -60,7 +60,10 @@ class VatNumber extends FormField
         $user_id = get_current_user_id();
         $default = '';
         if ($user_id) {
-            $default = get_user_meta($user_id, $this->field_id, \true);
+            $default = get_user_meta($user_id, 'billing_vat_number', \true);
+            if (empty($default)) {
+                $default = get_user_meta($user_id, $this->field_id, \true);
+            }
         }
         return ['label' => $this->label, 'placeholder' => $this->placeholder, 'required' => $this->get_required(), 'class' => is_admin() ? '' : ['form-row-wide woocommerce-form__label woocommerce-form__label-for-checkbox'], 'clear' => \true, 'priority' => $field_priority, 'default' => $default ?? ''];
     }
