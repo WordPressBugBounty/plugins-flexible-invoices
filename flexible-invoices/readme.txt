@@ -1,11 +1,11 @@
 === Flexible PDF Invoices for WooCommerce & WordPress ===
 Contributors: wpdesk,piotrpo,marcinkolanko
 Donate link: https://flexibleinvoices.com/sk/flexible-invoices-donate/
-Tags: invoice, eu vat, woocommerce pdf invoices, vat invoice, woocommerce invoices
+Tags: ksef, e faktura, faktura ksef, faktura online, faktury
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 6.2.21
+Stable tag: 6.2.23
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -313,6 +313,12 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 67. Invoice number formatting inside the visual editor for the invoice template.
 
 == Changelog ==
+
+= 6.2.23 - 2026-07-22 =
+* Fixed problem with paid date not being stored properly after marking invoice as paid
+
+= 6.2.22 - 2026-06-29 =
+* Problem with mail being sent to order email address instead of invoice email address
 
 = 6.2.21 - 2026-06-21 =
 * Added support for WooCommerce 10.9

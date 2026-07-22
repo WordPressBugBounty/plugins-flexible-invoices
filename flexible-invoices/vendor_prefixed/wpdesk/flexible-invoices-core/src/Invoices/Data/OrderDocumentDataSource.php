@@ -81,9 +81,16 @@ class OrderDocumentDataSource extends AbstractDataSource
      */
     public function get_date_of_paid(): int
     {
-        $paid_date = $this->order->get_meta('_paid_date', \true);
-        if (isset($paid_date)) {
-            return strtotime($paid_date);
+        $date_paid = $this->order->get_date_paid();
+        if ($date_paid instanceof \WC_DateTime) {
+            return $date_paid->getTimestamp();
+        }
+        $paid_date = $this->order->get_meta('_date_paid', \true);
+        if (empty($paid_date)) {
+            $paid_date = $this->order->get_meta('_paid_date', \true);
+        }
+        if (!empty($paid_date)) {
+            return is_numeric($paid_date) ? (int) $paid_date : strtotime($paid_date);
         }
         return strtotime(current_time('mysql'));
     }

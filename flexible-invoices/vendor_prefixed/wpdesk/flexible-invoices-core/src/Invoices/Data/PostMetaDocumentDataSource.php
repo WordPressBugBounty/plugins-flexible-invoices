@@ -27,15 +27,10 @@ class PostMetaDocumentDataSource extends AbstractDataSource
      * @var WP_Post
      */
     public $post;
-    /**
-     * @param int      $post_id
-     * @param Settings $options_container
-     * @param string   $document_type
-     */
-    public function __construct($post_id, Settings $options_container, string $document_type)
+    public function __construct(int $post_id, Settings $options_container, string $document_type)
     {
         parent::__construct($options_container, $document_type);
-        $this->post_id = (int) $post_id;
+        $this->post_id = $post_id;
         $this->meta = new MetaPostContainer($post_id);
         $this->post = get_post($this->post_id);
         $this->template_id = (int) $this->meta->get_fallback('_template_id', BlockTemplateEditor::get_active_template_id());
@@ -43,37 +38,22 @@ class PostMetaDocumentDataSource extends AbstractDataSource
         $this->recipient = $this->meta->get_fallback('_recipient', []);
         $this->seller = $this->meta->get_fallback('_owner', []);
     }
-    /**
-     * @return int
-     */
     public function get_id(): int
     {
         return $this->post_id;
     }
-    /**
-     * @return int
-     */
     public function get_number(): int
     {
         return (int) $this->meta->get_fallback('_number', 1);
     }
-    /**
-     * @return string
-     */
     public function get_formatted_number(): string
     {
         return empty($this->post->post_title) ? $this->meta->get_fallback('_formatted_number', '') : $this->post->post_title;
     }
-    /**
-     * @return int
-     */
     public function get_date_of_sale(): int
     {
         return (int) $this->meta->get_fallback('_date_sale', strtotime(current_time('mysql')));
     }
-    /**
-     * @return int
-     */
     public function get_date_of_pay(): int
     {
         if (BlockTemplateEditor::is_block_template_editor_active()) {
@@ -83,16 +63,10 @@ class PostMetaDocumentDataSource extends AbstractDataSource
         }
         return (int) $this->meta->get_fallback('_date_pay', $this->get_date_of_issue() + 60 * 60 * 24 * (int) $default_due_time);
     }
-    /**
-     * @return int
-     */
     public function get_date_of_issue(): int
     {
         return (int) $this->meta->get_fallback('_date_issue', strtotime(current_time('mysql')));
     }
-    /**
-     * @return Seller
-     */
     public function get_seller(): Seller
     {
         if (empty($this->seller)) {
@@ -108,37 +82,22 @@ class PostMetaDocumentDataSource extends AbstractDataSource
         $signature_user = $this->seller['signature_user'] ?? '';
         return new DocumentSeller(0, $logo, $name, $address, $nip, $bank_name, $bank_account, $signature_user);
     }
-    /**
-     * @return string
-     */
     public function get_customer_filter_field(): string
     {
         return $this->get_customer()->get_name();
     }
-    /**
-     * @return string
-     */
     public function get_currency(): string
     {
         return $this->meta->get('_currency');
     }
-    /**
-     * @return float
-     */
     public function get_discount(): float
     {
         return PriceFormatter::string_to_float($this->meta->get('_discount'));
     }
-    /**
-     * @return int
-     */
     public function get_order_id(): int
     {
         return (int) $this->meta->get_fallback('_wc_order_id', 0);
     }
-    /**
-     * @return array
-     */
     public function get_items(): array
     {
         $products = $this->meta->get_fallback('_products', []);
@@ -148,65 +107,42 @@ class PostMetaDocumentDataSource extends AbstractDataSource
         }
         return [];
     }
-    /**
-     * @return string
-     */
     public function get_payment_method(): string
     {
         return $this->meta->get('_payment_method');
     }
-    /**
-     * @return string
-     */
     public function get_payment_status(): string
     {
         return $this->meta->get_fallback('_payment_status', 'due');
     }
-    /**
-     * @return string
-     */
+    public function get_date_of_paid(): int
+    {
+        return (int) $this->meta->get_fallback('_date_paid', 0);
+    }
     public function get_payment_method_name(): string
     {
         return $this->meta->get('_payment_method_name');
     }
-    /**
-     * @return string
-     */
     public function get_notes(): string
     {
         return $this->meta->get('_notes');
     }
-    /**
-     * @return float
-     */
     public function get_total_gross(): float
     {
         return PriceFormatter::string_to_float($this->meta->get_fallback('_total_price', 0.0));
     }
-    /**
-     * @return float
-     */
     public function get_total_net(): float
     {
         return PriceFormatter::string_to_float($this->meta->get_fallback('_total_net', CalculateTotals::calculate_total_net($this->get_items())));
     }
-    /**
-     * @return float
-     */
     public function get_total_paid(): float
     {
         return PriceFormatter::string_to_float($this->meta->get_fallback('_total_paid', 0.0));
     }
-    /**
-     * @return float
-     */
     public function get_total_tax(): float
     {
         return PriceFormatter::string_to_float($this->meta->get_fallback('_total_tax', CalculateTotals::calculate_total_vat($this->get_items())));
     }
-    /**
-     * @return string
-     */
     public function get_user_lang(): string
     {
         $user_lang = $this->meta->get('wpml_user_lang');
@@ -215,23 +151,14 @@ class PostMetaDocumentDataSource extends AbstractDataSource
         }
         return $user_lang;
     }
-    /**
-     * @return int
-     */
     public function get_corrected_id(): int
     {
         return (int) $this->meta->get_fallback('_corrected_invoice_id', 0);
     }
-    /**
-     * @return int
-     */
     public function get_is_correction(): int
     {
         return (int) $this->meta->get_fallback('_correction', 0);
     }
-    /**
-     * @return int
-     */
     public function get_show_order_number(): int
     {
         return (int) $this->meta->get_fallback('_add_order_id', 0);

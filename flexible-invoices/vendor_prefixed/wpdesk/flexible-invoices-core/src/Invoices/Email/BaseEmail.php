@@ -82,7 +82,8 @@ class BaseEmail extends WC_Email implements DocumentEmail
         $document_name = $document->get_formatted_number();
         $download_url = Invoice::generate_download_url($document);
         $this->object = $order;
-        $this->recipient = $order->get_billing_email();
+        $recipient = $document->get_customer()->get_email();
+        $this->recipient = !empty($recipient) ? $recipient : $order->get_billing_email();
         $this->download_url = $download_url;
         $this->document_name = $document_name;
         $this->placeholders['{order_date}'] = date(wc_date_format(), $order->get_date_created() ? $order->get_date_created()->getTimestamp() : strtotime(current_time('mysql')));
