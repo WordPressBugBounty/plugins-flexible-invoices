@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2026 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi;
@@ -47,12 +47,12 @@ class GraphicsState
      */
     public function rotate($x, $y, $angle)
     {
-        if (abs($angle) < 1.0E-5) {
+        if (\abs($angle) < 1.0E-5) {
             return $this;
         }
-        $angle = deg2rad($angle);
-        $c = cos($angle);
-        $s = sin($angle);
+        $angle = \deg2rad($angle);
+        $c = \cos($angle);
+        $s = \sin($angle);
         $this->add(new Matrix($c, $s, -$s, $c, $x, $y));
         return $this->translate(-$x, -$y);
     }

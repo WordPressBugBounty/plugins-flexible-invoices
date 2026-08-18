@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2026 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfReader;
@@ -106,11 +106,12 @@ class Page
         if ($inherited && \in_array($name, $inheritedKeys, \true)) {
             if ($this->inheritedAttributes === null) {
                 $this->inheritedAttributes = [];
-                $inheritedKeys = \array_filter($inheritedKeys, function ($key) use ($dict) {
+                $inheritedKeys = \array_filter($inheritedKeys, static function ($key) use ($dict) {
                     return !isset($dict->value[$key]);
                 });
                 if (\count($inheritedKeys) > 0) {
-                    $parentDict = PdfType::resolve(PdfDictionary::get($dict, 'Parent'), $this->parser);
+                    $ensuredObjectList = [];
+                    $parentDict = PdfType::resolve(PdfDictionary::get($dict, 'Parent'), $this->parser, \false, $ensuredObjectList);
                     while ($parentDict instanceof PdfDictionary) {
                         foreach ($inheritedKeys as $index => $key) {
                             if (isset($parentDict->value[$key])) {
@@ -120,7 +121,7 @@ class Page
                         }
                         /** @noinspection NotOptimalIfConditionsInspection */
                         if (isset($parentDict->value['Parent']) && \count($inheritedKeys) > 0) {
-                            $parentDict = PdfType::resolve(PdfDictionary::get($parentDict, 'Parent'), $this->parser);
+                            $parentDict = PdfType::resolve(PdfDictionary::get($parentDict, 'Parent'), $this->parser, \false, $ensuredObjectList);
                         } else {
                             break;
                         }
@@ -226,12 +227,21 @@ class Page
                 if (!$content instanceof PdfStream) {
                     continue;
                 }
-                $result[] = $content->getUnfilteredStream();
+                try {
+                    $result[] = $content->getUnfilteredStream();
+                } catch (FilterException $e) {
+                    // ignore streams that cannot be unfiltered
+                }
             }
             return \implode("\n", $result);
         }
         if ($contents instanceof PdfStream) {
-            return $contents->getUnfilteredStream();
+            try {
+                return $contents->getUnfilteredStream();
+            } catch (FilterException $e) {
+                // ignore streams that cannot be unfiltered
+                return '';
+            }
         }
         throw new PdfReaderException('Array or stream expected.', PdfReaderException::UNEXPECTED_DATA_TYPE);
     }
@@ -285,7 +295,7 @@ class Page
                     continue;
                 }
                 $rect = PdfType::resolve(PdfDictionary::get($annotation, 'Rect'), $this->parser);
-                if (!$rect instanceof PdfArray || count($rect->value) !== 4) {
+                if (!$rect instanceof PdfArray || \count($rect->value) !== 4) {
                     continue;
                 }
                 $rect = Rectangle::byPdfArray($rect, $this->parser);
@@ -312,7 +322,7 @@ class Page
                 $quadPoints = PdfType::resolve(PdfDictionary::get($annotation, 'QuadPoints'), $this->parser);
                 $normalizedQuadPoints = [];
                 if ($quadPoints instanceof PdfArray) {
-                    $quadPointsCount = count($quadPoints->value);
+                    $quadPointsCount = \count($quadPoints->value);
                     if ($quadPointsCount % 8 === 0) {
                         for ($i = 0; $i + 1 < $quadPointsCount; $i += 2) {
                             $x = PdfNumeric::ensure(PdfType::resolve($quadPoints->value[$i], $this->parser));

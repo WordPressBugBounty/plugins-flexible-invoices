@@ -4,7 +4,7 @@
  * This file is part of FPDI
  *
  * @package   setasign\Fpdi
- * @copyright Copyright (c) 2024 Setasign GmbH & Co. KG (https://www.setasign.com)
+ * @copyright Copyright (c) 2026 Setasign GmbH & Co. KG (https://www.setasign.com)
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 namespace WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference;
@@ -50,10 +50,13 @@ class CrossReference
      */
     public function __construct(PdfParser $parser, $fileHeaderOffset = 0)
     {
+        // clear the token stack, if the parser instance is re-used
+        $parser->getTokenizer()->clearStack();
         $this->parser = $parser;
         $this->fileHeaderOffset = $fileHeaderOffset;
         $offset = $this->findStartXref();
         $reader = null;
+        $offsets = [$offset];
         /** @noinspection TypeUnsafeComparisonInspection */
         while ($offset != \false) {
             // By doing an unsafe comparsion we ignore faulty references to byte offset 0
@@ -73,8 +76,12 @@ class CrossReference
             $this->readers[] = $reader;
             if (isset($trailer->value['Prev'])) {
                 $offset = $trailer->value['Prev']->value;
+                if (\in_array($offset, $offsets, \true)) {
+                    throw new CrossReferenceException('Cross-references includes cyclic structure.', CrossReferenceException::CYCLIC_STRUCTURE);
+                }
+                $offsets[] = $offset;
             } else {
-                $offset = \false;
+                break;
             }
         }
         // fix faulty sub-section header
