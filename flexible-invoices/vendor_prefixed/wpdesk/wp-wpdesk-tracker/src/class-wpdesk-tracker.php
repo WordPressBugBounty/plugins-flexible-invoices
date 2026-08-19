@@ -459,7 +459,7 @@ if (!\class_exists('WPDeskFIVendor\WPDesk_Tracker')) {
                         $option_name = 'activation_plugin_' . $plugin;
                         $activation_date = \get_option($option_name, '');
                         if ($activation_date != '') {
-                            $params['active_plugins'][$plugin]['activation_date'] = $activation_date;
+                            $params['active_plugins'][$plugin]['activation_date'] = \get_gmt_from_date($activation_date, 'Y-m-d\TH:i:s\Z');
                         }
                     }
                 }

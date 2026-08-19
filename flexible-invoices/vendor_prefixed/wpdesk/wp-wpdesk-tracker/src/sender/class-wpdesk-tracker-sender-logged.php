@@ -53,7 +53,7 @@ if (!\class_exists('WPDeskFIVendor\WPDesk_Tracker_Sender_Logged')) {
                 $this->logger->debug('Sender payload sent');
                 return $response;
             } catch (WPDesk_Tracker_Sender_Exception_WpError $e) {
-                $this->logger->error('Sender error', ['error' => $e]);
+                $this->logger->error('Sender error');
                 throw $e;
             }
         }

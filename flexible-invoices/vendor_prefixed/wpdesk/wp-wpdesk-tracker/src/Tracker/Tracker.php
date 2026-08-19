@@ -47,7 +47,7 @@ final class Tracker
         $opt_in_opt_out = new OptInOptOut($this->plugin_basename, $this->plugin_slug, $this->shop_url, $this->plugin_name);
         $opt_in_opt_out->create_objects();
         $opt_in_opt_out->hooks();
-        add_action('admin_init', ['\WPDesk_Tracker', 'schedule']);
+        add_action('admin_init', [\WPDeskFIVendor\WPDesk_Tracker::class, 'schedule']);
         add_action('wpdesk_tracker_send_event', [$this, 'initialize_tracker']);
         add_action('wpdesk_tracker_send_event', [$this, 'send_scheduled_tracking_data'], \PHP_INT_MAX);
         add_action('update_option_wpdesk_helper_options', [$this, 'initialize_tracker'], 10, 0);
@@ -125,7 +125,9 @@ final class Tracker
             });
         }
         $this->tracker = $tracker;
-        $this->tracker = apply_filters('wpdesk_tracker_instance', $this->tracker);
+        if ('wpdesk' === $bucket) {
+            $this->tracker = apply_filters('wpdesk_tracker_instance', $this->tracker);
+        }
         $this->notify_tracker_started();
         return $this->tracker;
     }

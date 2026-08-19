@@ -5,7 +5,7 @@ Tags: ksef, e faktura, faktura ksef, faktura online, faktury
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 6.2.26
+Stable tag: 6.2.27
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -313,6 +313,9 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 67. Invoice number formatting inside the visual editor for the invoice template.
 
 == Changelog ==
+
+= 6.2.27 - 2026-08-19 =
+* Another fix related to foul plugin library error.
 
 = 6.2.26 - 2026-08-18 =
 * Fix fatal error on plugin initialization.
