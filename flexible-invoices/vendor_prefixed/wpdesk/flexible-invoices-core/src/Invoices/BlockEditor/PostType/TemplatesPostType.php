@@ -27,6 +27,7 @@ class TemplatesPostType implements Hookable
     private const WELCOME_DISMISS_META = 'welcome_dismissed';
     public const PAGE_NUMBERING_META = 'enable_page_numbering';
     public const WOOCOMMERCE_SHIPPING = 'woocommerce_shipping_address';
+    public const WOOCOMMERCE_GET_SKU = 'woocommerce_get_sku';
     public const FLUSH_REWRITE_RULES_OPTION = 'fi_templatept_rewrite_rules_flushed';
     private string $lib_url;
     private string $plugin_path;
@@ -131,6 +132,7 @@ class TemplatesPostType implements Hookable
         register_post_meta(self::POST_TYPE_SLUG, self::WELCOME_DISMISS_META, ['type' => 'boolean', 'single' => \true, 'show_in_rest' => \true, 'default' => \false]);
         register_post_meta(self::POST_TYPE_SLUG, self::HIDE_TAX_NUMBER_META, ['type' => 'boolean', 'single' => \true, 'show_in_rest' => \true, 'default' => \false]);
         register_post_meta(self::POST_TYPE_SLUG, self::HIDE_TAX_CELLS_META, ['type' => 'boolean', 'single' => \true, 'show_in_rest' => \true, 'default' => \false]);
+        register_post_meta(self::POST_TYPE_SLUG, self::WOOCOMMERCE_GET_SKU, ['type' => 'boolean', 'single' => \true, 'show_in_rest' => \true, 'default' => \false]);
         register_post_meta(self::POST_TYPE_SLUG, self::DOCUMENT_FONT_META, ['type' => 'string', 'single' => \true, 'show_in_rest' => \true, 'default' => 'dejavusans']);
     }
     private function register_common_meta(array $prefixes, array $meta_datas): void

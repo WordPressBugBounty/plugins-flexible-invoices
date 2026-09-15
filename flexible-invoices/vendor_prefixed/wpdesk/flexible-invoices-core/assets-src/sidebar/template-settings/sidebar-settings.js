@@ -5,6 +5,8 @@ import {__} from "@wordpress/i18n";
 import {registerPlugin} from '@wordpress/plugins';
 import {useCallback, useEffect, useState} from "react";
 import FIBlockTemplateWizard from "./FIBlockTemplateWizard";
+import SettingsFields from "./SettingsFields";
+import './sidebar-settings.scss';
 
 const TemplateSettings = () => {
 	const postType = useSelect((select) => select('core/editor').getCurrentPostType(), []);
@@ -78,6 +80,7 @@ const TemplateSettings = () => {
 				className="fi-general-template-settings"
 				initialOpen={true}
 			>
+				<SettingsFields>
 				<ToggleControl
 					key="woocommerce_shipping_address"
 					label={__('Recipient shipping address', 'flexible-invoices')}
@@ -87,15 +90,24 @@ const TemplateSettings = () => {
 				/>
 				<ToggleControl
 					key="hide_tax_number"
-					label={__('If tax is 0 hide seller\'s VAT Number on PDF invoices', 'flexible-invoices')}
+					label={__('Seller\'s VAT Number on Invoices', 'flexible-invoices')}
+					help={__('If tax is 0 hide seller\'s VAT Number on PDF invoices.', 'flexible-invoices')}
 					checked={getMetaValue('hide_tax_number', false)}
 					onChange={(newValue) => handleMetaChange('hide_tax_number', newValue)}
 				/>
 				<ToggleControl
 					key="hide_tax_cells"
-					label={__('If tax is 0 hide all tax cells on PDF invoices', 'flexible-invoices')}
+					label={__('Tax Cells on Invoices', 'flexible-invoices')}
+					help={__('If tax is 0 hide all tax cells on PDF invoices.', 'flexible-invoices')}
 					checked={getMetaValue('hide_tax_cells', false)}
 					onChange={(newValue) => handleMetaChange('hide_tax_cells', newValue)}
+				/>
+				<ToggleControl
+					key="woocommerce_get_sku"
+					label={__('SKU', 'flexible-invoices')}
+					help={__('Use SKU numbers on invoices', 'flexible-invoices')}
+					checked={getMetaValue('woocommerce_get_sku', false)}
+					onChange={(newValue) => handleMetaChange('woocommerce_get_sku', newValue)}
 				/>
 				<ToggleControl
 					key="enable_page_numbering"
@@ -109,12 +121,14 @@ const TemplateSettings = () => {
 					value={getMetaValue('document_font', 'dejavusans')}
 					onChange={(newValue) => handleFontChange('document_font', newValue)}
 				/>
+				</SettingsFields>
 			</PluginDocumentSettingPanel>
 			<PluginDocumentSettingPanel
 				name="fi-invoice-template-settings"
 				title={__('Invoice settings', 'flexible-invoices')}
 				className="fi-invoice-template-settings"
 			>
+			<SettingsFields>
 			<TextControl
 					type='number'
 					key='invoice_next_number'
@@ -169,12 +183,14 @@ const TemplateSettings = () => {
 					onChange={(newValue) => handleMetaChange('invoice_notes', newValue)}
 
 				/>
+			</SettingsFields>
 			</PluginDocumentSettingPanel>
 			<PluginDocumentSettingPanel
 				name="fi-correction-template-settings"
 				title={__('Correction settings', 'flexible-invoices')}
 				className="fi-correction-template-settings"
 			>
+				<SettingsFields>
 				<TextControl
 					type='number'
 					key='correction_next_number'
@@ -229,12 +245,14 @@ const TemplateSettings = () => {
 					onChange={(newValue) => handleMetaChange('correction_notes', newValue)}
 
 				/>
+			</SettingsFields>
 			</PluginDocumentSettingPanel>
 			<PluginDocumentSettingPanel
 				name="fi-proforma-template-settings"
 				title={__('Proforma settings', 'flexible-invoices')}
-				className="proforma"
+				className="fi-proforma-template-settings"
 			>
+				<SettingsFields>
 				<TextControl
 					type='number'
 					key='proforma_next_number'
@@ -289,6 +307,7 @@ const TemplateSettings = () => {
 					onChange={(newValue) => handleMetaChange('proforma_notes', newValue)}
 
 				/>
+			</SettingsFields>
 			</PluginDocumentSettingPanel>
 			{ isWizardOpen && (
 				<Modal

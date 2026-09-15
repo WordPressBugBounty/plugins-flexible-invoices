@@ -4,8 +4,10 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce;
 
 use WC_Order;
 use WC_Product_Attribute;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\BlockTemplate\BlockTemplate;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\ItemFactory;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Documents\Items\WooProductItem;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\BlockTemplateEditor;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\FQIntegration;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 use WPDeskFIVendor\WPDesk\Library\WPDeskOrder\Abstracts\OrderItem;
@@ -108,7 +110,7 @@ class OrderItems
             $net_price_sum = $order_item->get_net_price();
             $item->set_name($title)->set_net_price($net_price)->set_net_price_sum($net_price_sum)->set_discount($discount)->set_gross_price($order_item->get_gross_price())->set_vat_rate($tax_rate['rate'] ?? 0)->set_vat_rate_name($tax_rate['name'] ?? 'VAT')->set_vat_type_index($tax_rate['index'] ?? '')->set_vat_sum($order_item->get_vat_price())->set_qty($order_item->get_qty())->set_unit($fq->get_item_unit($this->unit))->set_meta($order_item->get_meta_data())->set_item_type($this->get_item_type($order_item));
             if (is_a($item, WooProductItem::class)) {
-                if ('yes' === $this->settings->get('woocommerce_get_sku')) {
+                if ($this->should_use_sku()) {
                     $item->set_sku($this->get_sku($order_item));
                     // @phpstan-ignore-line
                 }
@@ -138,6 +140,13 @@ class OrderItems
             $items[] = apply_filters('fi/core/order/data/product', $item->get(), $this->order);
         }
         return $items;
+    }
+    private function should_use_sku(): bool
+    {
+        if (BlockTemplateEditor::is_block_template_editor_active()) {
+            return (new BlockTemplate())->is_sku_enabled();
+        }
+        return $this->settings->get('woocommerce_get_sku') === 'yes';
     }
     private function get_sku(ProductOrderItem $item): string
     {

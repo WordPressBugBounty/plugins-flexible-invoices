@@ -70,6 +70,10 @@ class BlockTemplate
     {
         return $this->get_meta(TemplatesPostType::HIDE_TAX_CELLS_META);
     }
+    public function is_sku_enabled(): bool
+    {
+        return filter_var($this->get_meta(TemplatesPostType::WOOCOMMERCE_GET_SKU), \FILTER_VALIDATE_BOOLEAN);
+    }
     private function get_meta(string $key, bool $single = \true)
     {
         return get_post_meta($this->template_id, $key, $single);
