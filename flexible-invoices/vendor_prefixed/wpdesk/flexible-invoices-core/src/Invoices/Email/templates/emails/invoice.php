@@ -7,7 +7,7 @@ namespace WPDeskFIVendor;
  *
  * @var \WC_Order $order
  * @var string $email_heading
- * @var string $email
+ * @var \WC_Email $email
  * @var bool $sent_to_admin
  * @var string $plain_text
  */
@@ -131,4 +131,4 @@ if ($order->get_billing_phone()) {
 /**
  * Fires in footer section of email template.
  */
-\do_action('woocommerce_email_footer');
+\do_action('woocommerce_email_footer', $email);

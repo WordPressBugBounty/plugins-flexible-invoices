@@ -20,7 +20,7 @@ class ReportTab extends FieldSettingsTab
     }
     public function render(Renderer $renderer)
     {
-        new Notice($renderer->render('../wordpress/advanced-reports-ad', []), Notice::NOTICE_TYPE_SUCCESS, \true);
+        new Notice($renderer->render('advanced-reports-ad', []), Notice::NOTICE_TYPE_SUCCESS, \true);
         // translators: %1$s - open tag, %2$s - close tag
         $docs_description = sprintf('%2$s%1$s%3$s', sprintf(esc_html__('Read more in the %1$splugin documentation &rarr;%2$s', 'flexible-invoices'), '<a href="' . $this->get_docs_url() . '" target="_blank" style="color: #4BB04E; font-weight: 700;">', '</a>'), '<strong>', '</strong>');
         $content = '<div class="wrap"><h1 class="wp-heading-inline">' . esc_html__('Reports', 'flexible-invoices') . '</h1>';

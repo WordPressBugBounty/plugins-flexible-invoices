@@ -42,14 +42,14 @@ class EmailManualInvoice extends \WC_Email
      */
     public function get_content_html(): string
     {
-        return wc_get_template_html($this->template_html, ['order' => $this->object, 'download_url' => $this->download_url, 'document_name' => $this->document_name, 'email_heading' => $this->get_heading(), 'sent_to_admin' => \false, 'plain_text' => \false, 'email' => $this->recipient], '', $this->template_base);
+        return wc_get_template_html($this->template_html, ['order' => $this->object, 'download_url' => $this->download_url, 'document_name' => $this->document_name, 'email_heading' => $this->get_heading(), 'sent_to_admin' => \false, 'plain_text' => \false, 'email' => $this], '', $this->template_base);
     }
     /**
      * @return string
      */
     public function get_content_plain(): string
     {
-        return wc_get_template_html($this->template_plain, ['order' => $this->object, 'download_url' => $this->download_url, 'document_name' => $this->document_name, 'email_heading' => $this->get_heading(), 'sent_to_admin' => \false, 'plain_text' => \true, 'email' => $this->recipient], '', $this->template_base);
+        return wc_get_template_html($this->template_plain, ['order' => $this->object, 'download_url' => $this->download_url, 'document_name' => $this->document_name, 'email_heading' => $this->get_heading(), 'sent_to_admin' => \false, 'plain_text' => \true, 'email' => $this], '', $this->template_base);
     }
     /**
      * Initialise Settings Form Fields

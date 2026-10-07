@@ -5,7 +5,7 @@ Tags: ksef, e faktura, faktura ksef, faktura online, faktury
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 6.2.28
+Stable tag: 6.2.30
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -313,6 +313,13 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 67. Invoice number formatting inside the visual editor for the invoice template.
 
 == Changelog ==
+
+= 6.2.30 - 2026-10-07 =
+* Added support for WooCommerce 11.2
+
+
+= 6.2.29 - 2026-09-23 =
+* Hooks arguments in email templates. Argument $email now passes a WC_Email instance to WooCommerce email template hooks instead of the recipient address string, matching WooCommerce core.
 
 = 6.2.28 - 2026-09-15 =
 * Added option to use SKU numbers on invoice templates made with block editor

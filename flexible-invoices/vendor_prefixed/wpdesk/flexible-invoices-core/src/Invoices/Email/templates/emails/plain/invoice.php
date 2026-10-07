@@ -9,7 +9,7 @@ namespace WPDeskFIVendor;
  * @var string $email_heading
  * @var bool $sent_to_admin
  * @var string $plain_text
- * @var string $email
+ * @var \WC_Email $email
  */
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks;
 if (!\defined('ABSPATH')) {

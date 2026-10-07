@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit1de6663ae799d7a149b6c5d3d1f8a9dc
+class ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d
 {
     public static $prefixLengthsPsr4 = array (
         'W' =>
@@ -369,7 +369,6 @@ class ComposerStaticInit1de6663ae799d7a149b6c5d3d1f8a9dc
         'WPDeskFIVendor\\Mpdf\\Writer\\OptionalContentWriter' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Writer/OptionalContentWriter.php',
         'WPDeskFIVendor\\Mpdf\\Writer\\PageWriter' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Writer/PageWriter.php',
         'WPDeskFIVendor\\Mpdf\\Writer\\ResourceWriter' => __DIR__ . '/../..' . '/vendor_prefixed/mpdf/mpdf/src/Writer/ResourceWriter.php',
-        'WPDeskFIVendor\\Psr\\Clock\\ClockInterface' => __DIR__ . '/../..' . '/vendor_prefixed/psr/clock/src/ClockInterface.php',
         'WPDeskFIVendor\\Psr\\Container\\ContainerExceptionInterface' => __DIR__ . '/../..' . '/vendor_prefixed/psr/container/src/ContainerExceptionInterface.php',
         'WPDeskFIVendor\\Psr\\Container\\ContainerInterface' => __DIR__ . '/../..' . '/vendor_prefixed/psr/container/src/ContainerInterface.php',
         'WPDeskFIVendor\\Psr\\Container\\NotFoundExceptionInterface' => __DIR__ . '/../..' . '/vendor_prefixed/psr/container/src/NotFoundExceptionInterface.php',
@@ -404,35 +403,36 @@ class ComposerStaticInit1de6663ae799d7a149b6c5d3d1f8a9dc
         'WPDeskFIVendor\\Psr\\Log\\Test\\DummyTest' => __DIR__ . '/../..' . '/vendor_prefixed/psr/log/Psr/Log/Test/DummyTest.php',
         'WPDeskFIVendor\\Psr\\Log\\Test\\LoggerInterfaceTest' => __DIR__ . '/../..' . '/vendor_prefixed/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
         'WPDeskFIVendor\\Psr\\Log\\Test\\TestLogger' => __DIR__ . '/../..' . '/vendor_prefixed/psr/log/Psr/Log/Test/TestLogger.php',
-        'WPDeskFIVendor\\Psr\\SimpleCache\\CacheException' => __DIR__ . '/../..' . '/vendor_prefixed/psr/simple-cache/src/CacheException.php',
-        'WPDeskFIVendor\\Psr\\SimpleCache\\CacheInterface' => __DIR__ . '/../..' . '/vendor_prefixed/psr/simple-cache/src/CacheInterface.php',
-        'WPDeskFIVendor\\Psr\\SimpleCache\\InvalidArgumentException' => __DIR__ . '/../..' . '/vendor_prefixed/psr/simple-cache/src/InvalidArgumentException.php',
         'WPDeskFIVendor\\WPDesk\\Beacon\\Beacon' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-helpscout-beacon/src/Beacon/Beacon.php',
         'WPDeskFIVendor\\WPDesk\\Beacon\\BeaconGetShouldShowStrategy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-helpscout-beacon/src/Beacon/BeaconGetShouldShowStrategy.php',
         'WPDeskFIVendor\\WPDesk\\Beacon\\BeaconPro' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-helpscout-beacon/src/Beacon/BeaconPro.php',
         'WPDeskFIVendor\\WPDesk\\Beacon\\BeaconShouldShowStrategy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-helpscout-beacon/src/Beacon/BeaconShouldShowStrategy.php',
         'WPDeskFIVendor\\WPDesk\\Beacon\\Beacon\\WooCommerceSettingsFieldsModifier' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-helpscout-beacon/src/Beacon/WooCommerceSettingsFieldsModifier.php',
-        'WPDeskFIVendor\\WPDesk\\Codeception\\Command\\AcceptanceTestGenerator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Codeception/Command/AcceptanceTestGenerator.php',
-        'WPDeskFIVendor\\WPDesk\\Codeception\\Command\\GeneratePluginActivation' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Codeception/Command/GeneratePluginActivation.php',
-        'WPDeskFIVendor\\WPDesk\\Codeception\\Command\\GenerateWooCommerce' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Codeception/Command/GenerateWooCommerce.php',
-        'WPDeskFIVendor\\WPDesk\\Codeception\\Command\\WooCommerceTestGenerator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Codeception/Command/WooCommerceTestGenerator.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\CommandProvider' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/CommandProvider.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\BaseCommand' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/BaseCommand.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\Configuration' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/Configuration.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\CreateCodeceptionTests' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/CreateCodeceptionTests.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\Language' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/Language.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\LocalCodeceptionTrait' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/LocalCodeceptionTrait.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\PrepareCodeceptionDb' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/PrepareCodeceptionDb.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\PrepareLocalCodeceptionTests' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/PrepareLocalCodeceptionTests.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\PrepareLocalCodeceptionTestsWithCoverage' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/PrepareLocalCodeceptionTestsWithCoverage.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\PrepareParallelCodeceptionTests' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/PrepareParallelCodeceptionTests.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\PrepareWordpressForCodeception' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/PrepareWordpressForCodeception.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\RunCodeceptionTests' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/RunCodeceptionTests.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\RunLocalCodeceptionTests' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/RunLocalCodeceptionTests.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\RunLocalCodeceptionTestsWithCoverage' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/RunLocalCodeceptionTestsWithCoverage.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\SedTrait' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/SedTrait.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Commands\\SettingsException' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Commands/SettingsException.php',
-        'WPDeskFIVendor\\WPDesk\\Composer\\Codeception\\Plugin' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/WPDesk/Composer/Plugin.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Command\\AcceptanceTestGenerator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Command/AcceptanceTestGenerator.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Command\\GeneratePluginActivation' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Command/GeneratePluginActivation.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Command\\GenerateWooCommerce' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Command/GenerateWooCommerce.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Command\\WooCommerceTestGenerator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Command/WooCommerceTestGenerator.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Composer\\CommandProvider' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Composer/CommandProvider.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Composer\\Command\\LegacyCommand' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Composer/Command/LegacyCommand.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Composer\\Plugin' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Composer/Plugin.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Config\\Configuration' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Config/Configuration.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Config\\Language' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Config/Language.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Config\\SettingsException' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Config/SettingsException.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\CodeceptionRunner' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/CodeceptionRunner.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\Command\\InitCommand' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/Command/InitCommand.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\Command\\PullCommand' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/Command/PullCommand.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\Command\\RunCommand' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/Command/RunCommand.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\Command\\StopCommand' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/Command/StopCommand.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\Command\\UpCommand' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/Command/UpCommand.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\DockerCompose' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/DockerCompose.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\PreparationOutput' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/PreparationOutput.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\ProcessRunner' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/ProcessRunner.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\ProjectConfig' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/ProjectConfig.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\ProjectConfigReader' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/ProjectConfigReader.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\ProjectPaths' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/ProjectPaths.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\RuntimeEnvironment' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/RuntimeEnvironment.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\RuntimeMode' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/RuntimeMode.php',
+        'WPDeskFIVendor\\WPDesk\\Codeception\\Runner\\WordPressPreparer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-codeception/src/Runner/WordPressPreparer.php',
         'WPDeskFIVendor\\WPDesk\\Dashboard\\DashboardWidget' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/ltv-dashboard-widget/src/DashboardWidget.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\ContainerForm' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/ContainerForm.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Escaper' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Escaper.php',
@@ -936,9 +936,9 @@ class ComposerStaticInit1de6663ae799d7a149b6c5d3d1f8a9dc
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit1de6663ae799d7a149b6c5d3d1f8a9dc::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit1de6663ae799d7a149b6c5d3d1f8a9dc::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit1de6663ae799d7a149b6c5d3d1f8a9dc::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -5,7 +5,7 @@ namespace WPDeskFIVendor;
 /**
  * Email z fakturą
  *
- * @var string $email
+ * @var \WC_Email $email
  * @var string $email_heading
  */
 if (!\defined('ABSPATH')) {
@@ -30,4 +30,4 @@ if (isset($download_url) && isset($document_name)) {
 /**
  * Fires in footer section of email template.
  */
-\do_action('woocommerce_email_footer');
+\do_action('woocommerce_email_footer', $email);

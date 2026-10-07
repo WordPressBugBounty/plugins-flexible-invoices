@@ -172,51 +172,51 @@ class Hooks
     }
     /**
      * @param WC_Order $order
-     * @param bool $sent_to_admin
-     * @param string $plain_text
-     * @param string|null $email
+     * @param bool     $sent_to_admin
+     * @param string   $plain_text
+     * @param mixed    $email WC_Email instance, matching WooCommerce core.
      */
-    public static function woocommerce_email_after_order_table_hook(WC_Order $order, bool $sent_to_admin, string $plain_text, ?string $email)
+    public static function woocommerce_email_after_order_table_hook(WC_Order $order, bool $sent_to_admin, string $plain_text, $email)
     {
         /**
          * Fires in email template.
          *
          * @param WC_Order $order Order.
-         * @param bool $sent_to_admin Sent to admin.
-         * @param string $plain_text Plain text,
-         * @param string $email Recipient email.
+         * @param bool     $sent_to_admin Sent to admin.
+         * @param string   $plain_text Plain text.
+         * @param mixed    $email WC_Email instance.
          */
         do_action('woocommerce_email_after_order_table', $order, $sent_to_admin, $plain_text, $email);
     }
     /**
      * @param WC_Order $order
-     * @param bool $sent_to_admin
-     * @param string $plain_text
-     * @param string|null $email
+     * @param bool     $sent_to_admin
+     * @param string   $plain_text
+     * @param mixed    $email WC_Email instance, matching WooCommerce core.
      */
-    public static function woocommerce_email_order_meta_hook(WC_Order $order, bool $sent_to_admin, string $plain_text, ?string $email)
+    public static function woocommerce_email_order_meta_hook(WC_Order $order, bool $sent_to_admin, string $plain_text, $email)
     {
         /**
          * Fires in email template.
          *
          * @param WC_Order $order Order.
-         * @param bool $sent_to_admin Sent to admin.
-         * @param string $plain_text Plain text,
-         * @param string $email Recipient email.
+         * @param bool     $sent_to_admin Sent to admin.
+         * @param string   $plain_text Plain text.
+         * @param mixed    $email WC_Email instance.
          */
         do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);
     }
     /**
-     * @param string $email_heading Sent to admin.
-     * @param string|null $email Recipient email.
+     * @param string $email_heading Email heading.
+     * @param mixed  $email         WC_Email instance, matching WooCommerce core.
      */
-    public static function woocommerce_email_header_hook($email_heading, ?string $email)
+    public static function woocommerce_email_header_hook($email_heading, $email)
     {
         /**
          * Fires in email template.
          *
          * @param string $email_heading Email heading.
-         * @param string|null $email Recipient email.
+         * @param mixed  $email         WC_Email instance.
          */
         do_action('woocommerce_email_header', $email_heading, $email);
     }

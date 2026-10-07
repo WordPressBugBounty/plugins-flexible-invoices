@@ -216,6 +216,8 @@ class GeneralSettingsMenu implements Hookable
         $resolver_list = (array) apply_filters('fi/core/settings/settings_template_resolvers', [new DirResolver($this->template_dir . 'settings'), new DefaultFormFieldResolver()]);
         array_unshift($resolver_list, new DirResolver($this->template_dir . 'settings/' . $this->get_active_tab()->get_tab_slug()));
         //@phpstan-ignore-line
+        $resolver_list[] = new DirResolver($this->template_dir . 'wordpress');
+        //phpcs:ignore WordPress.WP.CapitalPDangit.MisspelledInText
         foreach ($resolver_list as $resolver) {
             $chain->appendResolver($resolver);
         }
