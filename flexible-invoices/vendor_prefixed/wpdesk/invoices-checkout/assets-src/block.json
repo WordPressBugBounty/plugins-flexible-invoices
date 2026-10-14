@@ -1,0 +1,67 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "woocommerce/invoices-checkout",
+	"version": "1.0.0",
+	"title": "Invoice",
+	"category": "woocommerce",
+	"icon": "media-document",
+	"description": "Fill in invoice details",
+	"textdomain": "flexible-invoices",
+	"parent": [
+		"woocommerce/checkout-fields-block",
+		"woocommerce/checkout"
+	],
+	"supports": {
+		"html": false
+	},
+	"attributes": {
+		"title": {
+			"type": "string",
+			"default": "Invoice"
+		},
+		"description": {
+			"type": "string",
+			"default": "Fill in invoice details"
+		},
+		"checkboxLabel": {
+			"type": "string",
+			"default": "I want an invoice"
+		},
+		"billingVatLabel": {
+			"type": "string",
+			"default": "VAT Number"
+		},
+		"billingCompanyLabel": {
+			"type": "string",
+			"default": "Company"
+		},
+		"shippingVatLabel": {
+			"type": "string",
+			"default": "Shipping VAT Number"
+		},
+		"shippingCompanyLabel": {
+			"type": "string",
+			"default": "Shipping Company"
+		},
+		"buyerTitle": {
+			"type": "string",
+			"default": "Buyer"
+		},
+		"receiverTitle": {
+			"type": "string",
+			"default": "Receiver"
+		},
+		"showCompanyField": {
+			"type": "string",
+			"default": "yes"
+		},
+		"lock": {
+			"type": "object",
+			"default": {
+				"remove": false,
+				"move": false
+			}
+		}
+	}
+}

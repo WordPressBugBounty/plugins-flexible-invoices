@@ -53,6 +53,7 @@ class Assets implements Hookable
         if ($screen) {
             $this->enqueue_select2_scripts($screen);
             $this->enqueue_order_action_scripts($screen);
+            $this->enqueue_order_invoice_ask_script($screen);
             $this->enqueue_post_type_scripts($screen);
             $this->enqueue_settings_scripts($screen);
             $this->enqueue_product_search_scripts($screen);
@@ -132,6 +133,26 @@ class Assets implements Hookable
         if (in_array($screen->id, ['edit-shop_order', 'shop_order', 'woocommerce_page_wc-orders'], \true)) {
             wp_enqueue_style('fiw-order-style', $this->assets_url . 'css/admin-order.css', [], $this->scripts_version);
         }
+    }
+    private function enqueue_order_invoice_ask_script(WP_Screen $screen): void
+    {
+        if (!$this->is_order_edit_screen($screen)) {
+            return;
+        }
+        wp_enqueue_script('fiw-order-invoice-ask', $this->assets_url . 'js/admin/order-invoice-ask.js', ['jquery'], $this->scripts_version, \true);
+    }
+    private function is_order_edit_screen(WP_Screen $screen): bool
+    {
+        if ('shop_order' === $screen->id) {
+            return \true;
+        }
+        if ('woocommerce_page_wc-orders' !== $screen->id) {
+            return \false;
+        }
+        // The orders list uses the same screen id. The edit screen sets action=edit.
+        $action = isset($_GET['action']) ? sanitize_key(wp_unslash($_GET['action'])) : '';
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        return 'edit' === $action;
     }
     /**
      * @param WP_Screen $screen

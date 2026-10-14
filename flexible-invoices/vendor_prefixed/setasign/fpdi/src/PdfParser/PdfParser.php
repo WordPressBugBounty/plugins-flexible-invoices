@@ -156,7 +156,7 @@ class PdfParser
         $catalog = $this->getCatalog();
         if (isset($catalog->value['Version'])) {
             $versionParts = \explode('.', PdfName::unescape(PdfType::resolve($catalog->value['Version'], $this)->value));
-            if (count($versionParts) === 2) {
+            if (\count($versionParts) === 2) {
                 [$major, $minor] = $versionParts;
             }
         }

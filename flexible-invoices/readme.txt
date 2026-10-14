@@ -5,7 +5,7 @@ Tags: ksef, e faktura, faktura ksef, faktura online, faktury
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 6.2.31
+Stable tag: 7.0.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -314,12 +314,21 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 
 == Changelog ==
 
+= 7.0.0 - 2026-10-14 =
+* Checkout no longer writes user meta `vat_number` or `invoice_ask`. New profiles use `billing_vat_number` and `billing_invoice_ask`. The old VAT number and the old invoice request are still read when the new key has never been saved, including when creating an invoice from a WooCommerce customer and when loading a customer onto an order. A saved empty VAT number stays empty.
+* `_billing_invoice_ask` is stored as `yes` or `no`. Orders saved earlier as `1` or `0` still count as an invoice request. A declined invoice is printed in the address as "Requested Invoice: No". An older stored `0` was left out of the address.
+* VIES order meta `_vat_number_is_valid`, `_vat_number_is_validated`, `_vat_number_self_declared` and `_customer_self_declared_country` are stored as `yes` or `no`. Orders saved earlier used `true` or `false`.
+* The "I want an invoice" checkbox is shown only when the VAT Number field is enabled. Automatic documents do not require an invoice request while that checkbox is hidden.
+* Block checkout VAT Number label, placeholder and required flag are edited on the checkout block. Classic checkout still uses the Flexible Invoices settings.
+* On block checkout, "Replace Company Field" starts enabled. The block hides the WooCommerce company field and can store an empty company when the customer does not want an invoice. Classic checkout keeps the WooCommerce company field.
+* Added setting "Add VAT Number field to the shipping address", off by default. When enabled, classic and block checkout collect `shipping_vat_number` with the same label, requirement and validation as the billing VAT Number.
+* Checkout block `woocommerce/eu-vat-number` is no longer registered. Add `wpdesk/flexible-invoices-checkout` to existing block checkout pages.
+
 = 6.2.31 - 2026-10-12 =
 * Fixed production build shipping unused development tooling packages in vendor_prefixed.
 
 = 6.2.30 - 2026-10-07 =
 * Added support for WooCommerce 11.2
-
 
 = 6.2.29 - 2026-09-23 =
 * Hooks arguments in email templates. Argument $email now passes a WC_Email instance to WooCommerce email template hooks instead of the recipient address string, matching WooCommerce core.

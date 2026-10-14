@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d
+class ComposerStaticInit6216593e72775b718bb6f8ec88e15e2e
 {
     public static $prefixLengthsPsr4 = array (
         'W' =>
@@ -460,6 +460,47 @@ class ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d
         'WPDeskFIVendor\\WPDesk\\Forms\\Validator\\NoValidateValidator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Validator/NoValidateValidator.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Validator\\NonceValidator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Validator/NonceValidator.php',
         'WPDeskFIVendor\\WPDesk\\Forms\\Validator\\RequiredValidator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-forms/src/Validator/RequiredValidator.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Admin\\OrderEdit' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Admin/OrderEdit.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Admin\\ViesOrderMetaBox' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Admin/ViesOrderMetaBox.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Assets\\AssetsHandler' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Assets/AssetsHandler.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Blocks\\BlockIntegrationAdapter' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Blocks/BlockIntegrationAdapter.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Blocks\\BlocksIntegration' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Blocks/BlocksIntegration.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Checkout\\CheckoutConfirmations' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Checkout/CheckoutConfirmations.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Checkout\\CheckoutFields' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Checkout/CheckoutFields.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Checkout\\CheckoutSave' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Checkout/CheckoutSave.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Checkout\\Field\\AbstractCheckoutField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Checkout/Field/AbstractCheckoutField.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Checkout\\Field\\BillingTaxIdField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Checkout/Field/BillingTaxIdField.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Checkout\\Field\\ShippingTaxIdField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Checkout/Field/ShippingTaxIdField.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Checkout\\Field\\WantInvoiceField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Checkout/Field/WantInvoiceField.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Checkout\\OssGeolocationService' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Checkout/OssGeolocationService.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Checkout\\SanitizedCheckoutData' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Checkout/SanitizedCheckoutData.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Checkout\\TaxExemptionManager' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Checkout/TaxExemptionManager.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\ConfigInterface' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/ConfigInterface.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\I18n\\ScriptTranslations' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/I18n/ScriptTranslations.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\InvoicesCheckout' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/InvoicesCheckout.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\LibraryInfo' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/LibraryInfo.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Order\\AddressFormatter' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Order/AddressFormatter.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Service\\OrderInvoiceDataSaver' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Service/OrderInvoiceDataSaver.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Service\\UserInvoiceDataSaver' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Service/UserInvoiceDataSaver.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Service\\VatNumberValidator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Service/VatNumberValidator.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Service\\ViesOrderMetaWriter' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Service/ViesOrderMetaWriter.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Service\\WooCommerceHelper' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Service/WooCommerceHelper.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\User\\CustomerAdminAjax' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/User/CustomerAdminAjax.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\User\\MyAccountAddress' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/User/MyAccountAddress.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\User\\UserMetaSync' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/User/UserMetaSync.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\User\\UserProfile' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/User/UserProfile.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Validation\\ValidationResult' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Validation/ValidationResult.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Validation\\Validator\\ControlSumValidation' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Validation/Validator/ControlSumValidation.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Validation\\Validator\\LengthValidation' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Validation/Validator/LengthValidation.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Validation\\Validator\\NoValidation' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Validation/Validator/NoValidation.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Validation\\Validator\\NonEmptyVatNumber' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Validation/Validator/NonEmptyVatNumber.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Validation\\Validator\\VatValidator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Validation/Validator/VatValidator.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Validation\\Validator\\ViesValidation' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Validation/Validator/ViesValidation.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\Validation\\ViesApiFailurePolicy' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/Validation/ViesApiFailurePolicy.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\ValueObject\\Country' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/ValueObject/Country.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\ValueObject\\InvoiceData' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/ValueObject/InvoiceData.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\ValueObject\\VatNumber' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/ValueObject/VatNumber.php',
+        'WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\View\\SimpleTemplateRenderer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/invoices-checkout/src/View/SimpleTemplateRenderer.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesAbstracts\\Containers\\MetaContainer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-abstracts/src/Containers/MetaContainer.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesAbstracts\\Creator\\DocumentCreator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-abstracts/src/Creator/DocumentCreator.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesAbstracts\\Creator\\DocumentCreatorRestrictions' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-abstracts/src/Creator/DocumentCreatorRestrictions.php',
@@ -624,13 +665,16 @@ class ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\TemplateRenderers\\PHPTemplateRenderer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/TemplateRenderers/PHPTemplateRenderer.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\TemplateRenderers\\TemplateRendererInterface' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/TemplateRenderers/TemplateRendererInterface.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerceSubscriptions\\MyAccountUpdateHandler' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerceSubscriptions/MyAccountUpdateHandler.php',
-        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\Checkout' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/Checkout.php',
-        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\CheckoutAssets' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/CheckoutAssets.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\Checkout\\BillingVatNumberField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/Checkout/BillingVatNumberField.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\Checkout\\InvoicesCheckoutConfig' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/Checkout/InvoicesCheckoutConfig.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\Checkout\\LegacyAddressPlaceholders' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/Checkout/LegacyAddressPlaceholders.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\Checkout\\LegacyNipFormatValidator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/Checkout/LegacyNipFormatValidator.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\Checkout\\LegacyNipMessage' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/Checkout/LegacyNipMessage.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\Checkout\\LegacyNipPunctuationValidator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/Checkout/LegacyNipPunctuationValidator.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\Checkout\\LegacyUserMeta' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/Checkout/LegacyUserMeta.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\Checkout\\ShippingVatNumberField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/Checkout/ShippingVatNumberField.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\CreateDocumentForOrder' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/CreateDocumentForOrder.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\DocumentPostMeta' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/DocumentPostMeta.php',
-        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\FormFields\\FormField' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/FormFields/FormField.php',
-        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\FormFields\\InvoiceAsk' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/FormFields/InvoiceAsk.php',
-        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\FormFields\\VatNumber' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/FormFields/VatNumber.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\Links' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/Links.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\MyAccount' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/MyAccount.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\OrderItems' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/OrderItems.php',
@@ -643,7 +687,7 @@ class ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\SequentialOrderNumber' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/SequentialOrderNumber.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\Subscriptions' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/Subscriptions.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\Taxes' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/Taxes.php',
-        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\ValidateVatNumber' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/ValidateVatNumber.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WooCommerce\\WpmlCheckoutLanguage' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WooCommerce/WpmlCheckoutLanguage.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\Assets' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/Assets.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\BulkActions' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/BulkActions.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\Dashboard' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/Dashboard.php',
@@ -662,7 +706,6 @@ class ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\Reports\\GenerateReport' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/Reports/GenerateReport.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\SearchCustomer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/SearchCustomer.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\Translator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/Translator.php',
-        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\User' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/User.php',
         'WPDeskFIVendor\\WPDesk\\Library\\Marketing\\Boxes\\Abstracts\\BoxInterface' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-wpdesk-marketing/src/Boxes/Abstracts/BoxInterface.php',
         'WPDeskFIVendor\\WPDesk\\Library\\Marketing\\Boxes\\Api\\Client' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-wpdesk-marketing/src/Boxes/Api/Client.php',
         'WPDeskFIVendor\\WPDesk\\Library\\Marketing\\Boxes\\Assets' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-wpdesk-marketing/src/Boxes/Assets.php',
@@ -715,6 +758,8 @@ class ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d
         'WPDeskFIVendor\\WPDesk\\Notice\\Factory' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-notice/src/WPDesk/Notice/Factory.php',
         'WPDeskFIVendor\\WPDesk\\Notice\\Notice' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-notice/src/WPDesk/Notice/Notice.php',
         'WPDeskFIVendor\\WPDesk\\Notice\\PermanentDismissibleNotice' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-notice/src/WPDesk/Notice/PermanentDismissibleNotice.php',
+        'WPDeskFIVendor\\WPDesk\\Notice\\Plugin\\HookablePluginDependant' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-notice/src/WPDesk/Notice/Plugin/HookablePluginDependant.php',
+        'WPDeskFIVendor\\WPDesk\\Notice\\Plugin\\PluginAccess' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-notice/src/WPDesk/Notice/Plugin/PluginAccess.php',
         'WPDeskFIVendor\\WPDesk\\Persistence\\Adapter\\ArrayContainer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-persistence/src/Adapter/ArrayContainer.php',
         'WPDeskFIVendor\\WPDesk\\Persistence\\Adapter\\ReferenceArrayContainer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-persistence/src/Adapter/ReferenceArrayContainer.php',
         'WPDeskFIVendor\\WPDesk\\Persistence\\Adapter\\WooCommerce\\WooCommerceSessionContainer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-persistence/src/Adapter/WooCommerce/WooCommerceSessionContainer.php',
@@ -892,8 +937,6 @@ class ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d
         'WPDesk\\FlexibleInvoices\\Addons\\Sending\\SendingSettingsAddon' => __DIR__ . '/../..' . '/src/Addons/Sending/SendingSettingsAddon.php',
         'WPDesk\\FlexibleInvoices\\Addons\\Sending\\SendingTab' => __DIR__ . '/../..' . '/src/Addons/Sending/SendingTab.php',
         'WPDesk\\FlexibleInvoices\\Addons\\Validation\\ValidateInvoice' => __DIR__ . '/../..' . '/src/Addons/Validation/ValidateInvoice.php',
-        'WPDesk\\FlexibleInvoices\\Block\\VatNumber\\BlocksIntegration' => __DIR__ . '/../..' . '/src/Block/VatNumber/BlocksIntegration.php',
-        'WPDesk\\FlexibleInvoices\\Block\\VatNumber\\RegisterCheckoutBlock' => __DIR__ . '/../..' . '/src/Block/VatNumber/RegisterCheckoutBlock.php',
         'WPDesk\\FlexibleInvoices\\Marketing\\SupportLinks' => __DIR__ . '/../..' . '/src/Marketing/SupportLinks.php',
         'WPDesk\\FlexibleInvoices\\Marketing\\SupportMenuPage' => __DIR__ . '/../..' . '/src/Marketing/SupportMenuPage.php',
         'WPDesk\\FlexibleInvoices\\Plugin' => __DIR__ . '/../..' . '/src/Plugin.php',
@@ -911,9 +954,9 @@ class ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit130638a6d35df4c33cb9eb141a7d999d::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit6216593e72775b718bb6f8ec88e15e2e::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit6216593e72775b718bb6f8ec88e15e2e::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit6216593e72775b718bb6f8ec88e15e2e::$classMap;
 
         }, null, ClassLoader::class);
     }

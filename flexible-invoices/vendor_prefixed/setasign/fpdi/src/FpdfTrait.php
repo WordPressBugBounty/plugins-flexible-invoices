@@ -13,7 +13,6 @@ use WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceExceptio
 use WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParserException;
 use WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObject;
 use WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNull;
-use WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfType;
 /**
  * This trait is used for the implementation of FPDI in FPDF and tFPDF.
  */
@@ -124,7 +123,7 @@ trait FpdfTrait
             $this->_newobj();
             $rect = \sprintf('%.2F %.2F %.2F %.2F', $pl[0], $pl[1], $pl[0] + $pl[2], $pl[1] - $pl[3]);
             $this->_put('<</Type /Annot /Subtype /Link /Rect [' . $rect . ']', \false);
-            if (is_string($pl[4])) {
+            if (\is_string($pl[4])) {
                 if (isset($pl['importedLink'])) {
                     $this->_put('/A <</S /URI /URI (' . $this->_escape($pl[4]) . ')>>');
                     $values = $pl['importedLink']['pdfObject']->value;

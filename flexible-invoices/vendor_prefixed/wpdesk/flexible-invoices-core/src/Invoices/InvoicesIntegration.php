@@ -16,10 +16,13 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\PDF\BlockPDFGenerator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Menus\GeneralSettingsMenu;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Menus\KSeFDummyMenu;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Menus\ReportsMenu;
+use WPDeskFIVendor\WPDesk\InvoicesCheckout\InvoicesCheckout;
+use WPDeskFIVendor\WPDesk\InvoicesCheckout\LibraryInfo as InvoicesCheckoutLibraryInfo;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\AbstractSettingsStrategy;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields\InvoiceAsk;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\FormFields\VatNumber;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Checkout\InvoicesCheckoutConfig;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Checkout\LegacyAddressPlaceholders;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Checkout\LegacyUserMeta;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\OrderNote;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerceSubscriptions\MyAccountUpdateHandler;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\PDF;
@@ -37,7 +40,6 @@ use WPDeskFIVendor\WPDesk_Plugin_Info;
  */
 class InvoicesIntegration implements Hookable
 {
-    const VAT_NUMBER_FIELD_ID = 'vat_number';
     const PLUGIN_NAME = 'flexible-invoices-woocommerce';
     const PLUGIN_NAME_FREE = 'flexible-invoices';
     use HookableParent;
@@ -53,6 +55,13 @@ class InvoicesIntegration implements Hookable
      * @var Settings
      */
     private $settings;
+    /**
+     * Shared by checkout, customer search and the order screen.
+     * The filter and the direct reads must be this same object.
+     *
+     * @var LegacyUserMeta|null
+     */
+    private $legacy_user_meta = null;
     /**
      * @var AbstractDocumentCreator[]
      */
@@ -349,13 +358,12 @@ class InvoicesIntegration implements Hookable
         $this->add_hookable(new WordPress\Dashboard($this->document_factory, $this->strategy, $capabilities, $this->renderer, $this->settings));
         $this->add_hookable(new SampleTemplateInserter($this->renderer));
         $this->add_hookable(new WordPress\BulkActions());
-        $this->add_hookable(new WordPress\User($this->renderer));
         $this->add_hookable(new WordPress\FindProducts($this->settings));
         $this->add_hookable(new WordPress\DuplicatesNotice($duplication_checker));
         $this->add_hookable(new WordPress\Reports\GenerateReport($this->get_settings(), $this->document_factory, $this->renderer, $this->library_info));
         $this->add_hookable(new WordPress\Download\DownloadMenuPage($this->library_info->get_template_dir()));
         $this->add_hookable(new WordPress\Download\BatchDocumentsDownload($this->get_pdf_writer(), $this->document_factory));
-        $this->add_hookable(new WordPress\SearchCustomer());
+        $this->add_hookable(new WordPress\SearchCustomer($this->get_legacy_user_meta()));
         $this->add_hookable(new BeaconLoader($this->library_info));
         $this->add_hookable(new TemplatesPostType($this->library_info));
         $this->add_hookable(new RegisterEditorBlocks($this->library_info));
@@ -369,11 +377,10 @@ class InvoicesIntegration implements Hookable
     private function woocommerce_integration_hooks()
     {
         $order_note = new OrderNote();
-        $this->add_hookable(new WooCommerce\CheckoutAssets($this->settings, $this->library_info->get_assets_url()));
         $this->add_hookable(new WooCommerce\MyAccount($this->document_factory, $this->renderer));
         $this->add_hookable(new WooCommerce\CreateDocumentForOrder($this->document_factory, $this->settings, $this->save_document, $this->get_pdf_writer()));
         $this->add_hookable(new WooCommerce\DocumentPostMeta());
-        $this->add_hookable(new WooCommerce\Order\FormattedOrderMeta());
+        $this->add_hookable(new WooCommerce\Order\FormattedOrderMeta($this->get_legacy_user_meta()));
         $this->add_hookable(new WooCommerce\Order\DeleteDocumentRelation($this->document_factory));
         $this->add_hookable(new WooCommerce\Order\RegisterMetaBox($this->document_factory));
         $this->add_hookable(new WooCommerce\Taxes());
@@ -383,33 +390,35 @@ class InvoicesIntegration implements Hookable
         $this->add_hookable(new Email\RegisterEmails($this->document_factory));
         $this->add_hookable($order_note);
         $this->add_hookable(new Email\EmailIntegration($this->document_factory, $this->get_pdf_writer(), $order_note));
-        $this->add_hookable(new WooCommerce\Checkout($this->settings));
-        $this->add_checkout_fields();
+        $this->add_hookable(new WooCommerce\WpmlCheckoutLanguage($this->library_info->get_template_dir()));
+        //todo: use renderer to render component
+        $this->register_invoices_checkout();
     }
     private function woocommerce_subscriptions_integration_hooks()
     {
         $this->add_hookable(new MyAccountUpdateHandler());
     }
     /**
-     * Add checkout fields
+     * Registers checkout when the customer is asked for an invoice or the VAT field is enabled.
      */
-    private function add_checkout_fields()
+    private function register_invoices_checkout()
     {
-        if ($this->settings->get('woocommerce_add_nip_field') === 'yes') {
-            $vat_number_field = new VatNumber(
-                self::VAT_NUMBER_FIELD_ID,
-                __($this->settings->get('woocommerce_nip_label'), 'flexible-invoices'),
-                //phpcs:ignore
-                __($this->settings->get('woocommerce_nip_placeholder', ''), 'flexible-invoices')
-            );
-            if ($this->settings->get('woocommerce_nip_required') === 'yes') {
-                $vat_number_field->set_required();
-            }
-            $this->add_hookable($vat_number_field);
+        $ask_for_invoice = 'yes' === $this->settings->get('woocommerce_add_invoice_ask_field');
+        $vat_field = 'yes' === $this->settings->get('woocommerce_add_nip_field');
+        if (!$ask_for_invoice && !$vat_field) {
+            return;
         }
-        if ($this->settings->get('woocommerce_add_invoice_ask_field') === 'yes') {
-            $invoice_ask = new InvoiceAsk('invoice_ask', __('I want an invoice', 'flexible-invoices'));
-            $this->add_hookable($invoice_ask);
+        $config = new InvoicesCheckoutConfig($this->settings, trailingslashit($this->library_info->get_plugin_dir()) . 'lang');
+        $invoices_checkout = new InvoicesCheckout($config, new InvoicesCheckoutLibraryInfo());
+        $invoices_checkout->hooks();
+        $this->add_hookable(new LegacyAddressPlaceholders());
+        $this->add_hookable($this->get_legacy_user_meta());
+    }
+    private function get_legacy_user_meta(): LegacyUserMeta
+    {
+        if (!$this->legacy_user_meta instanceof LegacyUserMeta) {
+            $this->legacy_user_meta = new LegacyUserMeta();
         }
+        return $this->legacy_user_meta;
     }
 }

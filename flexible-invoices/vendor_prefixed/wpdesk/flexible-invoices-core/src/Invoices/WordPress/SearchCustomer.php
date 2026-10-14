@@ -4,6 +4,8 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress;
 
 use WP_User_Query;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Checkout\InvoicesCheckoutConfig;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Checkout\LegacyUserMeta;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 /**
  * Search customer.
@@ -16,6 +18,11 @@ class SearchCustomer implements Hookable
      * @var string
      */
     const NONCE_ARG = 'security';
+    private LegacyUserMeta $legacy_user_meta;
+    public function __construct(LegacyUserMeta $legacy_user_meta)
+    {
+        $this->legacy_user_meta = $legacy_user_meta;
+    }
     /**
      * Fires hooks.
      */
@@ -97,8 +104,7 @@ class SearchCustomer implements Hookable
                 //@phpstan-ignore-line
                 'city' => $user->billing_city,
                 //@phpstan-ignore-line
-                'nip' => $user->vat_number,
-                //@phpstan-ignore-line
+                'nip' => $this->customer_vat_number($user),
                 'country' => $user->billing_country,
                 //@phpstan-ignore-line
                 'phone' => $user->billing_phone,
@@ -110,5 +116,17 @@ class SearchCustomer implements Hookable
             return ['name' => $user->first_name . ' ' . $user->last_name, 'street' => '', 'street2' => '', 'postcode' => '', 'city' => '', 'nip' => '', 'country' => '', 'phone' => '', 'email' => $user->user_email, 'state' => ''];
         }
         return $user_data;
+    }
+    /**
+     * VAT number for a WooCommerce customer picked while creating an invoice.
+     *
+     * Checkout before invoices-checkout stored it in user meta `vat_number`.
+     * The library stores `billing_vat_number` and does not write the old key.
+     * The old key is used only when `billing_vat_number` has never been saved.
+     * Order invoices do not use this. They read `_billing_vat_number` from the order.
+     */
+    private function customer_vat_number(\WP_User $user): string
+    {
+        return $this->legacy_user_meta->read((int) $user->ID, InvoicesCheckoutConfig::BILLING_TAX_ID_USER_KEY);
     }
 }

@@ -9,10 +9,6 @@
  */
 namespace WPDeskFIVendor\setasign\Fpdi;
 
-use WPDeskFIVendor\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
-use WPDeskFIVendor\setasign\Fpdi\PdfParser\PdfParserException;
-use WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfIndirectObject;
-use WPDeskFIVendor\setasign\Fpdi\PdfParser\Type\PdfNull;
 /**
  * Class Fpdi
  *
@@ -27,5 +23,5 @@ class Fpdi extends FpdfTpl
      *
      * @string
      */
-    const VERSION = '2.6.8';
+    const VERSION = '2.6.9';
 }

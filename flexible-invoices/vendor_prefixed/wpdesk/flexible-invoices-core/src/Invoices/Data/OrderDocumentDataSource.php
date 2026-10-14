@@ -10,6 +10,7 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\PostType\Temp
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\BlockTemplateEditor;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Hooks;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Checkout\InvoicesCheckoutConfig;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\OrderItems;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Customer;
@@ -114,7 +115,7 @@ class OrderDocumentDataSource extends AbstractDataSource
             $type = 'company';
             $name = $billing_company;
         }
-        $vat_number = $this->order->get_meta('_billing_vat_number', \true);
+        $vat_number = $this->order->get_meta(InvoicesCheckoutConfig::BILLING_TAX_ID_KEY, \true);
         $id = $this->order->get_customer_id();
         $street = $this->order->get_billing_address_1();
         $street2 = $this->order->get_billing_address_2();
@@ -172,7 +173,7 @@ class OrderDocumentDataSource extends AbstractDataSource
      */
     private function get_recipient_from_billing(string $name): Recipient
     {
-        $vat_number = $this->order->get_meta('_billing_vat_number', \true);
+        $vat_number = $this->order->get_meta(InvoicesCheckoutConfig::BILLING_TAX_ID_KEY, \true);
         $street = $this->order->get_billing_address_1();
         $street2 = $this->order->get_billing_address_2();
         $postcode = $this->order->get_billing_postcode();
@@ -189,7 +190,7 @@ class OrderDocumentDataSource extends AbstractDataSource
      */
     private function get_recipient_from_shipping(string $name): Recipient
     {
-        $vat_number = $this->order->get_meta('_shipping_vat_number', \true);
+        $vat_number = $this->order->get_meta(InvoicesCheckoutConfig::SHIPPING_TAX_ID_KEY, \true);
         $street = $this->order->get_shipping_address_1();
         $street2 = $this->order->get_shipping_address_2();
         $postcode = $this->order->get_shipping_postcode();

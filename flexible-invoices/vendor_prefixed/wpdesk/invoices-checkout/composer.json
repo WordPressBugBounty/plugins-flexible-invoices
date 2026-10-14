@@ -1,0 +1,55 @@
+{
+    "version": "2.0.3",
+    "name": "wpdesk\/invoices-checkout",
+    "type": "library",
+    "description": "WP Desk Invoices Checkout library",
+    "keywords": [
+        "wpdesk",
+        "invoices-checkout"
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "WPDeskFIVendor\\WPDesk\\InvoicesCheckout\\": "src\/"
+        }
+    },
+    "authors": [
+        {
+            "name": "WP Desk",
+            "homepage": "https:\/\/wpdesk.net",
+            "role": "Owner"
+        }
+    ],
+    "require": {
+        "php": "^7.4 | ^8"
+    },
+    "require-dev": {
+        "phpunit\/phpunit": "^9.5",
+        "wpdesk\/wp-code-sniffer": "^1",
+        "wpdesk\/phpstan-rules": "^1"
+    },
+    "extra": {
+        "text-domain": "flexible-invoices",
+        "translations-folder": "lang",
+        "text-domain-merge-extensions": "php,js,json",
+        "po-files": {
+            "pl_PL": "pl_PL.po"
+        }
+    },
+    "scripts": {
+        "phpcs": "phpcs",
+        "phpstan": "php -d memory_limit=2G vendor\/bin\/phpstan",
+        "phpcbf": "phpcbf src",
+        "combo": "phpcbf src; phpcs; php -d memory_limit=2G vendor\/bin\/phpstan",
+        "regen-phpstan-baseline": "vendor\/bin\/phpstan analyze -c phpstan.neon.dist --generate-baseline .phpstan-baseline.php --memory-limit=1G",
+        "test": "phpunit",
+        "check-style": "phpcs src tests",
+        "fix-style": "phpcbf src tests"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect\/phpcodesniffer-composer-installer": true,
+            "phpstan\/extension-installer": true
+        }
+    }
+}

@@ -87,7 +87,7 @@ trait FpdiTrait
      */
     public function cleanUp($allReaders = \false)
     {
-        $readers = $allReaders ? array_keys($this->readers) : $this->createdReaders;
+        $readers = $allReaders ? \array_keys($this->readers) : $this->createdReaders;
         foreach ($readers as $id) {
             $this->readers[$id]->getParser()->getStreamReader()->cleanUp();
             unset($this->readers[$id]);
@@ -393,7 +393,7 @@ trait FpdiTrait
             // reset standard values, translate and scale
             \sprintf('q 0 J 1 w 0 j 0 G 0 g %.4F 0 0 %.4F %.4F %.4F cm /%s Do Q', $scaleX, $scaleY, $xPt, $this->hPt - $yPt - $newHeightPt, $importedPage['id'])
         );
-        if (count($importedPage['externalLinks']) > 0) {
+        if (\count($importedPage['externalLinks']) > 0) {
             foreach ($importedPage['externalLinks'] as $externalLink) {
                 // mPDF uses also 'externalLinks' but doesn't come with a rect-value
                 if (!isset($externalLink['rect'])) {

@@ -194,7 +194,7 @@ class PdfReader
                     $this->pages[] = $object;
                 }
                 // stop if all pages are read - faulty documents exists with additional entries with invalid data.
-                if (count($this->pages) === $expectedPageCount) {
+                if (\count($this->pages) === $expectedPageCount) {
                     break;
                 }
             }

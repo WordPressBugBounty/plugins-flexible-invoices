@@ -96,7 +96,7 @@ class StreamReader
         if (!$metaData['seekable']) {
             throw new \InvalidArgumentException('Given stream is not seekable!');
         }
-        if (fseek($stream, 0) === -1) {
+        if (\fseek($stream, 0) === -1) {
             throw new \InvalidArgumentException('Given stream is not seekable!');
         }
         $this->stream = $stream;
@@ -115,7 +115,7 @@ class StreamReader
      */
     public function cleanUp()
     {
-        if ($this->closeStream && is_resource($this->stream)) {
+        if ($this->closeStream && \is_resource($this->stream)) {
             \fclose($this->stream);
         }
     }

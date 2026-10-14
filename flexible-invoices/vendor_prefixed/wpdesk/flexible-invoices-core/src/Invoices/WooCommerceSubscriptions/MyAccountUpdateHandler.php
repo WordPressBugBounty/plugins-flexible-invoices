@@ -2,12 +2,10 @@
 
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerceSubscriptions;
 
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Checkout\InvoicesCheckoutConfig;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 class MyAccountUpdateHandler implements Hookable
 {
-    private const BILLING_VAT_NUMBER_POST = 'billing_vat_number';
-    private const BILLING_VAT_NUMBER_META = '_billing_vat_number';
     public function hooks()
     {
         add_action('woocommerce_customer_save_address', [$this, 'update_nip_meta'], 10, 2);
@@ -17,12 +15,12 @@ class MyAccountUpdateHandler implements Hookable
         if ('billing' !== $load_address) {
             return;
         }
-        if (empty($_POST[self::BILLING_VAT_NUMBER_POST])) {
+        if (empty($_POST[InvoicesCheckoutConfig::BILLING_TAX_ID_USER_KEY])) {
             //phpcs:ignore WordPress.Security.NonceVerification.Missing
             return;
         }
-        $new_vat = sanitize_text_field($_POST[self::BILLING_VAT_NUMBER_POST]);
-        //phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+        $new_vat = sanitize_text_field(wp_unslash($_POST[InvoicesCheckoutConfig::BILLING_TAX_ID_USER_KEY]));
+        //phpcs:ignore WordPress.Security.NonceVerification.Missing
         // Return if user didn't checked the option to update all subscriptions.
         if (!empty($_POST['update_all_subscriptions_addresses'])) {
             //phpcs:ignore WordPress.Security.NonceVerification.Missing
@@ -38,8 +36,7 @@ class MyAccountUpdateHandler implements Hookable
             if (!$subscription->has_status(['active', 'on-hold'])) {
                 continue;
             }
-            $subscription->update_meta_data(self::BILLING_VAT_NUMBER_META, $new_vat);
-            $subscription->set_meta_data(self::BILLING_VAT_NUMBER_META, $new_vat);
+            $subscription->update_meta_data(InvoicesCheckoutConfig::BILLING_TAX_ID_KEY, $new_vat);
             $subscription->save();
         }
     }

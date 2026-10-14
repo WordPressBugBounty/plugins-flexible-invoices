@@ -6,6 +6,7 @@ namespace WPDeskFIVendor\WPDesk\Notice;
  * Class Factory
  *
  * Factory for notices.
+ *
  * @package WPDesk\Notice
  */
 class Factory

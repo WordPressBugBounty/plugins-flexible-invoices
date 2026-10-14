@@ -43,7 +43,7 @@ class Fpdi extends \WPDeskFIVendor\TCPDF
      *
      * @string
      */
-    const VERSION = '2.6.8';
+    const VERSION = '2.6.9';
     /**
      * A counter for template ids.
      *
@@ -297,7 +297,7 @@ class Fpdi extends \WPDeskFIVendor\TCPDF
                         break;
                     case 'Border':
                         $borderArray = PdfArray::ensure($value)->value;
-                        if (count($borderArray) < 3) {
+                        if (\count($borderArray) < 3) {
                             continue 2;
                         }
                         $border = [PdfNumeric::ensure($borderArray[0])->value, PdfNumeric::ensure($borderArray[1])->value, PdfNumeric::ensure($borderArray[2])->value];

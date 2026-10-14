@@ -308,7 +308,7 @@ trait FpdfTplTrait
     {
         parent::SetFontSize($size);
         if ($this->page === 0 && $this->currentTemplateId !== null) {
-            $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
+            $this->_out(\sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
         }
     }
     protected function _putimages()

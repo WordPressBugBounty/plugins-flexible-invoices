@@ -5,6 +5,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Order;
 use WC_Order;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Creators\Creator;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Settings\Settings;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Checkout\InvoicesCheckoutConfig;
 /**
  * Conditional logic fo issue documents for order.
  *
@@ -32,10 +33,12 @@ class ConditionalLogic
     public function is_invoice_ask(WC_Order $order, Creator $creator): bool
     {
         $settings = $this->settings;
-        $has_invoice_ask_field = $this->settings->get('woocommerce_add_invoice_ask_field') === 'yes';
-        $is_user_has_invoice = $order->get_meta('_billing_invoice_ask', \true) === '1';
-        $is_invoice_ask = !$has_invoice_ask_field || $has_invoice_ask_field && $is_user_has_invoice;
-        //@phpstan-ignore-line
+        // The checkbox can be on checkout without a VAT field. A saved ask option
+        // must not block documents while the checkbox itself is off.
+        $invoice_choice_is_on_checkout = 'yes' === $this->settings->get('woocommerce_add_invoice_ask_field');
+        $invoice_ask = $order->get_meta(InvoicesCheckoutConfig::WANT_INVOICE_KEY, \true);
+        $is_user_has_invoice = $this->is_invoice_requested(is_string($invoice_ask) ? $invoice_ask : '');
+        $is_invoice_ask = !$invoice_choice_is_on_checkout || $is_user_has_invoice;
         /**
          * The conditional logic for checking if the user wants to receive an invoice.
          *
@@ -46,6 +49,13 @@ class ConditionalLogic
          * @since 3.8.2
          */
         return apply_filters('fi/core/is_invoice_ask', $is_invoice_ask, $creator, $settings);
+    }
+    /**
+     * Accepts the historical "1" flag and the yes/true values written by invoices-checkout.
+     */
+    private function is_invoice_requested(string $value): bool
+    {
+        return filter_var($value, \FILTER_VALIDATE_BOOLEAN);
     }
     /**
      * @param WC_Order $order
