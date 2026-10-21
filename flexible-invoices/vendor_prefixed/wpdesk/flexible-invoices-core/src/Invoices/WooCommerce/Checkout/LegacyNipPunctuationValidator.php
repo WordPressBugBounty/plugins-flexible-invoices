@@ -33,6 +33,7 @@ class LegacyNipPunctuationValidator implements VatValidator
         if (strlen($stripped) === strlen($raw)) {
             return ValidationResult::success();
         }
-        return ValidationResult::failure(ValidationResult::ERROR_INVALID_VAT, LegacyNipMessage::for_country($country, $this->label));
+        // invalid_vat is a VIES rejection and opens the self-declaration checkbox.
+        return ValidationResult::failure(ValidationResult::ERROR_INVALID_LENGTH, LegacyNipMessage::for_country($country, $this->label));
     }
 }

@@ -5,7 +5,11 @@ namespace WPDeskFIVendor\WPDesk\InvoicesCheckout\Order;
 use WC_Order;
 use WPDeskFIVendor\WPDesk\InvoicesCheckout\ConfigInterface;
 /**
- * Handles injecting VAT details into formatted order addresses (e.g., for emails, invoices).
+ * Appends VAT lines to formatted order addresses (emails, thank-you page, admin).
+ *
+ * The lines stay off woocommerce_localisation_address_formats. The Checkout block
+ * copies that format into the browser, and the block formatter only replaces core
+ * tokens, so a custom {_meta_key} token is shown raw on the address card.
  */
 class AddressFormatter
 {
@@ -27,7 +31,8 @@ class AddressFormatter
         add_filter('woocommerce_order_formatted_billing_address', [$this, 'hide_empty_tax_id_labels'], 1000000, 2);
         add_filter('woocommerce_order_formatted_shipping_address', [$this, 'hide_empty_tax_id_labels'], 1000000, 2);
         add_filter('woocommerce_formatted_address_replacements', [$this, 'add_address_replacements'], 10, 2);
-        add_filter('woocommerce_localisation_address_formats', [$this, 'add_address_formats'], 10, 1);
+        add_filter('woocommerce_order_get_formatted_billing_address', [$this, 'append_formatted_billing_address'], 20, 3);
+        add_filter('woocommerce_order_get_formatted_shipping_address', [$this, 'append_formatted_shipping_address'], 20, 3);
     }
     /**
      * Adds billing fields to the raw address array before it's formatted.
@@ -153,23 +158,72 @@ class AddressFormatter
         return $replacements;
     }
     /**
-     * Injects the tags into the country-specific address formats.
+     * Appends billing VAT lines after WooCommerce has formatted the postal address.
      *
-     * @param array $formats
-     * @return array
+     * @param mixed    $address     Formatted billing address, or the empty placeholder.
+     * @param mixed    $raw_address Raw billing address.
+     * @param mixed    $order       Order being displayed.
+     * @return mixed
      */
-    public function add_address_formats($formats): array
+    public function append_formatted_billing_address($address, $raw_address, $order)
     {
-        foreach ($formats as $country => $format) {
-            foreach ($this->config->get_checkout_fields() as $field) {
-                if ($field->is_enabled()) {
-                    $tag = $field->get_address_format_tag();
-                    if (!str_contains($formats[$country], $tag)) {
-                        $formats[$country] .= "\n" . $tag;
-                    }
-                }
+        // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundBeforeLastUsed
+        if (!is_string($address) || !$order instanceof WC_Order) {
+            return $address;
+        }
+        return $this->append_section_lines($address, 'billing', $order);
+    }
+    /**
+     * Appends shipping VAT lines after WooCommerce has formatted the postal address.
+     *
+     * @param mixed    $address     Formatted shipping address, or the empty placeholder.
+     * @param mixed    $raw_address Raw shipping address.
+     * @param mixed    $order       Order being displayed.
+     * @return mixed
+     */
+    public function append_formatted_shipping_address($address, $raw_address, $order)
+    {
+        // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundBeforeLastUsed
+        if (!is_string($address) || !$order instanceof WC_Order || !$order->has_shipping_address()) {
+            return $address;
+        }
+        return $this->append_section_lines($address, 'shipping', $order);
+    }
+    /**
+     * Adds this section's invoice lines that are not already in the formatted address.
+     */
+    private function append_section_lines(string $address, string $section, WC_Order $order): string
+    {
+        $lines = [];
+        foreach ($this->config->get_checkout_fields() as $field) {
+            if (!$field->is_enabled() || $section !== $field->get_section()) {
+                continue;
+            }
+            $line = esc_html($field->format_address_replacement((string) $order->get_meta($field->get_id())));
+            if ('' === $line || $this->address_contains_line($address, $line)) {
+                continue;
+            }
+            $lines[] = $line;
+        }
+        if ([] === $lines || '' === $address) {
+            return $address;
+        }
+        return $address . '<br/>' . implode('<br/>', $lines);
+    }
+    /**
+     * True when the formatted address already prints this line on its own.
+     */
+    private function address_contains_line(string $address, string $line): bool
+    {
+        $parts = preg_split('/<br\s*\/?>|\n/', $address);
+        if (!is_array($parts)) {
+            return \false;
+        }
+        foreach ($parts as $part) {
+            if (trim(wp_strip_all_tags($part)) === $line) {
+                return \true;
             }
         }
-        return $formats;
+        return \false;
     }
 }

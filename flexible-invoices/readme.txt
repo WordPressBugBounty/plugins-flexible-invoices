@@ -5,7 +5,7 @@ Tags: ksef, e faktura, faktura ksef, faktura online, faktury
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 7.0.0
+Stable tag: 7.1.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -313,6 +313,11 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 67. Invoice number formatting inside the visual editor for the invoice template.
 
 == Changelog ==
+
+= 7.1.0 - 2026-10-21 =
+- Added features for recognizing EU countries have been added
+- Fixed a VAT number that fails the format check no longer shows "I confirm that my VAT number is valid." A missing country prefix, or a space, hyphen, comma or dot, only blocks checkout. That checkbox stays for a VIES rejection.
+- Fixed problem with visible {billing_...} placeholders in WooCommerce block checkout address info
 
 = 7.0.0 - 2026-10-14 =
 * Checkout no longer writes user meta `vat_number` or `invoice_ask`. New profiles use `billing_vat_number` and `billing_invoice_ask`. The old VAT number and the old invoice request are still read when the new key has never been saved, including when creating an invoice from a WooCommerce customer and when loading a customer onto an order. A saved empty VAT number stays empty.

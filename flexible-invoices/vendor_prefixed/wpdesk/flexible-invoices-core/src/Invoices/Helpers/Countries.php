@@ -9,6 +9,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers;
  */
 class Countries
 {
+    public const EU_MEMBER_CODES = ['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'HU', 'HR', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK'];
     /**
      * @param string $slug
      *
@@ -79,5 +80,32 @@ class Countries
             }
         }
         return $states;
+    }
+    /**
+     * EU member codes, replaced by the WooCommerce list when that API is loaded.
+     */
+    public static function get_eu_country_codes(): array
+    {
+        $countries = self::EU_MEMBER_CODES;
+        $wc_countries = null;
+        if (WooCommerce::is_active()) {
+            $wc_countries = WC()->countries;
+        }
+        if (null !== $wc_countries) {
+            $countries = $wc_countries->get_european_union_countries();
+        }
+        $codes = [];
+        foreach ($countries as $code) {
+            $codes[] = strtoupper(trim((string) $code));
+        }
+        return array_values(array_unique($codes));
+    }
+    /**
+     * @param string $country_code ISO 3166-1 alpha-2.
+     */
+    public static function is_eu_country(string $country_code): bool
+    {
+        $country_code = strtoupper(trim($country_code));
+        return '' !== $country_code && in_array($country_code, self::get_eu_country_codes(), \true);
     }
 }

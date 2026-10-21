@@ -28,7 +28,8 @@ class LegacyNipFormatValidator implements VatValidator
     public function validate(VatNumber $vat_number, ?Country $country): ValidationResult
     {
         if (!$this->has_customer_country_prefix($vat_number, $country)) {
-            return ValidationResult::failure(ValidationResult::ERROR_INVALID_VAT, LegacyNipMessage::for_country($country, $this->label));
+            // invalid_vat is a VIES rejection and opens the self-declaration checkbox.
+            return ValidationResult::failure(ValidationResult::ERROR_INVALID_LENGTH, LegacyNipMessage::for_country($country, $this->label));
         }
         foreach ([$this->length_validation, $this->control_sum_validation] as $validator) {
             $result = $validator->validate($vat_number, $country);
@@ -37,7 +38,7 @@ class LegacyNipFormatValidator implements VatValidator
             }
             $error_code = $result->get_error_code();
             if (!is_string($error_code) || '' === $error_code) {
-                $error_code = ValidationResult::ERROR_INVALID_VAT;
+                $error_code = ValidationResult::ERROR_INVALID_LENGTH;
             }
             return ValidationResult::failure($error_code, LegacyNipMessage::for_country($country, $this->label));
         }

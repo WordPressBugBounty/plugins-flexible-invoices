@@ -25,12 +25,10 @@ class WooCommerce
      * Gets an array of countries in the EU.
      *
      * @param string $type Type of countries to retrieve. Blank for EU member countries. eu_vat for EU VAT countries.
-     *
-     * @return string[]
      */
-    public static function get_european_union_countries($type = ''): array
+    public static function get_european_union_countries(string $type = ''): array
     {
-        $countries = ['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'HU', 'HR', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK'];
+        $countries = Countries::EU_MEMBER_CODES;
         if ('eu_vat' === $type) {
             $countries[] = 'MC';
             $countries[] = 'IM';

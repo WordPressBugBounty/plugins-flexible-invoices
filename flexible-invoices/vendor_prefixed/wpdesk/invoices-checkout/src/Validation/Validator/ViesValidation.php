@@ -59,20 +59,14 @@ class ViesValidation implements VatValidator
         }
         $url = sprintf('https://ec.europa.eu/taxation_customs/vies/rest-api/ms/%s/vat/%s', rawurlencode($vat_prefix), rawurlencode($vat_to_check));
         $response = $this->remote_get($url);
-        if (is_wp_error($response)) {
-            return $this->remember($memory_key, $transient_key, self::CACHE_STATUS_API_ERROR);
+        $status = $this->status_from_http($response);
+        // A busy-gateway answer comes back in under a second. One more try reaches the real verdict.
+        if (self::CACHE_STATUS_API_ERROR === $status && !$this->is_timeout($response)) {
+            sleep(2);
+            $response = $this->remote_get($url);
+            $status = $this->status_from_http($response);
         }
-        $response_code = wp_remote_retrieve_response_code($response);
-        if (200 !== $response_code) {
-            return $this->remember($memory_key, $transient_key, self::CACHE_STATUS_API_ERROR);
-        }
-        $body = wp_remote_retrieve_body($response);
-        $data = json_decode($body, \true);
-        if (is_array($data) && isset($data['isValid'])) {
-            $status = (bool) $data['isValid'] ? self::CACHE_STATUS_VALID : self::CACHE_STATUS_INVALID;
-            return $this->remember($memory_key, $transient_key, $status);
-        }
-        return $this->remember($memory_key, $transient_key, self::CACHE_STATUS_API_ERROR);
+        return $this->remember($memory_key, $transient_key, $status);
     }
     /**
      * Loads a VIES response without asking for compression.
@@ -83,13 +77,17 @@ class ViesValidation implements VatValidator
      * the HTTP 200. An identity body is chunked, so cURL finishes it before
      * that close.
      *
+     * The Europa gateway also answers a non-browser user agent with HTTP 200
+     * and userError MS_MAX_CONCURRENT_REQ, for a number a browser call reports
+     * as valid. WordPress sends "WordPress/x.y; {site}".
+     *
      * @return array|\WP_Error
      */
     private function remote_get(string $url)
     {
         add_action('http_api_curl', [$this, 'configure_vies_curl'], 10, 3);
         try {
-            return wp_remote_get($url, ['timeout' => 10, 'httpversion' => '1.1']);
+            return wp_remote_get($url, ['timeout' => 20, 'httpversion' => '1.1', 'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36']);
         } finally {
             remove_action('http_api_curl', [$this, 'configure_vies_curl'], 10);
         }
@@ -109,6 +107,50 @@ class ViesValidation implements VatValidator
             return;
         }
         curl_setopt($handle, \CURLOPT_ENCODING, 'identity');
+    }
+    /**
+     * @param array|\WP_Error $response HTTP API response.
+     */
+    private function status_from_http($response): string
+    {
+        if (is_wp_error($response) || 200 !== (int) wp_remote_retrieve_response_code($response)) {
+            return self::CACHE_STATUS_API_ERROR;
+        }
+        $data = json_decode(wp_remote_retrieve_body($response), \true);
+        if (!is_array($data) || !isset($data['isValid'])) {
+            return self::CACHE_STATUS_API_ERROR;
+        }
+        return $this->status_from_response($data);
+    }
+    /**
+     * A timed-out call already waited the full limit, so it is not retried.
+     *
+     * @param array|\WP_Error $response HTTP API response.
+     */
+    private function is_timeout($response): bool
+    {
+        if (!is_wp_error($response)) {
+            return \false;
+        }
+        $message = $response->get_error_message();
+        return \false !== stripos($message, 'timed out') || \false !== stripos($message, 'cURL error 28');
+    }
+    /**
+     * VIES answers HTTP 200 with isValid false when a member state is busy.
+     * userError then names the outage. Only INVALID means the number was rejected.
+     *
+     * @param array $data Decoded VIES JSON.
+     */
+    private function status_from_response(array $data): string
+    {
+        $user_error = strtoupper(trim((string) ($data['userError'] ?? '')));
+        if (\true === $data['isValid'] || 'VALID' === $user_error) {
+            return self::CACHE_STATUS_VALID;
+        }
+        if ('' === $user_error || 'INVALID' === $user_error || 'INVALID_INPUT' === $user_error) {
+            return self::CACHE_STATUS_INVALID;
+        }
+        return self::CACHE_STATUS_API_ERROR;
     }
     /**
      * Stores a VIES outcome for this request and in a transient.
