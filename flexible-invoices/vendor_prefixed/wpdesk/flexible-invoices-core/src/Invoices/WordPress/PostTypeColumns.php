@@ -14,7 +14,6 @@ use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\WooCommerce;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\InvoicesIntegration;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\AbstractSettingsStrategy;
-use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\SettingsStrategy\SettingsStrategy;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Links;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
 /**
@@ -49,6 +48,9 @@ class PostTypeColumns implements Hookable
     {
         add_filter('manage_edit-' . RegisterPostType::POST_TYPE_NAME . '_columns', [$this, 'add_custom_columns_filter']);
         add_action('manage_' . RegisterPostType::POST_TYPE_NAME . '_posts_custom_column', [$this, 'custom_columns_body_action'], 10, 2);
+        if (is_admin()) {
+            add_filter('post_class', [$this, 'mark_duplicated_invoice_row'], 10, 3);
+        }
         add_filter('manage_edit-' . self::ORDER_POST_TYPE . '_columns', [$this, 'add_order_columns_filter']);
         add_action('manage_' . self::ORDER_POST_TYPE . '_posts_custom_column', [$this, 'order_columns_body_action'], 10, 2);
         add_filter('manage_woocommerce_page_wc-orders_columns', [$this, 'add_order_columns_filter']);
@@ -62,8 +64,7 @@ class PostTypeColumns implements Hookable
      */
     public function add_custom_columns_filter(array $columns): array
     {
-        unset($columns['date'], $columns['title']);
-        $columns['invoice_title'] = esc_html__('Invoice', 'flexible-invoices');
+        unset($columns['date']);
         $columns['client'] = esc_html__('Customer', 'flexible-invoices');
         $columns['netto'] = esc_html__('Net price', 'flexible-invoices');
         $columns['gross'] = esc_html__('Gross price', 'flexible-invoices');
@@ -76,6 +77,31 @@ class PostTypeColumns implements Hookable
         $columns['paymethod'] = esc_html__('Payment method', 'flexible-invoices');
         $columns['fi_actions'] = esc_html__('Actions', 'flexible-invoices');
         return apply_filters('fi/core/lists/columns/header', $columns);
+    }
+    /**
+     * Native title link has no class hook. The row class lets the list CSS color it when the number is repeated.
+     *
+     * @param string[] $classes
+     * @param string[] $css_class
+     * @param int      $post_id
+     *
+     * @return string[]
+     */
+    public function mark_duplicated_invoice_row($classes, $css_class, $post_id)
+    {
+        // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+        $screen = get_current_screen();
+        if (!$screen || 'edit-' . RegisterPostType::POST_TYPE_NAME !== $screen->id) {
+            return $classes;
+        }
+        $post = get_post((int) $post_id);
+        if (!$post instanceof \WP_Post || '' === $post->post_title || 'publish' !== $post->post_status) {
+            return $classes;
+        }
+        if ($this->find_duplicates($post->post_title) > 1) {
+            $classes[] = 'is_duplicated';
+        }
+        return $classes;
     }
     /**
      * @param string $column_name Column name,
@@ -91,23 +117,6 @@ class PostTypeColumns implements Hookable
         $document = $creator->get_document();
         $document = new DocumentDecorator($document, $this->strategy);
         switch ($column_name) {
-            case 'invoice_title':
-                $duplicates = $this->find_duplicates($post->post_title);
-                $class = '';
-                $title_duplicated = '';
-                if ($duplicates > 1) {
-                    $class = 'is_duplicated';
-                    $title_duplicated = esc_html__('The name of invoice is duplicated!', 'flexible-invoices');
-                }
-                if (empty($post->post_title)) {
-                    $post->post_title = $document->get_formatted_number();
-                }
-                if (!$creator->is_allowed_for_edit()) {
-                    printf('<span class="%1$s"><strong>%2$s</strong></span>', esc_attr($class), esc_html($post->post_title));
-                } else {
-                    printf('<strong><a class="%1$s" title="%2$s" href="%3$s">%4$s</a></strong>', esc_attr($class), esc_html($title_duplicated), esc_url(get_edit_post_link($post_id)), esc_html($post->post_title));
-                }
-                break;
             case 'client':
                 echo esc_html($document->get_customer()->get_name());
                 break;
@@ -180,10 +189,15 @@ class PostTypeColumns implements Hookable
      */
     private function find_duplicates(string $post_title): int
     {
+        static $cache = [];
+        if (isset($cache[$post_title])) {
+            return $cache[$post_title];
+        }
         global $wpdb;
         $duplicates = $wpdb->get_var($wpdb->prepare("SELECT count(ID) FROM {$wpdb->posts} WHERE `post_title` = %s AND `post_type` = %s AND `post_status` = 'publish'", $post_title, RegisterPostType::POST_TYPE_NAME));
         //phpcs:ignore
-        return (int) $duplicates;
+        $cache[$post_title] = (int) $duplicates;
+        return $cache[$post_title];
     }
     /**
      * @param array $columns

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4bc5bcc209e9a8a57adc40961c6e31f0
+class ComposerStaticInitb8b73c0b24614da4393575d3946e5277
 {
     public static $prefixLengthsPsr4 = array (
         'W' =>
@@ -706,6 +706,7 @@ class ComposerStaticInit4bc5bcc209e9a8a57adc40961c6e31f0
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\Reports\\GenerateReport' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/Reports/GenerateReport.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\SearchCustomer' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/SearchCustomer.php',
         'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\Translator' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/Translator.php',
+        'WPDeskFIVendor\\WPDesk\\Library\\FlexibleInvoicesCore\\WordPress\\ValidateInvoice' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/flexible-invoices-core/src/Invoices/WordPress/ValidateInvoice.php',
         'WPDeskFIVendor\\WPDesk\\Library\\Marketing\\Boxes\\Abstracts\\BoxInterface' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-wpdesk-marketing/src/Boxes/Abstracts/BoxInterface.php',
         'WPDeskFIVendor\\WPDesk\\Library\\Marketing\\Boxes\\Api\\Client' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-wpdesk-marketing/src/Boxes/Api/Client.php',
         'WPDeskFIVendor\\WPDesk\\Library\\Marketing\\Boxes\\Assets' => __DIR__ . '/../..' . '/vendor_prefixed/wpdesk/wp-wpdesk-marketing/src/Boxes/Assets.php',
@@ -936,7 +937,6 @@ class ComposerStaticInit4bc5bcc209e9a8a57adc40961c6e31f0
         'WPDesk\\FlexibleInvoices\\Addons\\Sending\\Fields\\WysiwygField' => __DIR__ . '/../..' . '/src/Addons/Sending/Fields/WysiwygField.php',
         'WPDesk\\FlexibleInvoices\\Addons\\Sending\\SendingSettingsAddon' => __DIR__ . '/../..' . '/src/Addons/Sending/SendingSettingsAddon.php',
         'WPDesk\\FlexibleInvoices\\Addons\\Sending\\SendingTab' => __DIR__ . '/../..' . '/src/Addons/Sending/SendingTab.php',
-        'WPDesk\\FlexibleInvoices\\Addons\\Validation\\ValidateInvoice' => __DIR__ . '/../..' . '/src/Addons/Validation/ValidateInvoice.php',
         'WPDesk\\FlexibleInvoices\\Marketing\\SupportLinks' => __DIR__ . '/../..' . '/src/Marketing/SupportLinks.php',
         'WPDesk\\FlexibleInvoices\\Marketing\\SupportMenuPage' => __DIR__ . '/../..' . '/src/Marketing/SupportMenuPage.php',
         'WPDesk\\FlexibleInvoices\\Plugin' => __DIR__ . '/../..' . '/src/Plugin.php',
@@ -954,9 +954,9 @@ class ComposerStaticInit4bc5bcc209e9a8a57adc40961c6e31f0
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4bc5bcc209e9a8a57adc40961c6e31f0::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4bc5bcc209e9a8a57adc40961c6e31f0::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit4bc5bcc209e9a8a57adc40961c6e31f0::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitb8b73c0b24614da4393575d3946e5277::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitb8b73c0b24614da4393575d3946e5277::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitb8b73c0b24614da4393575d3946e5277::$classMap;
 
         }, null, ClassLoader::class);
     }

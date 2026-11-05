@@ -360,6 +360,7 @@ class InvoicesIntegration implements Hookable
         $this->add_hookable(new WordPress\BulkActions());
         $this->add_hookable(new WordPress\FindProducts($this->settings));
         $this->add_hookable(new WordPress\DuplicatesNotice($duplication_checker));
+        $this->add_hookable(new WordPress\ValidateInvoice());
         $this->add_hookable(new WordPress\Reports\GenerateReport($this->get_settings(), $this->document_factory, $this->renderer, $this->library_info));
         $this->add_hookable(new WordPress\Download\DownloadMenuPage($this->library_info->get_template_dir()));
         $this->add_hookable(new WordPress\Download\BatchDocumentsDownload($this->get_pdf_writer(), $this->document_factory));

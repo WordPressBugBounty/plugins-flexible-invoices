@@ -28,6 +28,11 @@ export default function Edit() {
 			textColor: '#222'
 		} ],
 		[ 'flexible-invoices/text', {
+			content: '{CustomerState}',
+			placeholder: '{CustomerState}',
+			textColor: '#222'
+		} ],
+		[ 'flexible-invoices/text', {
 			content: '{CustomerVAT}',
 			placeholder: '{CustomerVAT}',
 			textColor: '#222'

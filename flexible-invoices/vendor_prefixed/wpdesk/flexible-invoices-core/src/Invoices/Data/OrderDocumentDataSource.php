@@ -146,10 +146,11 @@ class OrderDocumentDataSource extends AbstractDataSource
         } else {
             $shipping_name = $shipping_company;
         }
-        if ($show_recipient_type === 'ifempty' && $this->has_different_address()) {
+        $different_recipient = $this->has_different_address($billing_name, $shipping_name);
+        if ($show_recipient_type === 'ifempty' && $different_recipient) {
             return $this->get_recipient_from_shipping($shipping_name);
         }
-        if ($show_recipient_type === 'always' && !$this->has_different_address()) {
+        if ($show_recipient_type === 'always' && !$different_recipient) {
             return $this->get_recipient_from_billing($billing_name);
         }
         if ($show_recipient_type === 'always') {
@@ -157,14 +158,11 @@ class OrderDocumentDataSource extends AbstractDataSource
         }
         return new DocumentRecipient('', '', '', '', '', '', '', '', '', '');
     }
-    /**
-     * @return bool
-     */
-    private function has_different_address(): bool
+    private function has_different_address(string $billing_name, string $shipping_name): bool
     {
-        $billing_address = $this->order->get_billing_address_1() . $this->order->get_billing_country() . $this->order->get_billing_city() . $this->order->get_billing_postcode();
-        $shipping_address = $this->order->get_shipping_address_1() . $this->order->get_shipping_country() . $this->order->get_shipping_city() . $this->order->get_shipping_postcode();
-        return $billing_address !== $shipping_address;
+        $billing = [$billing_name, $this->order->get_meta(InvoicesCheckoutConfig::BILLING_TAX_ID_KEY, \true), $this->order->get_billing_address_1(), $this->order->get_billing_address_2(), $this->order->get_billing_postcode(), $this->order->get_billing_city(), $this->order->get_billing_country(), $this->order->get_billing_state()];
+        $shipping = [$shipping_name, $this->order->get_meta(InvoicesCheckoutConfig::SHIPPING_TAX_ID_KEY, \true), $this->order->get_shipping_address_1(), $this->order->get_shipping_address_2(), $this->order->get_shipping_postcode(), $this->order->get_shipping_city(), $this->order->get_shipping_country(), $this->order->get_shipping_state()];
+        return $billing !== $shipping;
     }
     /**
      * @param string $name

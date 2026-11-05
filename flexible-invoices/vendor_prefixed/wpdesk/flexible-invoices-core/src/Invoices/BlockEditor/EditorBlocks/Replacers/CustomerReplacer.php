@@ -4,6 +4,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\EditorB
 
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\ValueObjects\DocumentCustomer;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Decorators\TemplateDocumentDecorator;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Countries;
 class CustomerReplacer extends AbstractBasicReplacer
 {
     protected function get_wrapper_tags(): array
@@ -13,7 +14,7 @@ class CustomerReplacer extends AbstractBasicReplacer
     protected function get_shortcodes_to_replace(TemplateDocumentDecorator $invoice): array
     {
         $client = $invoice->get_customer();
-        return ['{CustomerName}' => $client->get_name(), '{CustomerStreet}' => $client->get_street(), '{CustomerCity}' => $client->get_city(), '{CustomerPostalCode}' => $client->get_postcode(), '{CustomerCountry}' => $client->get_country(), '{CustomerVAT}' => $client->get_vat_number(), '{CustomerEmail}' => $client->get_email(), '{CustomerPhone}' => $client->get_phone()];
+        return ['{CustomerName}' => $client->get_name(), '{CustomerStreet}' => $client->get_street(), '{CustomerCity}' => $client->get_city(), '{CustomerPostalCode}' => $client->get_postcode(), '{CustomerCountry}' => $client->get_country(), '{CustomerState}' => Countries::get_country_state_label($client->get_state(), $client->get_country()), '{CustomerVAT}' => $client->get_vat_number(), '{CustomerEmail}' => $client->get_email(), '{CustomerPhone}' => $client->get_phone()];
     }
     public function modify_content(TemplateDocumentDecorator $invoice, string $content): string
     {
@@ -33,7 +34,7 @@ class CustomerReplacer extends AbstractBasicReplacer
     }
     private function are_all_fields_empty(DocumentCustomer $customer): bool
     {
-        if (empty($customer->get_name()) && empty($customer->get_street()) && empty($customer->get_street2()) && empty($customer->get_city()) && empty($customer->get_postcode()) && empty($customer->get_country()) && empty($customer->get_email()) && empty($customer->get_phone()) && empty($customer->get_vat_number())) {
+        if (empty($customer->get_name()) && empty($customer->get_street()) && empty($customer->get_street2()) && empty($customer->get_city()) && empty($customer->get_postcode()) && empty($customer->get_country()) && empty($customer->get_state()) && empty($customer->get_email()) && empty($customer->get_phone()) && empty($customer->get_vat_number())) {
             return \true;
         }
         return \false;

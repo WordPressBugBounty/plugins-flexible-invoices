@@ -36,6 +36,11 @@ export default function Edit() {
 			textColor: '#222'
 		} ],
 		[ 'flexible-invoices/text', {
+			content: '{RecipientState}',
+			placeholder: '{RecipientState}',
+			textColor: '#222'
+		} ],
+		[ 'flexible-invoices/text', {
 			content: '{RecipientPhone}',
 			placeholder: '{RecipientPhone}',
 			textColor: '#222'

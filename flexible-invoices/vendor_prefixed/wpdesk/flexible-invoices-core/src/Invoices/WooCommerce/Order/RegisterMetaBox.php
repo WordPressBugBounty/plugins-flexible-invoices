@@ -2,12 +2,11 @@
 
 namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Order;
 
-use WC_Order;
 use WP_Post;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Integration\DocumentFactory;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WooCommerce\Links;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\WordPress\RegisterPostType;
 use WPDeskFIVendor\WPDesk\PluginBuilder\Plugin\Hookable;
-use WPDeskFIVendor\WPDesk\View\Renderer\Renderer;
 /**
  * Adds a meta box in the order with buttons for generating and displaying the created documents.
  *
@@ -73,6 +72,10 @@ class RegisterMetaBox implements Hookable
                 $document_meta_ids = $this->get_unique_meta_ids($order->get_meta($meta_type, \false));
                 //@phpstan-ignore-line
                 foreach ($document_meta_ids as $document_meta_id) {
+                    $related_post = get_post((int) $document_meta_id);
+                    if (!$related_post instanceof \WP_Post || RegisterPostType::POST_TYPE_NAME !== $related_post->post_type) {
+                        continue;
+                    }
                     $creator->set_order_id($order->get_id());
                     //@phpstan-ignore-line
                     $document = $this->document_factory->get_document_creator($document_meta_id)->get_document();

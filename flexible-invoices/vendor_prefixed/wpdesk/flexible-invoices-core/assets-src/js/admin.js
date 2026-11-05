@@ -205,34 +205,51 @@ jQuery.noConflict();
 
 		countrySelect2: function () {
 			var _this = this;
-			var $state_select = $( '#inspire_invoices_client_state' );
-			if ( $state_select.length ) {
-				$state_select.select2( {
-					..._this.selectI18n(),
-					width: '100%'
-				} );
-			}
+			var pairs = [
+				{
+					country: '#inspire_invoices_client_country',
+					state: '#inspire_invoices_client_state',
+					summary: '.inspire_invoices_client_state'
+				},
+				{
+					country: '#inspire_invoices_recipient_country',
+					state: '#inspire_invoices_recipient_state',
+					summary: '.inspire_invoices_recipient_state'
+				}
+			];
 
-			var country_select = $( '.country-select2' );
-			if ( country_select.length ) {
-				let $country_value = country_select.val();
-				if ( $country_value ) {
-					_this.setCountryState( $state_select, $country_value );
+			$.each( pairs, function ( index, pair ) {
+				var $state_select = $( pair.state );
+				var $country_select = $( pair.country );
+
+				if ( $state_select.is( 'select' ) ) {
+					$state_select.select2( {
+						..._this.selectI18n(),
+						width: '100%'
+					} );
 				}
 
-				country_select.select2( {
+				if ( ! $country_select.is( 'select' ) ) {
+					return;
+				}
+
+				var country_value = $country_select.val();
+				if ( country_value ) {
+					_this.setCountryState( $state_select, country_value, pair.summary );
+				}
+
+				$country_select.select2( {
 					..._this.selectI18n(),
 					width: '100%'
 				} ).on( 'select2:select', function ( event ) {
-					let country = event.params.data.id;
-					_this.setCountryState( $state_select, country );
+					_this.setCountryState( $state_select, event.params.data.id, pair.summary );
 				} );
-			}
+			} );
 		},
 
-		setCountryState: function ( $state_select, country ) {
+		setCountryState: function ( $state_select, country, summary_selector ) {
 
-			if ( $state_select.length && country ) {
+			if ( $state_select.is( 'select' ) && country ) {
 				let state_value = $state_select.val();
 				let has_values = false;
 				let countries_states = inspire_invoice_params.states
@@ -258,18 +275,19 @@ jQuery.noConflict();
 				$state_select.html( output );
 				$state_select.trigger( "change" );
 				let selected_value = $state_select.attr( 'data-value' );
+				let $summary = $( summary_selector );
 				if ( has_values ) {
 					$state_select.closest( '.form-field' ).show();
 					$state_select.val( selected_value );
-					$( '.inspire_invoices_client_state' ).show();
-					if ( countries_states && selected_value ) {
-						$( '.inspire_invoices_client_state span' ).html( countries_states[ country ][ selected_value ] );
+					$summary.show();
+					if ( countries_states[ country ] && selected_value && countries_states[ country ][ selected_value ] ) {
+						$summary.find( 'span' ).html( countries_states[ country ][ selected_value ] );
 					} else {
-						$( '.inspire_invoices_client_state span' ).html( '---' );
+						$summary.find( 'span' ).html( '---' );
 					}
 				} else {
 					$state_select.closest( '.form-field' ).hide();
-					$( '.inspire_invoices_client_state' ).hide();
+					$summary.hide();
 				}
 			}
 		},

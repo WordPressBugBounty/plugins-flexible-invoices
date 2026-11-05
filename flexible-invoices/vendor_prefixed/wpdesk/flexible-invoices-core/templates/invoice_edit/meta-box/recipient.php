@@ -59,7 +59,12 @@ echo \esc_html($recipient->get_postcode());
 ?>: <span><?php 
 echo Helpers\Countries::get_country_label($recipient->get_country());
 ?></span></div>
-		<div class="inspire_invoices_recipient_country"><?php 
+		<?php 
+$recipient_state_style = $recipient->get_state() ? 'block' : 'none';
+?>
+		<div class="inspire_invoices_recipient_state" style="display:<?php 
+echo \esc_attr($recipient_state_style);
+?>;"><?php 
 \esc_html_e('State', 'flexible-invoices');
 ?>: <span><?php 
 echo Helpers\Countries::get_country_state_label($recipient->get_state(), $recipient->get_country());
@@ -155,7 +160,6 @@ $countries = [];
 $states = [];
 if (Helpers\WooCommerce::is_active()) {
     $countries = \WC()->countries->get_countries();
-    $states = \WC()->countries->get_states();
 }
 $recipient_country = $recipient->get_country();
 $recipient_state = $recipient->get_state();
@@ -167,6 +171,9 @@ if (empty($recipient_country)) {
 }
 if ($recipient_country && Helpers\WooCommerce::is_active()) {
     $states = \WC()->countries->get_states($recipient_country);
+    if (empty($states)) {
+        $states = [];
+    }
 }
 ?>
 
@@ -213,7 +220,9 @@ if (Helpers\WooCommerce::is_active()) {
 			<?php 
 if (Helpers\WooCommerce::is_active()) {
     ?>
-				<select id="inspire_invoices_recipient_state" name="recipient[state]" class="country-select2 medium hs-beacon-search">
+				<select data-value="<?php 
+    echo \esc_attr($recipient_state);
+    ?>" id="inspire_invoices_recipient_state" name="recipient[state]" class="medium hs-beacon-search">
 					<?php 
     foreach ($states as $state_code => $state_name) {
         ?>

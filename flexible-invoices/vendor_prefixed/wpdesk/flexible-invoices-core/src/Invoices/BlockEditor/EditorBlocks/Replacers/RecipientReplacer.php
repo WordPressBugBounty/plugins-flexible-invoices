@@ -5,6 +5,7 @@ namespace WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\BlockEditor\EditorB
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Customer;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesAbstracts\DocumentData\Recipient;
 use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Decorators\TemplateDocumentDecorator;
+use WPDeskFIVendor\WPDesk\Library\FlexibleInvoicesCore\Helpers\Countries;
 class RecipientReplacer extends AbstractBasicReplacer
 {
     public function modify_content(TemplateDocumentDecorator $invoice, string $content): string
@@ -28,7 +29,7 @@ class RecipientReplacer extends AbstractBasicReplacer
     protected function get_shortcodes_to_replace(TemplateDocumentDecorator $invoice): array
     {
         $recipient = $invoice->get_recipient();
-        return ['{RecipientName}' => $recipient->get_name(), '{RecipientStreet}' => $recipient->get_street(), '{RecipientCity}' => $recipient->get_city(), '{RecipientPostalCode}' => $recipient->get_postcode(), '{RecipientCountry}' => $recipient->get_country(), '{RecipientVAT}' => $recipient->get_vat_number(), '{RecipientEmail}' => $recipient->get_email(), '{RecipientPhone}' => $recipient->get_phone()];
+        return ['{RecipientName}' => $recipient->get_name(), '{RecipientStreet}' => $recipient->get_street(), '{RecipientCity}' => $recipient->get_city(), '{RecipientPostalCode}' => $recipient->get_postcode(), '{RecipientCountry}' => $recipient->get_country(), '{RecipientState}' => Countries::get_country_state_label($recipient->get_state(), $recipient->get_country()), '{RecipientVAT}' => $recipient->get_vat_number(), '{RecipientEmail}' => $recipient->get_email(), '{RecipientPhone}' => $recipient->get_phone()];
     }
     protected function get_wrapper_tags(): array
     {
@@ -36,13 +37,13 @@ class RecipientReplacer extends AbstractBasicReplacer
     }
     private function are_all_fields_empty(Recipient $recipient): bool
     {
-        if (empty($recipient->get_name()) && empty($recipient->get_street()) && empty($recipient->get_street2()) && empty($recipient->get_city()) && empty($recipient->get_postcode()) && empty($recipient->get_country()) && empty($recipient->get_email()) && empty($recipient->get_phone()) && empty($recipient->get_vat_number())) {
+        if (empty($recipient->get_name()) && empty($recipient->get_street()) && empty($recipient->get_street2()) && empty($recipient->get_city()) && empty($recipient->get_postcode()) && empty($recipient->get_country()) && empty($recipient->get_state()) && empty($recipient->get_email()) && empty($recipient->get_phone()) && empty($recipient->get_vat_number())) {
             return \true;
         }
         return \false;
     }
     private function is_customer_and_recipient_the_same(Recipient $recipient, Customer $customer): bool
     {
-        return $recipient->get_name() === $customer->get_name() && $recipient->get_vat_number() === $customer->get_vat_number() && $recipient->get_street() === $customer->get_street() && $recipient->get_street2() === $customer->get_street2() && $recipient->get_city() === $customer->get_city() && $recipient->get_postcode() === $customer->get_postcode() && $recipient->get_country() === $customer->get_country();
+        return $recipient->get_name() === $customer->get_name() && $recipient->get_vat_number() === $customer->get_vat_number() && $recipient->get_street() === $customer->get_street() && $recipient->get_street2() === $customer->get_street2() && $recipient->get_city() === $customer->get_city() && $recipient->get_postcode() === $customer->get_postcode() && $recipient->get_country() === $customer->get_country() && $recipient->get_state() === $customer->get_state();
     }
 }

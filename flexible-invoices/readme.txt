@@ -5,7 +5,7 @@ Tags: ksef, e faktura, faktura ksef, faktura online, faktury
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 7.1.0
+Stable tag: 7.1.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -313,6 +313,12 @@ There is still a lot of work ahead :) The Flexible PDF Invoices for WooCommerce 
 67. Invoice number formatting inside the visual editor for the invoice template.
 
 == Changelog ==
+
+= 7.1.1 - 2026-11-05 =
+- The message regarding a duplicate invoice number has been updated. The message does not display the next invoice number to avoid confusion.
+- Code changes related to the related documents metabox and the validation of duplicate documents
+- The script responsible for searching for duplicate documents now searches only for documents with the “published” status.
+- Missing Customer_State placeholder in block invoice template
 
 = 7.1.0 - 2026-10-21 =
 - Added features for recognizing EU countries have been added

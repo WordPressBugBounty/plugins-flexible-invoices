@@ -210,7 +210,7 @@ table.products select {
 	margin: -1em 0 0 -3px;
 }
 
-.is_duplicated {
+tr.is_duplicated .row-title {
 	color: red;
 }
 

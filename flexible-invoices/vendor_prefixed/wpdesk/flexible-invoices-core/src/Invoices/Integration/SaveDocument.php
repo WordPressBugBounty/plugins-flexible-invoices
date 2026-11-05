@@ -74,6 +74,9 @@ class SaveDocument implements Hookable
      */
     public function save_custom_fields_action($post_id, $post)
     {
+        if (!$post instanceof \WP_Post || RegisterPostType::POST_TYPE_NAME !== $post->post_type) {
+            return \false;
+        }
         if (!isset($_POST['flexible_invoices_nonce'])) {
             return \false;
         }
